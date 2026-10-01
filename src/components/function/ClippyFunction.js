@@ -49,7 +49,7 @@ export const clippyReactions = {
     minesweeper: { phrase: "Tip: right-click to flag a mine. Good luck!", animation: clippy5 },
     devfeed:     { phrase: "Here's what Carlos has been building lately.", animation: clippy1 },
     paint:       { phrase: "It looks like you're making art. Want help? Too bad, I can't draw.", animation: clippy6 },
-    store:       { phrase: "Shopping for software? Everything here is free!", animation: clippy2 },
+    store:       { phrase: "Hard hats on! The Store is still under construction.", animation: clippy2 },
     portfolio:   { phrase: "Opening Carlos's portfolio in Internet Explorer...", animation: clippy4 },
     blog:        { phrase: "Carlos's blog, coming right up.", animation: clippy4 },
     taskmanager: { phrase: "Something frozen? It's probably not my fault.", animation: clippy7 },

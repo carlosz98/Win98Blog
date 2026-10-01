@@ -11,6 +11,9 @@ import iconInfo from '../icon.json'
 // GitHub projects also have a category, but they belong in the Project folder, not the Store.
 const isStoreApp = item => item.category && item.folderId !== 'Project';
 
+// Flip to true to reopen the Store; until then it shows an Under Construction page.
+const STORE_OPEN = false;
+
 function Store() {
   const [storeSearchValue, setStoreSearchValue] = useState('')
   const [catagoryHide, setCatagoryHide] = useState(true)
@@ -324,7 +327,23 @@ function Store() {
           <p>Help<span style={{left: '-30px'}}>_</span></p>
         </div>
 
+        {!STORE_OPEN && (
+          <div className="store_construction"
+            style={StoreExpand.expand ? { height: 'calc(100svh - 102px)'} : {}}
+          >
+            <div className="construction_stripe" />
+            <div className="construction_body">
+              <span className="construction_sign">🚧</span>
+              <h2>Under Construction</h2>
+              <p>The Store is getting a makeover.<br/>Check back soon!</p>
+              <p className="construction_small">Last updated: work in progress...</p>
+            </div>
+            <div className="construction_stripe" />
+          </div>
+        )}
+
         {/* Store Content */}
+        {STORE_OPEN && (
         <div 
           className="store_content"
           onClick={() => iconFocusIcon('Store')}
@@ -446,6 +465,7 @@ function Store() {
             )}
           </div>
         </div>
+        )}
       </div>
     </Draggable>
   )
