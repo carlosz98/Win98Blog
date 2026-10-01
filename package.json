@@ -20,6 +20,7 @@
     "axios": "^1.7.4",
     "bad-words": "^4.0.0",
     "dayjs": "^1.11.13",
+    "firebase": "^11.10.0",
     "framer-motion": "^11.0.12",
     "react": "^18.2.0",
     "react-calendar": "^5.1.0",

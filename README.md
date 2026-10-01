@@ -53,6 +53,21 @@ React · Vite · Framer Motion · React Draggable · Webamp · WebSocket · GNew
 
 ---
 
+## DevFeed setup (shared posts)
+
+DevFeed posts are stored in Firebase Firestore so every visitor sees the same feed. Without Firebase config they fall back to this browser's localStorage, which only you will see.
+
+1. Create a project at [console.firebase.google.com](https://console.firebase.google.com) and add a **Web app**.
+2. Turn on **Firestore Database** and **Authentication > Sign-in method > Google**.
+3. In `firestore.rules`, replace `your-email@gmail.com` with the Google account you'll post from, then paste the file into **Firestore > Rules** and publish.
+4. Copy `.env.example` to `.env.local` and fill in the web app config plus `VITE_DEVFEED_ADMIN_EMAIL`.
+5. For the GitHub Pages deploy, add the same `VITE_*` names as repository secrets (Settings > Secrets and variables > Actions); `deploy.yml` already passes them to the build.
+6. Add your site's domain under **Authentication > Settings > Authorized domains**.
+
+Click **Post** in DevFeed and sign in with that Google account to write. The first sign-in copies the starter posts into Firestore if it is empty.
+
+---
+
 ## Credits
 
 - Windows 95 icons: [oldwindowsicons.tumblr.com](https://oldwindowsicons.tumblr.com/tagged/windows%2095)

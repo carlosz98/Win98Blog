@@ -3,6 +3,7 @@ import UseContext from '../Context';
 import Draggable from 'react-draggable';
 import { motion, AnimatePresence } from 'framer-motion';
 import newsIcon from '../assets/news.png';
+import { devfeedStore, isShared } from './function/devfeedStore';
 import '../css/DevFeed.css';
 
 const PROJECTS = [
@@ -17,7 +18,6 @@ const PROJECTS = [
   { name: 'PixelCity',   color: '#4a2a8a', emoji: '🏙️' },
 ];
 
-const ADMIN_PASSWORD = 'carlosz98'; // ← change this to your own password
 const SHARE_URL = 'https://github.com/carlosz98';
 
 const SEED_POSTS = [
@@ -63,34 +63,14 @@ function getProject(name) {
   return PROJECTS.find(p => p.name === name) || { color: '#555', emoji: '📁' };
 }
 
-// ── Get a session-based user ID so likes persist per visitor ──
+// ── Get a per-browser user ID so likes persist per visitor ──
 function getUserId() {
-  let id = sessionStorage.getItem('df_user_id');
+  let id = localStorage.getItem('df_user_id');
   if (!id) {
     id = 'user_' + Math.random().toString(36).slice(2, 9);
-    sessionStorage.setItem('df_user_id', id);
+    localStorage.setItem('df_user_id', id);
   }
   return id;
-}
-
-function loadPosts() {
-  try {
-    const saved = localStorage.getItem('devfeed_posts');
-    if (!saved) return SEED_POSTS;
-    const parsed = JSON.parse(saved);
-    // Migrate old posts that don't have likedBy/comments arrays
-    return parsed.map(p => ({
-      ...p,
-      likedBy: p.likedBy || [],
-      comments: p.comments || [],
-      likes: p.likes || 0,
-    }));
-  } catch { return SEED_POSTS; }
-}
-
-function savePosts(posts) {
-  try { localStorage.setItem('devfeed_posts', JSON.stringify(posts)); }
-  catch(e) { console.error('Failed to save posts', e); }
 }
 
 export default function DevFeed({ show, setShow }) {
@@ -98,12 +78,13 @@ export default function DevFeed({ show, setShow }) {
 
   const [expand, setExpand]           = useState(false);
   const [focus, setFocus]             = useState(true);
-  const [posts, setPosts]             = useState(loadPosts);
+  const [posts, setPosts]             = useState([]);
+  const [feedError, setFeedError]     = useState('');
   const [activeStory, setActiveStory] = useState(null);
   const userId                        = getUserId();
 
   // ── Auth ──
-  const [isAdmin, setIsAdmin]         = useState(() => sessionStorage.getItem('df_admin') === 'true');
+  const [isAdmin, setIsAdmin]         = useState(false);
   const [showLogin, setShowLogin]     = useState(false);
   const [pwInput, setPwInput]         = useState('');
   const [pwError, setPwError]         = useState('');
@@ -123,31 +104,37 @@ export default function DevFeed({ show, setShow }) {
   const [commentNames, setCommentNames]   = useState({}); // postId → string
   const [copiedId, setCopiedId]         = useState(null);
 
-  // ── Persist on change ──
-  useEffect(() => { savePosts(posts); }, [posts]);
+  // ── Load posts and admin state from the store ──
+  useEffect(() => devfeedStore.subscribe(
+    next => { setPosts(next); setFeedError(''); },
+    err => { console.error('DevFeed load failed', err); setFeedError('Could not load posts.'); },
+    SEED_POSTS,
+  ), []);
+  useEffect(() => devfeedStore.onAdminChange(setIsAdmin), []);
 
-  function updatePosts(fn) {
-    setPosts(prev => {
-      const next = fn(prev);
-      savePosts(next);
-      return next;
+  function run(promise) {
+    promise.catch(err => {
+      console.error('DevFeed save failed', err);
+      setFeedError('Could not save that change. Please try again.');
     });
   }
 
   // ── Admin ──
-  function handleLogin(e) {
-    e.preventDefault();
-    if (pwInput === ADMIN_PASSWORD) {
+  async function handleLogin(e) {
+    e?.preventDefault();
+    try {
+      await devfeedStore.login(pwInput);
       setIsAdmin(true);
-      sessionStorage.setItem('df_admin', 'true');
       setShowLogin(false); setPwInput(''); setPwError('');
       setComposerOpen(true);
-    } else {
-      setPwError('Incorrect password.'); setPwInput('');
+      run(devfeedStore.seedIfEmpty(SEED_POSTS));
+    } catch (err) {
+      setPwError(err.message); setPwInput('');
     }
   }
   function handleLogout() {
-    setIsAdmin(false); sessionStorage.removeItem('df_admin'); setComposerOpen(false);
+    setIsAdmin(false); setComposerOpen(false);
+    run(devfeedStore.logout());
   }
   function handleNewPostClick() {
     if (isAdmin) setComposerOpen(o => !o);
@@ -157,21 +144,17 @@ export default function DevFeed({ show, setShow }) {
   // ── Post ──
   function handlePost() {
     if (!title.trim() && !body.trim()) return;
-    const newPost = {
-      id: Date.now(),
+    run(devfeedStore.addPost({
       title: title.trim(), body: body.trim(),
       tags, media: mediaUrl.trim() || null,
       project: selProject,
-      time: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-      likes: 0, likedBy: [], comments: [],
-    };
-    updatePosts(prev => [newPost, ...prev]);
+    }));
     setTitle(''); setBody(''); setTags([]); setTagInput(''); setMediaUrl('');
     setComposerOpen(false);
   }
 
-  function handleDeletePost(id) {
-    updatePosts(prev => prev.filter(p => p.id !== id));
+  function handleDeletePost(post) {
+    run(devfeedStore.deletePost(post));
   }
 
   function handleTagKey(e) {
@@ -183,16 +166,8 @@ export default function DevFeed({ show, setShow }) {
   }
 
   // ── Like ──
-  function toggleLike(postId) {
-    updatePosts(prev => prev.map(p => {
-      if (p.id !== postId) return p;
-      const liked = p.likedBy.includes(userId);
-      return {
-        ...p,
-        likes: liked ? p.likes - 1 : p.likes + 1,
-        likedBy: liked ? p.likedBy.filter(id => id !== userId) : [...p.likedBy, userId],
-      };
-    }));
+  function toggleLike(post) {
+    run(devfeedStore.toggleLike(post, userId));
   }
 
   // ── Comment ──
@@ -200,7 +175,8 @@ export default function DevFeed({ show, setShow }) {
     setOpenComments(prev => ({ ...prev, [postId]: !prev[postId] }));
   }
 
-  function submitComment(postId) {
+  function submitComment(post) {
+    const postId = post.id;
     const text = (commentInputs[postId] || '').trim();
     const name = (commentNames[postId] || '').trim() || 'Anonymous';
     if (!text) return;
@@ -210,19 +186,13 @@ export default function DevFeed({ show, setShow }) {
       text,
       time: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
     };
-    updatePosts(prev => prev.map(p =>
-      p.id === postId ? { ...p, comments: [...p.comments, comment] } : p
-    ));
+    run(devfeedStore.addComment(post, comment));
     setCommentInputs(prev => ({ ...prev, [postId]: '' }));
     setCommentNames(prev => ({ ...prev, [postId]: '' }));
   }
 
-  function deleteComment(postId, commentId) {
-    updatePosts(prev => prev.map(p =>
-      p.id === postId
-        ? { ...p, comments: p.comments.filter(c => c.id !== commentId) }
-        : p
-    ));
+  function deleteComment(post, comment) {
+    run(devfeedStore.deleteComment(post, comment));
   }
 
   // ── Share ──
@@ -284,11 +254,17 @@ export default function DevFeed({ show, setShow }) {
                     <button onClick={() => { setShowLogin(false); setPwError(''); }}>×</button>
                   </div>
                   <form className="df-login-form" onSubmit={handleLogin}>
-                    <p>Enter admin password to post:</p>
-                    <input type="password" value={pwInput} onChange={e => setPwInput(e.target.value)} placeholder="Password" autoFocus />
+                    {isShared ? (
+                      <p>Sign in with the admin Google account to post.</p>
+                    ) : (
+                      <>
+                        <p>Enter admin password to post:</p>
+                        <input type="password" value={pwInput} onChange={e => setPwInput(e.target.value)} placeholder="Password" autoFocus />
+                      </>
+                    )}
                     {pwError && <span className="df-login-error">{pwError}</span>}
                     <div className="df-login-btns">
-                      <button type="submit" className="df-post-btn">Login</button>
+                      <button type="submit" className="df-post-btn">{isShared ? 'Sign in with Google' : 'Login'}</button>
                       <button type="button" className="df-cancel-btn" onClick={() => { setShowLogin(false); setPwError(''); }}>Cancel</button>
                     </div>
                   </form>
@@ -487,6 +463,7 @@ export default function DevFeed({ show, setShow }) {
 
           {/* ── FEED ── */}
           <div className="df-feed">
+            {feedError && <div className="df-empty">{feedError}</div>}
             {posts
               .filter(p => !activeStory || p.project === activeStory)
               .map(post => {
@@ -509,7 +486,7 @@ export default function DevFeed({ show, setShow }) {
                         <span className="df-post-time">{post.time}</span>
                       </div>
                       {isAdmin && (
-                        <button className="df-delete-btn" onClick={() => handleDeletePost(post.id)} title="Delete">🗑</button>
+                        <button className="df-delete-btn" onClick={() => handleDeletePost(post)} title="Delete">🗑</button>
                       )}
                     </div>
 
@@ -555,7 +532,7 @@ export default function DevFeed({ show, setShow }) {
                     {/* Actions */}
                     <div className="df-post-actions">
                       <button
-                        onClick={() => toggleLike(post.id)}
+                        onClick={() => toggleLike(post)}
                         style={{ color: liked ? '#000080' : '#65676b', fontWeight: liked ? 'bold' : 'normal' }}
                       >👍 Like</button>
                       <button onClick={() => toggleComments(post.id)}>💬 Comment</button>
@@ -581,7 +558,7 @@ export default function DevFeed({ show, setShow }) {
                                 <span className="df-comment-time">{c.time}</span>
                               </div>
                               {isAdmin && (
-                                <button className="df-delete-btn" onClick={() => deleteComment(post.id, c.id)}>🗑</button>
+                                <button className="df-delete-btn" onClick={() => deleteComment(post, c)}>🗑</button>
                               )}
                             </div>
                           ))}
@@ -604,9 +581,9 @@ export default function DevFeed({ show, setShow }) {
                                   placeholder="Write a comment..."
                                   value={commentInputs[post.id] || ''}
                                   onChange={e => setCommentInputs(prev => ({...prev,[post.id]:e.target.value}))}
-                                  onKeyDown={e => e.key === 'Enter' && submitComment(post.id)}
+                                  onKeyDown={e => e.key === 'Enter' && submitComment(post)}
                                 />
-                                <button className="df-comment-send" onClick={() => submitComment(post.id)}>↵</button>
+                                <button className="df-comment-send" onClick={() => submitComment(post)}>↵</button>
                               </div>
                             </div>
                           </div>
