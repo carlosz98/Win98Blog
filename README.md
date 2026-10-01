@@ -57,12 +57,11 @@ React · Vite · Framer Motion · React Draggable · Webamp · WebSocket · GNew
 
 DevFeed posts are stored in Firebase Firestore so every visitor sees the same feed. Without Firebase config they fall back to this browser's localStorage, which only you will see.
 
-1. Create a project at [console.firebase.google.com](https://console.firebase.google.com) and add a **Web app**.
-2. Turn on **Firestore Database** and **Authentication > Sign-in method > Google**.
-3. In `firestore.rules`, replace `your-email@gmail.com` with the Google account you'll post from, then paste the file into **Firestore > Rules** and publish.
-4. Copy `.env.example` to `.env.local` and fill in the web app config plus `VITE_DEVFEED_ADMIN_EMAIL`.
-5. For the GitHub Pages deploy, add the same `VITE_*` names as repository secrets (Settings > Secrets and variables > Actions); `deploy.yml` already passes them to the build.
-6. Add your site's domain under **Authentication > Settings > Authorized domains**.
+The Firebase project is `win98blog`, and its web config is in `.env`. Those values are public by design; `firestore.rules` controls who can write.
+
+1. In the Firebase console, turn on **Firestore Database** and **Authentication > Sign-in method > Google**.
+2. Put the Google account you post from in `VITE_DEVFEED_ADMIN_EMAIL` in `.env` and in `firestore.rules`, then paste `firestore.rules` into **Firestore > Rules** and publish.
+3. Add `carlosz98.github.io` under **Authentication > Settings > Authorized domains**.
 
 Click **Post** in DevFeed and sign in with that Google account to write. The first sign-in copies the starter posts into Firestore if it is empty.
 

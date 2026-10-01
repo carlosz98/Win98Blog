@@ -21,4 +21,3 @@ src/assets/win_xp.jpg
 src/assets/bigger_noise.jpg
 src/assets/cat.gif
 *.local
-.env
