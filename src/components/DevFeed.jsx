@@ -2,6 +2,7 @@ import { useContext, useState, useEffect, useRef } from 'react';
 import UseContext from '../Context';
 import Draggable from 'react-draggable';
 import { motion, AnimatePresence } from 'framer-motion';
+import { FcLeft, FcRight, FcRefresh, FcHome, FcSearch, FcBookmark, FcClock, FcVideoCall, FcStackOfPhotos, FcCollaboration, FcNews, FcGallery, FcPortraitMode } from 'react-icons/fc';
 import newsIcon from '../assets/news.png';
 import { devfeedStore, isShared } from './function/devfeedStore';
 import '../css/DevFeed.css';
@@ -19,6 +20,7 @@ const PROJECTS = [
 ];
 
 const SHARE_URL = 'https://github.com/carlosz98';
+const PROFILE_IMG = 'https://www.image2url.com/r2/default/images/1779668696401-898704a7-949a-4304-bd28-dc369d0df131.jpg';
 
 const SEED_POSTS = [
   {
@@ -81,6 +83,9 @@ export default function DevFeed({ show, setShow }) {
   const [posts, setPosts]             = useState([]);
   const [feedError, setFeedError]     = useState('');
   const [activeStory, setActiveStory] = useState(null);
+  const [tab, setTab]                 = useState('feed'); // feed | photos
+  const mainRef                       = useRef(null);
+  const storiesRef                    = useRef(null);
   const userId                        = getUserId();
 
   // ── Auth ──
@@ -203,6 +208,18 @@ export default function DevFeed({ show, setShow }) {
     });
   }
 
+  function goHome() {
+    setActiveStory(null); setTab('feed');
+    mainRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function scrollStories() {
+    storiesRef.current?.scrollBy({ left: 180, behavior: 'smooth' });
+  }
+
+  const visiblePosts = posts.filter(p =>
+    (!activeStory || p.project === activeStory) && (tab !== 'photos' || p.media)
+  );
+
   if (!show) return null;
 
   return (
@@ -240,7 +257,29 @@ export default function DevFeed({ show, setShow }) {
           {isAdmin && <span className="df-admin-badge" onClick={handleLogout} title="Click to logout">🔑 Admin</span>}
         </div>
 
-        <div className="df-body" style={expand ? { height:'calc(100vh - 90px)' } : {}}>
+        {/* IE-STYLE TOOLBAR */}
+        <div className="df-toolbar-ie">
+          <button className="df-ie-btn" disabled><FcLeft /><span>Back</span></button>
+          <button className="df-ie-btn" disabled><FcRight /><span>Forward</span></button>
+          <div className="df-ie-sep" />
+          <button className="df-ie-btn" onClick={goHome} title="Refresh"><FcRefresh /><span>Refresh</span></button>
+          <button className="df-ie-btn" onClick={goHome} title="Home"><FcHome /><span>Home</span></button>
+          <div className="df-ie-sep" />
+          <button className="df-ie-btn" onClick={() => setTab('photos')} title="Photos"><FcSearch /><span>Photos</span></button>
+          <button className="df-ie-btn" onClick={() => window.open(SHARE_URL, '_blank')} title="GitHub"><FcBookmark /><span>Favorites</span></button>
+          <button className="df-ie-btn" disabled><FcClock /><span>History</span></button>
+        </div>
+
+        {/* TABS */}
+        <div className="df-tabs">
+          <button className={`df-tab${tab==='feed'?' active':''}`} onClick={() => setTab('feed')} title="Feed"><FcNews /></button>
+          <button className={`df-tab${tab==='photos'?' active':''}`} onClick={() => setTab('photos')} title="Photos"><FcGallery /></button>
+          <button className="df-tab" onClick={() => window.open(SHARE_URL, '_blank')} title="Projects on GitHub"><FcCollaboration /></button>
+          <button className="df-tab" onClick={handleNewPostClick} title={isAdmin ? 'New post' : 'Admin login'}><FcPortraitMode /></button>
+        </div>
+
+        <div className="df-body" style={expand ? { height:'calc(100vh - 150px)' } : {}}>
+        <div className="df-main" ref={mainRef}>
 
           {/* ── LOGIN MODAL ── */}
           <AnimatePresence>
@@ -274,60 +313,64 @@ export default function DevFeed({ show, setShow }) {
           </AnimatePresence>
 
           {/* ── STORIES ── */}
-          <div className="df-stories-wrap">
-            <div className="df-stories">
+          <div className="df-panel df-stories-wrap">
+            <div className="df-stories" ref={storiesRef}>
               {/* Create post card */}
               <div className="df-story df-story-create" onClick={handleNewPostClick}>
-                <div className="df-story-icon" style={{ background:'#e4e6eb' }}>
-                  <div className="df-plus-circle">+</div>
+                <div className="df-story-create-photo">
+                  <img src={PROFILE_IMG} alt="Carlos" />
+                  <span className="df-story-check">{isAdmin ? '✓' : '+'}</span>
                 </div>
-                <div className="df-story-create-bottom"><span>{isAdmin ? 'New Post' : 'Post'}</span></div>
+                <div className="df-story-create-bottom">{isAdmin ? 'Create post' : 'Admin'}</div>
               </div>
               {/* One story card per post */}
-              {posts.slice(0,8).map(p => {
+              {posts.slice(0,10).map(p => {
                 const proj = getProject(p.project);
                 return (
                   <div key={p.id}
                     className={`df-story${activeStory===p.project?' selected':''}`}
+                    style={{ background: proj.color }}
                     onClick={() => setActiveStory(activeStory===p.project ? null : p.project)}
                   >
-                    <div className="df-story-icon" style={{background:proj.color,padding:0,overflow:'hidden'}}>
-                      {p.media && <img src={p.media} alt="" style={{width:'100%',height:'100%',objectFit:'cover',position:'absolute',inset:0}}/>}
-                      {!p.media && <span style={{fontSize:'28px',position:'relative',zIndex:1}}>{proj.emoji}</span>}
-                      {/* Blue gradient + profile pic at top */}
-                      <div style={{position:'absolute',top:0,left:0,right:0,height:'34px',background:'linear-gradient(180deg,rgba(0,0,128,0.88) 0%,transparent 100%)',zIndex:2,display:'flex',alignItems:'flex-start',padding:'3px 4px'}}>
-                        <img src="https://www.image2url.com/r2/default/images/1779668696401-898704a7-949a-4304-bd28-dc369d0df131.jpg"
-                          style={{width:'20px',height:'20px',objectFit:'cover',borderRadius:'50%',border:'1px solid #fff'}} alt="Carlos"/>
-                      </div>
-                    </div>
-                    <span>{p.title ? p.title.slice(0,14) : p.project}</span>
+                    {p.media
+                      ? <img className="df-story-bg" src={p.media} alt="" />
+                      : <span className="df-story-emoji">{proj.emoji}</span>}
+                    <img className="df-story-avatar" src={PROFILE_IMG} alt="" />
+                    <span className="df-story-name">{p.title ? p.title : p.project}</span>
                   </div>
                 );
               })}
             </div>
+            <button className="df-arrow-btn" onClick={scrollStories} title="More">▶</button>
           </div>
 
           {/* ── STATUS BAR ── */}
-          <div className="df-status-bar">
+          <div className="df-panel df-status-bar">
             <div className="df-status-input-row">
-              <img src="https://www.image2url.com/r2/default/images/1779668696401-898704a7-949a-4304-bd28-dc369d0df131.jpg" style={{width:'28px',height:'28px',objectFit:'cover',border:'1px solid #fff',borderRightColor:'#808080',borderBottomColor:'#808080',flexShrink:0}} alt="Carlos"/>
+              <img className="df-avatar-img" src={PROFILE_IMG} alt="Carlos"/>
               <div className="df-status-input" onClick={handleNewPostClick}>
-                {isAdmin ? "What's your update, Carlos?" : "What's on your mind?"}
+                {isAdmin ? "What's on your mind, Carlos?" : "What's new with Carlos?"}
               </div>
             </div>
             <div className="df-status-btns">
-              <button className="df-status-btn">🎥 Live video</button>
-              <button className="df-status-btn" onClick={handleNewPostClick}>🖼 Photo/GIF</button>
-              <button className="df-status-btn">😊 Feeling</button>
+              <button className="df-status-btn" onClick={handleNewPostClick}><FcVideoCall /> Live video</button>
+              <button className="df-status-btn" onClick={handleNewPostClick}><FcStackOfPhotos /> Photo/video</button>
+              <button className="df-status-btn" onClick={handleNewPostClick}><span className="df-feel">😊</span> Feeling/activity</button>
             </div>
           </div>
 
           {/* ── ROOM ROW ── */}
-          <div className="df-room-row">
-            <button className="df-room-btn" onClick={handleNewPostClick}>➕ {isAdmin?'Create post':'View posts'}</button>
+          <div className="df-panel df-room-row">
+            <button className="df-room-btn" onClick={handleNewPostClick}><FcCollaboration /> {isAdmin ? 'Create post' : 'Projects'}</button>
             <div className="df-room-avatars">
-              {PROJECTS.slice(0,6).map(p => (
-                <div key={p.name} className="df-mini-avatar" style={{background:p.color}} title={p.name}>{p.emoji}</div>
+              {PROJECTS.map(p => (
+                <div key={p.name}
+                  className={`df-mini-avatar${activeStory===p.name?' selected':''}`}
+                  style={{background:p.color}} title={p.name}
+                  onClick={() => setActiveStory(activeStory===p.name ? null : p.name)}
+                >
+                  {p.emoji}<span className="df-online-dot" />
+                </div>
               ))}
             </div>
           </div>
@@ -347,7 +390,7 @@ export default function DevFeed({ show, setShow }) {
                 initial={{opacity:0,y:-8}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-8}} transition={{duration:0.15}}>
                 <div className="df-composer-header">
                   <div style={{display:'flex',alignItems:'center',gap:'8px'}}>
-                    <img src="https://www.image2url.com/r2/default/images/1779668696401-898704a7-949a-4304-bd28-dc369d0df131.jpg"
+                    <img src={PROFILE_IMG}
                       style={{width:'28px',height:'28px',objectFit:'cover',border:'1px solid #fff',borderRightColor:'#808080',borderBottomColor:'#808080',flexShrink:0}}
                       alt="Carlos"
                     />
@@ -464,9 +507,7 @@ export default function DevFeed({ show, setShow }) {
           {/* ── FEED ── */}
           <div className="df-feed">
             {feedError && <div className="df-empty">{feedError}</div>}
-            {posts
-              .filter(p => !activeStory || p.project === activeStory)
-              .map(post => {
+            {visiblePosts.map(post => {
                 const proj    = getProject(post.project);
                 const liked   = post.likedBy.includes(userId);
                 const showCmt = openComments[post.id];
@@ -476,14 +517,12 @@ export default function DevFeed({ show, setShow }) {
 
                     {/* Header */}
                     <div className="df-post-header">
-                      <div className="df-post-avatar" style={{background:proj.color,overflow:'hidden',padding:0}}>
-                        <img src="https://www.image2url.com/r2/default/images/1779668696401-898704a7-949a-4304-bd28-dc369d0df131.jpg"
-                          style={{width:'100%',height:'100%',objectFit:'cover'}} alt="Carlos"
-                        />
-                      </div>
+                      <img className="df-post-avatar" src={PROFILE_IMG} alt="Carlos" />
                       <div className="df-post-meta">
-                        <strong>{post.project}</strong>
-                        <span className="df-post-time">{post.time}</span>
+                        <strong>Carlos Zabala</strong>
+                        <span className="df-post-time">
+                          {post.time} · <span className="df-post-project" style={{color:proj.color}}>{proj.emoji} {post.project}</span>
+                        </span>
                       </div>
                       {isAdmin && (
                         <button className="df-delete-btn" onClick={() => handleDeletePost(post)} title="Delete">🗑</button>
@@ -511,10 +550,7 @@ export default function DevFeed({ show, setShow }) {
 
                     {post.media && (
                       <div className="df-post-media">
-                        <div className="df-post-media-header">
-                          <span>📁 {post.project} — {post.title}</span>
-                        </div>
-                        <img src={post.media} alt="" />
+                        <img src={post.media} alt={post.title || ''} />
                       </div>
                     )}
 
@@ -594,10 +630,33 @@ export default function DevFeed({ show, setShow }) {
                 );
               })}
 
-            {posts.filter(p => !activeStory || p.project === activeStory).length === 0 && (
-              <div className="df-empty">No posts for {activeStory} yet.</div>
+            {visiblePosts.length === 0 && (
+              <div className="df-empty">{activeStory ? `No posts for ${activeStory} yet.` : 'No posts yet.'}</div>
             )}
           </div>
+        </div>
+
+        {/* ── CONTACTS SIDEBAR (wide windows only) ── */}
+        <aside className="df-sidebar">
+          <div className="df-side-title">Profile</div>
+          <div className="df-side-profile">
+            <img src={PROFILE_IMG} alt="Carlos" />
+            <div>
+              <strong>Carlos Zabala</strong>
+              <span>Developer · NYC</span>
+            </div>
+          </div>
+          <div className="df-side-title">Projects</div>
+          {PROJECTS.map(p => (
+            <div key={p.name}
+              className={`df-contact${activeStory===p.name?' selected':''}`}
+              onClick={() => setActiveStory(activeStory===p.name ? null : p.name)}
+            >
+              <span className="df-contact-avatar" style={{background:p.color}}>{p.emoji}<span className="df-online-dot" /></span>
+              <span>{p.name}</span>
+            </div>
+          ))}
+        </aside>
         </div>
       </div>
     </Draggable>
