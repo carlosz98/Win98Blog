@@ -10,6 +10,7 @@ import home from '../assets/ie_home.png'
 import refresh from '../assets/ie_refresh.png'
 import stop from '../assets/ie_stop.png'
 import downArrow from '../assets/arrow-down.png'
+import iconInfo from '../icon.json'
 
 
 function OpenProject() {
@@ -17,21 +18,9 @@ function OpenProject() {
   const [iframeKey, setIframeKey] = useState(0);
   const [expandAddy, setExpandAddy] = useState(false);
 
-  const allIEProjects = [
-    'RetroHub',
-    'LibraryMgmt',
-    'Win98Blog',
-    'NetflixDB',
-    'PetAdoption',
-    'RetroiOS',
-    'FlappyBird',
-    'Gunbound2D',
-    'GPACalc',
-    'DMVProject',
-    'EmployeeMgmt',
-    'WarmRain UE5',
-    'PixelCity',
-  ]
+  const allIEProjects = iconInfo
+    .filter(item => item.folderId === 'Project')
+    .map(item => item.name)
 
   const { 
     handleShow,
@@ -103,46 +92,9 @@ function OpenProject() {
   }
 
   function handleFetchLinkDes(projectName) {
+    const project = iconInfo.find(item => item.folderId === 'Project' && item.name === projectName);
+    if (project?.url) return project.url;
     switch(projectName) {
-      case 'RetroHub':
-        return 'https://github.com/carlosz98/AndroidDevelopment_Retro_FinalProject'
-
-      case 'LibraryMgmt':
-        return 'https://github.com/carlosz98/Library-Management-System---Java'
-
-      case 'Win98Blog':
-        return 'https://github.com/carlosz98/Windows98---Blog'
-
-      case 'NetflixDB':
-        return 'https://github.com/carlosz98/Pet-Adoption-Center'
-
-      case 'PetAdoption':
-        return 'https://github.com/carlosz98/Pet-Adoption-Center'
-
-      case 'RetroiOS':
-        return 'https://github.com/carlosz98'
-
-      case 'FlappyBird':
-        return 'https://github.com/carlosz98/FlappyBird-Project---Unity'
-
-      case 'Gunbound2D':
-        return 'https://github.com/carlosz98?tab=repositories'
-
-      case 'GPACalc':
-        return 'https://github.com/carlosz98/College-Gpa-Calculator---C-'
-
-      case 'DMVProject':
-        return 'https://github.com/carlosz98/DMV-Project'
-
-      case 'EmployeeMgmt':
-        return 'https://github.com/carlosz98/Employee-Management-System---C--'
-
-      case 'WarmRain UE5':
-        return 'https://github.com/carlosz98'
-
-      case 'PixelCity':
-        return 'https://github.com/carlosz98'
-
       case 'Blog':
         return 'https://charlysblog.framer.website/desktop'
 

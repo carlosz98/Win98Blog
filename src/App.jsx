@@ -238,8 +238,16 @@ function App() {
   const localItems = localStorage.getItem('icons');
   const deleteIcon = ['Cat', 'AiAgent','Winamp','Paint','3dObject'];
   const filteredItems = iconInfo.filter(item => !deleteIcon.includes(item.name));
-  const parsedItems = localItems ? JSON.parse(localItems) : filteredItems;
-  return parsedItems;
+  if (!localItems) return filteredItems;
+  // Returning visitors keep their saved layout, but pick up new projects and link fixes.
+  const saved = JSON.parse(localItems);
+  const projects = iconInfo.filter(item => item.folderId === 'Project' || item.name === 'Portfolio');
+  const updated = saved.map(icon => {
+    const latest = projects.find(p => p.name === icon.name);
+    return latest ? { ...icon, url: latest.url, description: latest.description } : icon;
+  });
+  const missing = projects.filter(p => !saved.some(icon => icon.name === p.name));
+  return [...updated, ...missing];
 });
 
   const [MineSweeperExpand, setMineSweeperExpand] = useState(
@@ -1042,6 +1050,7 @@ function handleShowInfolderMobile(name, type) {
       { name: 'PixelPic',    setter: setOpenProjectExpand,usestate: openProjectExpand,color: 'rgba(0, 159, 186, 0.85)', size: 'small' },
       { name: 'IE',          setter: setOpenProjectExpand,usestate: openProjectExpand,color: 'rgba(0, 159, 186, 0.85)', size: 'small' },
       { name: 'Blog',        setter: setOpenProjectExpand,usestate: openProjectExpand,color: 'rgba(0, 159, 186, 0.85)', size: 'small' },
+      { name: 'Portfolio',   setter: setOpenProjectExpand,usestate: openProjectExpand,color: 'rgba(0, 159, 186, 0.85)', size: 'small' },
       { name: 'Winamp',      setter: setWinampExpand,     usestate: WinampExpand,     color: 'rgba(105, 136, 145, 0.85)', size: 'small' },
       { name: 'ResumeFile',  setter: setResumeFileExpand, usestate: ResumeFileExpand, color: 'rgba(133, 165, 67, 0.85)', size: 'small' },
       { name: 'MineSweeper', setter: setMineSweeperExpand,usestate: MineSweeperExpand,color: 'rgba(187, 51, 48, 0.85)', size: 'small' },
@@ -1090,9 +1099,18 @@ function handleShowInfolderMobile(name, type) {
     });
   }
 
+  // Project folder entries open their GitHub repo in a new tab.
+  function openProjectLink(name) {
+    const project = iconInfo.find(item => item.folderId === 'Project' && item.name === name && item.url);
+    if (!project) return false;
+    window.open(project.url, '_blank', 'noopener');
+    return true;
+  }
+
   function handleShow(name) {
     setRightClickDefault(false);
     if(name === '' || !name) return;
+    if (openProjectLink(name)) return;
 
     const lowerCaseName = name.toLowerCase().split(' ').join('');
 
@@ -1147,6 +1165,7 @@ function handleShowInfolderMobile(name, type) {
         if(lowerCaseName === 'pixelpic') { handleDoubleClickiframe('PixelPic', setOpenProjectExpand, setProjectUrl, setBackTrackIe, setForwardTrackIe); handleShow('Internet'); }
         if(lowerCaseName === 'ie') { handleDoubleClickiframe('IE', setOpenProjectExpand, setProjectUrl, setBackTrackIe, setForwardTrackIe); handleShow('Internet'); }
         if(lowerCaseName === 'blog') { handleDoubleClickiframe('Blog', setOpenProjectExpand, setProjectUrl, setBackTrackIe, setForwardTrackIe); handleShow('Internet'); return; }
+        if(lowerCaseName === 'portfolio') { handleDoubleClickiframe('Portfolio', setOpenProjectExpand, setProjectUrl, setBackTrackIe, setForwardTrackIe); handleShow('Internet'); return; }
       } else {
         if(item.type === 'userCreatedFolder') { item.setter({ focusItem: false }); }
         else { item.setter(prev => ({ ...prev, focusItem: false })); }
@@ -1157,7 +1176,7 @@ function handleShowInfolderMobile(name, type) {
     if(tap.includes(name)) return;
     setStartActive(false);
 
-    const notToOpenList = ['Run', 'Nft', 'Note', 'AiAgent', '3dObject', 'Fortune', 'Bitcoin', 'PixelPic', 'IE', 'Blog', 'DevFeed'];
+    const notToOpenList = ['Run', 'Nft', 'Note', 'AiAgent', '3dObject', 'Fortune', 'Bitcoin', 'PixelPic', 'IE', 'Blog', 'Portfolio', 'DevFeed'];
     if (notToOpenList.includes(name)) return;
 
     setTap(prevTap => [...prevTap, name]);
@@ -1169,6 +1188,7 @@ function handleShowInfolderMobile(name, type) {
     const now = Date.now()
     if (now - lastTapTime < 300) {
       if(name === '' || !name) return;
+      if (openProjectLink(name)) { setLastTapTime(now); return; }
 
       const lowerCaseName = name.toLowerCase().split(' ').join('');
 
@@ -1215,6 +1235,7 @@ function handleShowInfolderMobile(name, type) {
           if(lowerCaseName === 'pixelpic') { handleDoubleClickiframe('PixelPic', setOpenProjectExpand, setProjectUrl, setBackTrackIe, setForwardTrackIe); handleShow('Internet'); }
           if(lowerCaseName === 'ie') { handleDoubleClickiframe('IE', setOpenProjectExpand, setProjectUrl, setBackTrackIe, setForwardTrackIe); handleShow('Internet'); }
           if(lowerCaseName === 'blog') { handleDoubleClickiframe('Blog', setOpenProjectExpand, setProjectUrl, setBackTrackIe, setForwardTrackIe); handleShow('Internet'); return; }
+        if(lowerCaseName === 'portfolio') { handleDoubleClickiframe('Portfolio', setOpenProjectExpand, setProjectUrl, setBackTrackIe, setForwardTrackIe); handleShow('Internet'); return; }
         }
         if(item.type === 'userCreatedFolder') { item.setter({ focusItem: false }); }
         else { item.setter(prev => ({ ...prev, focusItem: false })); }
@@ -1224,7 +1245,7 @@ function handleShowInfolderMobile(name, type) {
       if(tap.includes(name)) return;
       setStartActive(false)
 
-      const notToOpenList = ['Run', 'Nft', 'Note', 'AiAgent', '3dObject', 'Fortune', 'Bitcoin', 'PixelPic', 'IE', 'Blog', 'DevFeed','Solitaire'];
+      const notToOpenList = ['Run', 'Nft', 'Note', 'AiAgent', '3dObject', 'Fortune', 'Bitcoin', 'PixelPic', 'IE', 'Blog', 'Portfolio', 'DevFeed','Solitaire'];
       if (notToOpenList.includes(name)) return;
 
       setTap(prevTap => [...prevTap, name]);

@@ -42,6 +42,7 @@ import notepad from '../../assets/notepad.png'
 import store from '../../assets/store.png'
 import layer from '../../assets/layer.png'
 import news from '../../assets/news.png'
+import portfolio from '../../assets/display.png'
 
 
 
@@ -211,6 +212,10 @@ export function imageMapping (name, type) {
     case "blog":
       return ie;
 
+    case "Portfolio":
+    case "portfolio":
+      return portfolio;
+
     default:
       if(type === 'folder') {
         return Project;
@@ -307,6 +312,11 @@ export function handleDoubleClickiframe(name, setOpenProjectExpand, setProjectUr
         setBackTrackIe(prev => [...prev, 'https://charlysblog.framer.website/desktop']);
     break;
 
+    case 'Portfolio':
+        setProjectUrl('https://carlosz98.github.io/MyPortFolio/');
+        setBackTrackIe(prev => [...prev, 'https://carlosz98.github.io/MyPortFolio/']);
+    break;
+
     default: break; 
   }
 }
@@ -353,6 +363,11 @@ export function handleDoubleTapiframeMobile(name, lastTapTime, setLastTapTime, s
         case 'Blog': 
         setProjectUrl('https://charlysblog.framer.website/desktop'); 
         setBackTrackIe(prev => [...prev, 'https://charlysblog.framer.website/desktop']);
+        break;
+
+        case 'Portfolio':
+        setProjectUrl('https://carlosz98.github.io/MyPortFolio/');
+        setBackTrackIe(prev => [...prev, 'https://carlosz98.github.io/MyPortFolio/']);
         break;
   
       default: break; 

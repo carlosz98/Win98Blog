@@ -91,6 +91,18 @@
         "url": "https://charlysblog.framer.website/desktop"
     },
     {
+        "name": "Portfolio",
+        "pic": "Portfolio",
+        "folderId": "Desktop",
+        "size": 120,
+        "type": ".exe",
+        "x": 56,
+        "y": 56,
+        "category": "Web",
+        "description": "Carlos Zabala's portfolio site",
+        "url": "https://carlosz98.github.io/MyPortFolio/"
+    },
+    {
         "name": "Winamp",
         "pic": "Winamp",
         "folderId": "Desktop",
@@ -383,9 +395,6 @@
         "category": "Games",
         "description": "Classic puzzle game where you clear mines without detonating them."
     },
-
-    
-
     {
         "name": "RetroHub",
         "pic": "Project",
@@ -419,8 +428,8 @@
         "x": 44,
         "y": 44,
         "category": "Web",
-        "description": "A faithful Win98 UI replica built as a fully functional blog with Framer CMS integration.",
-        "url": "https://github.com/carlosz98/Windows98---Blog"
+        "description": "This site: a Windows 98 desktop in the browser, built with React and Vite, with a DevFeed blog backed by Firebase.",
+        "url": "https://github.com/carlosz98/Win98Blog"
     },
     {
         "name": "NetflixDB",
@@ -432,7 +441,7 @@
         "y": 45,
         "category": "Database",
         "description": "Netflix-style database built with MySQL on GCP with Metabase dashboards for visual analytics.",
-        "url": "https://github.com/carlosz98/Pet-Adoption-Center"
+        "url": "https://github.com/carlosz98"
     },
     {
         "name": "PetAdoption",
@@ -456,7 +465,7 @@
         "y": 47,
         "category": "iOS",
         "description": "SwiftUI app with a Win98-inspired UI — custom MP3/MP4 player, marketplace, and a simulated early-2000s browser.",
-        "url": "https://github.com/carlosz98"
+        "url": "https://github.com/carlosz98/IOS-Final-Project-Win98-UI"
     },
     {
         "name": "FlappyBird",
@@ -480,7 +489,7 @@
         "y": 49,
         "category": "Game",
         "description": "2D Gunbound replica built in Unity in 3 days — 2D sprite animation, C# scripting, complete UI.",
-        "url": "https://github.com/carlosz98?tab=repositories"
+        "url": "https://github.com/carlosz98/Gunboun---Replica-in-Unity"
     },
     {
         "name": "GPACalc",
@@ -541,5 +550,65 @@
         "category": "Game",
         "description": "2D pixel art city environment built in Unity with custom sprite sheets. In Progress.",
         "url": "https://github.com/carlosz98"
+    },
+    {
+        "name": "ECommerce",
+        "pic": "Project",
+        "folderId": "Project",
+        "size": 250,
+        "type": ".exe",
+        "x": 55,
+        "y": 55,
+        "category": "Web",
+        "description": "E-commerce app project.",
+        "url": "https://github.com/carlosz98/E-Commerce-App"
+    },
+    {
+        "name": "HangMan",
+        "pic": "Project",
+        "folderId": "Project",
+        "size": 60,
+        "type": ".exe",
+        "x": 56,
+        "y": 56,
+        "category": "C++",
+        "description": "Classic Hangman word game in C++.",
+        "url": "https://github.com/carlosz98/C---HangMan"
+    },
+    {
+        "name": "MyPortfolio",
+        "pic": "Project",
+        "folderId": "Project",
+        "size": 300,
+        "type": ".exe",
+        "x": 57,
+        "y": 57,
+        "category": "Web",
+        "description": "Personal portfolio website.",
+        "url": "https://github.com/carlosz98/MyPortFolio"
+    },
+    {
+        "name": "Win98Blog v2",
+        "pic": "Project",
+        "folderId": "Project",
+        "size": 350,
+        "type": ".exe",
+        "x": 58,
+        "y": 58,
+        "category": "Web",
+        "description": "Earlier version of the Windows 98 blog (2025).",
+        "url": "https://github.com/carlosz98/Windows98---Blog"
+    },
+    {
+        "name": "Win98Blog v1",
+        "pic": "Project",
+        "folderId": "Project",
+        "size": 300,
+        "type": ".exe",
+        "x": 59,
+        "y": 59,
+        "category": "Web",
+        "description": "First version of the Windows 98 blog (2025).",
+        "url": "https://github.com/carlosz98/Win98---Blog"
     }
 ]
