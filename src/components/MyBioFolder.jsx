@@ -1,12 +1,46 @@
 import UseContext from '../Context'
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect, Fragment } from "react";
 import Draggable from 'react-draggable'
 import { motion } from 'framer-motion';
 import About from '../assets/ipng.png'
 import bioPC from '../assets/bio_pc.png'
-import tech from '../assets/tech.png'
 import hobby from '../assets/hobby.png'
 import '../css/MyBioFolder.css'
+
+// General tab lines, typed out one character at a time.
+const BIO_LINES = [
+  { label: 'Objective:' },
+  { text: 'Building software, games, and retro experiences.' },
+  { gap: true },
+  { label: 'Information:' },
+  { text: 'Carlos Zabala' },
+  { text: 'Programmer & Software Developer' },
+  { text: 'LaGuardia Community College' },
+  { gap: true },
+  { label: 'Location:' },
+  { text: 'New York City' },
+  { text: 'Open to opportunities' },
+  { text: 'On Site / Remote' },
+];
+const BIO_TOTAL = BIO_LINES.reduce((n, l) => n + (l.label || l.text || '').length, 0);
+const TYPE_MS = 15;
+
+// Technology tab meters (level is 0–100).
+const SKILLS = [
+  { name: 'C++',            level: 85 },
+  { name: 'Java',           level: 80 },
+  { name: 'C#',             level: 75 },
+  { name: 'Unity',          level: 75 },
+  { name: 'Unreal Engine 5', level: 65 },
+  { name: 'Android / Kotlin', level: 70 },
+  { name: 'iOS / SwiftUI',  level: 60 },
+  { name: 'React / JS',     level: 70 },
+  { name: 'Firebase / GCP', level: 60 },
+];
+
+function prefersReducedMotion() {
+  return window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+}
 
 
 function MyBioFolder() {
@@ -26,41 +60,75 @@ function MyBioFolder() {
     deleteTap,
    } = useContext(UseContext);
 
-  const technologyText = (
-    <>
-      Strong foundation in <span>C++</span>, <span>C#</span> and <span>Java</span> with
-      a focus on <span>OOP</span>, Data Structures, and Algorithms.
-      I build games with <span>Unreal Engine 5</span> and <span>Unity</span>,
-      and develop for <span>Android</span> (Kotlin / Jetpack Compose)
-      and <span>iOS</span> (SwiftUI). Also comfortable with{' '}
-      <span>HTML / CSS / JS</span>, <span>React</span>, and cloud tools like{' '}
-      <span>GCP</span> and <span>Firebase</span>.
-    </>
+  // ── Typewriter for the General tab ──
+  const typing = MybioExpand.show && generalTap;
+  const [typed, setTyped] = useState(0);
+  useEffect(() => {
+    if (!typing) return;
+    if (prefersReducedMotion()) { setTyped(BIO_TOTAL); return; }
+    setTyped(0);
+    const id = setInterval(() => {
+      setTyped(n => {
+        if (n + 1 >= BIO_TOTAL) clearInterval(id);
+        return n + 1;
+      });
+    }, TYPE_MS);
+    return () => clearInterval(id);
+  }, [typing]);
+
+  // ── Meters fill up when the Technology tab opens ──
+  const [metersFilled, setMetersFilled] = useState(false);
+  useEffect(() => {
+    if (!(MybioExpand.show && technologyTap)) { setMetersFilled(false); return; }
+    const id = setTimeout(() => setMetersFilled(true), 50);
+    return () => clearTimeout(id);
+  }, [MybioExpand.show, technologyTap]);
+
+  let budget = typed;
+  const bioText = (
+    <span className="bio_typed" onClick={() => setTyped(BIO_TOTAL)} title="Click to skip">
+      {BIO_LINES.map((line, i) => {
+        if (line.gap) return budget > 0 ? <br key={i} /> : null;
+        const full = line.label || line.text;
+        const shown = full.slice(0, Math.max(0, budget));
+        budget -= full.length;
+        if (!shown) return null;
+        // Line breaks go before each line so the cursor stays on the line being typed.
+        return (
+          <Fragment key={i}>
+            {i > 0 && <br />}
+            {line.label ? <strong>{shown}</strong> : <span>{shown}</span>}
+          </Fragment>
+        );
+      })}
+      <span className={`bio_cursor${typed >= BIO_TOTAL ? ' done' : ''}`} aria-hidden="true" />
+    </span>
   );
 
-  const bioText = (
+  const technologyText = (
     <>
-      <strong>Objective:</strong>
-      <br />
-      <span>Building software, games, and retro experiences.</span>
-      <br />
-      <br />
-      <strong>Information:</strong>
-      <br />
-      <span>Carlos Zabala</span>
-      <br />
-      <span>Programmer &amp; Software Developer</span>
-      <br />
-      <span>LaGuardia Community College</span>
-      <br />
-      <br />
-      <strong>Location:</strong>
-      <br />
-      <span>New York City</span>
-      <br />
-      <span>Open to opportunities</span>
-      <br />
-      <span>On Site / Remote</span>
+      <span className="bio_tech_intro">
+        Focused on OOP, data structures and algorithms. I build games and
+        mobile apps, plus web projects like this one.
+      </span>
+      <fieldset className="bio_skills">
+        <legend>Skills</legend>
+        {SKILLS.map(skill => (
+          <span key={skill.name} className="bio_skill_row">
+            <span className="bio_skill_name">{skill.name}</span>
+            <span
+              className="bio_meter"
+              role="meter"
+              aria-label={skill.name}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={skill.level}
+            >
+              <span className="bio_meter_fill" style={{ width: metersFilled ? `${skill.level}%` : 0 }} />
+            </span>
+          </span>
+        ))}
+      </fieldset>
     </>
   );
 
@@ -182,13 +250,15 @@ function MyBioFolder() {
               className="folder_content-bio"
               style={{ display: generalTap ? 'grid' : 'block' }}
             >
-              <img
-                alt="bioPC"
-                className={generalTap ? 'bio_img' : 'bio_img_other'}
-                src={generalTap ? bioPC : (technologyTap ? tech : hobby)}
-              />
+              {!technologyTap && (
+                <img
+                  alt="bioPC"
+                  className={generalTap ? 'bio_img' : 'bio_img_other'}
+                  src={generalTap ? bioPC : hobby}
+                />
+              )}
               <div className="biotext_container">
-                <p className={generalTap ? 'bio_text_1' : 'bio_text_1_other'}>
+                <p className={generalTap ? 'bio_text_1' : technologyTap ? 'bio_text_1_other bio_text_tech' : 'bio_text_1_other'}>
                   {generalTap ? bioText : technologyTap ? technologyText : hobbyText}
                 </p>
               </div>
