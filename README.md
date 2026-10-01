@@ -60,7 +60,7 @@ DevFeed posts are stored in Firebase Firestore so every visitor sees the same fe
 The Firebase project is `win98blog`, and its web config is in `.env`. Those values are public by design; `firestore.rules` controls who can write.
 
 1. In the Firebase console, turn on **Firestore Database** and **Authentication > Sign-in method > Google**.
-2. Put the Google account you post from in `VITE_DEVFEED_ADMIN_EMAIL` in `.env` and in `firestore.rules`, then paste `firestore.rules` into **Firestore > Rules** and publish.
+2. The admin account is set in `VITE_DEVFEED_ADMIN_EMAIL` in `.env` and in `firestore.rules`. Paste `firestore.rules` into **Firestore > Rules** and publish.
 3. Add `carlosz98.github.io` under **Authentication > Settings > Authorized domains**.
 
 Click **Post** in DevFeed and sign in with that Google account to write. The first sign-in copies the starter posts into Firestore if it is empty.
