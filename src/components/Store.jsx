@@ -8,6 +8,9 @@ import { BsChevronUp, BsChevronDown } from "react-icons/bs";
 import { IoIosSearch } from "react-icons/io";
 import iconInfo from '../icon.json'
 
+// GitHub projects also have a category, but they belong in the Project folder, not the Store.
+const isStoreApp = item => item.category && item.folderId !== 'Project';
+
 function Store() {
   const [storeSearchValue, setStoreSearchValue] = useState('')
   const [catagoryHide, setCatagoryHide] = useState(true)
@@ -72,11 +75,10 @@ function Store() {
         setTimeout(() => {
           setDesktopIcon(prevIcons => {
           
-          const updatedIcons = [...prevIcons, { ...findApp, folderId: 'Desktop' }];
-          const target = updatedIcons.find(icon => icon.name === findApp.name);
-          const others = updatedIcons.filter(icon => icon.name !== findApp.name);
-        
-          const newDesktopIcons = [...others, target];
+          // Move the app to the desktop (it may already live in a folder), never duplicate it.
+          const existing = prevIcons.find(icon => icon.name === findApp.name);
+          const others = prevIcons.filter(icon => icon.name !== findApp.name);
+          const newDesktopIcons = [...others, { ...(existing || findApp), folderId: 'Desktop' }];
 
           localStorage.setItem('icons', JSON.stringify(newDesktopIcons));
 
@@ -93,7 +95,7 @@ function Store() {
           
           return newDesktopIcons;
         });
-        }, 15000);
+        }, 4000);
         setKey(prev => prev + 1);
       
     }
@@ -101,14 +103,14 @@ function Store() {
 
 
 
+  const isOnDesktop = name => desktopIcon.some(icon => icon.name === name && icon.folderId === 'Desktop');
+
   // Compute installed status - no state needed
-  const installed = itemBeingSelected 
-    ? desktopIcon.some(icon => icon.name === itemBeingSelected.name)
-    : false;
+  const installed = itemBeingSelected ? isOnDesktop(itemBeingSelected.name) : false;
 
   // Filter items based on search and category
   const itemsInStore = iconInfo
-    .filter(item => item.category)
+    .filter(isStoreApp)
     .filter(item => {
       // Search filter
       if (storeSearchValue.trim() !== '') {
@@ -132,8 +134,7 @@ function Store() {
         case '4':
           return item.category === 'Productivity';
         case '5':
-          return (item.category && !desktopIcon.some(icon => icon.name === item.name)
-    );
+          return !isOnDesktop(item.name);
       }
     });
 
@@ -142,7 +143,7 @@ function Store() {
       if (!cat) return;
 
     
-      const allStoreItems = iconInfo.filter(item => item.category);
+      const allStoreItems = iconInfo.filter(isStoreApp);
 
       switch (cat) {
         case '1':
@@ -158,9 +159,7 @@ function Store() {
           return allStoreItems.filter(item => item.category === 'Productivity').length;
 
         case '5':
-          return allStoreItems.filter(item =>
-            !desktopIcon.some(desItem => desItem.name === item.name)
-          ).length;
+          return allStoreItems.filter(item => !isOnDesktop(item.name)).length;
 
         default:
           return 0;
@@ -241,7 +240,7 @@ function Store() {
             deleteTap(itemBeingUninstall)
           }, 100);
       setKey(prev => prev + 1); // Force re-render if needed
-      }, 5000);
+      }, 3000);
     }
   }, [deleteInStore]);
 
@@ -393,7 +392,7 @@ function Store() {
                 onClick={() => setItemBeingSelected(item)}
               >
                 <div className='section_two_img'>
-                  <img src={imageMapping(item.name)} alt={item.name} />
+                  <img src={imageMapping(item.pic || item.name)} alt={item.name} />
                 </div>
                 <div className='section_two_text'>
                   <p className='section_two_text_name'>{item.name}</p>
@@ -408,7 +407,7 @@ function Store() {
             {itemBeingSelected && (
               <>
                 <img 
-                  src={imageMapping(itemBeingSelected.name)} 
+                  src={imageMapping(itemBeingSelected.pic || itemBeingSelected.name)} 
                   alt={itemBeingSelected.name} 
                 />
                 <h3>{itemBeingSelected.name}</h3>

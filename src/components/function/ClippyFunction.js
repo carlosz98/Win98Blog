@@ -39,3 +39,21 @@ export const clippySuggest =
     'Nobody is online, let call my BOT.'
 
 ]
+// One-time reactions when a visitor opens an app (keyed by lowercase name, no spaces).
+export const clippyReactions = {
+    msn:         { phrase: "That's CarlosBot! Ask it anything about Carlos.", animation: clippy2 },
+    resume:      { phrase: "Hiring? Carlos is open to opportunities!", animation: clippy3 },
+    resumefile:  { phrase: "Hiring? Carlos is open to opportunities!", animation: clippy3 },
+    project:     { phrase: "It looks like you're browsing projects. Double-click one to see it on GitHub!", animation: clippy4 },
+    solitaire:   { phrase: "Solitaire? Your boss isn't watching, I promise.", animation: clippy7 },
+    minesweeper: { phrase: "Tip: right-click to flag a mine. Good luck!", animation: clippy5 },
+    devfeed:     { phrase: "Here's what Carlos has been building lately.", animation: clippy1 },
+    paint:       { phrase: "It looks like you're making art. Want help? Too bad, I can't draw.", animation: clippy6 },
+    store:       { phrase: "Shopping for software? Everything here is free!", animation: clippy2 },
+    portfolio:   { phrase: "Opening Carlos's portfolio in Internet Explorer...", animation: clippy4 },
+    blog:        { phrase: "Carlos's blog, coming right up.", animation: clippy4 },
+    taskmanager: { phrase: "Something frozen? It's probably not my fault.", animation: clippy7 },
+    mycomputer:  { phrase: "Poking around the hard drive, huh?", animation: clippy5 },
+    recyclebin:  { phrase: "Don't worry, I never throw anything away.", animation: clippy6 },
+    about:       { phrase: "Want to know Carlos? You came to the right window.", animation: clippy1 },
+};

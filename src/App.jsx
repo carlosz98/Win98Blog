@@ -42,6 +42,9 @@ import { StyleHide, imageMapping,
   iconContainerSize, iconImgSize, iconTextSize,
   handleDoubleClickPhotoOpen,
  } from './components/function/AppFunctions';
+import { clippyReactions } from './components/function/ClippyFunction';
+import { showBusyCursor } from './components/function/retroEffects';
+import MatrixRain from './components/MatrixRain';
 
 
 function App() {
@@ -180,6 +183,8 @@ function App() {
   const [randomClippyPopup, setRandomClippyPopup] = useState(false)
   const [clippyIndex, setClippyIndex] = useState(0)
   const [showClippy, setShowClippy] = useState(false);
+  const [clippyReaction, setClippyReaction] = useState(null);
+  const clippyReactRef = useRef({ seen: new Set(), last: 0, timer: null });
   const [isTouchDevice, setIsTouchDevice] = useState(false);
   const [startActive, setStartActive] = useState(false);
   const [time, setTime] = useState('');
@@ -756,6 +761,7 @@ function handleShowInfolderMobile(name, type) {
     handleDoubleTapiframeMobile,
     WinampExpand, setWinampExpand,
     showClippy, setShowClippy,
+    clippyReaction,
     clippyIndex, setClippyIndex,
     randomClippyPopup, setRandomClippyPopup,
     clippyTouched, setClippyTouched,
@@ -836,6 +842,7 @@ function handleShowInfolderMobile(name, type) {
     <>
       <UserContext.Provider value={contextValue}>
       <WindowsDragLogin/>
+      <MatrixRain/>
       {regErrorPopUp && (
         <ErrorBtn
             themeDragBar={themeDragBar}
@@ -1114,6 +1121,7 @@ function handleShowInfolderMobile(name, type) {
     if (openProjectLink(name)) return;
 
     const lowerCaseName = name.toLowerCase().split(' ').join('');
+    reactToOpen(lowerCaseName);
 
     // ── Handle DevFeed BEFORE itemExists check ──
     if(lowerCaseName === 'devfeed') {
@@ -1157,7 +1165,6 @@ function handleShowInfolderMobile(name, type) {
         }, 100);
         if(lowerCaseName === 'mail') clippySendemailfunction();
         if(lowerCaseName === 'winamp') clippySongFunction();
-        if(lowerCaseName === 'msn') clippyUsernameFunction();
         if(lowerCaseName === 'nft') { handleDoubleClickiframe('Nft', setOpenProjectExpand, setProjectUrl, setBackTrackIe, setForwardTrackIe); handleShow('Internet'); }
         if(lowerCaseName === 'note') { handleDoubleClickiframe('Note', setOpenProjectExpand, setProjectUrl, setBackTrackIe, setForwardTrackIe); handleShow('Internet'); }
         if(lowerCaseName === 'aiagent') { handleDoubleClickiframe('AiAgent', setOpenProjectExpand, setProjectUrl, setBackTrackIe, setForwardTrackIe); handleShow('Internet'); }
@@ -1192,6 +1199,7 @@ function handleShowInfolderMobile(name, type) {
       if (openProjectLink(name)) { setLastTapTime(now); return; }
 
       const lowerCaseName = name.toLowerCase().split(' ').join('');
+      reactToOpen(lowerCaseName);
 
       // ── Handle DevFeed BEFORE itemExists check ──
       if(lowerCaseName === 'devfeed') {
@@ -1227,8 +1235,7 @@ function handleShowInfolderMobile(name, type) {
           }, 100);
           if(lowerCaseName === 'mail') clippySendemailfunction();
           if(lowerCaseName === 'winamp') clippySongFunction();
-          if(lowerCaseName === 'msn') clippyUsernameFunction();
-          if(lowerCaseName === 'nft') { handleDoubleClickiframe('Nft', setOpenProjectExpand, setProjectUrl, setBackTrackIe, setForwardTrackIe); handleShow('Internet'); }
+            if(lowerCaseName === 'nft') { handleDoubleClickiframe('Nft', setOpenProjectExpand, setProjectUrl, setBackTrackIe, setForwardTrackIe); handleShow('Internet'); }
           if(lowerCaseName === 'note') { handleDoubleClickiframe('Note', setOpenProjectExpand, setProjectUrl, setBackTrackIe, setForwardTrackIe); handleShow('Internet'); }
           if(lowerCaseName === 'aiagent') { handleDoubleClickiframe('AiAgent', setOpenProjectExpand, setProjectUrl, setBackTrackIe, setForwardTrackIe); handleShow('Internet'); }
           if(lowerCaseName === '3dobject') { handleDoubleClickiframe('3dObject', setOpenProjectExpand, setProjectUrl); handleShow('Internet'); }
@@ -1259,6 +1266,8 @@ function handleShowInfolderMobile(name, type) {
     allSetters.forEach((setter, index) => {
       if (setter !== setterFunction) { setter(false); clearTimeout(allClears[index].current); }
     });
+    setClippyReaction(null);
+    clearTimeout(clippyReactRef.current.timer);
     setterFunction(true);
     setShowClippy(true);
     clearTimeout(clearFunction.current);
@@ -1270,6 +1279,27 @@ function handleShowInfolderMobile(name, type) {
       setShowClippy(false);
       setRandomClippyPopup(prev => !prev);
     }, 8000);
+  }
+
+  // Hourglass for a moment, and Clippy comments the first time each app opens.
+  function reactToOpen(lowerCaseName) {
+    showBusyCursor();
+    const reaction = clippyReactions[lowerCaseName];
+    const r = clippyReactRef.current;
+    const now = Date.now();
+    if (!reaction || r.seen.has(lowerCaseName) || now - r.last < 20000) return;
+    r.seen.add(lowerCaseName);
+    r.last = now;
+    allSetters.forEach((setter, index) => { setter(false); clearTimeout(allClears[index].current); });
+    [RandomTimeoutShowClippy, firstTimoutShowclippy, SecondRandomTimeoutShowClippy].forEach(t => clearTimeout(t.current));
+    clearTimeout(r.timer);
+    setClippyReaction(reaction);
+    setShowClippy(true);
+    r.timer = setTimeout(() => {
+      setShowClippy(false);
+      setClippyReaction(null);
+      setRandomClippyPopup(prev => !prev);
+    }, 6000);
   }
 
   function clippyThanksYouFunction() { handleClippyFunction(setClippyThanks, ClearTOclippyThanksYouFunction, allSetters); }

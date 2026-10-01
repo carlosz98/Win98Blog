@@ -37,6 +37,49 @@ function Dragdrop() {
 
   // Create an array of refs for each icon
   const iconRefs = useRef([]);
+  const [selectBox, setSelectBox] = useState(null);
+  const justSelected = useRef(false);
+
+  // Rubber-band selection: drag on empty desktop to select icons, like Win98.
+  function startSelectBox(e) {
+    justSelected.current = false;
+    if (e.button !== 0 || isTouchDevice) return;
+    if (e.target !== e.currentTarget && !e.target.classList.contains('drag_drop')) return;
+    const x0 = e.clientX, y0 = e.clientY;
+    let lastKey = '';
+    let moved = false;
+
+    function onMove(ev) {
+      const box = {
+        left: Math.min(x0, ev.clientX), top: Math.min(y0, ev.clientY),
+        width: Math.abs(ev.clientX - x0), height: Math.abs(ev.clientY - y0),
+      };
+      if (!moved && box.width < 4 && box.height < 4) return;
+      moved = true;
+      setSelectBox(box);
+      const hit = Object.entries(iconRefs.current)
+        .filter(([, el]) => {
+          if (!el) return false;
+          const r = el.getBoundingClientRect();
+          return r.left < box.left + box.width && r.right > box.left && r.top < box.top + box.height && r.bottom > box.top;
+        })
+        .map(([name]) => name);
+      const hitKey = hit.join('|');
+      if (hitKey === lastKey) return;
+      lastKey = hitKey;
+      setDesktopIcon(prev => prev.map(icon => icon.folderId === 'Desktop'
+        ? { ...icon, focus: hit.includes(icon.name) }
+        : icon));
+    }
+    function onUp() {
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('mouseup', onUp);
+      setSelectBox(null);
+      justSelected.current = moved; // keep the selection when the click event follows
+    }
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onUp);
+  }
   
   function captureIconPositions() {
     const positions = desktopIcon.reduce((acc, icon) => {
@@ -97,8 +140,11 @@ function Dragdrop() {
       onContextMenu={() => setCurrentRightClickFolder('Desktop')}
       onTouchStart={() => setCurrentRightClickFolder('Desktop')}
       ref={DesktopRef}
+      onMouseDown={startSelectBox}
       onClick={(e) => {
-        if (!isDragging) {
+        if (justSelected.current) {
+          justSelected.current = false;
+        } else if (!isDragging) {
           iconFocusIcon('');
           setStartActive(false)
           setIconSize(false)
@@ -206,6 +252,7 @@ function Dragdrop() {
           </Draggable> 
         ))} 
       </div>
+      {selectBox && <div className='desk_select_box' style={selectBox} />}
     </section>
   );
 }

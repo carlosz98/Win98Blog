@@ -303,7 +303,7 @@
     top: 0;
     left: 0;
     opacity: 0;
-    animation: progressBar 15s linear forwards;
+    animation: progressBar 4s linear forwards;
 }
 
 .progress_bar_store_uninstall {
@@ -314,7 +314,7 @@
     top: 0;
     left: 0;
     opacity: 0;
-    animation: progressBar 5s linear forwards;
+    animation: progressBar 3s linear forwards;
 }
 
 

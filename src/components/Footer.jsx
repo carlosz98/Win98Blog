@@ -61,6 +61,7 @@ export default function Footer() {
         StyleHide,
         setWinampExpand,
         showClippy, setShowClippy,
+        clippyReaction,
         clippyIndex, setClippyIndex,
         randomClippyPopup, setRandomClippyPopup,
         clippyTouched, setClippyTouched,
@@ -414,6 +415,7 @@ export default function Footer() {
     function handleClipperTalk() {
         if(clippyThanks) return clippySuggest[1];
         if(clippyTouched) return clippyPhrase.interruption[0].phrase;
+        if(clippyReaction) return clippyReaction.phrase;
         if(clippySendemail) return clippySuggest[0]
         if(clippySong) return clippySuggest[2]
         if(clippyUsername) return chatDown? clippySuggest[4] : onlineUser < 2 ? clippySuggest[5] : clippySuggest[3]
@@ -607,7 +609,7 @@ export default function Footer() {
                         transition={{ ease: 'easeInOut', duration: 0.8, delay: 0.5 }}
                         exit={{ rotate: '-360deg', scale: 0, opacity: 0, transition: { ease: 'easeInOut', duration: 0.8 } }}
                     >
-                    <img src={ clippyTouched? clippyPhrase.interruption[0].animation : clippyPhrase.inspiration[clippyIndex].animation} alt="clippy" />
+                    <img src={ clippyTouched? clippyPhrase.interruption[0].animation : clippyReaction ? clippyReaction.animation : clippyPhrase.inspiration[clippyIndex].animation} alt="clippy" />
                         <motion.div className="bubble_chat"
                             initial={{opacity: 0}}
                             animate={{opacity: 1}}

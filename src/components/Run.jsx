@@ -49,7 +49,13 @@ function Run() {
         setRunItemBox(false);
       };
 
-      
+      // Easter egg: "matrix" fills the screen with falling green code.
+      if (lowerCaseName === 'matrix') {
+        window.dispatchEvent(new Event('win98:matrix'));
+        closeRun();
+        return;
+      }
+
       if(!matchedItem) {
         setRegErrorPopUp(true);
         setRegErrorPopUpVal(name);
