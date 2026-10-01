@@ -29,7 +29,8 @@ export default function StartupAnimation({ onComplete }) {
   useEffect(() => {
     let i = 0;
     const interval = setInterval(() => {
-      setVisibleLines(prev => [...prev, BIOS_LINES[i]]);
+      const line = BIOS_LINES[i];
+      setVisibleLines(prev => [...prev, line]);
       i++;
       if (i >= BIOS_LINES.length) {
         clearInterval(interval);
