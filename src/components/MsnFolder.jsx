@@ -7,25 +7,15 @@ import chat from '../assets/chat.png';
 import nudge from '../assets/nudge.png';
 import nudgeSound from '../assets/nudgeSound.mp3';
 import '../css/MSN.css';
+import { botReply, GREETING, SUGGESTIONS } from './function/msnBot';
 
 function MsnFolder() {
 
   const {
     handleShow,
-    ringMsnOff,
     ringMsn, setRingMsn,
-    connectWebSocket,
-    websocketConnection,
-    chatBotActive, setChatBotActive,
-    onlineUser,
-    loadedMessages, setLoadedMessages,
     themeDragBar,
-    sendDisable,
-    endOfMessagesRef,
-    createChat,
     userNameValue, setUserNameValue,
-    chatValue, setChatValue,
-    chatData,
     MSNExpand, setMSNExpand,
     lastTapTime, setLastTapTime,
     StyleHide,
@@ -37,87 +27,66 @@ function MsnFolder() {
   } = useContext(UseContext);
 
   
-  const timeoutRef = useRef(null);
-  const [activeIndex, setActiveIndex] = useState(null);
   const [userName, setUserName] = useState(false);
-  const topOfMessagesRef = useRef(null); // Ref to track the top of the chat container
-  const [initialLoading, setInitialLoading] = useState(false)
-  const hasScrolledRef = useRef(false);
-
-  const lastMessage = chatData.length > 0
-    ? chatData[chatData.length - 1].date.split('').slice(0, 10).join('')
-    : 'No messages yet';
+  const [chatValue, setChatValue] = useState('');
+  const [botTyping, setBotTyping] = useState(false);
+  const [messages, setMessages] = useState(() => {
+    try {
+      const saved = JSON.parse(sessionStorage.getItem('msn_bot_chat') || 'null');
+      if (Array.isArray(saved) && saved.length) return saved;
+    } catch { /* ignore */ }
+    return [{ from: 'bot', ...GREETING, date: Date.now() }];
+  });
+  const endOfMessagesRef = useRef(null);
+  const typingTimer = useRef(null);
 
   useEffect(() => {
-    endOfMessagesRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [MSNExpand.show])
-  
+    try { sessionStorage.setItem('msn_bot_chat', JSON.stringify(messages.slice(-60))); } catch { /* ignore */ }
+    endOfMessagesRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, botTyping]);
 
   useEffect(() => {
-    
+    endOfMessagesRef.current?.scrollIntoView();
+  }, [MSNExpand.show]);
+
+  useEffect(() => () => clearTimeout(typingTimer.current), []);
+
+  useEffect(() => {
     if (ringMsn) {
       handleShow('MSN');
       const audio = new Audio(nudgeSound);
       audio.play().catch((err) => console.error("Audio play failed:", err));
-      
     }
   }, [ringMsn]);
 
-
-useEffect(() => {
-  if (!hasScrolledRef.current && MSNExpand.show) {
-    const timeoutId = setTimeout(() => {
-      if (loadedMessages.length > 0) {
-        endOfMessagesRef.current?.scrollIntoView({ behavior: "smooth" });
-        hasScrolledRef.current = true; // Mark as executed
-      }
-    }, 1000);
-
-    return () => clearTimeout(timeoutId); // Cleanup timeout
-  }
-}, [MSNExpand.show, loadedMessages.length]); // Dependencies to trigger effect
-
-  useEffect(() => {
-    setTimeout(() => {
-      setInitialLoading(true)
-    }, 5000);
-  },[])
-
-  useEffect(() => {
-    if(initialLoading) {
-      const observer = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting) {
-        loadMoreMessages();
-      }
-    }, {
-      root: null,
-      rootMargin: '0px',
-      threshold: 1.0
-    });
-
-    if (topOfMessagesRef.current) {
-      observer.observe(topOfMessagesRef.current);
-    }
-
-    return () => {
-      if (topOfMessagesRef.current) {
-        observer.unobserve(topOfMessagesRef.current);
-      }
-    };
-    }
-    
-  }, [topOfMessagesRef.current, loadedMessages, initialLoading]);
-
-  function loadMoreMessages() {
-
-    const currentLength = loadedMessages.length;
-    const moreMessages = chatData.slice(Math.max(chatData.length - currentLength - 20, 0), chatData.length - currentLength);
-    
-    setTimeout(() => {
-        setLoadedMessages(prevMessages => [...moreMessages, ...prevMessages]);
-    }, 1500);
+  function respond(reply, delay) {
+    setBotTyping(true);
+    clearTimeout(typingTimer.current);
+    typingTimer.current = setTimeout(() => {
+      setBotTyping(false);
+      setMessages(prev => [...prev, { from: 'bot', ...reply, date: Date.now() }]);
+    }, delay);
   }
 
+  function sendMessage(text) {
+    const value = (text ?? chatValue).trim();
+    if (!value || botTyping) return;
+    setMessages(prev => [...prev, { from: 'user', text: value, date: Date.now() }]);
+    setChatValue('');
+    const reply = botReply(value);
+    // Longer answers take a little longer to "type", like a real chat.
+    respond(reply, Math.min(600 + reply.text.length * 12, 2200));
+  }
+
+  function sendNudge() {
+    setRingMsn(true);
+    respond({ text: 'Whoa, you just sent me a nudge! 😄 What would you like to know?' }, 900);
+  }
+
+  function runAction(action) {
+    if (action.url) window.open(action.url, '_blank', 'noopener');
+    else if (action.open) handleShow(action.open);
+  }
 
   function handleDragStop(event, data) {
     const positionX = data.x;
@@ -290,115 +259,82 @@ useEffect(() => {
           <div className='groove_div'>
             <div className="chat_name_msn_div"
               onClick={() => setUserName(true)}
+              title="Change your name"
             >
               <img src={chat} alt="chat" />
-
             </div>
-            <div className="shake_message"
-              onClick={() => {
-                ringMsnOff()
-              }}
-            >
+            <div className="shake_message" onClick={sendNudge} title="Send a nudge">
               <img src={nudge} alt="" />
             </div>
             <span>Username: {userNameValue ? userNameValue : 'Anonymous'}</span>
-            <div className={`activate_bot ${chatBotActive ? 'active' : ''}`}
-              onClick={() => setChatBotActive(!chatBotActive)}
-            >
-              <span>{chatBotActive? 'Bot Online' : 'Bot Offline' }</span>
-            </div>     
+            <div className="activate_bot active">
+              <span>Bot Online</span>
+            </div>
           </div>
           <div className="chat_to_div">
             <span>
-              Online User: <span>{onlineUser}</span>
+              To: <span>CarlosBot</span> &lt;ask me about Carlos&gt;
             </span>
           </div>
-          
-          <div className="folder_content-MSN"
-            style={{ 
-              background: !websocketConnection ? 'rgba(0, 0, 0, 0.426)' : '',
-            }}
-          >
-            {!websocketConnection && (
-              <div className="reconnect_container">
-                <p
-                  onClick={() => {
-                    connectWebSocket()
-                  }}
-                >
-                  Click here to reconnect
+
+          <div className="folder_content-MSN">
+            {messages.map((msg, index) => (
+              <div className='text_container' key={index}>
+                <p>
+                  <span style={{ color: msg.from === 'bot' ? 'purple' : 'blue' }}>
+                    &lt;{msg.from === 'bot' ? 'CarlosBot' : (userNameValue || 'You')}&gt;:{' '}
+                  </span>
+                  <span style={{ color: msg.from === 'bot' ? 'purple' : '#171616' }}>{msg.text}</span>
                 </p>
+                {msg.actions?.length > 0 && (
+                  <div className="msn_bot_actions">
+                    {msg.actions.map(action => (
+                      <button key={action.label} onClick={() => runAction(action)}>{action.label}</button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+            {botTyping && (
+              <div className='text_container'>
+                <p><span style={{ color: 'purple' }}>&lt;CarlosBot&gt;: </span><span className="msn_typing_dots">...</span></p>
               </div>
             )}
-            {chatData.length === 0 &&  (
-              <span style={{ position: 'relative', fontSize: '13px' }}>
-                LOADING.......
-              </span>
-            )}
-            <div ref={topOfMessagesRef} /> {/* Ref to track the top of the chat container */}
-            {loadedMessages?.map((chat, index) => (            
-              chat.chat.length > 0 && (
-                <div className='text_container' key={index}>
-                  <p>
-                    <motion.span
-                      className="chat_date"
-                      onClick={(e) => {
-                        e.stopPropagation();
-
-                        setActiveIndex(index);
-
-                        if (timeoutRef.current) {
-                          clearTimeout(timeoutRef.current);
-                        }
-
-                        timeoutRef.current = setTimeout(() => {
-                          setActiveIndex(null);
-                        }, 3000);
-                      }}
-                      animate={{ opacity: activeIndex === index ? 1 : 0 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <span className='mobile_chat_date'>
-                        {chat.date && new Date(chat.date).toLocaleString()}
-                      </span>
-                    </motion.span>
-                                        <span style={{ color: chat?.dev ? 'red' : chat.bot ? 'purple' : 'blue' }}>&lt;{chat?.dev ? 'Dev' : chat.name}&gt;: </span>
-                    <span style={{ color: chat?.dev ? 'red' : chat.bot ? 'purple' : '#171616' }}>{chat.chat}</span>
-                  </p>
-                </div>
-              )
-            ))}
-            
             <div ref={endOfMessagesRef} />
           </div>
-            
+
+          <div className="msn_suggestions">
+            {SUGGESTIONS.map(q => (
+              <button key={q} disabled={botTyping} onClick={() => sendMessage(q)}>{q}</button>
+            ))}
+          </div>
+
           <div className="enter_text_div">
             <textarea
-              maxLength={100}
-              placeholder='Enter your message here...'
+              maxLength={200}
+              placeholder='Ask CarlosBot something...'
               value={chatValue}
               onChange={(e) => setChatValue(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === 'Enter') createChat()
+                if (e.key === 'Enter') { e.preventDefault(); sendMessage(); }
               }}
             />
             <button
-              style={{ color: sendDisable ? 'grey' : null }}
-              disabled={sendDisable}
-              onClick={() => {
-                createChat()
-              }}
+              style={{ color: botTyping ? 'grey' : null }}
+              disabled={botTyping}
+              onClick={() => sendMessage()}
             >
               Send
             </button>
           </div>
           <div className="status_div">
             <p>
-              {chatValue.trim().length > 0
-                ? `${userNameValue} is typing...`
-                : `Last message received on ${lastMessage}`}
+              {botTyping
+                ? 'CarlosBot is typing...'
+                : chatValue.trim().length > 0
+                  ? `${userNameValue || 'You'} is typing...`
+                  : 'CarlosBot is online'}
             </p>
-
           </div>
         </div>
       </Draggable>

@@ -484,9 +484,10 @@ useEffect(() => {
       }
     };
 
+    // MSN is now a local chatbot, so the desktop no longer waits on the old
+    // chat server (a slow or sleeping server used to leave a blank screen).
     useEffect(() => {
-      setLoading(true);
-      connectWebSocket();
+      setLoading(false);
       return () => {
         if (socket.current) {
           socket.current.onopen = null;

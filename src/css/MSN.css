@@ -619,3 +619,31 @@
   90%  { margin-left: -2px; }
   100% { margin-left: 0; }
 }
+
+/* ── CarlosBot ── */
+.folder_folder-MSN .folder_content-MSN { height: calc(100% - 255px); }
+.msn_bot_actions {
+    display: flex; flex-wrap: wrap; gap: 4px;
+    margin: 3px 0 4px 8px;
+}
+.msn_bot_actions button,
+.msn_suggestions button {
+    font-family: inherit; font-size: 11px;
+    padding: 2px 8px;
+    background: #c5c4c4; color: #000; cursor: pointer;
+    border: 1px solid #fff; border-right-color: #000; border-bottom-color: #000;
+    box-shadow: inset -1px -1px 0 #808080;
+}
+.msn_bot_actions button:active,
+.msn_suggestions button:active:not(:disabled) {
+    border-color: #000 #fff #fff #000; box-shadow: inset 1px 1px 0 #808080;
+}
+.msn_suggestions button:disabled { color: #808080; cursor: default; }
+.msn_suggestions {
+    display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none;
+    width: calc(100% - 20px); margin: 6px auto 0;
+}
+.msn_suggestions::-webkit-scrollbar { display: none; }
+.msn_suggestions button { white-space: nowrap; flex-shrink: 0; }
+.msn_typing_dots { color: purple; animation: msn_dots 1s steps(1) infinite; }
+@keyframes msn_dots { 50% { opacity: 0.3; } }
