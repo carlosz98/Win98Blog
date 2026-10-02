@@ -18,6 +18,7 @@ export const LIVE_FACES = {
   Portfolio:   [{ big: 'My Portfolio', small: 'carlosz98.github.io' }],
   TheOldNet:   [{ big: 'The Old Net', small: 'Retro webring' }],
   Clasicos:    [{ big: 'Clásicos Básicos', small: 'Classic sites' }],
+  'Ko-fi':     [{ big: '☕ Buy me a coffee', small: 'ko-fi.com/carloszabala' }],
   MineSweeper: [{ big: '💣 Minesweeper', small: 'Can you clear the board?' }],
   Settings:    [{ big: 'Try CRT mode', small: 'Settings → Display' }],
   Run:         [{ big: 'Psst...', small: 'type "matrix"' }],

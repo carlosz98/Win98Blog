@@ -1076,6 +1076,7 @@ function handleShowInfolderMobile(name, type) {
       { name: 'Portfolio',   setter: setOpenProjectExpand,usestate: openProjectExpand,color: 'rgba(0, 159, 186, 0.85)', size: 'small' },
       { name: 'TheOldNet',   setter: setOpenProjectExpand,usestate: openProjectExpand,color: 'rgba(0, 159, 186, 0.85)', size: 'small' },
       { name: 'Clasicos',    setter: setOpenProjectExpand,usestate: openProjectExpand,color: 'rgba(0, 159, 186, 0.85)', size: 'small' },
+      { name: 'Ko-fi',       setter: setOpenProjectExpand,usestate: openProjectExpand,color: 'rgba(41, 171, 224, 0.85)', size: 'small' },
       { name: 'Winamp',      setter: setWinampExpand,     usestate: WinampExpand,     color: 'rgba(105, 136, 145, 0.85)', size: 'small' },
       { name: 'ResumeFile',  setter: setResumeFileExpand, usestate: ResumeFileExpand, color: 'rgba(133, 165, 67, 0.85)', size: 'small' },
       { name: 'MineSweeper', setter: setMineSweeperExpand,usestate: MineSweeperExpand,color: 'rgba(187, 51, 48, 0.85)', size: 'small' },
@@ -1207,6 +1208,11 @@ if(lowerCaseName === 'clasicos') {
   handleShow('Internet');
   return;
 }
+if(lowerCaseName === 'ko-fi') {
+  handleDoubleClickiframe('Ko-fi', setOpenProjectExpand, setProjectUrl, setBackTrackIe, setForwardTrackIe)
+  handleShow('Internet');
+  return;
+}
       } else {
         if(item.type === 'userCreatedFolder') { item.setter({ focusItem: false }); }
         else { item.setter(prev => ({ ...prev, focusItem: false })); }
@@ -1217,7 +1223,7 @@ if(lowerCaseName === 'clasicos') {
     if(tap.includes(name)) return;
     setStartActive(false);
 
-    const notToOpenList = ['Run', 'Nft', 'Note', 'AiAgent', '3dObject', 'Fortune', 'Bitcoin', 'PixelPic', 'IE', 'Blog', 'Portfolio', 'DevFeed', 'TheOldNet', 'Clasicos'];
+    const notToOpenList = ['Run', 'Nft', 'Note', 'AiAgent', '3dObject', 'Fortune', 'Bitcoin', 'PixelPic', 'IE', 'Blog', 'Portfolio', 'DevFeed', 'TheOldNet', 'Clasicos', 'Ko-fi'];
     if (notToOpenList.includes(name)) return;
 
     setTap(prevTap => [...prevTap, name]);
@@ -1284,6 +1290,11 @@ if(lowerCaseName === 'clasicos') {
 }
 if(lowerCaseName === 'clasicos') {
   handleDoubleClickiframe('Clasicos', setOpenProjectExpand, setProjectUrl, setBackTrackIe, setForwardTrackIe)
+  handleShow('Internet');
+  return;
+}
+if(lowerCaseName === 'ko-fi') {
+  handleDoubleClickiframe('Ko-fi', setOpenProjectExpand, setProjectUrl, setBackTrackIe, setForwardTrackIe)
   handleShow('Internet');
   return;
 }
