@@ -1140,6 +1140,12 @@ function handleShowInfolderMobile(name, type) {
     const lowerCaseName = name.toLowerCase().split(' ').join('');
     reactToOpen(lowerCaseName);
 
+    if(lowerCaseName === 'github') {
+      window.open('https://github.com/carlosz98', '_blank', 'noopener');
+      setStartActive(false);
+      return;
+    }
+
     // ── Handle DevFeed BEFORE itemExists check ──
     if(lowerCaseName === 'devfeed') {
       setDevFeedShow(true);
