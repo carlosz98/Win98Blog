@@ -5,6 +5,7 @@ import UseContext from '../Context';
 import dayjs from 'dayjs';
 import Switch from "react-switch";
 import { handleDoubleClickPhotoOpen } from '../components/function/AppFunctions'
+import { LIVE_FACES, faceAt } from '../components/function/liveTiles'
 
 import p1 from '../assets/001.jpg';
 import p2 from '../assets/002.jpg';
@@ -84,6 +85,28 @@ export default function Tile({ id, content, index, size, color, moveTile, imageM
     }, 8000);
     return () => clearInterval(interval);
   }, [content]);
+
+  // Live tile: every few seconds the text face slides up, then back down.
+  // Tiles start at different times so they don't all flip together.
+  const [peek, setPeek] = useState(false);
+  const [face, setFace] = useState(null);
+  useEffect(() => {
+    if (!LIVE_FACES[content]) return;
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
+    let n = 0;
+    let hideTimer;
+    const show = () => {
+      setFace(faceAt(content, n++));
+      setPeek(true);
+      hideTimer = setTimeout(() => setPeek(false), 3500);
+    };
+    let interval;
+    const start = setTimeout(() => {
+      show();
+      interval = setInterval(show, 10000);
+    }, 1500 + (index * 1700) % 10000);
+    return () => { clearTimeout(start); clearTimeout(hideTimer); clearInterval(interval); };
+  }, [content, index]);
 
   // Drop zone
   const [, drop] = useDrop({
@@ -322,6 +345,22 @@ export default function Tile({ id, content, index, size, color, moveTile, imageM
           backgroundSize: '50px',
           backgroundRepeat: 'no-repeat',
         };
+        case 'Blog':
+        case 'TheOldNet':
+        case 'Clasicos':
+        return {
+          backgroundImage: `url(${ie_tilt})`,
+          backgroundPosition: '50% 57%',
+          backgroundSize: '54px',
+          backgroundRepeat: 'no-repeat',
+        };
+        case 'Portfolio':
+        return {
+          backgroundImage: `url(${laptop})`,
+          backgroundPosition: '50% 57%',
+          backgroundSize: '48px',
+          backgroundRepeat: 'no-repeat',
+        };
         case 'IE':
         return {
           backgroundImage: `url(${ie_tilt})`,
@@ -491,6 +530,12 @@ export default function Tile({ id, content, index, size, color, moveTile, imageM
             </div>
           )}
 
+          {face && (
+            <div className={`live_face ${peek ? 'peek' : ''}`} style={{ background: `linear-gradient(${color}, ${color}), rgba(25, 25, 25, 0.92)` }} aria-hidden={!peek}>
+              <p className="live_big">{face.big}</p>
+              {face.small && <p className="live_small">{face.small}</p>}
+            </div>
+          )}
           <span className="tile_name">{mappingIconName(content)}</span>
           <div className="tile_pic_container">
             <img className="tile_pic" src={''} alt="" />
