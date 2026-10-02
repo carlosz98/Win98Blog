@@ -243,7 +243,10 @@ function App() {
   const localItems = localStorage.getItem('icons');
   const deleteIcon = ['Cat', 'AiAgent','Winamp','Paint','3dObject'];
   const filteredItems = iconInfo.filter(item => !deleteIcon.includes(item.name));
-  if (!localItems) return filteredItems;
+  const rememberKnown = () => {
+    try { localStorage.setItem('iconsKnown', JSON.stringify(iconInfo.map(i => i.name))); } catch { /* ignore */ }
+  };
+  if (!localItems) { rememberKnown(); return filteredItems; }
   // Returning visitors keep their saved layout, but pick up new projects and link fixes.
   const saved = JSON.parse(localItems);
   const projects = iconInfo.filter(item => item.folderId === 'Project' || item.name === 'Portfolio');
@@ -251,8 +254,20 @@ function App() {
     const latest = projects.find(p => p.name === icon.name);
     return latest ? { ...icon, url: latest.url, description: latest.description } : icon;
   });
-  const missing = projects.filter(p => !saved.some(icon => icon.name === p.name));
-  return [...updated, ...missing];
+  // Add icons that are new since this visitor's last visit. Names they've already seen
+  // (and maybe deleted or uninstalled) stay gone.
+  let known = null;
+  try { known = JSON.parse(localStorage.getItem('iconsKnown') || 'null'); } catch { /* ignore */ }
+  const missing = filteredItems.filter(p =>
+    !saved.some(icon => icon.name === p.name) &&
+    (projects.includes(p) || !known || !known.includes(p.name))
+  );
+  const merged = [...updated, ...missing];
+  if (missing.length) {
+    try { localStorage.setItem('icons', JSON.stringify(merged)); } catch { /* ignore */ }
+  }
+  rememberKnown();
+  return merged;
 });
 
   const [MineSweeperExpand, setMineSweeperExpand] = useState(
