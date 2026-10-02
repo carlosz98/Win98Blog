@@ -19,7 +19,7 @@ import p10 from '../assets/010.jpg';
 import p11 from '../assets/011.jpg';
 import chat from '../assets/chat.gif';
 import settings from '../assets/settings.png';
-import fortune from '../assets/fortune.gif';
+import fortune from '../assets/fortune.png';
 import pudgy from '../assets/pudgy.gif';
 import cube from '../assets/cube.gif';
 import agent from '../assets/bot.gif';
