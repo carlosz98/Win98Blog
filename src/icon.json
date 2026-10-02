@@ -635,5 +635,17 @@
     "category": "Web",
     "description": "Clasicos Basicos",
     "url": "https://www.clasicosbasicos.org/"
+},
+{
+    "name": "Ko-fi",
+    "pic": "Kofi",
+    "folderId": "Desktop",
+    "size": 100,
+    "type": ".exe",
+    "x": 59,
+    "y": 59,
+    "category": "Web",
+    "description": "Buy Carlos a coffee on Ko-fi",
+    "url": "https://ko-fi.com/carloszabala"
 }
 ]

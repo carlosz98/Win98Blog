@@ -47,6 +47,7 @@ import newsicon from '../assets/newstile.png';
 import task from '../assets/task.png'
 import store from '../assets/store_tile.png'
 import layer from '../assets/layer_tile.png'
+import kofi from '../assets/kofi.png'
 import ie_tilt from '../assets/ie_tilt.png'
 
 
@@ -353,6 +354,14 @@ export default function Tile({ id, content, index, size, color, moveTile, imageM
           backgroundPosition: '50% 57%',
           backgroundSize: '54px',
           backgroundRepeat: 'no-repeat',
+        };
+        case 'Ko-fi':
+        return {
+          backgroundImage: `url(${kofi})`,
+          backgroundPosition: '50% 57%',
+          backgroundSize: '54px',
+          backgroundRepeat: 'no-repeat',
+          imageRendering: 'pixelated',
         };
         case 'Portfolio':
         return {

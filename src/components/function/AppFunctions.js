@@ -43,6 +43,7 @@ import store from '../../assets/store.png'
 import layer from '../../assets/layer.png'
 import news from '../../assets/news.png'
 import portfolio from '../../assets/display.png'
+import kofi from '../../assets/kofi.png'
 
 
 
@@ -149,6 +150,10 @@ export function imageMapping (name, type) {
 
     case 'Github':
       return github;
+
+    case 'Kofi':
+    case 'Ko-fi':
+      return kofi;
 
     case "paint":
     case "Paint":
@@ -327,6 +332,12 @@ export function handleDoubleClickiframe(name, setOpenProjectExpand, setProjectUr
         setBackTrackIe(prev => [...prev, 'https://www.clasicosbasicos.org/']);
     break;
 
+    // Ko-fi's own embed URL; the normal page refuses to load inside a frame.
+    case 'Ko-fi':
+        setProjectUrl('https://ko-fi.com/carloszabala/?hidefeed=true&widget=true&embed=true&preview=true');
+        setBackTrackIe(prev => [...prev, 'https://ko-fi.com/carloszabala/?hidefeed=true&widget=true&embed=true&preview=true']);
+    break;
+
     default: break; 
   }
 }
@@ -388,6 +399,11 @@ export function handleDoubleTapiframeMobile(name, lastTapTime, setLastTapTime, s
         case 'Clasicos':
         setProjectUrl('https://www.clasicosbasicos.org/');
         setBackTrackIe(prev => [...prev, 'https://www.clasicosbasicos.org/']);
+        break;
+
+        case 'Ko-fi':
+        setProjectUrl('https://ko-fi.com/carloszabala/?hidefeed=true&widget=true&embed=true&preview=true');
+        setBackTrackIe(prev => [...prev, 'https://ko-fi.com/carloszabala/?hidefeed=true&widget=true&embed=true&preview=true']);
         break;
   
       default: break; 
