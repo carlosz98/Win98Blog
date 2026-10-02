@@ -317,6 +317,16 @@ export function handleDoubleClickiframe(name, setOpenProjectExpand, setProjectUr
         setBackTrackIe(prev => [...prev, 'https://carlosz98.github.io/MyPortFolio/']);
     break;
 
+    case 'TheOldNet':
+        setProjectUrl('https://webring.theoldnet.com/');
+        setBackTrackIe(prev => [...prev, 'https://webring.theoldnet.com/']);
+    break;
+
+    case 'Clasicos':
+        setProjectUrl('https://www.clasicosbasicos.org/');
+        setBackTrackIe(prev => [...prev, 'https://www.clasicosbasicos.org/']);
+    break;
+
     default: break; 
   }
 }
@@ -368,6 +378,16 @@ export function handleDoubleTapiframeMobile(name, lastTapTime, setLastTapTime, s
         case 'Portfolio':
         setProjectUrl('https://carlosz98.github.io/MyPortFolio/');
         setBackTrackIe(prev => [...prev, 'https://carlosz98.github.io/MyPortFolio/']);
+        break;
+
+        case 'TheOldNet':
+        setProjectUrl('https://webring.theoldnet.com/');
+        setBackTrackIe(prev => [...prev, 'https://webring.theoldnet.com/']);
+        break;
+
+        case 'Clasicos':
+        setProjectUrl('https://www.clasicosbasicos.org/');
+        setBackTrackIe(prev => [...prev, 'https://www.clasicosbasicos.org/']);
         break;
   
       default: break; 
