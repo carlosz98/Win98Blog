@@ -1174,6 +1174,16 @@ function handleShowInfolderMobile(name, type) {
         if(lowerCaseName === 'ie') { handleDoubleClickiframe('IE', setOpenProjectExpand, setProjectUrl, setBackTrackIe, setForwardTrackIe); handleShow('Internet'); }
         if(lowerCaseName === 'blog') { handleDoubleClickiframe('Blog', setOpenProjectExpand, setProjectUrl, setBackTrackIe, setForwardTrackIe); handleShow('Internet'); return; }
         if(lowerCaseName === 'portfolio') { handleDoubleClickiframe('Portfolio', setOpenProjectExpand, setProjectUrl, setBackTrackIe, setForwardTrackIe); handleShow('Internet'); return; }
+        if(lowerCaseName === 'theoldnet') {
+  handleDoubleClickiframe('TheOldNet', setOpenProjectExpand, setProjectUrl, setBackTrackIe, setForwardTrackIe)
+  handleShow('Internet');
+  return;
+}
+if(lowerCaseName === 'clasicos') {
+  handleDoubleClickiframe('Clasicos', setOpenProjectExpand, setProjectUrl, setBackTrackIe, setForwardTrackIe)
+  handleShow('Internet');
+  return;
+}
       } else {
         if(item.type === 'userCreatedFolder') { item.setter({ focusItem: false }); }
         else { item.setter(prev => ({ ...prev, focusItem: false })); }
@@ -1184,7 +1194,7 @@ function handleShowInfolderMobile(name, type) {
     if(tap.includes(name)) return;
     setStartActive(false);
 
-    const notToOpenList = ['Run', 'Nft', 'Note', 'AiAgent', '3dObject', 'Fortune', 'Bitcoin', 'PixelPic', 'IE', 'Blog', 'Portfolio', 'DevFeed'];
+    const notToOpenList = ['Run', 'Nft', 'Note', 'AiAgent', '3dObject', 'Fortune', 'Bitcoin', 'PixelPic', 'IE', 'Blog', 'Portfolio', 'DevFeed', 'TheOldNet', 'Clasicos'];
     if (notToOpenList.includes(name)) return;
 
     setTap(prevTap => [...prevTap, name]);
@@ -1244,6 +1254,16 @@ function handleShowInfolderMobile(name, type) {
           if(lowerCaseName === 'ie') { handleDoubleClickiframe('IE', setOpenProjectExpand, setProjectUrl, setBackTrackIe, setForwardTrackIe); handleShow('Internet'); }
           if(lowerCaseName === 'blog') { handleDoubleClickiframe('Blog', setOpenProjectExpand, setProjectUrl, setBackTrackIe, setForwardTrackIe); handleShow('Internet'); return; }
         if(lowerCaseName === 'portfolio') { handleDoubleClickiframe('Portfolio', setOpenProjectExpand, setProjectUrl, setBackTrackIe, setForwardTrackIe); handleShow('Internet'); return; }
+          if(lowerCaseName === 'theoldnet') {
+  handleDoubleClickiframe('TheOldNet', setOpenProjectExpand, setProjectUrl, setBackTrackIe, setForwardTrackIe)
+  handleShow('Internet');
+  return;
+}
+if(lowerCaseName === 'clasicos') {
+  handleDoubleClickiframe('Clasicos', setOpenProjectExpand, setProjectUrl, setBackTrackIe, setForwardTrackIe)
+  handleShow('Internet');
+  return;
+}
         }
         if(item.type === 'userCreatedFolder') { item.setter({ focusItem: false }); }
         else { item.setter(prev => ({ ...prev, focusItem: false })); }

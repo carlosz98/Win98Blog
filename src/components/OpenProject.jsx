@@ -101,6 +101,11 @@ function OpenProject() {
       case 'IE':
         return 'https://www.google.com/search?igu=1'
 
+      case 'TheOldNet':
+  return 'https://theoldnet.com/'
+case 'Clasicos':
+  return 'https://www.clasicosbasicos.org/'
+
       default: return 'https://github.com/carlosz98'
     }
   }

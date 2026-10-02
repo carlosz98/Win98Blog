@@ -1,5 +1,16 @@
 [
     {
+        "name": "MSN",
+        "pic": "MSN",
+        "folderId": "Desktop",
+        "size": 1500,
+        "type": ".exe",
+        "x": 6,
+        "y": 6,
+        "category": "Utilities",
+        "description": "Instant messaging application for chatting with friends."
+    },
+    {
         "name": "About",
         "pic": "About",
         "folderId": "Desktop",
@@ -46,17 +57,7 @@
         "category": "Productivity",
         "description": "Email client for sending and receiving emails."
     },
-    {
-        "name": "MSN",
-        "pic": "MSN",
-        "folderId": "Desktop",
-        "size": 1500,
-        "type": ".exe",
-        "x": 6,
-        "y": 6,
-        "category": "Utilities",
-        "description": "Instant messaging application for chatting with friends."
-    },
+    
     {
         "name": "Solitaire",
         "pic": "MineSweeper",
@@ -154,7 +155,7 @@
     {
         "name": "Picture",
         "pic": "Picture",
-        "folderId": "DiskC",
+        "folderId": "Void",
         "size": 1000,
         "type": "folder",
         "x": 14,
@@ -174,7 +175,7 @@
     {
         "name": "001",
         "pic": "Jpeg",
-        "folderId": "Picture",
+        "folderId": "Void",
         "size": 50,
         "type": ".jpeg",
         "x": 16,
@@ -183,7 +184,7 @@
     {
         "name": "002",
         "pic": "Jpeg",
-        "folderId": "Picture",
+        "folderId": "Void",
         "size": 50,
         "type": ".jpeg",
         "x": 17,
@@ -192,7 +193,7 @@
     {
         "name": "003",
         "pic": "Jpeg",
-        "folderId": "Picture",
+        "folderId": "Void",
         "size": 50,
         "type": ".jpeg",
         "x": 18,
@@ -201,7 +202,7 @@
     {
         "name": "004",
         "pic": "Jpeg",
-        "folderId": "Picture",
+        "folderId": "Void",
         "size": 50,
         "type": ".jpeg",
         "x": 19,
@@ -210,7 +211,7 @@
     {
         "name": "005",
         "pic": "Jpeg",
-        "folderId": "Picture",
+        "folderId": "Void",
         "size": 50,
         "type": ".jpeg",
         "x": 20,
@@ -219,7 +220,7 @@
     {
         "name": "006",
         "pic": "Jpeg",
-        "folderId": "Picture",
+        "folderId": "Void",
         "size": 50,
         "type": ".jpeg",
         "x": 21,
@@ -228,7 +229,7 @@
     {
         "name": "007",
         "pic": "Jpeg",
-        "folderId": "Picture",
+        "folderId": "Void",
         "size": 50,
         "type": ".jpeg",
         "x": 22,
@@ -237,7 +238,7 @@
     {
         "name": "008",
         "pic": "Jpeg",
-        "folderId": "Picture",
+        "folderId": "Void",
         "size": 50,
         "type": ".jpeg",
         "x": 23,
@@ -246,7 +247,7 @@
     {
         "name": "009",
         "pic": "Jpeg",
-        "folderId": "Picture",
+        "folderId": "Void",
         "size": 50,
         "type": ".jpeg",
         "x": 24,
@@ -264,7 +265,7 @@
     {
         "name": "011",
         "pic": "Jpeg",
-        "folderId": "Picture",
+        "folderId": "Void",
         "size": 50,
         "type": ".jpeg",
         "x": 26,
@@ -611,4 +612,28 @@
         "description": "First version of the Windows 98 blog (2025).",
         "url": "https://github.com/carlosz98/Win98---Blog"
     }
+    ,{
+    "name": "TheOldNet",
+    "pic": "IE",
+    "folderId": "Desktop",
+    "size": 100,
+    "type": ".exe",
+    "x": 57,
+    "y": 57,
+    "category": "Web",
+    "description": "Browse the old internet — websites as they looked in the 90s",
+    "url": "https://theoldnet.com/"
+},
+{
+    "name": "Clasicos",
+    "pic": "IE",
+    "folderId": "Desktop",
+    "size": 100,
+    "type": ".exe",
+    "x": 58,
+    "y": 58,
+    "category": "Web",
+    "description": "Clasicos Basicos",
+    "url": "https://www.clasicosbasicos.org/"
+}
 ]
