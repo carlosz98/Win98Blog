@@ -37,6 +37,7 @@ import AppIcons from './components/AppIcons';
 import Solitaire from './components/Solitaire';
 import DevFeed from './components/DevFeed';
 import Tooltip from './components/Tooltip';
+import Scrapbook from './components/Scrapbook';
 import { StyleHide, imageMapping,
   handleDoubleClickEnterLink,handleDoubleTapEnterMobile,
   handleDoubleClickiframe, handleDoubleTapiframeMobile,
@@ -205,6 +206,7 @@ function App() {
   const [devFeedShow, setDevFeedShow] = useState(false);
   const [guestbookShow, setGuestbookShow] = useState(false);
   const [galleryShow, setGalleryShow] = useState(false);
+  const [scrapbookShow, setScrapbookShow] = useState(false);
   const [mapShow, setMapShow] = useState(false);
   const [jokeFile, setJokeFile] = useState(null);
 
@@ -955,6 +957,7 @@ function handleShowInfolderMobile(name, type) {
         <DevFeed show={devFeedShow} setShow={setDevFeedShow} />
         <Guestbook show={guestbookShow} setShow={setGuestbookShow} />
         <PaintGallery show={galleryShow} setShow={setGalleryShow} />
+        <Scrapbook show={scrapbookShow} setShow={setScrapbookShow}/>
         <VisitorMap show={mapShow} setShow={setMapShow} />
         <JokeFile name={jokeFile} setName={setJokeFile} />
         <Dragdrop/>
@@ -1411,6 +1414,7 @@ if(webGameName(lowerCaseName)) {
     if (joke) setJokeFile(joke);
     else if (lowerCaseName === 'paintgallery') setGalleryShow(true);
     else if (lowerCaseName === 'visitormap') setMapShow(true);
+    else if (lowerCaseName === 'scrapbook') setScrapbookShow(true);
     else return false;
     setStartActive(false);
     return true;

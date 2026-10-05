@@ -19,6 +19,9 @@ const firebaseConfig = {
 const isShared = Boolean(firebaseConfig.apiKey && firebaseConfig.projectId);
 
 export const NAME_MAX = 30;
+export const CAPTION_MAX = 200;
+export const SCRAP_SRC_MAX = 900000;
+
 export const MESSAGE_MAX = 300;
 export const IMAGE_MAX = 150000;
 const COUNTRY_KEY = 'visitorCountry';
@@ -69,6 +72,22 @@ function clean(name, message) {
   return { name: n, message: m };
 }
 
+// Scrapbook posts: a picture, GIF, video or YouTube link, or plain text, plus a caption.
+const SCRAP_KINDS = ['image', 'video', 'youtube', 'text'];
+function cleanScrap({ kind, src, caption, tag }) {
+  if (!SCRAP_KINDS.includes(kind)) throw new Error('Unknown post type.');
+  const clean = {
+    kind,
+    src: kind === 'text' ? '' : String(src || '').trim(),
+    caption: String(caption || '').trim().slice(0, CAPTION_MAX),
+    tag: String(tag || '').trim().replace(/^#*/, '').slice(0, 20),
+  };
+  if (kind !== 'text' && !clean.src) throw new Error('Please add a picture or a link.');
+  if (clean.src.length > SCRAP_SRC_MAX) throw new Error('That picture is too big.');
+  if (kind === 'text' && !clean.caption) throw new Error('Please write something.');
+  return clean;
+}
+
 function createFirestoreStore() {
   const app = getApps()[0] || initializeApp(firebaseConfig);
   const db = getFirestore(app);
@@ -96,6 +115,14 @@ function createFirestoreStore() {
       await addDoc(collection(db, 'gallery'), { ...cleanPicture(name, image), createdAt: serverTimestamp() });
     },
     deletePicture: id => deleteDoc(doc(db, 'gallery', id)),
+    subscribeScrapbook(onPosts, onError) {
+      const q = query(collection(db, 'scrapbook'), orderBy('createdAt', 'desc'), limit(40));
+      return onSnapshot(q, snap => {
+        onPosts(snap.docs.map(d => ({ id: d.id, ...d.data(), date: formatDate(d.data().createdAt) })));
+      }, onError);
+    },
+    addScrapbookPost: post => addDoc(collection(db, 'scrapbook'), { ...cleanScrap(post), createdAt: serverTimestamp() }),
+    deleteScrapbookPost: id => deleteDoc(doc(db, 'scrapbook', id)),
     // Adds this browser's country to the map once.
     async recordCountry() {
       try { if (localStorage.getItem(COUNTRY_KEY)) return; } catch {}
@@ -146,6 +173,8 @@ function createLocalStore() {
   const KEY = 'guestbook_entries';
   const listeners = new Set();
   const galleryListeners = new Set();
+  const scrapListeners = new Set();
+  const readScrap = () => { try { return JSON.parse(localStorage.getItem('scrapbook_local')) || []; } catch { return []; } };
   const read = () => { try { return JSON.parse(localStorage.getItem(KEY)) || []; } catch { return []; } };
   const emit = () => listeners.forEach(fn => fn(read()));
   return {
@@ -180,6 +209,21 @@ function createLocalStore() {
       const next = list.filter(p => p.id !== id);
       try { localStorage.setItem('gallery_local', JSON.stringify(next)); } catch {}
       galleryListeners.forEach(fn => fn(next));
+    },
+    subscribeScrapbook(onPosts) {
+      scrapListeners.add(onPosts);
+      onPosts(readScrap());
+      return () => scrapListeners.delete(onPosts);
+    },
+    async addScrapbookPost(post) {
+      const next = [{ id: String(Date.now()), ...cleanScrap(post), date: formatDate() }, ...readScrap()].slice(0, 20);
+      try { localStorage.setItem('scrapbook_local', JSON.stringify(next)); } catch {}
+      scrapListeners.forEach(fn => fn(next));
+    },
+    async deleteScrapbookPost(id) {
+      const next = readScrap().filter(p => p.id !== id);
+      try { localStorage.setItem('scrapbook_local', JSON.stringify(next)); } catch {}
+      scrapListeners.forEach(fn => fn(next));
     },
     async recordCountry() {
       try {

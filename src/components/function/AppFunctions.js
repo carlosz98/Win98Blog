@@ -47,6 +47,7 @@ import kofi from '../../assets/kofi.png'
 import doom from '../../assets/doom.png'
 import invaders from '../../assets/invaders.png'
 import pinball from '../../assets/pinball.png'
+import scrapbook from '../../assets/scrapbook.png'
 
 // Classic games that run on other sites, opened inside the IE window.
 export const WEB_GAMES = {
@@ -168,6 +169,9 @@ export function imageMapping (name, type) {
 
     case 'Github':
       return github;
+
+    case 'Scrapbook':
+      return scrapbook;
 
     case 'Doom':
       return doom;
