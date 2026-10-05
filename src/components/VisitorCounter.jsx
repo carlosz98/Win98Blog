@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { communityStore } from './function/communityStore';
 
-// Old-school hit counter in the top right of the desktop.
+// Flip-clock style visitor counter in the top right of the desktop.
 function VisitorCounter() {
   const [count, setCount] = useState(null);
 
@@ -17,11 +17,11 @@ function VisitorCounter() {
   const digits = String(count).padStart(5, '0').split('');
 
   return (
-    <div className="visitor_counter" title="Visitors to this site">
+    <div className="visitor_counter" title="Visitors since 2026">
+      <span className="visitor_label">VISITORS</span>
       <span className="visitor_digits">
         {digits.map((d, i) => <span key={i}>{d}</span>)}
       </span>
-      <span className="visitor_label">visitors since 2026</span>
     </div>
   );
 }

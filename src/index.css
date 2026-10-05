@@ -1089,39 +1089,48 @@ html.win-busy, html.win-busy * {
 .bsod_reboot { background: #000; flex-direction: column; color: #c0c0c0; }
 @keyframes bsod_blink { 50% { opacity: 0; } }
 
-/* ── Visitor counter (classic 90s hit counter) ── */
+/* ── Visitor counter (flip-clock odometer) ── */
 .visitor_counter {
     position: fixed;
     top: 12px;
     right: 14px;
     z-index: 1;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 3px;
+    gap: 8px;
     user-select: none;
-}
-.visitor_digits {
-    display: flex;
-    gap: 2px;
-    padding: 3px;
-    background: #222;
-    border: 2px solid #999;
-}
-.visitor_digits span {
-    width: 16px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(#000 0%, #333 50%, #000 51%, #222 100%);
-    color: #fff;
-    font: bold 18px 'Courier New', monospace;
 }
 .visitor_label {
     color: #fff;
-    font: 11px Verdana, sans-serif;
+    font: bold 11px Arial, sans-serif;
+    letter-spacing: .5px;
     text-shadow: 1px 1px 0 #000;
+}
+.visitor_digits {
+    display: flex;
+    gap: 3px;
+}
+.visitor_digits span {
+    position: relative;
+    width: 20px;
+    height: 30px;
+    border-radius: 3px;
+    background: linear-gradient(#3a3a3a, #1c1c1c);
+    color: #f3f3f3;
+    font: bold 20px Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, .5);
+}
+.visitor_digits span::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 1px;
+    background: rgba(0, 0, 0, .7);
 }
 
 /* ── Taskbar volume icon ── */
