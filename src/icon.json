@@ -768,5 +768,15 @@
     "x": 64,
     "y": 64,
     "description": "Photos, GIFs and videos from Carlos"
+},
+{
+    "name": "Cool Sites",
+    "pic": "CoolSites",
+    "folderId": "Desktop",
+    "size": 300,
+    "type": ".exe",
+    "x": 64,
+    "y": 64,
+    "description": "Carlos's favorite sites, shrines and web buttons"
 }
 ]

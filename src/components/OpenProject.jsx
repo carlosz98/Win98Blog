@@ -11,12 +11,17 @@ import refresh from '../assets/ie_refresh.png'
 import stop from '../assets/ie_stop.png'
 import downArrow from '../assets/arrow-down.png'
 import iconInfo from '../icon.json'
+import folderIcon from '../assets/folder.png'
+import folderOpenIcon from '../assets/folderopen.png'
+import { BOOKMARK_FOLDERS } from './function/coolSites'
 
 
 function OpenProject() {
 
   const [iframeKey, setIframeKey] = useState(0);
   const [expandAddy, setExpandAddy] = useState(false);
+  const [favOpen, setFavOpen] = useState(false);
+  const [favFolder, setFavFolder] = useState(null);
 
   const allIEProjects = iconInfo
     .filter(item => item.folderId === 'Project')
@@ -186,7 +191,42 @@ case 'Clasicos':
             <p>File<span style={{ left: '-23px' }}>_</span></p>
             <p>Edit<span style={{ left: '-24px' }}>_</span></p>
             <p>View<span style={{ left: '-32px' }}>_</span></p>
+            <p
+              className={`ie_fav_label${favOpen ? ' open' : ''}`}
+              onClick={() => { setFavOpen(o => !o); setFavFolder(null); }}
+            ><u>F</u>avorites</p>
             <p>Help<span style={{ left: '-30px' }}>_</span></p>
+            {favOpen && (
+              <div className="ie_fav_menu" onMouseLeave={() => setFavOpen(false)}>
+                {BOOKMARK_FOLDERS.map(folder => (
+                  <div key={folder.name}>
+                    <div
+                      className="ie_fav_item ie_fav_folder"
+                      onClick={() => setFavFolder(f => f === folder.name ? null : folder.name)}
+                    >
+                      <img src={favFolder === folder.name ? folderOpenIcon : folderIcon} alt="" />
+                      <span>{folder.name}</span>
+                      <span className="ie_fav_caret">{favFolder === folder.name ? '▾' : '▸'}</span>
+                    </div>
+                    {favFolder === folder.name && folder.sites.map(site => (
+                      <div
+                        key={site.url}
+                        className="ie_fav_item ie_fav_site"
+                        onClick={() => {
+                          setProjectUrl(site.url)
+                          setBackTrackIe(prev => [...prev, site.url])
+                          setForwardTrackIe([])
+                          setFavOpen(false)
+                        }}
+                      >
+                        <img src={ie} alt="" />
+                        <span>{site.name}</span>
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="address_container_btn">

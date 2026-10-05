@@ -38,6 +38,7 @@ import Solitaire from './components/Solitaire';
 import DevFeed from './components/DevFeed';
 import Tooltip from './components/Tooltip';
 import Scrapbook from './components/Scrapbook';
+import CoolSites from './components/CoolSites';
 import { StyleHide, imageMapping,
   handleDoubleClickEnterLink,handleDoubleTapEnterMobile,
   handleDoubleClickiframe, handleDoubleTapiframeMobile,
@@ -207,6 +208,7 @@ function App() {
   const [guestbookShow, setGuestbookShow] = useState(false);
   const [galleryShow, setGalleryShow] = useState(false);
   const [scrapbookShow, setScrapbookShow] = useState(false);
+  const [coolSitesShow, setCoolSitesShow] = useState(false);
   const [mapShow, setMapShow] = useState(false);
   const [jokeFile, setJokeFile] = useState(null);
 
@@ -806,6 +808,7 @@ function handleShowInfolderMobile(name, type) {
     handleDoubleTapEnterMobile,
     handleDoubleClickEnterLink,
     handleDoubleClickiframe,
+    openInIE,
     handleDoubleTapiframeMobile,
     WinampExpand, setWinampExpand,
     showClippy, setShowClippy,
@@ -958,6 +961,7 @@ function handleShowInfolderMobile(name, type) {
         <Guestbook show={guestbookShow} setShow={setGuestbookShow} />
         <PaintGallery show={galleryShow} setShow={setGalleryShow} />
         <Scrapbook show={scrapbookShow} setShow={setScrapbookShow}/>
+        <CoolSites show={coolSitesShow} setShow={setCoolSitesShow}/>
         <VisitorMap show={mapShow} setShow={setMapShow} />
         <JokeFile name={jokeFile} setName={setJokeFile} />
         <Dragdrop/>
@@ -1409,12 +1413,21 @@ if(webGameName(lowerCaseName)) {
 
   // Hourglass for a moment, and Clippy comments the first time each app opens.
   // Paint Gallery, Visitor Map and the Recycle Bin joke files. Returns true if it opened one.
+  // Opens any link in the Internet Explorer window (Cool Sites, IE Favorites).
+  function openInIE(url) {
+    setProjectUrl(url);
+    setBackTrackIe(prev => [...prev, url]);
+    setForwardTrackIe([]);
+    handleShow('Internet');
+  }
+
   function openCommunityApp(lowerCaseName) {
     const joke = Object.keys(JOKE_FILES).find(k => k.toLowerCase() === lowerCaseName);
     if (joke) setJokeFile(joke);
     else if (lowerCaseName === 'paintgallery') setGalleryShow(true);
     else if (lowerCaseName === 'visitormap') setMapShow(true);
     else if (lowerCaseName === 'scrapbook') setScrapbookShow(true);
+    else if (lowerCaseName === 'coolsites') setCoolSitesShow(true);
     else return false;
     setStartActive(false);
     return true;

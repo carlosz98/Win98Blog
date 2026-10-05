@@ -5,7 +5,8 @@ import { motion } from 'framer-motion';
 import About from '../assets/ipng.png'
 import bioPC from '../assets/bio_pc.png'
 import '../css/MyBioFolder.css'
-import { CONSOLES, PALETTE } from './function/consoleSprites'
+import { CONSOLES } from './function/consoleSprites'
+import ConsoleSprite from './ConsoleSprite'
 
 // General tab lines, typed out one character at a time.
 const BIO_LINES = [
@@ -27,23 +28,6 @@ const TYPE_MS = 15;
 
 const HOBBY_TEXT = "In my free time I explore new tech, listen to music and collect retro hardware. " +
   "I'm always building something, even on weekends. Big fan of anything with a CRT glow.";
-
-// Draws one console from its pixel rows.
-function ConsoleSprite({ rows, scale = 3 }) {
-  const ref = useRef(null);
-  useEffect(() => {
-    const canvas = ref.current;
-    const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    rows.forEach((row, y) => [...row].forEach((c, x) => {
-      if (!PALETTE[c]) return;
-      ctx.fillStyle = PALETTE[c];
-      ctx.fillRect(x * scale, y * scale, scale, scale);
-    }));
-  }, [rows, scale]);
-  const width = Math.max(...rows.map(r => r.length));
-  return <canvas ref={ref} width={width * scale} height={rows.length * scale} aria-hidden="true" />;
-}
 
 // Technology tab meters (level is 0–100).
 const SKILLS = [
