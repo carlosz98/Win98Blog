@@ -1022,6 +1022,19 @@ html.win-busy, html.win-busy * {
     to   { clip-path: inset(0 0 0 0); }
 }
 
+/* Windows unroll the same way when they open. MSN is left out because its
+   ring shake swaps the animation and would replay the unroll afterwards. */
+:where([class^="folder_folder"]:not(.folder_folder-MSN), .df-window) {
+    animation: window_unroll 0.22s steps(6, end);
+}
+@keyframes window_unroll {
+    from { clip-path: inset(0 0 100% 0); }
+    to   { clip-path: inset(0 0 0 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+    :where([class^="folder_folder"], .df-window) { animation: none; }
+}
+
 /* Rubber-band selection on the desktop */
 .desk_select_box {
     position: fixed;

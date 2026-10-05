@@ -105,7 +105,9 @@ function createFirestoreStore() {
       try {
         await updateDoc(ref, { count: increment(1) });
       } catch (err) {
-        if (err.code !== 'not-found') throw err;
+        // The rules reject an update on a missing doc, so that shows up as
+        // permission-denied rather than not-found.
+        if (err.code !== 'not-found' && err.code !== 'permission-denied') throw err;
         await setDoc(ref, { count: 1 });
       }
       try { localStorage.setItem(COUNTRY_KEY, code); } catch {}
@@ -126,7 +128,9 @@ function createFirestoreStore() {
         try {
           await updateDoc(counter, { count: increment(1) });
         } catch (err) {
-          if (err.code !== 'not-found') throw err;
+          // The rules reject an update on a missing doc, so that shows up as
+          // permission-denied rather than not-found.
+          if (err.code !== 'not-found' && err.code !== 'permission-denied') throw err;
           await setDoc(counter, { count: 1 });
         }
       }
