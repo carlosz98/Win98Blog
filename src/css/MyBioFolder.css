@@ -441,3 +441,22 @@
   .folder_content-bio .bio_text_tech .bio_meter_fill { transition: none; }
   .folder_content-bio .bio_text_1 .bio_typed .bio_cursor { animation: none; }
 }
+
+/* "Currently learning" group under the main skills */
+.bio_learning { margin-top: 8px; }
+.folder_content-bio .bio_text_tech .bio_learning .bio_meter_fill { background: repeating-linear-gradient(90deg, #008080 0 8px, transparent 8px 10px); }
+.bio_learning_badge {
+  margin-left: 4px;
+  padding: 0 4px;
+  font-size: 10px;
+  color: #fff;
+  background: #008080;
+}
+/* Compact rows so both skill groups fit; scroll if the window is small. */
+.folder_content .folder_content-bio:has(.bio_text_tech) { overflow-y: auto; }
+.folder_content-bio .bio_text_tech .bio_skills { gap: 3px; padding-top: 4px; padding-bottom: 6px; }
+.folder_content-bio .bio_text_tech .bio_meter { height: 12px; }
+/* Learning group: three compact columns side by side. */
+.folder_content-bio .bio_text_tech .bio_learning { flex-direction: row; gap: 10px; margin-top: 4px; padding-top: 2px; }
+.folder_content-bio .bio_text_tech .bio_learning .bio_skill_row { flex: 1; grid-template-columns: auto 1fr; gap: 4px; }
+.folder_content-bio .bio_text_tech .bio_tech_intro { margin-bottom: 4px; }

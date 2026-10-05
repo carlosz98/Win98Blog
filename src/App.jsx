@@ -41,6 +41,7 @@ import { StyleHide, imageMapping,
   handleDoubleClickiframe, handleDoubleTapiframeMobile,
   iconContainerSize, iconImgSize, iconTextSize,
   handleDoubleClickPhotoOpen,
+  WEB_GAMES, webGameName,
  } from './components/function/AppFunctions';
 import { clippyReactions } from './components/function/ClippyFunction';
 import { showBusyCursor } from './components/function/retroEffects';
@@ -282,8 +283,17 @@ function App() {
     !saved.some(icon => icon.name === p.name) &&
     (projects.includes(p) || !known || !known.includes(p.name))
   );
+  // MineSweeper moved from Utility to the Desktop; move it once for saved layouts too.
+  let movedMineSweeper = false;
+  try { movedMineSweeper = localStorage.getItem('mineSweeperOnDesktop') === '1'; } catch { /* ignore */ }
+  if (!movedMineSweeper) {
+    updated.forEach((icon, i) => {
+      if (icon.name === 'MineSweeper' && icon.folderId === 'Utility') updated[i] = { ...icon, folderId: 'Desktop' };
+    });
+    try { localStorage.setItem('mineSweeperOnDesktop', '1'); } catch { /* ignore */ }
+  }
   const merged = [...updated, ...missing];
-  if (missing.length) {
+  if (missing.length || !movedMineSweeper) {
     try { localStorage.setItem('icons', JSON.stringify(merged)); } catch { /* ignore */ }
   }
   rememberKnown();
@@ -1104,6 +1114,9 @@ function handleShowInfolderMobile(name, type) {
       { name: 'TheOldNet',   setter: setOpenProjectExpand,usestate: openProjectExpand,color: 'rgba(0, 159, 186, 0.85)', size: 'small' },
       { name: 'Clasicos',    setter: setOpenProjectExpand,usestate: openProjectExpand,color: 'rgba(0, 159, 186, 0.85)', size: 'small' },
       { name: 'Ko-fi',       setter: setOpenProjectExpand,usestate: openProjectExpand,color: 'rgba(41, 171, 224, 0.85)', size: 'small' },
+      { name: 'Doom',        setter: setOpenProjectExpand,usestate: openProjectExpand,color: 'rgba(120, 30, 20, 0.85)', size: 'small' },
+      { name: 'Space Invaders', setter: setOpenProjectExpand,usestate: openProjectExpand,color: 'rgba(20, 20, 40, 0.85)', size: 'small' },
+      { name: 'Pinball',     setter: setOpenProjectExpand,usestate: openProjectExpand,color: 'rgba(40, 60, 140, 0.85)', size: 'small' },
       { name: 'Winamp',      setter: setWinampExpand,     usestate: WinampExpand,     color: 'rgba(105, 136, 145, 0.85)', size: 'small' },
       { name: 'ResumeFile',  setter: setResumeFileExpand, usestate: ResumeFileExpand, color: 'rgba(133, 165, 67, 0.85)', size: 'small' },
       { name: 'MineSweeper', setter: setMineSweeperExpand,usestate: MineSweeperExpand,color: 'rgba(187, 51, 48, 0.85)', size: 'small' },
@@ -1212,7 +1225,7 @@ function handleShowInfolderMobile(name, type) {
     }
 
     allSetItems.forEach((item) => {
-      const itemName = item.name.toLowerCase().trim();
+      const itemName = item.name.toLowerCase().split(' ').join('');
       if(itemName === lowerCaseName) {
         setTimeout(() => {
           if(item.type === 'userCreatedFolder') {
@@ -1248,6 +1261,11 @@ if(lowerCaseName === 'ko-fi') {
   handleShow('Internet');
   return;
 }
+if(webGameName(lowerCaseName)) {
+  handleDoubleClickiframe(webGameName(lowerCaseName), setOpenProjectExpand, setProjectUrl, setBackTrackIe, setForwardTrackIe)
+  handleShow('Internet');
+  return;
+}
       } else {
         if(item.type === 'userCreatedFolder') { item.setter({ focusItem: false }); }
         else { item.setter(prev => ({ ...prev, focusItem: false })); }
@@ -1258,7 +1276,7 @@ if(lowerCaseName === 'ko-fi') {
     if(tap.includes(name)) return;
     setStartActive(false);
 
-    const notToOpenList = ['Run', 'Nft', 'Note', 'AiAgent', '3dObject', 'Fortune', 'Bitcoin', 'PixelPic', 'IE', 'Blog', 'Portfolio', 'DevFeed', 'TheOldNet', 'Clasicos', 'Ko-fi'];
+    const notToOpenList = ['Run', 'Nft', 'Note', 'AiAgent', '3dObject', 'Fortune', 'Bitcoin', 'PixelPic', 'IE', 'Blog', 'Portfolio', 'DevFeed', 'TheOldNet', 'Clasicos', 'Ko-fi', ...Object.keys(WEB_GAMES)];
     if (notToOpenList.includes(name)) return;
 
     setTap(prevTap => [...prevTap, name]);
@@ -1306,7 +1324,7 @@ if(lowerCaseName === 'ko-fi') {
       if (!itemExists) { setRegErrorPopUp(true); setRegErrorPopUpVal(name); return; }
 
       allSetItems.forEach((item) => {
-        const itemName = item.name.toLowerCase().trim();
+        const itemName = item.name.toLowerCase().split(' ').join('');
         if(itemName === lowerCaseName) {
           setTimeout(() => {
             if(item.type === 'userCreatedFolder') {
@@ -1339,6 +1357,11 @@ if(lowerCaseName === 'clasicos') {
 }
 if(lowerCaseName === 'ko-fi') {
   handleDoubleClickiframe('Ko-fi', setOpenProjectExpand, setProjectUrl, setBackTrackIe, setForwardTrackIe)
+  handleShow('Internet');
+  return;
+}
+if(webGameName(lowerCaseName)) {
+  handleDoubleClickiframe(webGameName(lowerCaseName), setOpenProjectExpand, setProjectUrl, setBackTrackIe, setForwardTrackIe)
   handleShow('Internet');
   return;
 }

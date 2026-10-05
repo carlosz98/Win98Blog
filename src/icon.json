@@ -388,7 +388,7 @@
     {
         "name": "MineSweeper",
         "pic": "MineSweeper",
-        "folderId": "Utility",
+        "folderId": "Desktop",
         "size": 250,
         "type": ".exe",
         "x": 5,
@@ -722,5 +722,41 @@
     "type": ".txt",
     "x": 67,
     "y": 67
+},
+{
+    "name": "Doom",
+    "pic": "Doom",
+    "folderId": "Desktop",
+    "size": 2400,
+    "type": ".exe",
+    "x": 61,
+    "y": 61,
+    "category": "Games",
+    "description": "DOOM (shareware episode), running on the Internet Archive",
+    "url": "https://archive.org/details/DoomsharewareEpisode"
+},
+{
+    "name": "Space Invaders",
+    "pic": "SpaceInvaders",
+    "folderId": "Desktop",
+    "size": 120,
+    "type": ".exe",
+    "x": 62,
+    "y": 62,
+    "category": "Games",
+    "description": "The 1978 arcade classic, running on the Internet Archive",
+    "url": "https://archive.org/details/arcade_invaders"
+},
+{
+    "name": "Pinball",
+    "pic": "Pinball",
+    "folderId": "Desktop",
+    "size": 1800,
+    "type": ".exe",
+    "x": 63,
+    "y": 63,
+    "category": "Games",
+    "description": "3D Pinball Space Cadet, in the browser",
+    "url": "https://pinball.alula.me/"
 }
 ]
