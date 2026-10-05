@@ -44,6 +44,8 @@ export const clippyReactions = {
     guestbook:   { phrase: "Sign the guestbook! Leave Carlos a message.", animation: clippy2 },
     paintgallery: { phrase: "Draw something! It goes up in the gallery for everyone.", animation: clippy3 },
     scrapbook: { phrase: "Snapshots from Carlos. Scroll through the photos!", animation: clippy3 },
+    mediaplayer: { phrase: "Grab some popcorn. Carlos picked these himself.", animation: clippy3 },
+    myspecs: { phrase: "Whoa, 32 GB of RAM? In 1998 that would cost more than a house.", animation: clippy3 },
     coolsites: { phrase: "Surf's up! These are Carlos's favorite corners of the web.", animation: clippy3 },
     visitormap:  { phrase: "Look how far people come from to visit Carlos!", animation: clippy2 },
     msn:         { phrase: "That's CarlosBot! Ask it anything about Carlos.", animation: clippy2 },

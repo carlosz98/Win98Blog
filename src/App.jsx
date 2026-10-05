@@ -39,6 +39,8 @@ import DevFeed from './components/DevFeed';
 import Tooltip from './components/Tooltip';
 import Scrapbook from './components/Scrapbook';
 import CoolSites from './components/CoolSites';
+import MediaPlayer from './components/MediaPlayer';
+import SystemSpecs from './components/SystemSpecs';
 import { StyleHide, imageMapping,
   handleDoubleClickEnterLink,handleDoubleTapEnterMobile,
   handleDoubleClickiframe, handleDoubleTapiframeMobile,
@@ -209,6 +211,8 @@ function App() {
   const [galleryShow, setGalleryShow] = useState(false);
   const [scrapbookShow, setScrapbookShow] = useState(false);
   const [coolSitesShow, setCoolSitesShow] = useState(false);
+  const [mediaPlayerShow, setMediaPlayerShow] = useState(false);
+  const [specsShow, setSpecsShow] = useState(false);
   const [mapShow, setMapShow] = useState(false);
   const [jokeFile, setJokeFile] = useState(null);
 
@@ -267,7 +271,7 @@ function App() {
 
   const [desktopIcon, setDesktopIcon] = useState(() => {
   const localItems = localStorage.getItem('icons');
-  const deleteIcon = ['Cat', 'AiAgent','Winamp','Paint','3dObject'];
+  const deleteIcon = ['Cat', 'AiAgent','Paint','3dObject'];
   const filteredItems = iconInfo.filter(item => !deleteIcon.includes(item.name));
   const rememberKnown = () => {
     try { localStorage.setItem('iconsKnown', JSON.stringify(iconInfo.map(i => i.name))); } catch { /* ignore */ }
@@ -296,6 +300,14 @@ function App() {
       if (icon.name === 'MineSweeper' && icon.folderId === 'Utility') updated[i] = { ...icon, folderId: 'Desktop' };
     });
     try { localStorage.setItem('mineSweeperOnDesktop', '1'); } catch { /* ignore */ }
+  }
+  // Winamp came back to the desktop; add it once for visitors whose saved layout lacks it.
+  let winampBack = false;
+  try { winampBack = localStorage.getItem('winampBack') === '1'; } catch { /* ignore */ }
+  if (!winampBack) {
+    const winamp = filteredItems.find(i => i.name === 'Winamp');
+    if (winamp && !updated.some(i => i.name === 'Winamp') && !missing.includes(winamp)) missing.push(winamp);
+    try { localStorage.setItem('winampBack', '1'); } catch { /* ignore */ }
   }
   const merged = [...updated, ...missing];
   if (missing.length || !movedMineSweeper) {
@@ -962,6 +974,8 @@ function handleShowInfolderMobile(name, type) {
         <PaintGallery show={galleryShow} setShow={setGalleryShow} />
         <Scrapbook show={scrapbookShow} setShow={setScrapbookShow}/>
         <CoolSites show={coolSitesShow} setShow={setCoolSitesShow}/>
+        <MediaPlayer show={mediaPlayerShow} setShow={setMediaPlayerShow}/>
+        <SystemSpecs show={specsShow} setShow={setSpecsShow}/>
         <VisitorMap show={mapShow} setShow={setMapShow} />
         <JokeFile name={jokeFile} setName={setJokeFile} />
         <Dragdrop/>
@@ -1428,6 +1442,8 @@ if(webGameName(lowerCaseName)) {
     else if (lowerCaseName === 'visitormap') setMapShow(true);
     else if (lowerCaseName === 'scrapbook') setScrapbookShow(true);
     else if (lowerCaseName === 'coolsites') setCoolSitesShow(true);
+    else if (lowerCaseName === 'mediaplayer') setMediaPlayerShow(true);
+    else if (lowerCaseName === 'myspecs') setSpecsShow(true);
     else return false;
     setStartActive(false);
     return true;

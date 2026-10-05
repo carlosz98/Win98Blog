@@ -307,7 +307,7 @@ export default function Solitaire({ show, setShow }) {
       grid={[1,1]}
       disabled={expand}
       bounds={{ top: 0 }}
-      defaultPosition={{ x: 120, y: 40 }}
+      defaultPosition={{ x: window.innerWidth <= 500 ? 4 : 120, y: 40 }}
       onStart={() => setFocus(true)}
     >
       <div

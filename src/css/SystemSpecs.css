@@ -1,0 +1,135 @@
+.df-window.ss-window {
+  height: auto;
+  min-height: 0;
+  min-width: 0;
+  width: min(420px, calc(100vw - 8px));
+  display: flex;
+  flex-direction: column;
+  font-size: 12px;
+}
+.ss-tabs { display: flex; gap: 0; padding: 6px 6px 0; }
+.ss-tabs button {
+  position: relative;
+  top: 1px;
+  padding: 3px 9px;
+  background: #c0c0c0;
+  border: 1px solid;
+  border-color: #fff #000 transparent #fff;
+  border-radius: 3px 3px 0 0;
+  font: inherit;
+  cursor: pointer;
+}
+.ss-tabs button.active { top: 0; padding-bottom: 5px; z-index: 1; font-weight: bold; }
+.ss-body {
+  margin: 0 6px;
+  min-height: 250px;
+  padding: 12px;
+  border: 1px solid;
+  border-color: #fff #000 #000 #fff;
+  animation: window_unroll 0.2s steps(5, end);
+}
+.ss-footer { display: flex; justify-content: flex-end; gap: 6px; padding: 8px 6px; }
+.ss-footer button,
+.ss-perf-btns button,
+.ss-defrag button {
+  min-width: 72px;
+  padding: 3px 10px;
+  background: #c0c0c0;
+  border: 2px solid;
+  border-color: #fff #000 #000 #fff;
+  font: inherit;
+  cursor: pointer;
+}
+.ss-footer button:active,
+.ss-perf-btns button:active,
+.ss-defrag button:active { border-color: #000 #fff #fff #000; }
+.ss-perf-btns button:disabled { color: #808080; }
+
+/* General */
+.ss-general { display: flex; gap: 16px; align-items: flex-start; }
+.ss-pc { width: 130px; image-rendering: pixelated; flex-shrink: 0; }
+.ss-general-text p { margin: 0 0 1px 14px; }
+.ss-general-text p.ss-label { margin: 8px 0 2px; font-weight: bold; }
+.ss-general-text p.ss-label:first-child { margin-top: 0; }
+
+/* Device Manager */
+.ss-devices { display: flex; flex-direction: column; gap: 8px; }
+.ss-tree {
+  height: 170px;
+  overflow-y: auto;
+  padding: 4px;
+  background: #fff;
+  border: 2px solid;
+  border-color: #808080 #fff #fff #808080;
+}
+.ss-node { padding: 1px 2px; white-space: nowrap; cursor: default; }
+.ss-group { display: flex; align-items: center; gap: 4px; padding-left: 10px; cursor: pointer; }
+.ss-plus {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 9px;
+  height: 9px;
+  border: 1px solid #808080;
+  font-size: 9px;
+  line-height: 1;
+  background: #fff;
+}
+.ss-leaf { padding-left: 38px; cursor: pointer; }
+.ss-leaf.sel span { background: #000080; color: #fff; outline: 1px dotted #ffff00; }
+.ss-status { margin: 0; padding: 4px 8px 6px; border: 2px groove #fff; }
+.ss-status p { margin: 2px 0; }
+.ss-ok { color: #006400; }
+
+/* Performance */
+.ss-perf fieldset { margin: 0 0 8px; padding: 4px 8px 6px; border: 2px groove #fff; }
+.ss-perf p { margin: 3px 0; }
+.ss-row { display: flex; gap: 8px; margin: 2px 0; }
+.ss-row span:first-child { width: 120px; flex-shrink: 0; }
+.ss-perf-btns { display: flex; gap: 6px; justify-content: flex-end; flex-wrap: wrap; }
+.ss-progress {
+  height: 16px;
+  padding: 1px;
+  background: #fff;
+  border: 2px solid;
+  border-color: #808080 #fff #fff #808080;
+}
+.ss-progress div {
+  height: 100%;
+  background: repeating-linear-gradient(90deg, #000080 0 8px, transparent 8px 10px);
+  transition: width 0.1s steps(1);
+}
+.ss-dots::after { content: ''; animation: ss_dots 1.2s steps(4, end) infinite; }
+@keyframes ss_dots { 0% { content: ''; } 25% { content: '.'; } 50% { content: '..'; } 75% { content: '...'; } }
+.ss-bench-row { display: flex; align-items: center; gap: 6px; margin: 3px 0; }
+.ss-bench-row span:first-child { width: 60px; }
+.ss-bench-row span:last-child { width: 38px; text-align: right; font-family: 'Courier New', monospace; }
+.ss-bar { flex: 1; height: 10px; background: #fff; border: 1px solid #808080; }
+.ss-bar div { height: 100%; background: linear-gradient(90deg, #00a000, #a0ff00); animation: ss_grow 0.8s steps(8, end); }
+@keyframes ss_grow { from { width: 0 !important; } }
+
+/* Defrag */
+.ss-defrag { display: flex; flex-direction: column; gap: 6px; }
+.ss-defrag p { margin: 0; }
+.ss-defrag button { align-self: flex-end; }
+.ss-blocks {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 11px);
+  gap: 1px;
+  padding: 3px;
+  background: #fff;
+  border: 2px solid;
+  border-color: #808080 #fff #fff #808080;
+}
+.ss-block { width: 11px; height: 11px; border: 1px solid #000; box-sizing: border-box; }
+.ss-block.free { background: #fff; border-color: #c0c0c0; }
+.ss-block.used { background: #0000ff; }
+.ss-block.frag { background: #ff0000; }
+.ss-block.done { background: #00c0ff; }
+.ss-block.reading { background: #00ff00; }
+
+@media (max-width: 500px) {
+  .ss-body { padding: 8px; }
+  .ss-pc { width: 90px; }
+  .ss-general { gap: 10px; }
+}

@@ -511,3 +511,8 @@
 @media (prefers-reduced-motion: reduce) {
   .bio_shelf_item canvas { transition: none; }
 }
+
+/* Phones: keep the About window inside the screen. */
+@media (max-width: 500px) {
+  .bio_folder { width: calc(100vw - 8px); max-width: 420px; }
+}
