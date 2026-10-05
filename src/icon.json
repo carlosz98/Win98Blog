@@ -150,7 +150,8 @@
         "size": 500,
         "type": "Drive",
         "x": 13,
-        "y": 13
+        "y": 13,
+        "description": "Carlos's portfolio CD. Double-click to run it"
     },
     {
         "name": "Picture",

@@ -41,6 +41,7 @@ import Scrapbook from './components/Scrapbook';
 import CoolSites from './components/CoolSites';
 import MediaPlayer from './components/MediaPlayer';
 import SystemSpecs from './components/SystemSpecs';
+import Autorun from './components/Autorun';
 import { StyleHide, imageMapping,
   handleDoubleClickEnterLink,handleDoubleTapEnterMobile,
   handleDoubleClickiframe, handleDoubleTapiframeMobile,
@@ -213,6 +214,7 @@ function App() {
   const [coolSitesShow, setCoolSitesShow] = useState(false);
   const [mediaPlayerShow, setMediaPlayerShow] = useState(false);
   const [specsShow, setSpecsShow] = useState(false);
+  const [autorunShow, setAutorunShow] = useState(false);
   const [mapShow, setMapShow] = useState(false);
   const [jokeFile, setJokeFile] = useState(null);
 
@@ -695,6 +697,7 @@ function handleShowInfolder(name, type) {
   if (name === 'Project') { setCurrentFolder('Project'); setSelectedFolder({label: 'Project', img: imageMapping(name)}); setUndo(prev => [...prev, 'Project']); return; }
   if (name === 'Picture') { setCurrentFolder('Picture'); setSelectedFolder({label: 'Picture', img: imageMapping(name)}); setUndo(prev => [...prev, 'Picture']); return; }
   if (name === 'Utility') { setCurrentFolder('Utility'); setSelectedFolder({label: 'Utility', img: imageMapping(name)}); setUndo(prev => [...prev, 'Utility']); return; }
+  if (name === 'CD-ROM') { setAutorunShow(true); return; }
   if(type === 'folder') { setCurrentFolder(name); setSelectedFolder({label: name, img: imageMapping('Project')}); setUndo(prev => [...prev, name]); return; }
   handleShow(name)
 }
@@ -709,6 +712,7 @@ function handleShowInfolderMobile(name, type) {
     if (name === 'Project') { setTimeout(() => { setCurrentFolder('Project') }, 100); setSelectedFolder({label: 'Project', img: imageMapping(name)}); setUndo(prev => [...prev, 'Project']); return; }
     if (name === 'Picture') { setTimeout(() => { setCurrentFolder('Picture') }, 100); setSelectedFolder({label: 'Picture', img: imageMapping(name)}); setUndo(prev => [...prev, 'Picture']); return; }
     if (name === 'Utility') { setTimeout(() => { setCurrentFolder('Utility') }, 100); setSelectedFolder({label: 'Utility', img: imageMapping(name)}); setUndo(prev => [...prev, 'Utility']); return; }
+    if (name === 'CD-ROM') { setAutorunShow(true); setLastTapTime(0); return; }
     if(type === 'folder') { setTimeout(() => { setCurrentFolder(name) }, 100); setSelectedFolder({label: name, img: imageMapping('Project')}); setUndo(prev => [...prev, name]); return; }
     handleShowMobile(name)
   }
@@ -976,6 +980,7 @@ function handleShowInfolderMobile(name, type) {
         <CoolSites show={coolSitesShow} setShow={setCoolSitesShow}/>
         <MediaPlayer show={mediaPlayerShow} setShow={setMediaPlayerShow}/>
         <SystemSpecs show={specsShow} setShow={setSpecsShow}/>
+        <Autorun show={autorunShow} setShow={setAutorunShow}/>
         <VisitorMap show={mapShow} setShow={setMapShow} />
         <JokeFile name={jokeFile} setName={setJokeFile} />
         <Dragdrop/>
