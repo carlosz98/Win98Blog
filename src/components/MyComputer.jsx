@@ -378,7 +378,7 @@ function MyComputer() {
                   }}
                   key={key}
                 >
-                  <div className='icon' key={icon.name}
+                  <div className='icon' key={icon.name} data-tip={icon.description}
                     style={iconContainerSize(iconScreenSize)}
                     ref={(el) => iconRefs.current[icon.name] = el}
                     onContextMenu={() => {

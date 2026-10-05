@@ -216,6 +216,7 @@ function Dragdrop() {
           >
             <div
               className='icon'
+              data-tip={icon.description}
               style={iconContainerSize(iconScreenSize)}
               ref={(el) => iconRefs.current[icon.name] = el} 
               onContextMenu={() => {
