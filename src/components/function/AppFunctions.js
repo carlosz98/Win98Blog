@@ -45,6 +45,8 @@ import news from '../../assets/news.png'
 import portfolio from '../../assets/display.png'
 import kofi from '../../assets/kofi.png'
 import guestbook from '../../assets/guestbook.png'
+import gallery from '../../assets/gallery.png'
+import worldmap from '../../assets/worldmap.png'
 
 
 
@@ -158,6 +160,14 @@ export function imageMapping (name, type) {
 
     case 'Guestbook':
       return guestbook;
+
+    case 'Gallery':
+    case 'Paint Gallery':
+      return gallery;
+
+    case 'WorldMap':
+    case 'Visitor Map':
+      return worldmap;
 
     case "paint":
     case "Paint":

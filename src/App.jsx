@@ -49,6 +49,11 @@ import Screensaver from './components/Screensaver';
 import BlueScreen from './components/BlueScreen';
 import VisitorCounter from './components/VisitorCounter';
 import Guestbook from './components/Guestbook';
+import DesktopPet from './components/DesktopPet';
+import PaintGallery from './components/PaintGallery';
+import VisitorMap from './components/VisitorMap';
+import JokeFile from './components/JokeFile';
+import { JOKE_FILES } from './components/function/jokeFiles';
 import { startupOnFirstGesture, playOpen, playError, playShutdown } from './components/function/sounds';
 
 
@@ -198,6 +203,9 @@ function App() {
   const [projectUrl, setProjectUrl] = useState('')
   const [devFeedShow, setDevFeedShow] = useState(false);
   const [guestbookShow, setGuestbookShow] = useState(false);
+  const [galleryShow, setGalleryShow] = useState(false);
+  const [mapShow, setMapShow] = useState(false);
+  const [jokeFile, setJokeFile] = useState(null);
 
   // System sounds: startup chime once the desktop shows, plus error and shutdown.
   useEffect(() => {
@@ -874,6 +882,7 @@ function handleShowInfolderMobile(name, type) {
       <Screensaver/>
       <BlueScreen/>
       <VisitorCounter/>
+      <DesktopPet/>
       {regErrorPopUp && (
         <ErrorBtn
             themeDragBar={themeDragBar}
@@ -935,6 +944,9 @@ function handleShowInfolderMobile(name, type) {
         <Solitaire show={solitaireShow} setShow={setSolitaireShow} />
         <DevFeed show={devFeedShow} setShow={setDevFeedShow} />
         <Guestbook show={guestbookShow} setShow={setGuestbookShow} />
+        <PaintGallery show={galleryShow} setShow={setGalleryShow} />
+        <VisitorMap show={mapShow} setShow={setMapShow} />
+        <JokeFile name={jokeFile} setName={setJokeFile} />
         <Dragdrop/>
         <Footer/>
       </UserContext.Provider>
@@ -1177,6 +1189,8 @@ function handleShowInfolderMobile(name, type) {
       return;
     }
 
+    if(openCommunityApp(lowerCaseName)) return;
+
     if(lowerCaseName === 'solitaire') {
       setSolitaireShow(true);
       setStartActive(false);
@@ -1278,6 +1292,8 @@ if(lowerCaseName === 'ko-fi') {
         return;
       }
 
+      if(openCommunityApp(lowerCaseName)) { setLastTapTime(now); return; }
+
       if(lowerCaseName === 'solitaire') {
         setSolitaireShow(true);
         setStartActive(false);
@@ -1366,6 +1382,17 @@ if(lowerCaseName === 'ko-fi') {
   }
 
   // Hourglass for a moment, and Clippy comments the first time each app opens.
+  // Paint Gallery, Visitor Map and the Recycle Bin joke files. Returns true if it opened one.
+  function openCommunityApp(lowerCaseName) {
+    const joke = Object.keys(JOKE_FILES).find(k => k.toLowerCase() === lowerCaseName);
+    if (joke) setJokeFile(joke);
+    else if (lowerCaseName === 'paintgallery') setGalleryShow(true);
+    else if (lowerCaseName === 'visitormap') setMapShow(true);
+    else return false;
+    setStartActive(false);
+    return true;
+  }
+
   function reactToOpen(lowerCaseName) {
     showBusyCursor();
     playOpen();
