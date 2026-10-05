@@ -41,6 +41,19 @@ service cloud.firestore {
         && request.resource.data.count == resource.data.count + 1;
     }
 
+    // Scrapbook: anyone can read; only the admin can post or delete.
+    match /scrapbook/{postId} {
+      allow read: if true;
+      allow create: if isAdmin()
+        && request.resource.data.keys().hasOnly(['kind', 'src', 'caption', 'tag', 'createdAt'])
+        && request.resource.data.kind in ['image', 'video', 'youtube', 'text']
+        && request.resource.data.src is string && request.resource.data.src.size() <= 900000
+        && request.resource.data.caption is string && request.resource.data.caption.size() <= 200
+        && request.resource.data.tag is string && request.resource.data.tag.size() <= 20
+        && request.resource.data.createdAt == request.time;
+      allow delete: if isAdmin();
+    }
+
     // Paint gallery: anyone can read and post a small PNG; only the admin can delete.
     match /gallery/{pictureId} {
       allow read: if true;

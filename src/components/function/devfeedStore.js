@@ -55,7 +55,7 @@ function createFirestoreStore() {
       return onSnapshot(q, snap => {
         onPosts(snap.docs.map(d => {
           const data = d.data();
-          return normalize({ ...data, id: d.id, time: formatTime(data.createdAt) });
+          return normalize({ ...data, id: d.id, time: formatTime(data.createdAt), postedAt: data.createdAt?.toMillis?.() });
         }));
       }, onError);
     },

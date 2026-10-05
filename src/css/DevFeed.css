@@ -454,3 +454,145 @@
   background: #808080;
   margin: 0 3px;
 }
+/* ── Project filter tabs ── */
+.df-tabs {
+  display: flex;
+  gap: 2px;
+  padding: 4px 6px 0;
+  overflow-x: auto;
+  flex-shrink: 0;
+  border-bottom: 1px solid #fff;
+  box-shadow: 0 1px 0 #808080;
+  scrollbar-width: thin;
+}
+.df-tabs button {
+  flex-shrink: 0;
+  padding: 2px 8px 3px;
+  background: #c5c4c4;
+  border: 1px solid;
+  border-color: #fff #000 transparent #fff;
+  border-bottom: none;
+  font: inherit;
+  font-size: 10px;
+  cursor: pointer;
+  position: relative;
+  top: 1px;
+}
+.df-tabs button.active {
+  padding-top: 4px;
+  margin-top: -2px;
+  background: #d4d0c8;
+  font-weight: bold;
+  z-index: 1;
+}
+
+/* ── Pixel tag chips ── */
+.df-post-tags .df-tag {
+  background: #c5c4c4;
+  color: #000080;
+  border: 1px solid;
+  border-color: #fff #000 #000 #fff;
+  box-shadow: 1px 1px 0 #808080;
+  font-weight: bold;
+  cursor: default;
+}
+.df-post-tags .df-tag:hover { background: #ffffc0; }
+
+/* ── NEW badge ── */
+.df-new-badge {
+  margin-left: 6px;
+  padding: 0 3px;
+  background: #ff0000;
+  color: #ffff00;
+  font-size: 9px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  animation: df_blink 1s steps(1) infinite;
+}
+@keyframes df_blink { 50% { background: #ffff00; color: #ff0000; } }
+
+/* ── Dial-up loading ── */
+.df-dialup {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 16px auto;
+  padding: 10px 12px;
+  width: min(300px, 90%);
+  background: #c5c4c4;
+  border: 2px solid;
+  border-color: #fff #000 #000 #fff;
+  font-size: 11px;
+}
+.df-hourglass { font-size: 22px; animation: df_flip 1.2s steps(2) infinite; }
+@keyframes df_flip { 50% { transform: rotate(180deg); } }
+.df-dialup-bar {
+  height: 14px;
+  margin-top: 5px;
+  padding: 2px;
+  background: #fff;
+  border: 1px solid;
+  border-color: #808080 #fff #fff #808080;
+}
+.df-dialup-bar span {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: repeating-linear-gradient(90deg, #000080 0 8px, transparent 8px 10px);
+  animation: df_dial 1.3s steps(12) forwards;
+}
+@keyframes df_dial { to { width: 100%; } }
+
+/* ── Posts appear one by one, like a slow page load ── */
+.df-post-reveal {
+  animation: df_reveal 0.36s steps(6, end) both;
+}
+@keyframes df_reveal {
+  from { clip-path: inset(0 0 100% 0); }
+  to   { clip-path: inset(0 0 0 0); }
+}
+
+/* ── Pixel heart burst on like ── */
+.df-like-btn { position: relative; }
+.df-heart-pop {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  pointer-events: none;
+}
+.df-heart-pop i {
+  position: absolute;
+  width: 10px;
+  height: 9px;
+  margin: -5px 0 0 -5px;
+  background: #e00000;
+  clip-path: polygon(0 20%, 20% 0, 40% 0, 50% 20%, 60% 0, 80% 0, 100% 20%, 100% 50%, 50% 100%, 0 50%);
+  animation: df_heart 0.65s steps(6, end) forwards;
+}
+.df-heart-pop i:nth-child(1) { --dx: 0px;   --dy: -26px; }
+.df-heart-pop i:nth-child(2) { --dx: -22px; --dy: -14px; }
+.df-heart-pop i:nth-child(3) { --dx: 22px;  --dy: -14px; }
+.df-heart-pop i:nth-child(4) { --dx: -12px; --dy: -30px; }
+.df-heart-pop i:nth-child(5) { --dx: 12px;  --dy: -30px; }
+@keyframes df_heart {
+  0%   { transform: translate(0, 0) scale(0.6); opacity: 1; }
+  60%  { opacity: 1; }
+  100% { transform: translate(var(--dx), var(--dy)) scale(1.2); opacity: 0; }
+}
+
+/* ── Typing cursor for new comments ── */
+.df-type-cursor {
+  display: inline-block;
+  width: 6px;
+  height: 10px;
+  margin-left: 1px;
+  background: #000;
+  vertical-align: -1px;
+  animation: df_blink_cursor 0.8s steps(1) infinite;
+}
+@keyframes df_blink_cursor { 50% { opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .df-post-reveal, .df-heart-pop i, .df-new-badge, .df-hourglass, .df-dialup-bar span { animation: none; }
+  .df-dialup-bar span { width: 100%; }
+}
