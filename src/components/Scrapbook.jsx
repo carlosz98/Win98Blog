@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import UseContext from '../Context';
 import Draggable from 'react-draggable';
 import scrapbookIcon from '../assets/scrapbook.png';
@@ -22,7 +22,6 @@ const DEMO_POSTS = [
   { id: 'demo5', kind: 'image', src: demoDog, caption: 'Found this guy at the park.', tag: 'life', date: 'Oct 1, 2026' },
 ];
 
-const POST_WIDTH = 230;
 
 // Turns a pasted link into a post: YouTube becomes an embed, .mp4/.webm a video,
 // anything else (JPG, PNG, GIF) a picture.
@@ -63,15 +62,6 @@ function shrinkImage(file) {
     img.onerror = () => reject(new Error('Could not read that picture.'));
     img.src = URL.createObjectURL(file);
   });
-}
-
-// Scatters the posts across the desk in loose columns.
-function deskPosition(index, width) {
-  const cols = Math.max(1, Math.floor((width - 20) / (POST_WIDTH + 20)));
-  const col = index % cols;
-  const row = Math.floor(index / cols);
-  const wobble = ((index * 37) % 23) - 11;
-  return { x: 12 + col * (POST_WIDTH + 20) + wobble, y: 12 + row * 250 + ((index * 53) % 30) };
 }
 
 function PostMedia({ post }) {
@@ -122,15 +112,11 @@ export default function Scrapbook({ show, setShow }) {
   const { themeDragBar } = useContext(UseContext);
   const [posts, setPosts] = useState([]);
   const [loaded, setLoaded] = useState(false);
-  const [view, setView] = useState(() => (window.innerWidth <= 500 ? 'grid' : 'desk'));
   const [closed, setClosed] = useState([]);
-  const [order, setOrder] = useState([]); // post ids, last = on top
   const [expand, setExpand] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [composer, setComposer] = useState(false);
   const [status, setStatus] = useState('');
-  const deskRef = useRef(null);
-  const [deskWidth, setDeskWidth] = useState(720);
 
   useEffect(() => {
     if (!show) return;
@@ -140,17 +126,9 @@ export default function Scrapbook({ show, setShow }) {
     );
   }, [show]);
   useEffect(() => devfeedStore.onAdminChange(setIsAdmin), []);
-  useEffect(() => {
-    if (!show || !deskRef.current) return;
-    const ro = new ResizeObserver(([entry]) => setDeskWidth(entry.contentRect.width));
-    ro.observe(deskRef.current);
-    return () => ro.disconnect();
-  }, [show, view]);
 
   const demo = loaded && posts.length === 0;
   const shown = (demo ? DEMO_POSTS : posts).filter(p => !closed.includes(p.id));
-  const zOf = id => order.indexOf(id) + 2;
-  const bringToFront = id => setOrder(prev => [...prev.filter(x => x !== id), id]);
 
   async function handleNewPost() {
     if (isAdmin) { setComposer(c => !c); return; }
@@ -190,10 +168,7 @@ export default function Scrapbook({ show, setShow }) {
         </div>
 
         <div className="sb-toolbar">
-          <button className={view === 'desk' ? 'active' : ''} onClick={() => setView('desk')}>🗂 Desk</button>
-          <button className={view === 'grid' ? 'active' : ''} onClick={() => setView('grid')}>▦ Grid</button>
-          <span className="sb-toolbar-sep" />
-          <button onClick={() => { setClosed([]); setOrder([]); }} disabled={!closed.length}>↺ Show all</button>
+          <button onClick={() => setClosed([])} disabled={!closed.length}>↺ Show all</button>
           <button onClick={handleNewPost}>{isAdmin ? '📝 New post' : '🔒 Post'}</button>
           {isAdmin && <button onClick={() => devfeedStore.logout()}>Log out</button>}
         </div>
@@ -202,21 +177,8 @@ export default function Scrapbook({ show, setShow }) {
           <Composer onDone={() => setComposer(false)} setStatus={setStatus} />
         )}
 
-        <div ref={deskRef} className={`sb-area sb-${view}`}>
-          {view === 'desk'
-            ? shown.map((post, i) => (
-              <Draggable key={post.id} handle=".sb-post-bar" bounds="parent"
-                defaultPosition={deskPosition(i, deskWidth)} onStart={() => bringToFront(post.id)}>
-                <div className="sb-desk-item" style={{ zIndex: zOf(post.id) }}>
-                  <PostWindow post={post} themeDragBar={themeDragBar} isAdmin={isAdmin}
-                    focused={order[order.length - 1] === post.id}
-                    onFocus={() => bringToFront(post.id)}
-                    onClose={() => setClosed(c => [...c, post.id])}
-                    onDelete={() => handleDelete(post)} />
-                </div>
-              </Draggable>
-            ))
-            : shown.map(post => (
+        <div className="sb-area sb-grid">
+          {shown.map(post => (
               <div key={post.id} className="sb-grid-item">
                 <PostWindow post={post} themeDragBar={themeDragBar} isAdmin={isAdmin} focused
                   onFocus={() => {}}
@@ -229,7 +191,7 @@ export default function Scrapbook({ show, setShow }) {
 
         <div className="sb-statusbar">
           <span>{loaded ? `${demo ? DEMO_POSTS.length : posts.length} post(s)${demo ? ' (demo)' : ''}` : 'Loading…'}</span>
-          <span>{status || (view === 'desk' ? 'Drag windows around the desk' : 'Grid view')}</span>
+          <span>{status || 'Grid view'}</span>
         </div>
       </div>
     </Draggable>

@@ -43,7 +43,7 @@ export const clippySuggest =
 export const clippyReactions = {
     guestbook:   { phrase: "Sign the guestbook! Leave Carlos a message.", animation: clippy2 },
     paintgallery: { phrase: "Draw something! It goes up in the gallery for everyone.", animation: clippy3 },
-    scrapbook: { phrase: "Snapshots from Carlos. Drag the photos around!", animation: clippy3 },
+    scrapbook: { phrase: "Snapshots from Carlos. Scroll through the photos!", animation: clippy3 },
     visitormap:  { phrase: "Look how far people come from to visit Carlos!", animation: clippy2 },
     msn:         { phrase: "That's CarlosBot! Ask it anything about Carlos.", animation: clippy2 },
     resume:      { phrase: "Hiring? Carlos is open to opportunities!", animation: clippy3 },
