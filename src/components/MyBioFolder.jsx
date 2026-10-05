@@ -36,6 +36,16 @@ const SKILLS = [
   { name: 'iOS / SwiftUI',  level: 60 },
   { name: 'React / JS',     level: 70 },
   { name: 'Firebase / GCP', level: 60 },
+  { name: 'HTML',           level: 55 },
+  { name: 'CSS',            level: 55 },
+  { name: 'JavaScript',     level: 55 },
+];
+
+// Shown as beginner meters under a "Currently learning" heading.
+const LEARNING = [
+  { name: 'PHP',     level: 25 },
+  { name: 'MySQL',   level: 25 },
+  { name: 'Node.js', level: 25 },
 ];
 
 function prefersReducedMotion() {
@@ -105,15 +115,7 @@ function MyBioFolder() {
     </span>
   );
 
-  const technologyText = (
-    <>
-      <span className="bio_tech_intro">
-        Focused on OOP, data structures and algorithms. I build games and
-        mobile apps, plus web projects like this one.
-      </span>
-      <fieldset className="bio_skills">
-        <legend>Skills</legend>
-        {SKILLS.map(skill => (
+  const renderMeter = skill => (
           <span key={skill.name} className="bio_skill_row">
             <span className="bio_skill_name">{skill.name}</span>
             <span
@@ -127,7 +129,21 @@ function MyBioFolder() {
               <span className="bio_meter_fill" style={{ width: metersFilled ? `${skill.level}%` : 0 }} />
             </span>
           </span>
-        ))}
+  );
+
+  const technologyText = (
+    <>
+      <span className="bio_tech_intro">
+        Focused on OOP, data structures and algorithms. I build games and
+        mobile apps, plus web projects like this one.
+      </span>
+      <fieldset className="bio_skills">
+        <legend>Skills</legend>
+        {SKILLS.map(renderMeter)}
+      </fieldset>
+      <fieldset className="bio_skills bio_learning">
+        <legend>Currently learning <span className="bio_learning_badge">beginner</span></legend>
+        {LEARNING.map(renderMeter)}
       </fieldset>
     </>
   );

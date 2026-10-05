@@ -44,6 +44,21 @@ import layer from '../../assets/layer.png'
 import news from '../../assets/news.png'
 import portfolio from '../../assets/display.png'
 import kofi from '../../assets/kofi.png'
+import doom from '../../assets/doom.png'
+import invaders from '../../assets/invaders.png'
+import pinball from '../../assets/pinball.png'
+
+// Classic games that run on other sites, opened inside the IE window.
+export const WEB_GAMES = {
+  'Doom':           'https://archive.org/embed/DoomsharewareEpisode',
+  'Space Invaders': 'https://archive.org/embed/arcade_invaders',
+  'Pinball':        'https://pinball.alula.me/',
+};
+
+// Finds the game whose name matches a lower-cased, space-free icon name.
+export function webGameName(lowerCaseName) {
+  return Object.keys(WEB_GAMES).find(g => g.toLowerCase().split(' ').join('') === lowerCaseName);
+}
 import guestbook from '../../assets/guestbook.png'
 import gallery from '../../assets/gallery.png'
 import worldmap from '../../assets/worldmap.png'
@@ -153,6 +168,16 @@ export function imageMapping (name, type) {
 
     case 'Github':
       return github;
+
+    case 'Doom':
+      return doom;
+
+    case 'SpaceInvaders':
+    case 'Space Invaders':
+      return invaders;
+
+    case 'Pinball':
+      return pinball;
 
     case 'Kofi':
     case 'Ko-fi':
@@ -352,7 +377,12 @@ export function handleDoubleClickiframe(name, setOpenProjectExpand, setProjectUr
         setBackTrackIe(prev => [...prev, 'https://ko-fi.com/carloszabala/?hidefeed=true&widget=true&embed=true&preview=true']);
     break;
 
-    default: break; 
+    default:
+      if (WEB_GAMES[name]) {
+        setProjectUrl(WEB_GAMES[name]);
+        setBackTrackIe(prev => [...prev, WEB_GAMES[name]]);
+      }
+    break;
   }
 }
 
@@ -420,7 +450,12 @@ export function handleDoubleTapiframeMobile(name, lastTapTime, setLastTapTime, s
         setBackTrackIe(prev => [...prev, 'https://ko-fi.com/carloszabala/?hidefeed=true&widget=true&embed=true&preview=true']);
         break;
   
-      default: break; 
+      default:
+        if (WEB_GAMES[name]) {
+          setProjectUrl(WEB_GAMES[name]);
+          setBackTrackIe(prev => [...prev, WEB_GAMES[name]]);
+        }
+        break;
     }
   }
   setLastTapTime(now);

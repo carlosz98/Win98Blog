@@ -15,23 +15,18 @@
     resize: both;
 }
 
+/* Tall enough to show the whole form and links when it opens. */
 @media screen and (width <= 500px) {
     .folder_folder-mail  {
         width: 80%;
-        height: 350px;
+        height: min(640px, calc(100svh - 110px));
     }
 }
 
 @media screen and (width >= 500px) {
     .folder_folder-mail  {
-        width: 450px;
-        height: 400px;
-    }
-}
-@media screen and (width >= 1000px) {
-    .folder_folder-mail  {
-        width: 500px;
-        height: 450px;
+        width: 520px;
+        height: min(640px, calc(100svh - 70px));
     }
 }
 

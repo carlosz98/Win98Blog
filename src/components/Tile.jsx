@@ -48,6 +48,11 @@ import task from '../assets/task.png'
 import store from '../assets/store_tile.png'
 import layer from '../assets/layer_tile.png'
 import kofi from '../assets/kofi.png'
+import doom from '../assets/doom.png'
+import invaders from '../assets/invaders.png'
+import pinball from '../assets/pinball.png'
+
+const GAME_TILE_ICONS = { 'Doom': doom, 'Space Invaders': invaders, 'Pinball': pinball };
 import ie_tilt from '../assets/ie_tilt.png'
 
 
@@ -354,6 +359,16 @@ export default function Tile({ id, content, index, size, color, moveTile, imageM
           backgroundPosition: '50% 57%',
           backgroundSize: '54px',
           backgroundRepeat: 'no-repeat',
+        };
+        case 'Doom':
+        case 'Space Invaders':
+        case 'Pinball':
+        return {
+          backgroundImage: `url(${GAME_TILE_ICONS[content]})`,
+          backgroundPosition: '50% 57%',
+          backgroundSize: '54px',
+          backgroundRepeat: 'no-repeat',
+          imageRendering: 'pixelated',
         };
         case 'Ko-fi':
         return {
