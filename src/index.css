@@ -1170,30 +1170,6 @@ html.win-busy, html.win-busy * {
     transform: rotate(-35deg);
 }
 
-/* ── Desktop dog ── */
-.desktop_pet {
-    position: fixed;
-    left: 0;
-    bottom: 38px;
-    z-index: 3;
-    cursor: pointer;
-    user-select: none;
-    -webkit-tap-highlight-color: transparent;
-}
-.desktop_pet canvas { display: block; image-rendering: pixelated; }
-.desktop_pet_bubble {
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    margin-bottom: 4px;
-    padding: 2px 6px;
-    background: #ffffe1;
-    border: 1px solid #000;
-    font-size: 11px;
-    white-space: nowrap;
-}
-
 /* ── Recycle Bin joke files ── */
 .joke-window { width: 380px; height: 300px; display: flex; flex-direction: column; }
 .joke-text {

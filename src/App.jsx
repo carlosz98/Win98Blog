@@ -49,7 +49,6 @@ import Screensaver from './components/Screensaver';
 import BlueScreen from './components/BlueScreen';
 import VisitorCounter from './components/VisitorCounter';
 import Guestbook from './components/Guestbook';
-import DesktopPet from './components/DesktopPet';
 import PaintGallery from './components/PaintGallery';
 import VisitorMap from './components/VisitorMap';
 import JokeFile from './components/JokeFile';
@@ -882,7 +881,6 @@ function handleShowInfolderMobile(name, type) {
       <Screensaver/>
       <BlueScreen/>
       <VisitorCounter/>
-      <DesktopPet/>
       {regErrorPopUp && (
         <ErrorBtn
             themeDragBar={themeDragBar}
