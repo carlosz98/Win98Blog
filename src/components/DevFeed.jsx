@@ -63,6 +63,26 @@ function getProject(name) {
   return PROJECTS.find(p => p.name === name) || { color: '#555', emoji: '📁' };
 }
 
+const NEW_FOR_MS = 3 * 24 * 3600e3;
+const DIALUP_MS = 1400;
+
+// Posts from the last few days get a blinking NEW badge.
+function isNewPost(post) {
+  const at = post.postedAt || (typeof post.id === 'number' && post.id > 1e12 ? post.id : 0);
+  return at > 0 && Date.now() - at < NEW_FOR_MS;
+}
+
+// Types a freshly added comment out letter by letter.
+function TypedText({ text, onDone }) {
+  const [n, setN] = useState(0);
+  useEffect(() => {
+    if (n >= text.length) { onDone(); return; }
+    const id = setTimeout(() => setN(n + 1), 35);
+    return () => clearTimeout(id);
+  }, [n, text, onDone]);
+  return <span>{text.slice(0, n)}<span className="df-type-cursor" aria-hidden="true" /></span>;
+}
+
 // ── Get a per-browser user ID so likes persist per visitor ──
 function getUserId() {
   let id = localStorage.getItem('df_user_id');
@@ -103,14 +123,33 @@ export default function DevFeed({ show, setShow }) {
   const [commentInputs, setCommentInputs] = useState({}); // postId → string
   const [commentNames, setCommentNames]   = useState({}); // postId → string
   const [copiedId, setCopiedId]         = useState(null);
+  const [loaded, setLoaded]             = useState(false);
+  const [dialing, setDialing]           = useState(true);
+  const [popId, setPopId]               = useState(null); // post whose like just popped
+  const seenComments                    = useRef(null);   // comment ids already on screen
+  const [, forceRender]                 = useState(0);
 
   // ── Load posts and admin state from the store ──
   useEffect(() => devfeedStore.subscribe(
-    next => { setPosts(next); setFeedError(''); },
+    next => {
+      // Comments that exist when the feed first loads show instantly; later ones type in.
+      if (!seenComments.current) {
+        seenComments.current = new Set(next.flatMap(p => p.comments.map(c => c.id)));
+      }
+      setPosts(next); setFeedError(''); setLoaded(true);
+    },
     err => { console.error('DevFeed load failed', err); setFeedError('Could not load posts.'); },
     SEED_POSTS,
   ), []);
   useEffect(() => devfeedStore.onAdminChange(setIsAdmin), []);
+
+  // A short "dial-up" bar each time the feed opens.
+  useEffect(() => {
+    if (!show) return;
+    setDialing(true);
+    const id = setTimeout(() => setDialing(false), DIALUP_MS);
+    return () => clearTimeout(id);
+  }, [show]);
 
   function run(promise) {
     promise.catch(err => {
@@ -167,6 +206,10 @@ export default function DevFeed({ show, setShow }) {
 
   // ── Like ──
   function toggleLike(post) {
+    if (!post.likedBy.includes(userId)) {
+      setPopId(post.id);
+      setTimeout(() => setPopId(p => (p === post.id ? null : p)), 700);
+    }
     run(devfeedStore.toggleLike(post, userId));
   }
 
@@ -332,13 +375,18 @@ export default function DevFeed({ show, setShow }) {
             </div>
           </div>
 
-          {/* ── FILTER ── */}
-          {activeStory && (
-            <div className="df-filter-bar">
-              <span>📌 <strong>{activeStory}</strong></span>
-              <button onClick={() => setActiveStory(null)}>✕ Clear</button>
-            </div>
-          )}
+          {/* ── FILTER TABS ── */}
+          <div className="df-tabs" role="tablist">
+            <button role="tab" aria-selected={!activeStory} className={!activeStory ? 'active' : ''}
+              onClick={() => setActiveStory(null)}>All ({posts.length})</button>
+            {PROJECTS.filter(p => posts.some(post => post.project === p.name)).map(p => (
+              <button key={p.name} role="tab" aria-selected={activeStory === p.name}
+                className={activeStory === p.name ? 'active' : ''}
+                onClick={() => setActiveStory(activeStory === p.name ? null : p.name)}>
+                {p.emoji} {p.name} ({posts.filter(post => post.project === p.name).length})
+              </button>
+            ))}
+          </div>
 
           {/* ── COMPOSER ── */}
           <AnimatePresence>
@@ -464,15 +512,23 @@ export default function DevFeed({ show, setShow }) {
           {/* ── FEED ── */}
           <div className="df-feed">
             {feedError && <div className="df-empty">{feedError}</div>}
-            {posts
+            {(dialing || !loaded) && !feedError && (
+              <div className="df-dialup">
+                <span className="df-hourglass" aria-hidden="true">⌛</span>
+                <div>
+                  <div>Connecting to DevFeed at 56,000 bps…</div>
+                  <div className="df-dialup-bar"><span /></div>
+                </div>
+              </div>
+            )}
+            {!dialing && loaded && posts
               .filter(p => !activeStory || p.project === activeStory)
-              .map(post => {
+              .map((post, index) => {
                 const proj    = getProject(post.project);
                 const liked   = post.likedBy.includes(userId);
                 const showCmt = openComments[post.id];
                 return (
-                  <motion.div key={post.id} className="df-post"
-                    initial={{opacity:0,y:10}} animate={{opacity:1,y:0}} transition={{duration:0.2}}>
+                  <div key={post.id} className="df-post df-post-reveal" style={{ animationDelay: `${Math.min(index, 8) * 120}ms` }}>
 
                     {/* Header */}
                     <div className="df-post-header">
@@ -482,7 +538,7 @@ export default function DevFeed({ show, setShow }) {
                         />
                       </div>
                       <div className="df-post-meta">
-                        <strong>{post.project}</strong>
+                        <strong>{post.project}{isNewPost(post) && <span className="df-new-badge">NEW</span>}</strong>
                         <span className="df-post-time">{post.time}</span>
                       </div>
                       {isAdmin && (
@@ -532,9 +588,10 @@ export default function DevFeed({ show, setShow }) {
                     {/* Actions */}
                     <div className="df-post-actions">
                       <button
+                        className="df-like-btn"
                         onClick={() => toggleLike(post)}
                         style={{ color: liked ? '#000080' : '#65676b', fontWeight: liked ? 'bold' : 'normal' }}
-                      >👍 Like</button>
+                      >👍 Like{popId === post.id && <span className="df-heart-pop" aria-hidden="true"><i /><i /><i /><i /><i /></span>}</button>
                       <button onClick={() => toggleComments(post.id)}>💬 Comment</button>
                       <button onClick={() => handleShare(post.id)}>
                         {copiedId === post.id ? '✅ Copied!' : '↗ Share'}
@@ -554,7 +611,9 @@ export default function DevFeed({ show, setShow }) {
                               <div className="df-comment-avatar">{c.name.charAt(0).toUpperCase()}</div>
                               <div className="df-comment-body">
                                 <strong>{c.name}</strong>
-                                <span>{c.text}</span>
+                                {seenComments.current && !seenComments.current.has(c.id)
+                                  ? <TypedText text={c.text} onDone={() => { seenComments.current.add(c.id); forceRender(n => n + 1); }} />
+                                  : <span>{c.text}</span>}
                                 <span className="df-comment-time">{c.time}</span>
                               </div>
                               {isAdmin && (
@@ -590,12 +649,12 @@ export default function DevFeed({ show, setShow }) {
                         </motion.div>
                       )}
                     </AnimatePresence>
-                  </motion.div>
+                  </div>
                 );
               })}
 
-            {posts.filter(p => !activeStory || p.project === activeStory).length === 0 && (
-              <div className="df-empty">No posts for {activeStory} yet.</div>
+            {!dialing && loaded && posts.filter(p => !activeStory || p.project === activeStory).length === 0 && (
+              <div className="df-empty">{activeStory ? `No posts for ${activeStory} yet.` : "No posts yet."}</div>
             )}
           </div>
         </div>
