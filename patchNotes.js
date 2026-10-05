@@ -1,5 +1,16 @@
 const patchNotes = [
   {
+    head: "**Windows 98 update**",
+    date: "2026-10-05",
+    notes: [
+      "Added a Guestbook on the desktop, sign it!",
+      "Added a visitor counter",
+      "Added screensavers that start after a minute idle (or type \"screensaver\" in Run)",
+      "Added system sounds, with a mute button in the taskbar",
+      "Try typing \"bsod\" in Run...",
+    ]
+  },
+  {
     head: "**MSN**",
     date: "2026-02-28",
     notes: [

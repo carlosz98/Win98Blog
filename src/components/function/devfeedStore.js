@@ -2,7 +2,7 @@
 // When the VITE_FIREBASE_* env vars are set, posts live in Firestore so every
 // visitor sees the same feed and the admin signs in with Google.
 // Without them it falls back to this browser's localStorage (dev only).
-import { initializeApp } from 'firebase/app';
+import { initializeApp, getApps } from 'firebase/app';
 import {
   getFirestore, collection, query, orderBy, onSnapshot, addDoc, deleteDoc,
   doc, updateDoc, increment, arrayUnion, arrayRemove, serverTimestamp,
@@ -39,7 +39,7 @@ function normalize(p) {
 
 // ── Firestore backend ──
 function createFirestoreStore() {
-  const app  = initializeApp(firebaseConfig);
+  const app  = getApps()[0] || initializeApp(firebaseConfig);
   const db   = getFirestore(app);
   const auth = getAuth(app);
   if (env.VITE_FIREBASE_EMULATOR === 'true') {
