@@ -1,0 +1,209 @@
+.df-window.ar-window {
+  width: min(560px, calc(100vw - 8px));
+  height: auto;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Spin-up: a drive tray with the disc whirring and the busy light blinking. */
+.ar-reading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  height: 260px;
+  font-size: 12px;
+}
+.ar-drive {
+  position: relative;
+  width: 220px;
+  height: 46px;
+  background: linear-gradient(#d8d8d8, #a8a8a8);
+  border: 2px solid;
+  border-color: #fff #404040 #404040 #fff;
+}
+.ar-tray {
+  position: absolute;
+  left: 20px;
+  right: 40px;
+  top: 14px;
+  height: 14px;
+  background: #222;
+  overflow: visible;
+  animation: ar_tray 1.6s steps(8, end) forwards;
+}
+@keyframes ar_tray {
+  0% { transform: translateY(26px); }
+  40% { transform: translateY(26px); }
+  100% { transform: translateY(0); }
+}
+.ar-tray .ar-disc { position: absolute; left: 50%; top: -38px; width: 90px; height: 90px; margin-left: -45px; opacity: 0.95; }
+.ar-led {
+  position: absolute;
+  right: 12px;
+  top: 18px;
+  width: 10px;
+  height: 6px;
+  background: #00ff40;
+  box-shadow: 0 0 6px #00ff40;
+  animation: ar_blink 0.25s steps(1, end) infinite;
+}
+@keyframes ar_blink { 50% { background: #064; box-shadow: none; } }
+.ar-reading p { margin: 40px 0 0; }
+.ar-dots::after { content: ''; animation: ar_dots 1s steps(4, end) infinite; }
+@keyframes ar_dots { 0% { content: ''; } 25% { content: '.'; } 50% { content: '..'; } 75% { content: '...'; } }
+
+/* The disc itself: rainbow shine from a conic gradient, with a hole. */
+.ar-disc {
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, #c5c4c4 0 9%, #8a8a8a 9% 11%, transparent 11%),
+    conic-gradient(#e8e8f0, #b6f0ff, #ffd6f5, #fff6b0, #c8ffd0, #e8e8f0, #b6c8ff, #ffd6f5, #e8e8f0);
+  border: 1px solid #777;
+}
+.spin-fast { animation: ar_spin 0.5s linear infinite; }
+@keyframes ar_spin { to { transform: rotate(360deg); } }
+
+/* The menu: a vaporwave sunset with a scrolling grid. */
+.ar-stage {
+  position: relative;
+  min-height: 330px;
+  overflow: hidden;
+  margin: 3px;
+  border: 2px solid;
+  border-color: #808080 #fff #fff #808080;
+  color: #fff;
+  font-family: 'Arial Black', 'Arial', sans-serif;
+  animation: ar_fade 0.6s steps(6, end);
+}
+@keyframes ar_fade { from { filter: brightness(3) saturate(0); } }
+.ar-sky {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(#1a0033 0%, #4b1a7a 35%, #ff4fa3 62%, #ff9e6b 70%, #1a0033 70.5%);
+}
+.ar-sun {
+  position: absolute;
+  left: 50%;
+  top: 22%;
+  width: 150px;
+  height: 150px;
+  margin-left: -75px;
+  border-radius: 50%;
+  background: linear-gradient(#fff36b, #ff7ac3 70%);
+  -webkit-mask: linear-gradient(#000 55%, transparent 55%), repeating-linear-gradient(#000 0 9px, transparent 9px 13px);
+  mask: linear-gradient(#000 55%, transparent 55%), repeating-linear-gradient(#000 0 9px, transparent 9px 13px);
+  opacity: 0.9;
+}
+.ar-grid {
+  position: absolute;
+  left: -50%;
+  right: -50%;
+  bottom: 0;
+  height: 30%;
+  background:
+    repeating-linear-gradient(90deg, rgba(0, 255, 255, 0.7) 0 2px, transparent 2px 40px),
+    repeating-linear-gradient(0deg, rgba(255, 0, 200, 0.7) 0 2px, transparent 2px 24px);
+  transform: perspective(160px) rotateX(55deg);
+  transform-origin: top;
+  animation: ar_grid 1.2s linear infinite;
+}
+@keyframes ar_grid { to { background-position: 0 0, 0 24px; } }
+.ar-corner-disc {
+  position: absolute;
+  right: -30px;
+  top: -30px;
+  width: 120px;
+  height: 120px;
+  animation: ar_spin 4s linear infinite;
+  box-shadow: 0 0 18px rgba(255, 120, 220, 0.6);
+}
+
+.ar-content { position: relative; padding: 18px 16px 34px; text-align: center; }
+.ar-title {
+  margin: 0;
+  font-size: 30px;
+  letter-spacing: 3px;
+  background: linear-gradient(#ffffff 0%, #b8f4ff 45%, #3a6fd8 50%, #ffffff 58%, #ff8fd8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(2px 2px 0 #2a0050);
+  font-style: italic;
+}
+.ar-sub { margin: 2px 0 14px; font: 13px 'MS Gothic', 'Courier New', monospace; color: #9ff; text-shadow: 0 0 6px #0ff; letter-spacing: 1px; }
+
+.ar-menu { display: flex; flex-direction: column; align-items: center; gap: 7px; }
+.ar-menu button,
+.ar-back {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 210px;
+  padding: 6px 12px;
+  background: linear-gradient(#f4f4f4, #c0c0c0 55%, #a8a8a8);
+  border: 2px solid;
+  border-color: #fff #000 #000 #fff;
+  font: bold 13px Arial, sans-serif;
+  color: #1a0033;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 rgba(26, 0, 51, 0.6);
+}
+.ar-menu button span { width: 22px; text-align: center; }
+.ar-menu button:hover,
+.ar-back:hover { background: linear-gradient(#ffe6fa, #ff9ed8 55%, #e76fbf); color: #fff; text-shadow: 1px 1px 0 #6a0050; }
+.ar-menu button:active,
+.ar-back:active { border-color: #000 #fff #fff #000; transform: translate(2px, 2px); box-shadow: 1px 1px 0 rgba(26, 0, 51, 0.6); }
+.ar-menu button:disabled { opacity: 0.6; cursor: default; }
+
+.ar-projects { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.ar-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 5px;
+  width: 100%;
+  max-height: 190px;
+  overflow-y: auto;
+  padding: 6px;
+  background: rgba(26, 0, 51, 0.65);
+  border: 2px solid;
+  border-color: #808080 #fff #fff #808080;
+  text-align: left;
+}
+.ar-list a {
+  display: flex;
+  flex-direction: column;
+  padding: 4px 6px;
+  border: 1px solid rgba(0, 255, 255, 0.4);
+  color: #fff;
+  text-decoration: none;
+  font: 11px Arial, sans-serif;
+}
+.ar-list a b { color: #ff9ed8; font-size: 12px; }
+.ar-list a span { color: #cfe; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.ar-list a:hover { background: rgba(255, 79, 163, 0.35); border-color: #ff9ed8; }
+.ar-back { width: auto; }
+
+.ar-footer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 4px;
+  margin: 0;
+  text-align: center;
+  font: 10px 'Courier New', monospace;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+@media (max-width: 500px) {
+  .ar-title { font-size: 22px; }
+  .ar-sub { font-size: 11px; }
+  .ar-list { max-height: 210px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ar-grid, .ar-corner-disc, .spin-fast, .ar-led { animation: none; }
+}
