@@ -66,26 +66,6 @@ export function playError() {
   note(ac, 523.25, t + 0.12, 0.6, 0.1, 'triangle');
 }
 
-export function playBark() {
-  const ac = audio();
-  if (!ac) return;
-  const t = ac.currentTime;
-  // Two short, falling "woofs".
-  [0, 0.18].forEach(d => {
-    const osc = ac.createOscillator();
-    const gain = ac.createGain();
-    osc.type = 'sawtooth';
-    osc.frequency.setValueAtTime(420, t + d);
-    osc.frequency.exponentialRampToValueAtTime(160, t + d + 0.12);
-    gain.gain.setValueAtTime(0.0001, t + d);
-    gain.gain.exponentialRampToValueAtTime(0.08, t + d + 0.01);
-    gain.gain.exponentialRampToValueAtTime(0.0001, t + d + 0.14);
-    osc.connect(gain).connect(ac.destination);
-    osc.start(t + d);
-    osc.stop(t + d + 0.16);
-  });
-}
-
 export function playShutdown() {
   const ac = audio();
   if (!ac) return;

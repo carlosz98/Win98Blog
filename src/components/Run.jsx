@@ -57,7 +57,7 @@ function Run() {
       }
 
       // More easter eggs: a fake blue screen and the screensaver on demand.
-      if (['bsod', 'screensaver', 'dog'].includes(lowerCaseName)) {
+      if (['bsod', 'screensaver'].includes(lowerCaseName)) {
         window.dispatchEvent(new Event(`win98:${lowerCaseName}`));
         closeRun();
         return;
