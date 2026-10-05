@@ -403,7 +403,7 @@ body {
 
 .start_popup .sidebar_popup {
     grid-area: sidebar;
-    background: #7b7d7b;
+    background: linear-gradient(to top, #000080, #000000);
     height: 100%;
     width: 25px;
     cursor: default;
@@ -1054,4 +1054,84 @@ html.win-busy, html.win-busy * {
 
 @media (prefers-reduced-motion: reduce) {
     .footer .start_popup { animation: none; }
+}
+
+/* ── Screensaver ── */
+.screensaver {
+    position: fixed;
+    inset: 0;
+    z-index: 2147483646;
+    background: #000;
+    cursor: none;
+}
+.screensaver canvas { display: block; }
+
+/* ── Blue screen easter egg ── */
+.bsod {
+    position: fixed;
+    inset: 0;
+    z-index: 2147483647;
+    background: #0000aa;
+    color: #fff;
+    font-family: 'Courier New', 'Lucida Console', monospace;
+    font-size: clamp(11px, 1.6vw, 18px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: none;
+}
+.bsod_inner { max-width: 760px; padding: 0 16px; }
+.bsod p { margin: 0; line-height: 1.45; white-space: pre-wrap; }
+.bsod_title { text-align: center; margin-bottom: 1.2em !important; }
+.bsod_title span { background: #aaaaaa; color: #0000aa; padding: 0 6px; font-weight: bold; }
+.bsod_center { text-align: center; }
+.bsod_cursor { animation: bsod_blink 1s steps(1) infinite; }
+.bsod_reboot { background: #000; flex-direction: column; color: #c0c0c0; }
+@keyframes bsod_blink { 50% { opacity: 0; } }
+
+/* ── Visitor counter ── */
+.visitor_counter {
+    position: fixed;
+    top: 10px;
+    right: 12px;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 5px;
+    background: #c5c4c4;
+    border: 2px solid #fff;
+    border-right-color: #000;
+    border-bottom-color: #000;
+    font-size: 11px;
+    pointer-events: auto;
+    user-select: none;
+}
+.visitor_digits {
+    display: flex;
+    gap: 1px;
+    padding: 1px;
+    background: #000;
+    border: 1px solid #808080;
+}
+.visitor_digits span {
+    width: 10px;
+    text-align: center;
+    color: #39ff14;
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    font-size: 13px;
+    text-shadow: 0 0 4px #39ff14;
+    background: #101010;
+}
+
+/* ── Taskbar volume icon ── */
+.tray_speaker { position: relative; display: inline-flex; cursor: pointer; }
+.tray_speaker.muted::after {
+    content: '';
+    position: absolute;
+    left: 2px; right: 2px; top: 50%;
+    height: 2px;
+    background: #d00000;
+    transform: rotate(-35deg);
 }

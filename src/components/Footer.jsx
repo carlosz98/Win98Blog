@@ -5,13 +5,15 @@ import startIcon from '../assets/95icon.png';
 import run from '../assets/run.png';
 import github from '../assets/github.png';
 import tile from '../assets/tile.png';
-import sidebar from '../assets/sidebar95.png';
+import sidebar from '../assets/sidebar98.png';
 import display from '../assets/display.png';
 import project from '../assets/regFolder.png';
 import resume from '../assets/folder.png';
 import shutdownicon from '../assets/shutdownicon.png';
 import settings from '../assets/setting.png';
 import btc_icon from '../assets/btc_icon.webp'
+import speaker from '../assets/speaker.png'
+import { isMuted, setMuted, playClick } from './function/sounds'
 import { clippyPhrase, clippySuggest } from './function/ClippyFunction';
 import { BsCheck  } from "react-icons/bs";
 import Calendar from 'react-calendar';
@@ -33,6 +35,13 @@ export default function Footer() {
     const resumeRef = useRef(null)
     const [calValue, calOnChange] = useState(new Date());
     const [width, setWidth] = useState(0);
+    const [muted, setMutedState] = useState(isMuted());
+
+    useEffect(() => {
+        const onMute = (e) => setMutedState(e.detail);
+        window.addEventListener('win98:mute', onMute);
+        return () => window.removeEventListener('win98:mute', onMute);
+    }, []);
     const [reRenderFooter, setRerenderFooter] = useState(0)
 
     const {
@@ -512,6 +521,16 @@ export default function Footer() {
                                 onClick={() => btcShow.show ? deleteTap('Bitcoin') : handleShow('Bitcoin')}
                             />
                         )}
+                        <span className={`tray_speaker${muted ? ' muted' : ''}`}
+                            title={muted ? 'Sound off (click to turn on)' : 'Sound on (click to mute)'}
+                            onClick={(e) => {
+                                e.stopPropagation()
+                                setMuted(!muted)
+                                if (muted) setTimeout(playClick, 0)
+                            }}
+                        >
+                            <img src={speaker} alt="volume" style={{width: '16px'}} />
+                        </span>
                         <img src={display} alt="display"
                             style={{width: '20px'}}
                             onClick={(e) => {

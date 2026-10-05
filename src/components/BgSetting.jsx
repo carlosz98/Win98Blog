@@ -476,7 +476,7 @@ function BgSetting() {
                   setClassicTileMode(true); 
                 }}
               />
-              <label htmlFor="wins95">Windows 95</label>
+              <label htmlFor="wins95">Windows 98</label>
               <br />
               <input type="radio" id="wins10" name="tileMode" value="wins10" 
                 checked={classicTileMode === false ? true : false} 

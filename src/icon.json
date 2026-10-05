@@ -647,5 +647,15 @@
     "category": "Web",
     "description": "Buy Carlos a coffee on Ko-fi",
     "url": "https://ko-fi.com/carloszabala"
+},
+{
+    "name": "Guestbook",
+    "pic": "Guestbook",
+    "folderId": "Desktop",
+    "size": 20,
+    "type": ".txt",
+    "x": 60,
+    "y": 60,
+    "description": "Sign Carlos's guestbook"
 }
 ]

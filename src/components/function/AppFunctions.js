@@ -44,6 +44,7 @@ import layer from '../../assets/layer.png'
 import news from '../../assets/news.png'
 import portfolio from '../../assets/display.png'
 import kofi from '../../assets/kofi.png'
+import guestbook from '../../assets/guestbook.png'
 
 
 
@@ -154,6 +155,9 @@ export function imageMapping (name, type) {
     case 'Kofi':
     case 'Ko-fi':
       return kofi;
+
+    case 'Guestbook':
+      return guestbook;
 
     case "paint":
     case "Paint":

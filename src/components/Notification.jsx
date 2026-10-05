@@ -96,7 +96,7 @@ function Notification() {
       default:
         return {
           img: icon_wins95,
-          text1: 'Welcome to My Windows 95 Portfolio! 🎉',
+          text1: 'Welcome to My Windows 98 Portfolio! 🎉',
           text2: 'Hope you enjoy exploring......',
           function: '',
         };

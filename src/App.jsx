@@ -45,6 +45,11 @@ import { StyleHide, imageMapping,
 import { clippyReactions } from './components/function/ClippyFunction';
 import { showBusyCursor } from './components/function/retroEffects';
 import MatrixRain from './components/MatrixRain';
+import Screensaver from './components/Screensaver';
+import BlueScreen from './components/BlueScreen';
+import VisitorCounter from './components/VisitorCounter';
+import Guestbook from './components/Guestbook';
+import { startupOnFirstGesture, playOpen, playError, playShutdown } from './components/function/sounds';
 
 
 function App() {
@@ -192,6 +197,14 @@ function App() {
   const [lastTapTime, setLastTapTime] = useState(0)
   const [projectUrl, setProjectUrl] = useState('')
   const [devFeedShow, setDevFeedShow] = useState(false);
+  const [guestbookShow, setGuestbookShow] = useState(false);
+
+  // System sounds: startup chime once the desktop shows, plus error and shutdown.
+  useEffect(() => {
+    if (!login && !loading) return startupOnFirstGesture();
+  }, [login, loading]);
+  useEffect(() => { if (regErrorPopUp) playError(); }, [regErrorPopUp]);
+  useEffect(() => { if (windowsShutDownAnimation) playShutdown(); }, [windowsShutDownAnimation]);
 
   const [MybioExpand, setMybioExpand] = useState(
   {
@@ -858,6 +871,9 @@ function handleShowInfolderMobile(name, type) {
       <UserContext.Provider value={contextValue}>
       <WindowsDragLogin/>
       <MatrixRain/>
+      <Screensaver/>
+      <BlueScreen/>
+      <VisitorCounter/>
       {regErrorPopUp && (
         <ErrorBtn
             themeDragBar={themeDragBar}
@@ -918,6 +934,7 @@ function handleShowInfolderMobile(name, type) {
         <BTC/>
         <Solitaire show={solitaireShow} setShow={setSolitaireShow} />
         <DevFeed show={devFeedShow} setShow={setDevFeedShow} />
+        <Guestbook show={guestbookShow} setShow={setGuestbookShow} />
         <Dragdrop/>
         <Footer/>
       </UserContext.Provider>
@@ -1154,6 +1171,12 @@ function handleShowInfolderMobile(name, type) {
       return;
     }
 
+    if(lowerCaseName === 'guestbook') {
+      setGuestbookShow(true);
+      setStartActive(false);
+      return;
+    }
+
     if(lowerCaseName === 'solitaire') {
       setSolitaireShow(true);
       setStartActive(false);
@@ -1243,6 +1266,13 @@ if(lowerCaseName === 'ko-fi') {
       // ── Handle DevFeed BEFORE itemExists check ──
       if(lowerCaseName === 'devfeed') {
         setDevFeedShow(true);
+        setStartActive(false);
+        setLastTapTime(now);
+        return;
+      }
+
+      if(lowerCaseName === 'guestbook') {
+        setGuestbookShow(true);
         setStartActive(false);
         setLastTapTime(now);
         return;
@@ -1338,6 +1368,7 @@ if(lowerCaseName === 'ko-fi') {
   // Hourglass for a moment, and Clippy comments the first time each app opens.
   function reactToOpen(lowerCaseName) {
     showBusyCursor();
+    playOpen();
     const reaction = clippyReactions[lowerCaseName];
     const r = clippyReactRef.current;
     const now = Date.now();
