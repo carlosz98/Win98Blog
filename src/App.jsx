@@ -36,6 +36,7 @@ import TaskManager from './components/TaskManager';
 import AppIcons from './components/AppIcons';
 import Solitaire from './components/Solitaire';
 import DevFeed from './components/DevFeed';
+import Tooltip from './components/Tooltip';
 import { StyleHide, imageMapping,
   handleDoubleClickEnterLink,handleDoubleTapEnterMobile,
   handleDoubleClickiframe, handleDoubleTapiframeMobile,
@@ -890,6 +891,7 @@ function handleShowInfolderMobile(name, type) {
       <MatrixRain/>
       <Screensaver/>
       <BlueScreen/>
+      <Tooltip/>
       <VisitorCounter/>
       {regErrorPopUp && (
         <ErrorBtn
