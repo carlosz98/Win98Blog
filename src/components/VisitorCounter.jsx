@@ -14,14 +14,14 @@ function VisitorCounter() {
   }, []);
 
   if (count === null) return null;
-  const digits = String(count).padStart(6, '0').split('');
+  const digits = String(count).padStart(5, '0').split('');
 
   return (
     <div className="visitor_counter" title="Visitors to this site">
-      <span className="visitor_label">Visitors</span>
       <span className="visitor_digits">
         {digits.map((d, i) => <span key={i}>{d}</span>)}
       </span>
+      <span className="visitor_label">visitors since 2026</span>
     </div>
   );
 }
