@@ -21,6 +21,14 @@ const isShared = Boolean(firebaseConfig.apiKey && firebaseConfig.projectId);
 export const NAME_MAX = 30;
 export const MESSAGE_MAX = 300;
 const COUNTED_KEY = 'visitorCounted';
+const NUMBER_KEY = 'visitorNumber';
+
+function savedNumber() {
+  try { return Number(localStorage.getItem(NUMBER_KEY)) || null; } catch { return null; }
+}
+function saveNumber(n) {
+  try { localStorage.setItem(NUMBER_KEY, String(n)); localStorage.setItem(COUNTED_KEY, '1'); } catch {}
+}
 
 function formatDate(ts) {
   const d = ts?.toDate ? ts.toDate() : ts ? new Date(ts) : new Date();
@@ -50,7 +58,8 @@ function createFirestoreStore() {
     async signGuestbook(name, message) {
       await addDoc(entries, { ...clean(name, message), createdAt: serverTimestamp() });
     },
-    // Counts each browser once, then returns the current total.
+    // Counts each browser once and returns { number, total }: the visitor's
+    // own number (remembered in this browser) and the current total.
     async visit() {
       let counted = false;
       try { counted = localStorage.getItem(COUNTED_KEY) === '1'; } catch {}
@@ -61,10 +70,11 @@ function createFirestoreStore() {
           if (err.code !== 'not-found') throw err;
           await setDoc(counter, { count: 1 });
         }
-        try { localStorage.setItem(COUNTED_KEY, '1'); } catch {}
       }
       const snap = await getDoc(counter);
-      return snap.data()?.count || 0;
+      const total = snap.data()?.count || 0;
+      if (!counted) saveNumber(total);
+      return { number: savedNumber() || total, total };
     },
   };
 }
@@ -86,16 +96,16 @@ function createLocalStore() {
       emit();
     },
     async visit() {
-      let n = 0;
+      let total = 0;
       try {
-        n = Number(localStorage.getItem('visitorCountLocal') || 0);
+        total = Number(localStorage.getItem('visitorCountLocal') || 0);
         if (localStorage.getItem(COUNTED_KEY) !== '1') {
-          n += 1;
-          localStorage.setItem('visitorCountLocal', String(n));
-          localStorage.setItem(COUNTED_KEY, '1');
+          total += 1;
+          localStorage.setItem('visitorCountLocal', String(total));
+          saveNumber(total);
         }
       } catch {}
-      return n;
+      return { number: savedNumber() || total, total };
     },
   };
 }
