@@ -758,15 +758,5 @@
     "category": "Games",
     "description": "3D Pinball Space Cadet, in the browser",
     "url": "https://pinball.alula.me/"
-},
-{
-    "name": "Scrapbook",
-    "pic": "Scrapbook",
-    "folderId": "Desktop",
-    "size": 300,
-    "type": ".exe",
-    "x": 64,
-    "y": 64,
-    "description": "Photos, GIFs and videos from Carlos"
 }
 ]

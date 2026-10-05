@@ -73,7 +73,7 @@ function MsnFolder() {
     if (!value || botTyping) return;
     setMessages(prev => [...prev, { from: 'user', text: value, date: Date.now() }]);
     setChatValue('');
-    const reply = botReply(value);
+    const reply = botReply(value, { userName: userNameValue });
     // Longer answers take a little longer to "type", like a real chat.
     respond(reply, Math.min(600 + reply.text.length * 12, 2200));
   }
