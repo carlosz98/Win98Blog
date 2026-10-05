@@ -1089,48 +1089,74 @@ html.win-busy, html.win-busy * {
 .bsod_reboot { background: #000; flex-direction: column; color: #c0c0c0; }
 @keyframes bsod_blink { 50% { opacity: 0; } }
 
-/* ── Visitor counter (flip-clock odometer) ── */
-.visitor_counter {
+/* ── Visitor counter (small Windows 98 window) ── */
+.visitor_window {
     position: fixed;
     top: 12px;
     right: 14px;
-    z-index: 1;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    z-index: 2;
+    width: 200px;
+    background: #c0c0c0;
+    border: 2px solid;
+    border-color: #fff #000 #000 #fff;
+    box-shadow: 1px 1px 0 #808080;
+    font-size: 12px;
     user-select: none;
 }
-.visitor_label {
-    color: #fff;
-    font: bold 11px Arial, sans-serif;
-    letter-spacing: .5px;
-    text-shadow: 1px 1px 0 #000;
-}
-.visitor_digits {
+.visitor_bar {
     display: flex;
-    gap: 3px;
+    align-items: center;
+    justify-content: space-between;
+    height: 20px;
+    padding: 0 2px 0 4px;
+    color: #fff;
+    font-weight: bold;
+    cursor: default;
 }
-.visitor_digits span {
-    position: relative;
-    width: 20px;
-    height: 30px;
-    border-radius: 3px;
-    background: linear-gradient(#3a3a3a, #1c1c1c);
-    color: #f3f3f3;
-    font: bold 20px Arial, sans-serif;
+.visitor_bar span { display: flex; align-items: center; gap: 4px; }
+.visitor_bar img { width: 14px; }
+.visitor_bar button {
+    width: 16px;
+    height: 14px;
+    padding: 0;
+    background: #c0c0c0;
+    border: 1px solid;
+    border-color: #fff #000 #000 #fff;
+    font: bold 11px/10px Arial, sans-serif;
+    color: #000;
+    cursor: pointer;
+}
+.visitor_bar button:active { border-color: #000 #fff #fff #000; }
+.visitor_body {
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 3px rgba(0, 0, 0, .5);
+    gap: 8px;
+    padding: 10px 8px 8px;
 }
-.visitor_digits span::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 50%;
-    height: 1px;
-    background: rgba(0, 0, 0, .7);
+.visitor_number {
+    min-width: 46px;
+    padding: 2px 8px;
+    background: #fff;
+    border: 2px solid;
+    border-color: #808080 #fff #fff #808080;
+    font-size: 15px;
+    font-weight: bold;
+    text-align: center;
+}
+.visitor_status {
+    margin: 0 3px 3px;
+    padding: 1px 4px;
+    border: 1px solid;
+    border-color: #808080 #fff #fff #808080;
+    font-size: 10px;
+    color: #333;
+}
+@media (max-width: 500px) {
+    .visitor_window { top: 6px; right: 6px; width: 132px; font-size: 10px; }
+    .visitor_body { padding: 6px 4px 5px; gap: 4px; }
+    .visitor_number { min-width: 0; padding: 1px 4px; font-size: 12px; }
+    .visitor_status { font-size: 9px; }
 }
 
 /* ── Taskbar volume icon ── */
