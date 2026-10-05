@@ -48,6 +48,9 @@ import doom from '../../assets/doom.png'
 import invaders from '../../assets/invaders.png'
 import pinball from '../../assets/pinball.png'
 import scrapbook from '../../assets/scrapbook.png'
+import coolsites from '../../assets/coolsites.png'
+import mediaplayer from '../../assets/mediaplayer.png'
+import myspecs from '../../assets/myspecs.png'
 
 // Classic games that run on other sites, opened inside the IE window.
 export const WEB_GAMES = {
@@ -172,6 +175,12 @@ export function imageMapping (name, type) {
 
     case 'Scrapbook':
       return scrapbook;
+    case 'CoolSites':
+      return coolsites;
+    case 'MediaPlayer':
+      return mediaplayer;
+    case 'MySpecs':
+      return myspecs;
 
     case 'Doom':
       return doom;

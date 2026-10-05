@@ -139,3 +139,18 @@
     background: #c5c4c4;
     border: 1px solid #fff; border-right-color: #000; border-bottom-color: #000;
   }
+/* Phones: smaller cards so all 7 columns fit inside the screen. */
+@media (max-width: 500px) {
+  .sol-window { width: calc(100vw - 8px); height: min(540px, calc(100svh - 90px)); min-width: 0; min-height: 0; }
+  .sol-area { padding: 8px 5px; }
+  .sol-top-row, .sol-tableau { gap: 5px; }
+  .sol-foundation, .sol-card { width: 44px; height: 62px; }
+  .sol-column, .sol-stack-card { width: 44px; }
+  .sol-column { min-height: 62px; }
+  .sol-card { padding: 1px 2px; }
+  .sol-rank-top, .sol-rank-bot { font-size: 10px; }
+  .sol-suit-top, .sol-suit-bot { font-size: 8px; }
+  .sol-suit-bot { bottom: 11px; }
+  .sol-suit-center { font-size: 16px; }
+  .sol-suit-ghost { font-size: 20px; }
+}

@@ -254,7 +254,7 @@ export default function DevFeed({ show, setShow }) {
       grid={[1,1]}
       disabled={expand}
       bounds={{ top: 0 }}
-      defaultPosition={{ x: 80, y: 60 }}
+      defaultPosition={{ x: window.innerWidth <= 500 ? 4 : 80, y: window.innerWidth <= 500 ? 40 : 60 }}
       onStart={() => setFocus(true)}
     >
       <div
