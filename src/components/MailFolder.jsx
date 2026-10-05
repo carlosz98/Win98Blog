@@ -1,5 +1,6 @@
 import UseContext from '../Context'
 import { useContext } from "react";
+import MailCompose from './MailCompose';
 import Draggable from 'react-draggable'
 import { motion } from 'framer-motion';
 import Mail from '../assets/mail.png'
@@ -138,19 +139,8 @@ function MailFolder() {
               gap: '20px',
             }}>
 
-              {/* Header message */}
-              <div style={{
-                background: '#d4d0c8',
-                border: '2px inset #808080',
-                padding: '12px 16px',
-                fontSize: '12px',
-                lineHeight: '1.8',
-              }}>
-                <strong>👋 Hey there!</strong>
-                <br />
-                Want to get in touch? Reach out through any of the options below.
-                I'm open to opportunities, collabs, and conversations.
-              </div>
+              {/* Outlook Express style compose form */}
+              <MailCompose />
 
               {/* Email link */}
               <div style={{

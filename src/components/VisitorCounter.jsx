@@ -20,6 +20,7 @@ function VisitorCounter() {
     communityStore.visit()
       .then(s => { if (alive) setStats(s); })
       .catch(() => {}); // stays hidden if the counter can't be reached
+    communityStore.recordCountry().catch(() => {}); // for the Visitor Map
     return () => { alive = false; };
   }, []);
 

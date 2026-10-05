@@ -40,5 +40,28 @@ service cloud.firestore {
       allow update: if request.resource.data.keys().hasOnly(['count'])
         && request.resource.data.count == resource.data.count + 1;
     }
+
+    // Paint gallery: anyone can read and post a small PNG; only the admin can delete.
+    match /gallery/{pictureId} {
+      allow read: if true;
+      allow create: if request.resource.data.keys().hasOnly(['name', 'image', 'createdAt'])
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0 && request.resource.data.name.size() <= 30
+        && request.resource.data.image is string
+        && request.resource.data.image.size() <= 150000
+        && request.resource.data.image.matches('^data:image/png;base64,.+')
+        && request.resource.data.createdAt == request.time;
+      allow delete: if isAdmin();
+    }
+
+    // Visitor map: one counter per two-letter country code, each visit adds one.
+    match /visitor_countries/{code} {
+      allow read: if true;
+      allow create: if code.matches('^[A-Z]{2}$')
+        && request.resource.data.keys().hasOnly(['count'])
+        && request.resource.data.count == 1;
+      allow update: if request.resource.data.keys().hasOnly(['count'])
+        && request.resource.data.count == resource.data.count + 1;
+    }
   }
 }

@@ -657,5 +657,70 @@
     "x": 60,
     "y": 60,
     "description": "Sign Carlos's guestbook"
+},
+{
+    "name": "Paint Gallery",
+    "pic": "Gallery",
+    "folderId": "Desktop",
+    "size": 20,
+    "type": ".exe",
+    "x": 61,
+    "y": 61,
+    "description": "Draw something and post it to the gallery"
+},
+{
+    "name": "Visitor Map",
+    "pic": "WorldMap",
+    "folderId": "Desktop",
+    "size": 20,
+    "type": ".exe",
+    "x": 62,
+    "y": 62,
+    "description": "Where visitors come from"
+},
+{
+    "name": "old_code",
+    "pic": "NotePad",
+    "folderId": "RecycleBin",
+    "size": 1,
+    "type": ".js",
+    "x": 63,
+    "y": 63
+},
+{
+    "name": "bugs",
+    "pic": "NotePad",
+    "folderId": "RecycleBin",
+    "size": 1,
+    "type": ".txt",
+    "x": 64,
+    "y": 64
+},
+{
+    "name": "my_site",
+    "pic": "NotePad",
+    "folderId": "RecycleBin",
+    "size": 1,
+    "type": ".html",
+    "x": 65,
+    "y": 65
+},
+{
+    "name": "excuses",
+    "pic": "NotePad",
+    "folderId": "RecycleBin",
+    "size": 1,
+    "type": ".txt",
+    "x": 66,
+    "y": 66
+},
+{
+    "name": "passwords",
+    "pic": "NotePad",
+    "folderId": "RecycleBin",
+    "size": 1,
+    "type": ".txt",
+    "x": 67,
+    "y": 67
 }
 ]

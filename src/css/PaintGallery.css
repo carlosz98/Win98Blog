@@ -1,0 +1,73 @@
+.pg-window { width: 340px; height: 430px; display: flex; flex-direction: column; }
+
+.pg-tabs { display: flex; gap: 2px; padding: 4px 6px 0; background: #c5c4c4; }
+.pg-tabs button {
+  font-family: inherit; font-size: 12px;
+  padding: 2px 12px;
+  background: #c5c4c4;
+  border: 2px solid #fff; border-right-color: #000; border-bottom: none;
+  cursor: pointer;
+}
+.pg-tabs button.active { font-weight: bold; position: relative; top: 1px; }
+
+.pg-body {
+  flex: 1; min-height: 0;
+  display: flex; flex-direction: column;
+  margin: 0 4px 4px;
+  border: 2px solid #fff; border-right-color: #000; border-bottom-color: #000;
+  background: #c5c4c4;
+}
+
+.pg-draw { display: grid; grid-template-columns: 34px 1fr; grid-template-rows: auto auto auto; gap: 6px; padding: 6px; }
+.pg-tools { display: flex; flex-direction: column; gap: 2px; grid-row: 1 / span 2; }
+.pg-tools button, .pg-palette button, .pg-post button {
+  font-family: inherit;
+  background: #c5c4c4;
+  border: 2px solid #fff; border-right-color: #000; border-bottom-color: #000;
+  cursor: pointer;
+}
+.pg-tools button { width: 30px; height: 28px; font-size: 14px; padding: 0; }
+.pg-tools button.active { border-color: #000; border-right-color: #fff; border-bottom-color: #fff; background: #dcdcdc; }
+
+.pg-canvas-wrap {
+  background: #808080;
+  padding: 4px;
+  border: 2px solid #808080; border-right-color: #fff; border-bottom-color: #fff;
+}
+.pg-canvas-wrap canvas {
+  display: block; width: 100%; aspect-ratio: 3 / 2;
+  background: #fff; cursor: crosshair; touch-action: none;
+  image-rendering: pixelated;
+}
+
+.pg-palette { grid-column: 2; display: flex; flex-wrap: wrap; gap: 2px; align-items: center; }
+.pg-palette button { width: 16px; height: 16px; padding: 0; border-width: 1px; }
+.pg-current { width: 24px; height: 24px; margin-right: 4px; border: 2px solid #808080; border-right-color: #fff; border-bottom-color: #fff; }
+
+.pg-post { grid-column: 1 / span 2; display: flex; gap: 6px; }
+.pg-post input {
+  flex: 1; font-family: inherit; font-size: 12px; padding: 3px 4px;
+  background: #fff; border: 2px solid #808080; border-right-color: #fff; border-bottom-color: #fff; outline: none;
+}
+.pg-post button { font-size: 12px; padding: 3px 10px; }
+.pg-post button:disabled { color: #808080; }
+
+.pg-gallery {
+  flex: 1; overflow-y: auto;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px;
+  padding: 8px; background: #fff;
+  border: 2px solid #808080; border-right-color: #fff; border-bottom-color: #fff;
+  margin: 6px;
+  align-content: start;
+}
+.pg-gallery figure { margin: 0; background: #c5c4c4; padding: 4px; border: 2px solid #fff; border-right-color: #000; border-bottom-color: #000; }
+.pg-gallery img { display: block; width: 100%; image-rendering: pixelated; background: #fff; border: 1px solid #808080; }
+.pg-gallery figcaption { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2px 6px; font-size: 11px; margin-top: 3px; }
+.pg-gallery figcaption span { color: #555; }
+.pg-delete { font-size: 10px; padding: 0 4px; cursor: pointer; }
+.pg-empty { color: #808080; font-size: 12px; grid-column: 1 / -1; }
+.pg-status { margin: 0 6px 6px; font-size: 11px; color: #000080; }
+
+@media (max-width: 500px) {
+  .pg-window { width: calc(100vw - 10px); height: 75svh; }
+}

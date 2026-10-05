@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import photoicon from '../assets/jpeg.png';
 import binEmp from '../assets/bin2.png'
 import bin from '../assets/bin.png'
+import { JOKE_FILES } from './function/jokeFiles';
 
 function EmptyFolder({state, setState, refState, folderName, photoMode, paintMode, userCreatedFolderMode, type}) {
 
@@ -292,7 +293,8 @@ function EmptyFolder({state, setState, refState, folderName, photoMode, paintMod
                     }}
                     
                     onDoubleClick={() => {
-                      folderName === 'RecycleBin'? '' : handleShow(icon.name)
+                      // Only the joke files open from the Recycle Bin.
+                      if (folderName !== 'RecycleBin' || JOKE_FILES[icon.name]) handleShow(icon.name)
                     }}                 
                     onClick={!isTouchDevice ? (e) => {
                       iconFocusIcon(icon.name);
@@ -303,6 +305,7 @@ function EmptyFolder({state, setState, refState, folderName, photoMode, paintMod
                       if(folderName === 'RecycleBin'){
                         handleMobileLongPressBin(e, icon);
                         iconFocusIcon(icon.name);
+                        if (JOKE_FILES[icon.name]) handleShowMobile(icon.name);
                         return;
                       }
                       iconFocusIcon(icon.name);
