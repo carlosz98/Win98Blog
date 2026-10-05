@@ -460,3 +460,54 @@
 .folder_content-bio .bio_text_tech .bio_learning { flex-direction: row; gap: 10px; margin-top: 4px; padding-top: 2px; }
 .folder_content-bio .bio_text_tech .bio_learning .bio_skill_row { flex: 1; grid-template-columns: auto 1fr; gap: 4px; }
 .folder_content-bio .bio_text_tech .bio_tech_intro { margin-bottom: 4px; }
+
+/* ── Hobby tab: typed intro and the console shelf ── */
+.folder_content-bio .bio_text_hobby { padding: 0; }
+.folder_content-bio .bio_text_hobby .bio_hobby_typed {
+  display: block;
+  min-height: 3em;
+  margin-bottom: 6px;
+  padding: 0;
+  background: none;
+  line-height: 1.4;
+  font-weight: normal;
+  cursor: pointer;
+}
+.folder_content-bio .bio_text_hobby span { background: none; padding: 0; font-weight: normal; }
+.folder_content .folder_content-bio:has(.bio_text_hobby) { overflow-y: auto; }
+.bio_shelf {
+  margin: 0;
+  padding: 4px 6px 6px;
+  border: 1px solid #808080;
+  box-shadow: 1px 1px 0 #fff, inset 1px 1px 0 #fff;
+}
+.bio_shelf legend { padding: 0 4px; font-size: 12px; color: #1f1e1e; }
+.folder_content-bio .bio_text_hobby .bio_shelf_grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  row-gap: 4px;
+}
+/* Each row of three sits on a wooden shelf board. */
+.bio_shelf_item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 2px;
+  min-height: 70px;
+  padding: 4px 2px 0;
+  background: none;
+  border: 0;
+  border-bottom: 6px solid #8d6a45;
+  box-shadow: 0 2px 0 #5a3f22;
+  font: inherit;
+  cursor: default;
+}
+.bio_shelf_item canvas { display: block; image-rendering: pixelated; transition: transform 0.15s steps(3); }
+.bio_shelf_item:hover canvas,
+.bio_shelf_item:focus-visible canvas { transform: translateY(-3px); }
+.bio_shelf_item:focus-visible { outline: 1px dotted #000; }
+.folder_content-bio .bio_text_hobby .bio_shelf_name { font-size: 10px; color: #1f1e1e; white-space: nowrap; }
+@media (prefers-reduced-motion: reduce) {
+  .bio_shelf_item canvas { transition: none; }
+}

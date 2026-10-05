@@ -1,11 +1,11 @@
 import UseContext from '../Context'
-import { useContext, useState, useEffect, Fragment } from "react";
+import { useContext, useState, useEffect, useRef, Fragment } from "react";
 import Draggable from 'react-draggable'
 import { motion } from 'framer-motion';
 import About from '../assets/ipng.png'
 import bioPC from '../assets/bio_pc.png'
-import hobby from '../assets/hobby.png'
 import '../css/MyBioFolder.css'
+import { CONSOLES, PALETTE } from './function/consoleSprites'
 
 // General tab lines, typed out one character at a time.
 const BIO_LINES = [
@@ -24,6 +24,26 @@ const BIO_LINES = [
 ];
 const BIO_TOTAL = BIO_LINES.reduce((n, l) => n + (l.label || l.text || '').length, 0);
 const TYPE_MS = 15;
+
+const HOBBY_TEXT = "In my free time I explore new tech, listen to music and collect retro hardware. " +
+  "I'm always building something, even on weekends. Big fan of anything with a CRT glow.";
+
+// Draws one console from its pixel rows.
+function ConsoleSprite({ rows, scale = 3 }) {
+  const ref = useRef(null);
+  useEffect(() => {
+    const canvas = ref.current;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    rows.forEach((row, y) => [...row].forEach((c, x) => {
+      if (!PALETTE[c]) return;
+      ctx.fillStyle = PALETTE[c];
+      ctx.fillRect(x * scale, y * scale, scale, scale);
+    }));
+  }, [rows, scale]);
+  const width = Math.max(...rows.map(r => r.length));
+  return <canvas ref={ref} width={width * scale} height={rows.length * scale} aria-hidden="true" />;
+}
 
 // Technology tab meters (level is 0–100).
 const SKILLS = [
@@ -94,6 +114,22 @@ function MyBioFolder() {
     return () => clearTimeout(id);
   }, [MybioExpand.show, technologyTap]);
 
+  // ── Typewriter for the Hobby tab ──
+  const hobbyTyping = MybioExpand.show && hobbTap;
+  const [hobbyTyped, setHobbyTyped] = useState(0);
+  useEffect(() => {
+    if (!hobbyTyping) return;
+    if (prefersReducedMotion()) { setHobbyTyped(HOBBY_TEXT.length); return; }
+    setHobbyTyped(0);
+    const id = setInterval(() => {
+      setHobbyTyped(n => {
+        if (n + 1 >= HOBBY_TEXT.length) clearInterval(id);
+        return n + 1;
+      });
+    }, TYPE_MS);
+    return () => clearInterval(id);
+  }, [hobbyTyping]);
+
   let budget = typed;
   const bioText = (
     <span className="bio_typed" onClick={() => setTyped(BIO_TOTAL)} title="Click to skip">
@@ -150,11 +186,28 @@ function MyBioFolder() {
 
   const hobbyText = (
     <>
-      In my free time I explore new tech, listen to music,
-      and collect retro hardware. I'm always building something —
-      even on weekends. I enjoy game dev, tinkering with old machines,
-      and finding inspiration in retro aesthetics. Big fan of anything
-      with a CRT glow.
+      <span className="bio_hobby_typed" onClick={() => setHobbyTyped(HOBBY_TEXT.length)} title="Click to skip">
+        {HOBBY_TEXT.slice(0, hobbyTyped)}
+        <span className={`bio_cursor${hobbyTyped >= HOBBY_TEXT.length ? ' done' : ''}`} aria-hidden="true" />
+      </span>
+      <fieldset className="bio_shelf">
+        <legend>My collection</legend>
+        <span className="bio_shelf_grid">
+          {CONSOLES.map(item => (
+            <button
+              key={item.id}
+              type="button"
+              className="bio_shelf_item"
+              data-tip={`${item.name} (${item.year})${item.video ? ' · click to watch' : ''}`}
+              aria-label={`${item.name}, ${item.year}`}
+              onClick={() => item.video && window.open(item.video, '_blank', 'noopener')}
+            >
+              <ConsoleSprite rows={item.rows} />
+              <span className="bio_shelf_name">{item.name}</span>
+            </button>
+          ))}
+        </span>
+      </fieldset>
     </>
   );
 
@@ -266,15 +319,15 @@ function MyBioFolder() {
               className="folder_content-bio"
               style={{ display: generalTap ? 'grid' : 'block' }}
             >
-              {!technologyTap && (
+              {generalTap && (
                 <img
                   alt="bioPC"
                   className={generalTap ? 'bio_img' : 'bio_img_other'}
-                  src={generalTap ? bioPC : hobby}
+                  src={bioPC}
                 />
               )}
               <div className="biotext_container">
-                <p className={generalTap ? 'bio_text_1' : technologyTap ? 'bio_text_1_other bio_text_tech' : 'bio_text_1_other'}>
+                <p className={generalTap ? 'bio_text_1' : technologyTap ? 'bio_text_1_other bio_text_tech' : 'bio_text_1_other bio_text_hobby'}>
                   {generalTap ? bioText : technologyTap ? technologyText : hobbyText}
                 </p>
               </div>
