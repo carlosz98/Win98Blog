@@ -81,7 +81,7 @@
     },
     {
         "name": "Blog",
-        "pic": "Blog",
+        "pic": "IE",
         "folderId": "Desktop",
         "size": 100,
         "type": ".exe",
@@ -380,7 +380,7 @@
     {
         "name": "IE",
         "pic": "IE",
-        "folderId": "Desktop",
+        "folderId": "Void",
         "size": 3000,
         "type": ".exe",
         "x": 41,

@@ -51,7 +51,6 @@ import scrapbook from '../../assets/scrapbook.png'
 import magazine from '../../assets/magazine.png'
 import coolsites from '../../assets/coolsites.png'
 import mediaplayer from '../../assets/mediaplayer.png'
-import blog from '../../assets/blog.png'
 import theoldnet from '../../assets/theoldnet.png'
 import clasicos from '../../assets/clasicos.png'
 import solitaire from '../../assets/solitaire.png'
@@ -187,8 +186,6 @@ export function imageMapping (name, type) {
       return coolsites;
     case 'MediaPlayer':
       return mediaplayer;
-    case 'Blog':
-      return blog;
     case 'TheOldNet':
       return theoldnet;
     case 'Clasicos':

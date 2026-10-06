@@ -288,6 +288,9 @@ function App() {
     // Icon pictures follow icon.json, so a new picture reaches saved layouts too.
     const current = iconInfo.find(p => p.name === icon.name);
     if (current) icon = { ...icon, pic: current.pic };
+    // IE is off the desktop (the browser window still opens from other icons). It stays in
+    // the hidden Void folder because the app expects an IE icon to exist.
+    if (icon.name === 'IE') icon = { ...icon, folderId: 'Void' };
     const latest = projects.find(p => p.name === icon.name);
     return latest ? { ...icon, url: latest.url, description: latest.description } : icon;
   });
