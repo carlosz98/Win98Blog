@@ -11,7 +11,7 @@ export const BOOKMARK_FOLDERS = [
     name: 'Retro Web',
     sites: [
       { name: 'TheOldNet', url: 'https://theoldnet.com/', note: 'Browse the web like it is 1998.', button: { bg: ['#202020', '#505050'], fg: '#7CFC00', accent: '#ffffff', text: 'TheOldNet', sub: 'time machine' } },
-      { name: 'Clasicos Basicos', url: 'https://clasicosbasicos.org/', note: 'Classic software and games.', button: { bg: ['#7a0000', '#c02020'], fg: '#ffffff', accent: '#ffd700', text: 'CLASICOS', sub: 'basicos' } },
+      { name: 'Clasicos Basicos', url: 'https://www.clasicosbasicos.org/', note: 'Classic software and games.', button: { bg: ['#7a0000', '#c02020'], fg: '#ffffff', accent: '#ffd700', text: 'CLASICOS', sub: 'basicos' } },
       { name: "Cameron's World", url: 'https://www.cameronsworld.net/', note: 'A collage of old Geocities pages.', button: { bg: ['#ff66cc', '#6600cc'], fg: '#ffff66', accent: '#ffffff', text: "CAMERON'S", sub: 'world' } },
       { name: 'Windows 93', url: 'https://www.windows93.net/', note: 'A fake OS full of jokes.', button: { bg: ['#008080', '#00b0b0'], fg: '#ffffff', accent: '#000000', text: 'WINDOWS 93', sub: 'try it' } },
       { name: 'Space Jam (1996)', url: 'https://www.spacejam.com/1996/', note: 'The original 1996 movie site, still online.', button: { bg: ['#000000', '#1a1a5a'], fg: '#ff9900', accent: '#ffffff', text: 'SPACE JAM', sub: '1996' } },

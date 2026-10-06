@@ -292,3 +292,27 @@
 @media (max-width: 500px) {
     .ie_fav_menu { left: 10px; }
 }
+
+/* Shown instead of the iframe for sites that refuse to be embedded. */
+.ie_noframe {
+  height: 100%;
+  padding: 24px 28px;
+  background: #fff;
+  font-family: 'Times New Roman', serif;
+  color: #000;
+  overflow: auto;
+}
+.ie_noframe h2 { margin: 0 0 14px; font-size: 20px; border-bottom: 1px solid #808080; padding-bottom: 8px; }
+.ie_noframe p { margin: 0 0 10px; font-size: 14px; word-break: break-all; }
+.ie_noframe_btn {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 4px 14px;
+  background: #c0c0c0;
+  border: 2px solid;
+  border-color: #fff #000 #000 #fff;
+  color: #000;
+  font: 12px 'MS Sans Serif', Tahoma, sans-serif;
+  text-decoration: none;
+}
+.ie_noframe_btn:active { border-color: #000 #fff #fff #000; }

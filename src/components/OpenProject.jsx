@@ -16,6 +16,13 @@ import folderOpenIcon from '../assets/folderopen.png'
 import { BOOKMARK_FOLDERS } from './function/coolSites'
 
 
+
+// Sites that send X-Frame-Options / frame-ancestors and so stay blank in an iframe.
+const NO_FRAME_HOSTS = ['clasicosbasicos.org'];
+function blocksFrames(url) {
+  return NO_FRAME_HOSTS.some(host => url.includes(host));
+}
+
 function OpenProject() {
 
   const [iframeKey, setIframeKey] = useState(0);
@@ -287,7 +294,16 @@ case 'Clasicos':
             onClick={() => iconFocusIcon('Internet')}
             style={openProjectExpand.expand ? { height: 'calc(100svh - 175px)' } : {}}
           >
-            {openProjectExpand.show && (
+            {openProjectExpand.show && blocksFrames(projectUrl) && (
+              // Sites like this refuse to load inside another page, so offer a new window instead.
+              <div className="ie_noframe">
+                <h2>This page cannot be displayed here</h2>
+                <p><b>{projectUrl}</b> does not allow itself to be shown inside another website.</p>
+                <p>Click below to open it in a new browser window.</p>
+                <a className="ie_noframe_btn" href={projectUrl} target="_blank" rel="noopener noreferrer">Open in new window</a>
+              </div>
+            )}
+            {openProjectExpand.show && !blocksFrames(projectUrl) && (
               <iframe
                 key={iframeKey}
                 src={projectUrl}
