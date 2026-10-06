@@ -52,12 +52,13 @@ async function lookUpCountry() {
 }
 const COUNTED_KEY = 'visitorCounted';
 const NUMBER_KEY = 'visitorNumber';
+const SESSION_KEY = 'visitCountedThisSession';
 
 function savedNumber() {
   try { return Number(localStorage.getItem(NUMBER_KEY)) || null; } catch { return null; }
 }
 function saveNumber(n) {
-  try { localStorage.setItem(NUMBER_KEY, String(n)); localStorage.setItem(COUNTED_KEY, '1'); } catch {}
+  try { localStorage.setItem(NUMBER_KEY, String(n)); localStorage.setItem(COUNTED_KEY, '1'); sessionStorage.setItem(SESSION_KEY, '1'); } catch {}
 }
 
 function formatDate(ts) {
@@ -146,11 +147,11 @@ function createFirestoreStore() {
         onCounts(counts);
       }, onError);
     },
-    // Counts each browser once and returns { number, total }: the visitor's
-    // own number (remembered in this browser) and the current total.
+    // Counts each visit (once per browser session; reloads don't add more) and
+    // returns { number, total, added }: this visit's number and the current total.
     async visit() {
       let counted = false;
-      try { counted = localStorage.getItem(COUNTED_KEY) === '1'; } catch {}
+      try { counted = sessionStorage.getItem(SESSION_KEY) === '1'; } catch {}
       if (!counted) {
         try {
           await updateDoc(counter, { count: increment(1) });
@@ -164,7 +165,7 @@ function createFirestoreStore() {
       const snap = await getDoc(counter);
       const total = snap.data()?.count || 0;
       if (!counted) saveNumber(total);
-      return { number: savedNumber() || total, total };
+      return { number: (counted && savedNumber()) || total, total, added: !counted };
     },
   };
 }
@@ -242,15 +243,17 @@ function createLocalStore() {
     },
     async visit() {
       let total = 0;
+      let added = false;
       try {
         total = Number(localStorage.getItem('visitorCountLocal') || 0);
-        if (localStorage.getItem(COUNTED_KEY) !== '1') {
+        if (sessionStorage.getItem(SESSION_KEY) !== '1') {
           total += 1;
+          added = true;
           localStorage.setItem('visitorCountLocal', String(total));
           saveNumber(total);
         }
       } catch {}
-      return { number: savedNumber() || total, total };
+      return { number: savedNumber() || total, total, added };
     },
   };
 }
