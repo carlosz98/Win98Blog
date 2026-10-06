@@ -43,6 +43,7 @@ export const clippySuggest =
 export const clippyReactions = {
     guestbook:   { phrase: "Sign the guestbook! Leave Carlos a message.", animation: clippy2 },
     paintgallery: { phrase: "Draw something! It goes up in the gallery for everyone.", animation: clippy3 },
+    magazine: { phrase: "Pick up the magazine on the desk and flip through it!", animation: clippy3 },
     scrapbook: { phrase: "Snapshots from Carlos. Scroll through the photos!", animation: clippy3 },
     mediaplayer: { phrase: "Grab some popcorn. Carlos picked these himself.", animation: clippy3 },
     myspecs: { phrase: "Whoa, 32 GB of RAM? In 1998 that would cost more than a house.", animation: clippy3 },

@@ -48,6 +48,7 @@ import doom from '../../assets/doom.png'
 import invaders from '../../assets/invaders.png'
 import pinball from '../../assets/pinball.png'
 import scrapbook from '../../assets/scrapbook.png'
+import magazine from '../../assets/magazine.png'
 import coolsites from '../../assets/coolsites.png'
 import mediaplayer from '../../assets/mediaplayer.png'
 import myspecs from '../../assets/myspecs.png'
@@ -175,6 +176,9 @@ export function imageMapping (name, type) {
 
     case 'Scrapbook':
       return scrapbook;
+
+    case 'Magazine':
+      return magazine;
     case 'CoolSites':
       return coolsites;
     case 'MediaPlayer':

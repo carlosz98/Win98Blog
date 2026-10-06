@@ -38,6 +38,7 @@ import Solitaire from './components/Solitaire';
 import DevFeed from './components/DevFeed';
 import Tooltip from './components/Tooltip';
 import Scrapbook from './components/Scrapbook';
+import Magazine from './components/Magazine';
 import CoolSites from './components/CoolSites';
 import MediaPlayer from './components/MediaPlayer';
 import SystemSpecs from './components/SystemSpecs';
@@ -211,6 +212,7 @@ function App() {
   const [guestbookShow, setGuestbookShow] = useState(false);
   const [galleryShow, setGalleryShow] = useState(false);
   const [scrapbookShow, setScrapbookShow] = useState(false);
+  const [magazineShow, setMagazineShow] = useState(false);
   const [coolSitesShow, setCoolSitesShow] = useState(false);
   const [mediaPlayerShow, setMediaPlayerShow] = useState(false);
   const [specsShow, setSpecsShow] = useState(false);
@@ -977,6 +979,7 @@ function handleShowInfolderMobile(name, type) {
         <Guestbook show={guestbookShow} setShow={setGuestbookShow} />
         <PaintGallery show={galleryShow} setShow={setGalleryShow} />
         <Scrapbook show={scrapbookShow} setShow={setScrapbookShow}/>
+        <Magazine show={magazineShow} setShow={setMagazineShow}/>
         <CoolSites show={coolSitesShow} setShow={setCoolSitesShow}/>
         <MediaPlayer show={mediaPlayerShow} setShow={setMediaPlayerShow}/>
         <SystemSpecs show={specsShow} setShow={setSpecsShow}/>
@@ -1446,6 +1449,7 @@ if(webGameName(lowerCaseName)) {
     else if (lowerCaseName === 'paintgallery') setGalleryShow(true);
     else if (lowerCaseName === 'visitormap') setMapShow(true);
     else if (lowerCaseName === 'scrapbook') setScrapbookShow(true);
+    else if (lowerCaseName === 'magazine') setMagazineShow(true);
     else if (lowerCaseName === 'coolsites') setCoolSitesShow(true);
     else if (lowerCaseName === 'mediaplayer') setMediaPlayerShow(true);
     else if (lowerCaseName === 'myspecs') setSpecsShow(true);

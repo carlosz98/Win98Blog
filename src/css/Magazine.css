@@ -1,0 +1,148 @@
+.mz-window {
+  /* Wide enough for the desk photo, but never taller than the screen. */
+  width: min(900px, calc(100vw - 100px), calc((100svh - 110px) * 438 / 244));
+  height: auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Desk photo with the magazine on it. Same shape as the photo on desktops. */
+.mz-scene {
+  position: relative;
+  aspect-ratio: 438 / 244;
+  margin: 3px;
+  overflow: hidden;
+  background: #1b120c;
+  border: 2px solid;
+  border-color: #808080 #fff #fff #808080;
+  perspective: 1800px;
+}
+.mz-window[style*="100%"] .mz-scene { aspect-ratio: auto; flex: 1; }
+
+.mz-desk {
+  position: absolute;
+  max-width: none;
+  user-select: none;
+  pointer-events: none;
+}
+
+.mz-dim {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0);
+  pointer-events: none;
+  transition: background .6s;
+}
+.mz-dim.on { background: rgba(0, 0, 0, .55); pointer-events: auto; cursor: zoom-out; }
+
+.mz-on-desk,
+.mz-fly {
+  position: absolute;
+  left: 0;
+  top: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  transform-origin: 0 0;
+}
+.mz-on-desk { cursor: pointer; }
+.mz-on-desk img,
+.mz-fly img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.mz-on-desk img { filter: brightness(.8) saturate(.9); transition: filter .2s; }
+.mz-on-desk:hover img,
+.mz-on-desk:focus-visible img { filter: brightness(1.15) drop-shadow(0 0 6px #ffe9a8); }
+
+.mz-fly {
+  z-index: 5;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .6);
+  transition: transform .9s cubic-bezier(.55, .05, .25, 1);
+}
+
+.mz-hint {
+  position: absolute;
+  padding: 1px 5px;
+  background: #ffffe1;
+  border: 1px solid #000;
+  font-size: 11px;
+  white-space: nowrap;
+  pointer-events: none;
+  animation: mz-blink 1.2s steps(2, start) infinite;
+}
+@keyframes mz-blink { to { visibility: hidden; } }
+
+/* The open magazine. Each leaf turns around the spine in the middle. */
+.mz-book {
+  position: absolute;
+  z-index: 6;
+  transition: transform .6s ease;
+}
+.mz-leaf {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  transition: transform .7s cubic-bezier(.45, .05, .3, 1);
+  cursor: pointer;
+}
+.mz-leaf.flipped { transform: rotateY(-180deg); }
+.mz-book.riffle .mz-leaf { transition-duration: .4s; cursor: default; }
+
+.mz-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  background: #f4f1e8;
+  overflow: hidden;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, .5);
+}
+.mz-face img { display: block; width: 100%; height: 100%; object-fit: cover; user-select: none; }
+.mz-back { transform: rotateY(180deg); }
+/* Shading near the spine, like a real magazine fold. */
+.mz-front::after,
+.mz-back::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.mz-front::after { background: linear-gradient(to right, rgba(0, 0, 0, .3), transparent 8%); }
+.mz-back::after { background: linear-gradient(to left, rgba(0, 0, 0, .3), transparent 8%); }
+
+.mz-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 4px 4px;
+}
+.mz-toolbar button {
+  padding: 2px 10px;
+  background: #c0c0c0;
+  border: 1px solid;
+  border-color: #fff #000 #000 #fff;
+  font: inherit;
+  cursor: pointer;
+}
+.mz-toolbar button:active { border-color: #000 #fff #fff #000; }
+.mz-toolbar button:disabled { color: #808080; cursor: default; }
+.mz-page {
+  flex: 1;
+  padding: 2px 6px;
+  border: 1px solid;
+  border-color: #808080 #fff #fff #808080;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Phones: a taller scene so the pages are big enough to see. */
+@media (max-width: 500px) {
+  .mz-window { width: calc(100vw - 6px); }
+  .mz-scene { aspect-ratio: auto; height: min(70svh, calc(100svh - 150px)); }
+  .mz-toolbar button { padding: 2px 6px; }
+}

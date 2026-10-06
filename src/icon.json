@@ -799,5 +799,15 @@
     "x": 64,
     "y": 64,
     "description": "The specs of Carlos's real PC"
+},
+{
+    "name": "Magazine",
+    "pic": "Magazine",
+    "folderId": "Desktop",
+    "size": 4200,
+    "type": ".exe",
+    "x": 65,
+    "y": 65,
+    "description": "A retro game magazine you can flip through"
 }
 ]
