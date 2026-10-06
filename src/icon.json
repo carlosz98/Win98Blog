@@ -771,6 +771,16 @@
     "description": "Photos, GIFs and videos from Carlos"
 },
 {
+    "name": "Magazine",
+    "pic": "Magazine",
+    "folderId": "Desktop",
+    "size": 300,
+    "type": ".exe",
+    "x": 64,
+    "y": 64,
+    "description": "Carlos Monthly: a 3D magazine of retro game posters"
+},
+{
     "name": "Cool Sites",
     "pic": "CoolSites",
     "folderId": "Desktop",

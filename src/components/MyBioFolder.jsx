@@ -3,7 +3,7 @@ import { useContext, useState, useEffect, useRef, Fragment } from "react";
 import Draggable from 'react-draggable'
 import { motion } from 'framer-motion';
 import About from '../assets/ipng.png'
-import bioPC from '../assets/bio_pc.png'
+import bioPC from '../assets/carlos_photo.jpg'
 import '../css/MyBioFolder.css'
 import { CONSOLES } from './function/consoleSprites'
 import ConsoleSprite from './ConsoleSprite'
@@ -305,7 +305,7 @@ function MyBioFolder() {
             >
               {generalTap && (
                 <img
-                  alt="bioPC"
+                  alt="Carlos"
                   className={generalTap ? 'bio_img' : 'bio_img_other'}
                   src={bioPC}
                 />

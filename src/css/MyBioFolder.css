@@ -200,9 +200,15 @@
 
 .folder_content-bio .bio_img {
     position: relative;
-    width: 180px;
-    margin-left: -1.5rem;
-    top: 1.2rem;
+    width: 140px;
+    margin: 14px 10px 0 6px;
+    transform: rotate(-3deg);
+    box-shadow: 3px 4px 0 rgba(0, 0, 0, .35);
+    border: 1px solid #9a9a9a;
+    transition: transform .2s;
+}
+.folder_content-bio .bio_img:hover {
+    transform: rotate(0deg) scale(1.04);
 }
 .folder_content-bio .bio_img_other {
     position: relative;
@@ -384,7 +390,7 @@
         width: 380px;
     }
     .folder_content-bio .bio_img {
-        width: 160px;
+        width: 120px;
     }
     .folder_content-bio .bio_text_1 {
         left: .5rem;
