@@ -60,7 +60,7 @@
     
     {
         "name": "Solitaire",
-        "pic": "MineSweeper",
+        "pic": "Solitaire",
         "folderId": "Desktop",
         "size": 150,
         "type": ".exe",

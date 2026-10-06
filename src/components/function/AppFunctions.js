@@ -54,6 +54,7 @@ import mediaplayer from '../../assets/mediaplayer.png'
 import blog from '../../assets/blog.png'
 import theoldnet from '../../assets/theoldnet.png'
 import clasicos from '../../assets/clasicos.png'
+import solitaire from '../../assets/solitaire.png'
 import myspecs from '../../assets/myspecs.png'
 
 // Classic games that run on other sites, opened inside the IE window.
@@ -192,6 +193,8 @@ export function imageMapping (name, type) {
       return theoldnet;
     case 'Clasicos':
       return clasicos;
+    case 'Solitaire':
+      return solitaire;
     case 'MySpecs':
       return myspecs;
 
