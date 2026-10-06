@@ -97,6 +97,13 @@ function Run() {
       }
     }
 
+    // Special commands shown at the top of the dropdown (handled above, not desktop icons).
+    const specialCommands = [
+      { cmd: 'matrix', hint: 'falling green code' },
+      { cmd: 'bsod', hint: 'blue screen of death' },
+      { cmd: 'screensaver', hint: 'start the screensaver' },
+    ];
+
     // Generate allowed desktop items in run's list
     const listItems = desktopIcon
       .filter(item => {
@@ -234,6 +241,18 @@ function Run() {
           </div>
           {runItemBox && (
             <div className="run_dropdown_box">
+                {specialCommands.map(({ cmd, hint }) => (
+                    <p key={cmd} className='run_special'
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            setRunInputVal(cmd)
+                            setRunItemBox(false)
+                        }}
+                    >
+                        {cmd} <span>- {hint}</span>
+                    </p>
+                ))}
+                <hr className='run_dropdown_sep' />
                 {listItems.map((item, index) => (
                     <p key={index}
                         onClick={(e) => {
