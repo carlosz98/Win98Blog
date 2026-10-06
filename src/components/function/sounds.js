@@ -97,3 +97,13 @@ export function startupOnFirstGesture() {
   tryPlay();
   return cleanup;
 }
+
+// Visitor counter: a few quick odometer ticks, then a bright two-note "ding".
+export function playCounter() {
+  const ac = audio();
+  if (!ac || ac.state !== 'running') return;
+  const t = ac.currentTime + 0.02;
+  [0, 0.07, 0.14, 0.21].forEach(d => note(ac, 2200, t + d, 0.03, 0.035, 'square'));
+  note(ac, 987.77, t + 0.32, 0.12, 0.06, 'square');
+  note(ac, 1318.51, t + 0.42, 0.4, 0.06, 'square');
+}
