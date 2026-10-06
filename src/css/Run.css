@@ -237,5 +237,4 @@
 .run_dropdown_box .run_special { font-weight: bold; }
 .run_dropdown_box .run_special span { font-weight: normal; color: #808080; }
 .run_dropdown_box .run_special:hover span { color: #c0c0ff; }
-.run_dropdown_sep { flex: none; height: 1px; margin: 2px 0; background: #808080; }
 

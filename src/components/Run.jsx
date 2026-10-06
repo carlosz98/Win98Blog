@@ -7,7 +7,7 @@ import '../css/Run.css'
 import { BsCaretDownFill } from "react-icons/bs";
 import {imageMapping} from './function/AppFunctions' 
 
-// Easter-egg commands, listed at the top of the dropdown so visitors can find them.
+// Easter-egg commands, the only entries in the dropdown so visitors can find them.
 const SPECIAL_COMMANDS = [
   { name: 'matrix', hint: 'falling green code' },
   { name: 'bsod', hint: 'blue screen of death' },
@@ -104,17 +104,7 @@ function Run() {
       }
     }
 
-    // Generate allowed desktop items in run's list
-    const listItems = desktopIcon
-      .filter(item => {
-        const lowerCaseName = item.name.toLowerCase();
-        return (
-          !cannotOpenFile.includes(lowerCaseName) &&
-          lowerCaseName !== 'resumefile' &&
-          !lowerCaseName.startsWith('0')
-        );
-      })
-      .map(item => item.name);
+    // The dropdown lists only the special commands; programs can still be typed by name.
 
 
 
@@ -250,18 +240,6 @@ function Run() {
                         }}
                     >
                         {cmd.name} <span>({cmd.hint})</span>
-                    </p>
-                ))}
-                <div className="run_dropdown_sep" />
-                {listItems.map((item, index) => (
-                    <p key={index}
-                        onClick={(e) => {
-                            e.stopPropagation()
-                            setRunInputVal(item)
-                            setRunItemBox(false)
-                        }}
-                    >
-                        {item}
                     </p>
                 ))}
             </div>
