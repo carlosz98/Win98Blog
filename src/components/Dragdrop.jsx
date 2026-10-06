@@ -135,6 +135,61 @@ function Dragdrop() {
     }
   }
 
+  const renderIcon = (icon) => (
+        <Draggable
+          key={icon.name}
+          grid={[10, 10]}
+          axis="both" 
+          handle=".icon" 
+          scale={1}
+          bounds='.bound'
+          onStart={() => {setDropTargetFolder('')}}
+          onDrag={handleOnDrag(icon.name, iconRefs.current[icon.name])}
+          onStop={(e, data) => {
+            handleDragStop(data, icon.name, iconRefs.current[icon.name])
+            handleDrop(e, icon.name, dropTargetFolder, icon.folderId)
+            clearTimeout(timerRef.current)
+          }}
+        >
+          <div
+            className='icon'
+            data-tip={icon.description}
+            style={iconContainerSize(iconScreenSize)}
+            ref={(el) => iconRefs.current[icon.name] = el} 
+            onContextMenu={() => {
+              setRightClickIcon(true);
+              iconFocusIcon(icon.name);
+              setIconBeingRightClicked(icon);
+              refBeingClicked.current = iconRefs.current[icon.name]
+            }}
+            onDoubleClick={() => handleShow(icon.name)}                      
+            onClick={!isTouchDevice ? (e) => {
+              iconFocusIcon(icon.name);
+              e.stopPropagation();
+            } : undefined}           
+            onTouchStart={(e) => {
+              e.stopPropagation();
+              handleShowMobile(icon.name);
+              iconFocusIcon(icon.name);
+              handleMobileLongPress(e, icon);
+              refBeingClicked.current = iconRefs.current[icon.name]
+            }}
+          >
+            <img 
+              src={icon.name === 'RecycleBin' && recycleBinLength === 0 ? binEmp 
+                : icon.name === 'RecycleBin' && recycleBinLength > 0 ? bin 
+                : imageMapping(icon.pic)} alt={icon.name} className={icon.focus ? 'img_focus' : ''} 
+              style={iconImgSize(iconScreenSize)}
+            />
+            <p className={icon.focus ? 'p_focus' : ''}
+              style={iconTextSize(iconScreenSize)}
+            >
+              {icon.name}
+            </p>
+          </div>
+        </Draggable> 
+  );
+
   return (
     <section className='bound' 
       onContextMenu={() => setCurrentRightClickFolder('Desktop')}
@@ -198,60 +253,11 @@ function Dragdrop() {
       <div className='drag_drop'
         key={refresh}
       >
-        {desktopIcon.filter(icon => icon.folderId === 'Desktop').map((icon) => (
-          <Draggable
-            key={icon.name}
-            grid={[10, 10]}
-            axis="both" 
-            handle=".icon" 
-            scale={1}
-            bounds='.bound'
-            onStart={() => {setDropTargetFolder('')}}
-            onDrag={handleOnDrag(icon.name, iconRefs.current[icon.name])}
-            onStop={(e, data) => {
-              handleDragStop(data, icon.name, iconRefs.current[icon.name])
-              handleDrop(e, icon.name, dropTargetFolder, icon.folderId)
-              clearTimeout(timerRef.current)
-            }}
-          >
-            <div
-              className='icon'
-              data-tip={icon.description}
-              style={iconContainerSize(iconScreenSize)}
-              ref={(el) => iconRefs.current[icon.name] = el} 
-              onContextMenu={() => {
-                setRightClickIcon(true);
-                iconFocusIcon(icon.name);
-                setIconBeingRightClicked(icon);
-                refBeingClicked.current = iconRefs.current[icon.name]
-              }}
-              onDoubleClick={() => handleShow(icon.name)}                      
-              onClick={!isTouchDevice ? (e) => {
-                iconFocusIcon(icon.name);
-                e.stopPropagation();
-              } : undefined}           
-              onTouchStart={(e) => {
-                e.stopPropagation();
-                handleShowMobile(icon.name);
-                iconFocusIcon(icon.name);
-                handleMobileLongPress(e, icon);
-                refBeingClicked.current = iconRefs.current[icon.name]
-              }}
-            >
-              <img 
-                src={icon.name === 'RecycleBin' && recycleBinLength === 0 ? binEmp 
-                  : icon.name === 'RecycleBin' && recycleBinLength > 0 ? bin 
-                  : imageMapping(icon.pic)} alt={icon.name} className={icon.focus ? 'img_focus' : ''} 
-                style={iconImgSize(iconScreenSize)}
-              />
-              <p className={icon.focus ? 'p_focus' : ''}
-                style={iconTextSize(iconScreenSize)}
-              >
-                {icon.name}
-              </p>
-            </div>
-          </Draggable> 
-        ))} 
+        {desktopIcon.filter(icon => icon.folderId === 'Desktop' && icon.name !== 'RecycleBin').map(renderIcon)}
+      </div>
+      {/* The Recycle Bin sits in the lower right corner, like on a real Windows desktop. */}
+      <div className='bin_corner'>
+        {desktopIcon.filter(icon => icon.folderId === 'Desktop' && icon.name === 'RecycleBin').map(renderIcon)}
       </div>
       {selectBox && <div className='desk_select_box' style={selectBox} />}
     </section>

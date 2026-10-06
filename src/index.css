@@ -1219,3 +1219,11 @@ html.win-busy, html.win-busy * {
     from { opacity: 0; transform: translateY(-3px); }
     to   { opacity: 1; transform: none; }
 }
+
+/* Recycle Bin in the lower right corner, above the taskbar. */
+.bin_corner {
+    position: fixed;
+    right: .8rem;
+    bottom: 3.2rem;
+    z-index: 1;
+}
