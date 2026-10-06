@@ -6,6 +6,7 @@ import Project from '../../assets/regFolder.png'
 import Winamp from '../../assets/winampIcon.png'
 import resumefile from '../../assets/resume.png'
 import MineSweeper from '../../assets/minesweepericon.png'
+import solitaireIcon from '../../assets/solitaire.png'
 import MSN from '../../assets/msn.png'
 import ie from '../../assets/ie.png'
 import blogIcon from '../../assets/blog.png'
@@ -45,7 +46,7 @@ import notepad from '../../assets/notepad.png'
 import store from '../../assets/store.png'
 import layer from '../../assets/layer.png'
 import news from '../../assets/news.png'
-import portfolio from '../../assets/display.png'
+import portfolio from '../../assets/portfolio.png'
 import kofi from '../../assets/kofi.png'
 import doom from '../../assets/doom.png'
 import invaders from '../../assets/invaders.png'
@@ -134,6 +135,9 @@ export function imageMapping (name, type) {
 
     case 'ResumeFile':
       return resumefile;
+
+    case 'Solitaire':
+      return solitaireIcon;
 
     case 'MineSweeper':
     case 'Mine Sweeper':

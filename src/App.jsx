@@ -275,7 +275,7 @@ function App() {
 
   const [desktopIcon, setDesktopIcon] = useState(() => {
   const localItems = localStorage.getItem('icons');
-  const deleteIcon = ['Cat', 'AiAgent','Paint','3dObject'];
+  const deleteIcon = ['Cat', 'AiAgent','Paint','3dObject','IE'];
   const filteredItems = iconInfo.filter(item => !deleteIcon.includes(item.name));
   const rememberKnown = () => {
     try { localStorage.setItem('iconsKnown', JSON.stringify(iconInfo.map(i => i.name))); } catch { /* ignore */ }
@@ -284,7 +284,8 @@ function App() {
   // Returning visitors keep their saved layout, but pick up new projects and link fixes.
   const saved = JSON.parse(localItems);
   const projects = iconInfo.filter(item => item.folderId === 'Project' || item.name === 'Portfolio');
-  const updated = saved.map(icon => {
+  // IE stays available as the browser window behind Blog/Portfolio/etc., just not as a desktop icon.
+  const updated = saved.filter(icon => !deleteIcon.includes(icon.name)).map(icon => {
     const latest = projects.find(p => p.name === icon.name);
     const withLinks = latest ? { ...icon, url: latest.url, description: latest.description } : icon;
     // Icon pictures always follow the latest set; positions stay where the visitor left them.
@@ -317,7 +318,7 @@ function App() {
     try { localStorage.setItem('winampBack', '1'); } catch { /* ignore */ }
   }
   const merged = [...updated, ...missing];
-  if (missing.length || !movedMineSweeper) {
+  if (missing.length || !movedMineSweeper || updated.length !== saved.length) {
     try { localStorage.setItem('icons', JSON.stringify(merged)); } catch { /* ignore */ }
   }
   rememberKnown();
@@ -405,7 +406,7 @@ function App() {
       handleShow('Patch');
     }, 2500);
     
-    if(!desktopIcon.find(icon => icon.name === 'IE')) {
+    if(!desktopIcon.find(icon => icon.name === 'MyComputer')) {
       localStorage.clear();
       location.reload();
     }
