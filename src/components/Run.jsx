@@ -7,6 +7,13 @@ import '../css/Run.css'
 import { BsCaretDownFill } from "react-icons/bs";
 import {imageMapping} from './function/AppFunctions' 
 
+// Easter-egg commands, listed at the top of the dropdown so visitors can find them.
+const SPECIAL_COMMANDS = [
+  { name: 'matrix', hint: 'falling green code' },
+  { name: 'bsod', hint: 'blue screen of death' },
+  { name: 'screensaver', hint: 'start the screensaver' },
+];
+
 
 
 function Run() {
@@ -234,6 +241,18 @@ function Run() {
           </div>
           {runItemBox && (
             <div className="run_dropdown_box">
+                {SPECIAL_COMMANDS.map(cmd => (
+                    <p key={cmd.name} className="run_special"
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            setRunInputVal(cmd.name)
+                            setRunItemBox(false)
+                        }}
+                    >
+                        {cmd.name} <span>({cmd.hint})</span>
+                    </p>
+                ))}
+                <div className="run_dropdown_sep" />
                 {listItems.map((item, index) => (
                     <p key={index}
                         onClick={(e) => {

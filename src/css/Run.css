@@ -212,7 +212,7 @@
     flex-direction: column;
     left: 3.4rem;
     width: 268px;
-    height: 40px;
+    max-height: 120px;
     border: 1px solid black;
     background: white;
     z-index: 1;
@@ -224,6 +224,7 @@
 }
 
 .run_dropdown_box p {
+   flex: none;
    font-size: 11px;
    padding: 1px 5px;
 }
@@ -232,4 +233,9 @@
    background: #040482;
    color: white;
 }
+
+.run_dropdown_box .run_special { font-weight: bold; }
+.run_dropdown_box .run_special span { font-weight: normal; color: #808080; }
+.run_dropdown_box .run_special:hover span { color: #c0c0ff; }
+.run_dropdown_sep { flex: none; height: 1px; margin: 2px 0; background: #808080; }
 
