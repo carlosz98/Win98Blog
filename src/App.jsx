@@ -42,6 +42,7 @@ import CoolSites from './components/CoolSites';
 import Magazine from './components/Magazine';
 import MediaPlayer from './components/MediaPlayer';
 import SystemSpecs from './components/SystemSpecs';
+import RetroHub from './components/RetroHub';
 import Autorun from './components/Autorun';
 import { StyleHide, imageMapping,
   handleDoubleClickEnterLink,handleDoubleTapEnterMobile,
@@ -216,6 +217,7 @@ function App() {
   const [magazineShow, setMagazineShow] = useState(false);
   const [mediaPlayerShow, setMediaPlayerShow] = useState(false);
   const [specsShow, setSpecsShow] = useState(false);
+  const [retroHubShow, setRetroHubShow] = useState(false);
   const [autorunShow, setAutorunShow] = useState(false);
   const [mapShow, setMapShow] = useState(false);
   const [jokeFile, setJokeFile] = useState(null);
@@ -987,6 +989,7 @@ function handleShowInfolderMobile(name, type) {
         <Magazine show={magazineShow} setShow={setMagazineShow}/>
         <MediaPlayer show={mediaPlayerShow} setShow={setMediaPlayerShow}/>
         <SystemSpecs show={specsShow} setShow={setSpecsShow}/>
+        <RetroHub show={retroHubShow} setShow={setRetroHubShow}/>
         <Autorun show={autorunShow} setShow={setAutorunShow}/>
         <VisitorMap show={mapShow} setShow={setMapShow} />
         <JokeFile name={jokeFile} setName={setJokeFile} />
@@ -1457,6 +1460,7 @@ if(webGameName(lowerCaseName)) {
     else if (lowerCaseName === 'magazine') setMagazineShow(true);
     else if (lowerCaseName === 'mediaplayer') setMediaPlayerShow(true);
     else if (lowerCaseName === 'myspecs') setSpecsShow(true);
+    else if (lowerCaseName === 'retrohub') setRetroHubShow(true);
     else return false;
     setStartActive(false);
     return true;
