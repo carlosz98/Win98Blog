@@ -286,7 +286,10 @@ function App() {
   const projects = iconInfo.filter(item => item.folderId === 'Project' || item.name === 'Portfolio');
   const updated = saved.map(icon => {
     const latest = projects.find(p => p.name === icon.name);
-    return latest ? { ...icon, url: latest.url, description: latest.description } : icon;
+    const withLinks = latest ? { ...icon, url: latest.url, description: latest.description } : icon;
+    // Icon pictures always follow the latest set; positions stay where the visitor left them.
+    const current = iconInfo.find(i => i.name === icon.name);
+    return current ? { ...withLinks, pic: current.pic } : withLinks;
   });
   // Add icons that are new since this visitor's last visit. Names they've already seen
   // (and maybe deleted or uninstalled) stay gone.
