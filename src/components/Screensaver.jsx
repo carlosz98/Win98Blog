@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 
 // Classic screensavers. Starts after the visitor is idle for IDLE_MS,
 // or right away when "screensaver" is typed in Run. Any input exits.
-const IDLE_MS = 60 * 1000;
+const IDLE_MS = 2 * 60 * 1000;
 const MODES = ['starfield', 'pipes', 'flyingWindows'];
 
 function drawFlag(ctx, x, y, s, alpha) {

@@ -741,11 +741,19 @@ body {
 /* --------------- DragDrop ----------------- */
 
 .bound {
+    position: relative;
     width: 100svw;
     height: 96svh;
     padding-top: .5rem;
     padding-right: .5rem;
     overflow: hidden;
+}
+
+.drag_drop_bin {
+    position: absolute;
+    right: 1.2rem;
+    bottom: 1rem;
+    z-index: 1;
 }
 
 .drag_drop {
@@ -843,7 +851,7 @@ body {
     position: absolute;
     width: 100px;
     height: 100px;
-    right: 12px;
+    right: 96px; /* leaves the corner to the Recycle Bin */
     bottom: 2rem;
     z-index: 1000;
 }
