@@ -247,12 +247,6 @@
    color: #d6d6ff;
 }
 
-.run_dropdown_sep {
-   flex-shrink: 0;
-   margin: 1px 3px;
-   border: none;
-   border-top: 1px solid #a0a0a0;
-}
 
 .run_dropdown_box p:hover {
    background: #040482;
