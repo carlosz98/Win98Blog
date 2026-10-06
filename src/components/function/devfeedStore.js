@@ -6,7 +6,7 @@ import { initializeApp, getApps } from 'firebase/app';
 import {
   getFirestore, collection, query, orderBy, onSnapshot, addDoc, deleteDoc,
   doc, updateDoc, increment, arrayUnion, arrayRemove, serverTimestamp,
-  getDocs, writeBatch, connectFirestoreEmulator,
+  getDocs, getDoc, setDoc, writeBatch, connectFirestoreEmulator,
 } from 'firebase/firestore';
 import {
   getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, connectAuthEmulator,
@@ -81,6 +81,13 @@ function createFirestoreStore() {
       });
       await batch.commit();
     },
+    // Creates a post under a fixed id unless it already exists (admin only).
+    async ensurePost(collectionName, id, data) {
+      const ref = doc(db, collectionName, id);
+      if ((await getDoc(ref)).exists()) return false;
+      await setDoc(ref, { ...data, createdAt: serverTimestamp() });
+      return true;
+    },
     addPost: post => addDoc(postsCol, { ...post, likes: 0, likedBy: [], comments: [], createdAt: serverTimestamp() }),
     deletePost: post => deleteDoc(doc(postsCol, post.id)),
     toggleLike(post, userId) {
@@ -131,6 +138,7 @@ function createLocalStore() {
     },
     async logout() { sessionStorage.removeItem('df_admin'); },
     async seedIfEmpty() {},
+    async ensurePost() { return false; },
     async addPost(post) {
       write(posts => [{ ...post, id: Date.now(), time: formatTime(), likes: 0, likedBy: [], comments: [] }, ...posts]);
     },

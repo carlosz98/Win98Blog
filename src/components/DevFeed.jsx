@@ -4,6 +4,7 @@ import Draggable from 'react-draggable';
 import { motion, AnimatePresence } from 'framer-motion';
 import newsIcon from '../assets/news.png';
 import { devfeedStore, isShared } from './function/devfeedStore';
+import { publishAnnouncements } from './function/announcements';
 import '../css/DevFeed.css';
 
 const PROJECTS = [
@@ -142,6 +143,8 @@ export default function DevFeed({ show, setShow }) {
     SEED_POSTS,
   ), []);
   useEffect(() => devfeedStore.onAdminChange(setIsAdmin), []);
+  // Progress posts Claude prepared go out the next time Carlos is signed in.
+  useEffect(() => { if (isAdmin && isShared) publishAnnouncements(); }, [isAdmin]);
 
   // A short "dial-up" bar each time the feed opens.
   useEffect(() => {

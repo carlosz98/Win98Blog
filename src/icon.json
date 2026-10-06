@@ -81,7 +81,7 @@
     },
     {
         "name": "Blog",
-        "pic": "IE",
+        "pic": "Blog",
         "folderId": "Desktop",
         "size": 100,
         "type": ".exe",
@@ -615,7 +615,7 @@
     }
     ,{
     "name": "TheOldNet",
-    "pic": "IE",
+    "pic": "TheOldNet",
     "folderId": "Desktop",
     "size": 100,
     "type": ".exe",
@@ -627,7 +627,7 @@
 },
 {
     "name": "Clasicos",
-    "pic": "IE",
+    "pic": "Clasicos",
     "folderId": "Desktop",
     "size": 100,
     "type": ".exe",

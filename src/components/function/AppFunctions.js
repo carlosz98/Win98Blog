@@ -8,6 +8,9 @@ import resumefile from '../../assets/resume.png'
 import MineSweeper from '../../assets/minesweepericon.png'
 import MSN from '../../assets/msn.png'
 import ie from '../../assets/ie.png'
+import blogIcon from '../../assets/blog.png'
+import oldnetIcon from '../../assets/theoldnet.png'
+import clasicosIcon from '../../assets/clasicos.png'
 import settings from '../../assets/setting.png'
 import file from '../../assets/file4download.png'
 import disk from '../../assets/c.png'
@@ -268,9 +271,17 @@ export function imageMapping (name, type) {
 
     case "IE":
     case "ie":
+      return ie;
+
     case "Blog":
     case "blog":
-      return ie;
+      return blogIcon;
+
+    case "TheOldNet":
+      return oldnetIcon;
+
+    case "Clasicos":
+      return clasicosIcon;
 
     case "Portfolio":
     case "portfolio":
