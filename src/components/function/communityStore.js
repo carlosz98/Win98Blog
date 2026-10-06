@@ -52,6 +52,14 @@ async function lookUpCountry() {
 }
 const COUNTED_KEY = 'visitorCounted';
 const NUMBER_KEY = 'visitorNumber';
+// Every visit (once per browser session) adds one to the total.
+const SESSION_KEY = 'visitCountedThisSession';
+function countedThisSession() {
+  try { return sessionStorage.getItem(SESSION_KEY) === '1'; } catch { return false; }
+}
+function markSessionCounted() {
+  try { sessionStorage.setItem(SESSION_KEY, '1'); } catch {}
+}
 
 function savedNumber() {
   try { return Number(localStorage.getItem(NUMBER_KEY)) || null; } catch { return null; }
@@ -151,7 +159,9 @@ function createFirestoreStore() {
     async visit() {
       let counted = false;
       try { counted = localStorage.getItem(COUNTED_KEY) === '1'; } catch {}
-      if (!counted) {
+      const isNew = !countedThisSession();
+      if (isNew) {
+        markSessionCounted();
         try {
           await updateDoc(counter, { count: increment(1) });
         } catch (err) {
@@ -164,7 +174,7 @@ function createFirestoreStore() {
       const snap = await getDoc(counter);
       const total = snap.data()?.count || 0;
       if (!counted) saveNumber(total);
-      return { number: savedNumber() || total, total };
+      return { number: savedNumber() || total, total, isNew };
     },
   };
 }
@@ -242,15 +252,17 @@ function createLocalStore() {
     },
     async visit() {
       let total = 0;
+      const isNew = !countedThisSession();
       try {
         total = Number(localStorage.getItem('visitorCountLocal') || 0);
-        if (localStorage.getItem(COUNTED_KEY) !== '1') {
+        if (isNew) {
+          markSessionCounted();
           total += 1;
           localStorage.setItem('visitorCountLocal', String(total));
-          saveNumber(total);
         }
+        if (localStorage.getItem(COUNTED_KEY) !== '1') saveNumber(total);
       } catch {}
-      return { number: savedNumber() || total, total };
+      return { number: savedNumber() || total, total, isNew };
     },
   };
 }

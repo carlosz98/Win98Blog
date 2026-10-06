@@ -66,6 +66,15 @@ export function playError() {
   note(ac, 523.25, t + 0.12, 0.6, 0.1, 'triangle');
 }
 
+// A quick two-note "ding" for the visitor counter ticking up.
+export function playVisit() {
+  const ac = audio();
+  if (!ac) return;
+  const t = ac.currentTime;
+  note(ac, 987.77, t, 0.15, 0.07, 'square');
+  note(ac, 1318.51, t + 0.09, 0.4, 0.07, 'square');
+}
+
 export function playShutdown() {
   const ac = audio();
   if (!ac) return;
