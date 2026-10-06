@@ -71,47 +71,49 @@
 }
 @keyframes mz-blink { to { visibility: hidden; } }
 
-/* The open magazine. Each leaf turns around the spine in the middle. */
-.mz-book {
-  position: absolute;
-  z-index: 6;
-  transition: transform .6s ease;
-}
-.mz-leaf {
-  position: absolute;
-  left: 50%;
-  top: 0;
-  width: 50%;
-  height: 100%;
-  transform-origin: left center;
-  transform-style: preserve-3d;
-  transition: transform .7s cubic-bezier(.45, .05, .3, 1);
-  cursor: pointer;
-}
-.mz-leaf.flipped { transform: rotateY(-180deg); }
-.mz-book.riffle .mz-leaf { transition-duration: .4s; cursor: default; }
-
-.mz-face {
+/* The open magazine. StPageFlip draws soft, bending pages inside .mz-book. */
+.mz-book-shift {
   position: absolute;
   inset: 0;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
+  z-index: 6;
+  pointer-events: none;
+  transition: transform .6s ease;
+}
+.mz-book { position: absolute; left: 0; top: 0; pointer-events: auto; }
+.mz-book > .stf__parent { width: 100%; height: 100%; }
+.mz-page-sheet {
   background: #f4f1e8;
   overflow: hidden;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, .5);
+  cursor: grab;
 }
-.mz-face img { display: block; width: 100%; height: 100%; object-fit: cover; user-select: none; }
-.mz-back { transform: rotateY(180deg); }
-/* Shading near the spine, like a real magazine fold. */
-.mz-front::after,
-.mz-back::after {
-  content: '';
+.mz-page-sheet img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+  pointer-events: none;
+}
+/* Glossy magazine paper: a soft shine and a darker fold near the spine. */
+.mz-page-sheet::after {
+  content: "";
   position: absolute;
   inset: 0;
   pointer-events: none;
+  background: linear-gradient(115deg, rgba(255, 255, 255, .08), transparent 40%);
 }
-.mz-front::after { background: linear-gradient(to right, rgba(0, 0, 0, .3), transparent 8%); }
-.mz-back::after { background: linear-gradient(to left, rgba(0, 0, 0, .3), transparent 8%); }
+.mz-page-sheet.--left::before,
+.mz-page-sheet.--right::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 10%;
+  z-index: 1;
+  pointer-events: none;
+}
+.mz-page-sheet.--left::before { right: 0; background: linear-gradient(to left, rgba(0, 0, 0, .35), transparent); }
+.mz-page-sheet.--right::before { left: 0; background: linear-gradient(to right, rgba(0, 0, 0, .35), transparent); }
 
 .mz-toolbar {
   display: flex;

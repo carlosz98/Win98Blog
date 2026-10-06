@@ -1,6 +1,8 @@
 import { useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import UseContext from '../Context';
 import Draggable from 'react-draggable';
+import { PageFlip } from 'page-flip';
+import 'page-flip/src/Style/stPageFlip.css';
 import magazineIcon from '../assets/magazine.png';
 import desk from '../assets/magazine/desk.webp';
 import '../css/DevFeed.css';
@@ -10,9 +12,7 @@ import '../css/Magazine.css';
 const PAGES = Object.entries(import.meta.glob('../assets/magazine/page*.webp', { eager: true, import: 'default' }))
   .sort(([a], [b]) => a.localeCompare(b))
   .map(([, src]) => src);
-
-// A leaf is one sheet of paper: a page on its front and the next page on its back.
-const LEAVES = Array.from({ length: Math.ceil(PAGES.length / 2) }, (_, i) => [PAGES[2 * i], PAGES[2 * i + 1]]);
+const LAST = PAGES.length - 1;
 
 const DESK_W = 438;
 const DESK_H = 244;
@@ -20,7 +20,8 @@ const DESK_H = 244;
 const DESK_QUAD = [[95, 202], [165, 199.5], [199, 222.5], [120, 236]];
 const PAGE_RATIO = 1536 / 2016;
 const FLY_MS = 900;
-const RIFFLE_MS = 110;
+const READ_FLIP_MS = 800;
+const RIFFLE_FLIP_MS = 260;
 
 // CSS matrix3d that maps a w x h box (transform-origin 0 0) onto the four corner points.
 function quadMatrix(w, h, [[x0, y0], [x1, y1], [x2, y2], [x3, y3]]) {
@@ -35,17 +36,83 @@ function quadMatrix(w, h, [[x0, y0], [x1, y1], [x2, y2], [x3, y3]]) {
   return `matrix3d(${m.join(',')})`;
 }
 
+// The open magazine. StPageFlip bends soft paper pages as they turn.
+function Book({ width, height, pageW, pageH, riffle, onPage, onReady, flipRef }) {
+  const hostRef = useRef(null);
+
+  useEffect(() => {
+    const block = document.createElement('div');
+    hostRef.current.appendChild(block);
+    const pages = PAGES.map((src, i) => {
+      const page = document.createElement('div');
+      page.className = 'mz-page-sheet';
+      page.dataset.density = 'soft';
+      const img = document.createElement('img');
+      img.src = src;
+      img.alt = `Page ${i + 1}`;
+      img.draggable = false;
+      page.appendChild(img);
+      return page;
+    });
+
+    const pf = new PageFlip(block, {
+      width: pageW,
+      height: pageH,
+      size: 'fixed',
+      autoSize: false,
+      showCover: true,
+      usePortrait: true,
+      startPage: riffle ? LAST : 0,
+      flippingTime: READ_FLIP_MS,
+      maxShadowOpacity: 0.6,
+      mobileScrollSupport: false,
+    });
+    pf.loadFromHTML(pages);
+    pf.on('flip', e => onPage(e.data));
+    flipRef.current = pf;
+    onPage(pf.getCurrentPageIndex());
+
+    // Riffle from the back cover to the front cover, one fast page at a time.
+    let riffleTimer = null;
+    if (riffle) {
+      pf.getSettings().flippingTime = RIFFLE_FLIP_MS;
+      riffleTimer = setInterval(() => {
+        if (pf.getState() !== 'read') return;
+        if (pf.getCurrentPageIndex() <= 0) {
+          clearInterval(riffleTimer);
+          pf.getSettings().flippingTime = READ_FLIP_MS;
+          onReady();
+          return;
+        }
+        pf.flipPrev('bottom');
+      }, RIFFLE_FLIP_MS + 60);
+    } else {
+      onReady();
+    }
+
+    return () => {
+      clearInterval(riffleTimer);
+      flipRef.current = null;
+      pf.destroy();
+    };
+    // Rebuilt only when the page size changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pageW, pageH]);
+
+  return <div className="mz-book" ref={hostRef} style={{ width, height }} />;
+}
+
 export default function Magazine({ show, setShow }) {
   const { themeDragBar } = useContext(UseContext);
   const [expand, setExpand] = useState(false);
   // desk: lying on the table. flyIn/flyOut: moving between the table and the center.
-  // riffle: pages flipping from the last one back to the cover. read: the visitor turns pages.
+  // riffle: pages flipping from the back cover to the front. read: the visitor turns pages.
   const [phase, setPhase] = useState('desk');
   const [flyAtDesk, setFlyAtDesk] = useState(true);
-  const [flipped, setFlipped] = useState(LEAVES.length);
-  const [turning, setTurning] = useState(null);
+  const [page, setPage] = useState(LAST);
   const [size, setSize] = useState({ w: 0, h: 0 });
   const sceneRef = useRef(null);
+  const flipRef = useRef(null);
   const timers = useRef([]);
 
   useLayoutEffect(() => {
@@ -65,7 +132,6 @@ export default function Magazine({ show, setShow }) {
     timers.current.forEach(clearTimeout);
     setPhase('desk');
     setFlyAtDesk(true);
-    setFlipped(LEAVES.length);
   }, [show]);
 
   const later = (fn, ms) => timers.current.push(setTimeout(fn, ms));
@@ -76,53 +142,43 @@ export default function Magazine({ show, setShow }) {
   const bgY = size.h - DESK_H * scale;
   const quad = DESK_QUAD.map(([x, y]) => [bgX + x * scale, bgY + y * scale]);
 
-  // One page, sized so a full spread fits the scene.
-  const pageH = Math.max(80, Math.min(size.h * 0.86, (size.w * 0.94) / 2 / PAGE_RATIO));
-  const pageW = pageH * PAGE_RATIO;
-  const bookLeft = size.w / 2 - pageW;
-  const bookTop = (size.h - pageH) / 2;
+  // Two pages side by side on wide screens; one big page at a time on phones.
+  const portrait = size.w < 500;
+  const pageH = Math.round(Math.max(80, Math.min(size.h * 0.86, (size.w * (portrait ? 0.86 : 0.47)) / PAGE_RATIO)));
+  const pageW = Math.round(pageH * PAGE_RATIO);
+  const pageTop = (size.h - pageH) / 2;
+  // A closed magazine (front or back cover) shows one page in the middle.
+  const coverX = size.w / 2 - pageW / 2;
+  const closed = page === 0 || page === LAST;
+  // In landscape, the cover sits on the right half and the back cover on the left; slide them to the middle.
+  const shift = portrait || !closed ? 0 : page === 0 ? -pageW / 2 : pageW / 2;
 
-  // Closed on the cover, the book sits right of center; closed on the back cover, left of center.
-  const shift = flipped === 0 ? -pageW / 2 : flipped === LEAVES.length ? pageW / 2 : 0;
-  // The back cover sits on the left half of the spread, so that is where the flight starts and ends.
-  const coverX = bookLeft + shift;
-  const fromDesk = quadMatrix(pageW, pageH, quad.map(([x, y]) => [x - coverX, y - bookTop]));
   const onDesk = quadMatrix(pageW, pageH, quad);
+  const fromDesk = quadMatrix(pageW, pageH, quad.map(([x, y]) => [x - coverX, y - pageTop]));
 
   function pickUp() {
     if (phase !== 'desk') return;
-    setFlipped(LEAVES.length);
+    setPage(LAST);
     setPhase('flyIn');
     setFlyAtDesk(true);
     requestAnimationFrame(() => requestAnimationFrame(() => setFlyAtDesk(false)));
-    later(() => {
-      setPhase('riffle');
-      // Flip from the last page back to the cover, one leaf at a time.
-      for (let i = 0; i < LEAVES.length; i++) {
-        later(() => { setTurning(LEAVES.length - 1 - i); setFlipped(LEAVES.length - 1 - i); }, 250 + i * RIFFLE_MS);
-      }
-      later(() => setPhase('read'), 250 + LEAVES.length * RIFFLE_MS + 500);
-    }, FLY_MS);
+    later(() => setPhase('riffle'), FLY_MS);
   }
 
   function putDown() {
     if (phase !== 'read') return;
-    setTurning(null);
-    setFlipped(LEAVES.length);
-    later(() => {
-      setPhase('flyOut');
-      setFlyAtDesk(false);
-      requestAnimationFrame(() => requestAnimationFrame(() => setFlyAtDesk(true)));
-      later(() => setPhase('desk'), FLY_MS);
-    }, 650);
+    flipRef.current?.turnToPage(LAST);
+    setPage(LAST);
+    setPhase('flyOut');
+    setFlyAtDesk(false);
+    requestAnimationFrame(() => requestAnimationFrame(() => setFlyAtDesk(true)));
+    later(() => setPhase('desk'), FLY_MS);
   }
 
   function turn(dir) {
     if (phase !== 'read') return;
-    const next = flipped + dir;
-    if (next < 0 || next > LEAVES.length) return;
-    setTurning(dir > 0 ? flipped : next);
-    setFlipped(next);
+    if (dir > 0) flipRef.current?.flipNext('bottom');
+    else flipRef.current?.flipPrev('bottom');
   }
 
   useEffect(() => {
@@ -140,13 +196,14 @@ export default function Magazine({ show, setShow }) {
 
   const flying = phase === 'flyIn' || phase === 'flyOut';
   const bookVisible = phase === 'riffle' || phase === 'read';
-  const pageLabel = flipped === 0 ? 'Cover'
-    : flipped === LEAVES.length ? 'Back cover'
-    : `Pages ${2 * flipped}-${2 * flipped + 1} of ${PAGES.length}`;
+  const pageLabel = page === 0 ? 'Cover'
+    : page === LAST ? 'Back cover'
+    : portrait ? `Page ${page + 1} of ${PAGES.length}`
+    : `Pages ${page % 2 ? page + 1 : page}-${page % 2 ? page + 2 : page + 1} of ${PAGES.length}`;
 
   return (
     <Draggable handle=".df-dragbar" disabled={expand} bounds={{ top: 0 }}
-      defaultPosition={{ x: window.innerWidth <= 500 ? 0 : 70, y: window.innerWidth <= 500 ? 30 : 30 }}>
+      defaultPosition={{ x: window.innerWidth <= 500 ? 0 : 70, y: 30 }}>
       <div className="df-window mz-window"
         style={expand
           ? { position: 'fixed', left: 0, top: 0, width: '100%', height: 'calc(100vh - 37px)', zIndex: 9999, resize: 'none' }
@@ -166,48 +223,38 @@ export default function Magazine({ show, setShow }) {
         <div className="mz-scene" ref={sceneRef}>
           <img className="mz-desk" src={desk} alt="" draggable={false}
             style={{ left: bgX, top: bgY, width: DESK_W * scale, height: DESK_H * scale }} />
-          <div className={`mz-dim${bookVisible ? ' on' : ''}`} onClick={putDown} />
+          <div className={`mz-dim${bookVisible || phase === 'flyIn' ? ' on' : ''}`} onClick={putDown} />
 
           {phase === 'desk' && size.w > 0 && (
-            <button className="mz-on-desk" onClick={pickUp} aria-label="Pick up the magazine"
-              style={{ width: pageW, height: pageH, transform: onDesk }}>
-              <img src={PAGES[PAGES.length - 1]} alt="" draggable={false} />
-            </button>
-          )}
-          {phase === 'desk' && size.w > 0 && (
-            <div className="mz-hint" style={{ left: quad[0][0], top: Math.max(4, quad[0][1] - 26) }}>Click to read</div>
+            <>
+              <button className="mz-on-desk" onClick={pickUp} aria-label="Pick up the magazine"
+                style={{ width: pageW, height: pageH, transform: onDesk }}>
+                <img src={PAGES[LAST]} alt="" draggable={false} />
+              </button>
+              <div className="mz-hint" style={{ left: quad[0][0], top: Math.max(4, quad[0][1] - 26) }}>Click to read</div>
+            </>
           )}
 
           {flying && (
             <div className="mz-fly"
-              style={{ left: coverX, top: bookTop, width: pageW, height: pageH, transform: flyAtDesk ? fromDesk : 'none' }}>
-              <img src={PAGES[PAGES.length - 1]} alt="" draggable={false} />
+              style={{ left: coverX, top: pageTop, width: pageW, height: pageH, transform: flyAtDesk ? fromDesk : 'none' }}>
+              <img src={PAGES[LAST]} alt="" draggable={false} />
             </div>
           )}
 
-          {bookVisible && (
-            <div className={`mz-book${phase === 'riffle' ? ' riffle' : ''}`}
-              style={{ left: bookLeft, top: bookTop, width: pageW * 2, height: pageH, transform: `translateX(${shift}px)` }}>
-              {LEAVES.map(([front, back], i) => {
-                const isFlipped = flipped > i;
-                const z = turning === i ? 1000 : isFlipped ? i + 1 : LEAVES.length - i;
-                return (
-                  <div key={i} className={`mz-leaf${isFlipped ? ' flipped' : ''}`} style={{ zIndex: z }}
-                    onTransitionEnd={() => turning === i && setTurning(null)}
-                    onClick={() => turn(isFlipped ? -1 : 1)}>
-                    <div className="mz-face mz-front"><img src={front} alt={`Page ${2 * i + 1}`} draggable={false} /></div>
-                    <div className="mz-face mz-back">{back && <img src={back} alt={`Page ${2 * i + 2}`} draggable={false} />}</div>
-                  </div>
-                );
-              })}
+          {bookVisible && size.w > 0 && (
+            <div className="mz-book-shift" style={{ transform: `translateX(${shift}px)` }}>
+              <Book key={`${pageW}x${pageH}`} width={size.w} height={size.h} pageW={pageW} pageH={pageH}
+                riffle={phase === 'riffle'} flipRef={flipRef} onPage={setPage}
+                onReady={() => setPhase('read')} />
             </div>
           )}
         </div>
 
         <div className="mz-toolbar">
-          <button onClick={() => turn(-1)} disabled={phase !== 'read' || flipped === 0}>◄ Prev</button>
+          <button onClick={() => turn(-1)} disabled={phase !== 'read' || page === 0}>◄ Prev</button>
           <span className="mz-page">{phase === 'read' ? pageLabel : phase === 'desk' ? 'Click the magazine on the desk' : 'Loading…'}</span>
-          <button onClick={() => turn(1)} disabled={phase !== 'read' || flipped === LEAVES.length}>Next ►</button>
+          <button onClick={() => turn(1)} disabled={phase !== 'read' || page === LAST}>Next ►</button>
           <button onClick={putDown} disabled={phase !== 'read'}>Put down</button>
         </div>
       </div>
