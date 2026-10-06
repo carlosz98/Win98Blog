@@ -51,6 +51,7 @@ import scrapbook from '../../assets/scrapbook.png'
 import magazine from '../../assets/magazine.png'
 import coolsites from '../../assets/coolsites.png'
 import mediaplayer from '../../assets/mediaplayer.png'
+import blog from '../../assets/blog.png'
 import myspecs from '../../assets/myspecs.png'
 
 // Classic games that run on other sites, opened inside the IE window.
@@ -183,6 +184,8 @@ export function imageMapping (name, type) {
       return coolsites;
     case 'MediaPlayer':
       return mediaplayer;
+    case 'Blog':
+      return blog;
     case 'MySpecs':
       return myspecs;
 

@@ -285,6 +285,9 @@ function App() {
   const saved = JSON.parse(localItems);
   const projects = iconInfo.filter(item => item.folderId === 'Project' || item.name === 'Portfolio');
   const updated = saved.map(icon => {
+    // Icon pictures follow icon.json, so a new picture reaches saved layouts too.
+    const current = iconInfo.find(p => p.name === icon.name);
+    if (current) icon = { ...icon, pic: current.pic };
     const latest = projects.find(p => p.name === icon.name);
     return latest ? { ...icon, url: latest.url, description: latest.description } : icon;
   });

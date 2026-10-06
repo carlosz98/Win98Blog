@@ -81,7 +81,7 @@
     },
     {
         "name": "Blog",
-        "pic": "IE",
+        "pic": "Blog",
         "folderId": "Desktop",
         "size": 100,
         "type": ".exe",
