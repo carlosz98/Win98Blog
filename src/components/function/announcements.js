@@ -2,6 +2,7 @@
 // the Scrapbook the next time Carlos is signed in as admin (only he can post),
 // once per browser, and never again if he deletes them afterwards on that browser.
 import { devfeedStore } from './devfeedStore';
+import { PAST_PROJECT_POSTS } from './pastProjects';
 
 const SITE = 'https://carlosz98.github.io/Win98Blog/';
 const DONE_KEY = 'announced_v1';
@@ -47,6 +48,20 @@ const ANNOUNCEMENTS = [
     collection: 'scrapbook',
     data: { kind: 'image', src: `${SITE}progress/magazine-flip.gif`, tag: 'magazine', caption: 'Working on a 3D magazine for the site. Pick it up off the desk and flip through!' },
   },
+  // One DevFeed post per earlier project, newest landing on top.
+  ...PAST_PROJECT_POSTS.map(({ key, media, video, ...rest }) => ({
+    key,
+    collection: 'devfeed_posts',
+    data: {
+      ...rest,
+      media: media ? `${SITE}progress/past/${media}` : null,
+      video,
+      mediaFit: 'full',
+      likes: 0,
+      likedBy: [],
+      comments: [],
+    },
+  })),
 ];
 
 let running = false;

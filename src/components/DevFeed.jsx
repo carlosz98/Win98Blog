@@ -17,6 +17,15 @@ const PROJECTS = [
   { name: 'NetflixDB',   color: '#a82020', emoji: '🎬' },
   { name: 'WarmRain',    color: '#1a5a8a', emoji: '🌧️' },
   { name: 'PixelCity',   color: '#4a2a8a', emoji: '🏙️' },
+  { name: 'PetAdoption', color: '#2a7a3a', emoji: '🐾' },
+  { name: 'HangMan',     color: '#555555', emoji: '🪢' },
+  { name: 'DMVProject',  color: '#1a5a5a', emoji: '🚗' },
+  { name: 'EmployeeMgmt', color: '#5a4a2a', emoji: '👔' },
+  { name: 'MyPortfolio', color: '#b0502a', emoji: '🗂️' },
+  { name: 'Win98Blog v1', color: '#3a6a6a', emoji: '🖥️' },
+  { name: 'Win98Blog v2', color: '#3a6a6a', emoji: '🖥️' },
+  { name: 'RetroiOS',    color: '#3a3a8a', emoji: '🍎' },
+  { name: 'ECommerce',   color: '#8a3a6a', emoji: '🛍️' },
 ];
 
 const SHARE_URL = 'https://github.com/carlosz98';
@@ -573,7 +582,19 @@ export default function DevFeed({ show, setShow }) {
                         <div className="df-post-media-header">
                           <span>📁 {post.project} — {post.title}</span>
                         </div>
-                        <img src={post.media} alt="" />
+                        <img src={post.media} alt="" className={post.mediaFit === 'full' ? 'df-media-full' : ''} />
+                      </div>
+                    )}
+
+                    {post.video && (
+                      <div className="df-post-video">
+                        <iframe
+                          src={`https://www.youtube-nocookie.com/embed/${post.video}`}
+                          title={`${post.project} demo`}
+                          loading="lazy"
+                          allow="accelerometer; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                        />
                       </div>
                     )}
 
