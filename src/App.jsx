@@ -208,6 +208,7 @@ function App() {
   const [tap, setTap] = useState([])
   const [lastTapTime, setLastTapTime] = useState(0)
   const [projectUrl, setProjectUrl] = useState('')
+  const [ieProject, setIeProject] = useState('')
   const [devFeedShow, setDevFeedShow] = useState(false);
   const [guestbookShow, setGuestbookShow] = useState(false);
   const [galleryShow, setGalleryShow] = useState(false);
@@ -394,6 +395,8 @@ function App() {
   
   function projectname() {
       if(projectUrl.length < 1) return;
+      const localPage = iconInfo.find(item => item.page && projectUrl.endsWith(item.page));
+      if (localPage) return localPage.name;
       const projectlinkletter = projectUrl.slice(8).split('.')[0];
       return projectlinkletter[0].toUpperCase() + projectlinkletter.slice(1);
   }
@@ -831,6 +834,7 @@ function handleShowInfolderMobile(name, type) {
     handleDoubleClickEnterLink,
     handleDoubleClickiframe,
     openInIE,
+    ieProject, projectPageUrl, setProjectMode,
     handleDoubleTapiframeMobile,
     WinampExpand, setWinampExpand,
     showClippy, setShowClippy,
@@ -1200,11 +1204,28 @@ function handleShowInfolderMobile(name, type) {
     });
   }
 
-  // Project folder entries open their GitHub repo inside the IE window.
+  // Project folder entries open inside the IE window, as the GitHub viewer ("basic")
+  // or as the project's 90s page in public/oldweb ("neo"). The IE switch flips between them.
+  function projectPageUrl(project) {
+    return `${window.location.origin}${import.meta.env.BASE_URL}${project.page}`;
+  }
+
+  function getProjectMode() {
+    try { return localStorage.getItem('ieProjectMode') === 'neo' ? 'neo' : 'basic'; } catch { return 'basic'; }
+  }
+
+  function setProjectMode(mode) {
+    try { localStorage.setItem('ieProjectMode', mode); } catch { /* private mode */ }
+    const project = iconInfo.find(item => item.folderId === 'Project' && item.name === ieProject);
+    if (!project) return;
+    openInIE(mode === 'neo' && project.page ? projectPageUrl(project) : project.url);
+  }
+
   function openProjectLink(name) {
     const project = iconInfo.find(item => item.folderId === 'Project' && item.name === name && item.url);
     if (!project) return false;
-    openInIE(project.url);
+    setIeProject(name);
+    openInIE(getProjectMode() === 'neo' && project.page ? projectPageUrl(project) : project.url);
     return true;
   }
 

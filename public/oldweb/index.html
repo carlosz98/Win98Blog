@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>~*~ Carlos's Homepage ~*~</title>
+<style>
+  body {
+    margin: 0;
+    padding: 12px 10px 40px;
+    background: #000010 url(gifs/stars-bg.gif);
+    color: #fff;
+    font-family: 'Times New Roman', Times, serif;
+    text-align: center;
+    cursor: crosshair;
+  }
+  a { color: #00ffff; }
+  a:visited { color: #ff66ff; }
+  h1 {
+    font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+    font-size: 40px;
+    margin: 6px 0;
+    color: #ffff00;
+    text-shadow: 3px 3px 0 #ff00ff;
+  }
+  .rainbow-text span { animation: hue 2s linear infinite; }
+  @keyframes hue { from { filter: hue-rotate(0deg); } to { filter: hue-rotate(360deg); } }
+  .blink { animation: blink 1s steps(1) infinite; }
+  @keyframes blink { 50% { visibility: hidden; } }
+  .marquee {
+    overflow: hidden;
+    white-space: nowrap;
+    background: #000080;
+    border: 2px ridge #c0c0c0;
+    padding: 3px 0;
+    margin: 8px auto;
+    max-width: 640px;
+    font-family: 'Courier New', monospace;
+    color: #00ff00;
+  }
+  .marquee span { display: inline-block; padding-left: 100%; animation: scroll 14s linear infinite; }
+  @keyframes scroll { to { transform: translateX(-100%); } }
+  .divider { display: block; margin: 12px auto; width: min(400px, 90%); height: 8px; }
+  .fire { display: block; margin: 0 auto; max-width: 90%; }
+  table.main {
+    margin: 10px auto;
+    max-width: 640px;
+    width: 100%;
+    border: 3px outset #c0c0c0;
+    background: rgba(0, 0, 64, 0.85);
+  }
+  table.main td { padding: 10px; vertical-align: top; }
+  .side { width: 150px; background: #000; border-right: 2px dashed #ff00ff; }
+  .side a { display: block; margin: 6px 0; font-size: 15px; }
+  .about { text-align: left; font-size: 16px; line-height: 1.4; }
+  .about h2 { font-family: 'Comic Sans MS', cursive; color: #ff9900; font-size: 22px; margin: 0 0 6px; }
+  .counter {
+    display: inline-flex;
+    gap: 2px;
+    padding: 3px;
+    background: #222;
+    border: 2px inset #888;
+    font-family: 'Courier New', monospace;
+    font-size: 20px;
+    font-weight: bold;
+  }
+  .counter b { background: #000; color: #00ff00; padding: 0 4px; }
+  .buttons img { margin: 2px; image-rendering: pixelated; }
+  .mochi-run { position: relative; height: 64px; overflow: hidden; max-width: 640px; margin: 0 auto; }
+  .mochi-run img { position: absolute; bottom: 0; animation: run 9s linear infinite; image-rendering: pixelated; }
+  @keyframes run { from { left: -70px; } to { left: 100%; } }
+  .webring { border: 2px groove #c0c0c0; display: inline-block; padding: 6px 12px; background: #000; margin-top: 10px; }
+  small { color: #aaa; }
+  .sparkle { position: fixed; pointer-events: none; color: #fff; font-size: 14px; animation: fall 0.9s ease-out forwards; z-index: 10; }
+  @keyframes fall { to { transform: translateY(24px) scale(0.2); opacity: 0; } }
+  @media (max-width: 520px) {
+    .side { display: none; }
+    h1 { font-size: 30px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; }
+  }
+</style>
+</head>
+<body>
+  <img src="gifs/construction.gif" alt="Under construction" width="160" height="60">
+  <img src="gifs/star.gif" alt="" width="40" height="40">
+  <h1>~*~ Welcome 2 Carlos's Homepage ~*~</h1>
+  <img src="gifs/star.gif" alt="" width="40" height="40">
+  <img src="gifs/construction.gif" alt="Under construction" width="160" height="60">
+
+  <div class="marquee"><span>*** Thanks 4 stopping by!!! *** This page is ALWAYS under construction *** Don't forget to sign my guestbook *** Mochi says meow *** Best viewed at 800x600 ***</span></div>
+  <img class="fire" src="gifs/fire.gif" alt="" width="200" height="24">
+
+  <table class="main">
+    <tr>
+      <td class="side">
+        <b style="color:#ffff00">~ MENU ~</b>
+        <a href="https://github.com/carlosz98" target="_blank" rel="noopener">My Projects <img src="gifs/new.gif" alt="new" width="42" height="30" style="vertical-align:middle"></a>
+        <a href="https://charlysblog.framer.website/" target="_blank" rel="noopener">My Blog</a>
+        <a href="https://carlosz98.github.io/MyPortFolio/" target="_blank" rel="noopener">Portfolio</a>
+        <a href="https://ko-fi.com/carloszabala" target="_blank" rel="noopener">Buy me a coffee</a>
+        <br>
+        <img src="gifs/mail.gif" alt="" width="48" height="44"><br>
+        <span style="font-size:14px">E-mail me with the Mail icon on my desktop!</span>
+      </td>
+      <td class="about">
+        <h2>About Me <img src="gifs/new.gif" alt="new" width="42" height="30" style="vertical-align:middle"></h2>
+        Hi!! My name is <b>Carlos</b> and this is my little corner of the World Wide Web.
+        I make apps, games and websites, and I love everything retro.<br><br>
+        I live with my cat <b style="color:#ff99cc">Mochi</b>, the real boss of this website.
+        <br><br>
+        <span class="blink" style="color:#ff0000; font-weight:bold">!!! NEW STUFF ADDED EVERY WEEK !!!</span>
+      </td>
+    </tr>
+  </table>
+
+  <div class="mochi-run"><img src="gifs/mochi-walk.gif" alt="Mochi walking" width="60" height="60"></div>
+  <img class="divider" src="gifs/rainbow.gif" alt="">
+
+  <p>You are visitor number:</p>
+  <div class="counter" id="counter"></div>
+
+  <img class="divider" src="gifs/rainbow.gif" alt="">
+
+  <div class="buttons">
+    <img src="gifs/btn-win98.gif" alt="Best viewed in Windows 98" width="88" height="31">
+    <img src="gifs/btn-notepad.gif" alt="Made with Notepad" width="88" height="31">
+    <img src="gifs/btn-mochi.gif" alt="Mochi approved" width="88" height="31">
+    <img src="gifs/btn-800x600.gif" alt="Optimized for 800x600" width="88" height="31">
+    <img src="gifs/btn-anybrowser.gif" alt="Any browser" width="88" height="31">
+    <img src="gifs/btn-guestbook.gif" alt="Sign my guestbook" width="88" height="31">
+  </div>
+
+  <div class="webring">
+    &lt;&lt; <a href="https://webring.theoldnet.com/" target="_blank" rel="noopener">prev</a> |
+    <a href="https://webring.theoldnet.com/" target="_blank" rel="noopener">TheOldNet Webring</a> |
+    <a href="https://webring.theoldnet.com/" target="_blank" rel="noopener">next</a> &gt;&gt;
+  </div>
+  <p><small>&copy; 1998 Carlos. All rights reserved. No cats were harmed in the making of this page.</small></p>
+
+<script>
+  // Odometer-style hit counter (counts this browser's visits).
+  (function () {
+    var n = 1337;
+    try { n = (parseInt(localStorage.getItem('oldwebHits'), 10) || 1337) + 1; localStorage.setItem('oldwebHits', n); } catch (e) {}
+    var el = document.getElementById('counter');
+    String(n).padStart(6, '0').split('').forEach(function (d) { var b = document.createElement('b'); b.textContent = d; el.appendChild(b); });
+  })();
+
+  // Sparkle cursor trail.
+  (function () {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var chars = ['*', '+', '.', '★'];
+    var colors = ['#ffff00', '#ff66ff', '#00ffff', '#ffffff'];
+    var last = 0;
+    document.addEventListener('mousemove', function (e) {
+      var now = Date.now();
+      if (now - last < 40) return;
+      last = now;
+      var s = document.createElement('span');
+      s.className = 'sparkle';
+      s.textContent = chars[Math.floor(Math.random() * chars.length)];
+      s.style.left = (e.clientX + 6) + 'px';
+      s.style.top = (e.clientY + 6) + 'px';
+      s.style.color = colors[Math.floor(Math.random() * colors.length)];
+      document.body.appendChild(s);
+      setTimeout(function () { s.remove(); }, 900);
+    });
+  })();
+</script>
+</body>
+</html>

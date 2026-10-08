@@ -292,3 +292,47 @@
 @media (max-width: 500px) {
     .ie_fav_menu { left: 10px; }
 }
+
+/* Basic retro HTML / Neoretro website switch in the IE toolbar */
+.ie_mode_switch {
+    margin-left: auto;
+    margin-right: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 8px;
+    background: #c0c0c0;
+    border: 2px solid;
+    border-color: #fff #000 #000 #fff;
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+}
+.ie_mode_switch:active { border-color: #000 #fff #fff #000; }
+.ie_mode_track {
+    position: relative;
+    width: 34px;
+    height: 16px;
+    background: #808080;
+    border: 2px solid;
+    border-color: #808080 #fff #fff #808080;
+    box-sizing: border-box;
+}
+.ie_mode_knob {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 14px;
+    height: 12px;
+    background: #c0c0c0;
+    border: 2px solid;
+    border-color: #fff #000 #000 #fff;
+    box-sizing: border-box;
+    transition: left 0.15s steps(3);
+}
+.ie_mode_switch.neo .ie_mode_track { background: #000080; }
+.ie_mode_switch.neo .ie_mode_knob { left: 16px; }
+.ie_mode_switch.neo span { color: #000080; font-weight: bold; }
+@media (max-width: 500px) {
+    .ie_mode_switch span { display: none; }
+}

@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>~*~ HangMan.exe ~*~ by Carlos</title>
+<style>
+  body {
+    margin: 0;
+    padding: 12px 10px 40px;
+    background: #000010 url(../gifs/stars-bg.gif);
+    color: #fff;
+    font-family: 'Times New Roman', Times, serif;
+    text-align: center;
+    cursor: crosshair;
+  }
+  a { color: #00ffff; }
+  a:visited { color: #ff66ff; }
+  h1 {
+    font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+    font-size: 42px;
+    margin: 4px 0 0;
+    color: #00ff00;
+    text-shadow: 3px 3px 0 #006600, 0 0 12px #00ff00;
+    letter-spacing: 2px;
+  }
+  .sub { color: #ffff00; font-size: 18px; margin: 2px 0 8px; }
+  .blink { animation: blink 1s steps(1) infinite; }
+  @keyframes blink { 50% { visibility: hidden; } }
+  .marquee {
+    overflow: hidden; white-space: nowrap;
+    background: #000; border: 2px ridge #c0c0c0;
+    padding: 3px 0; margin: 8px auto; max-width: 660px;
+    font-family: 'Courier New', monospace; color: #00ff00;
+  }
+  .marquee span { display: inline-block; padding-left: 100%; animation: scroll 16s linear infinite; }
+  @keyframes scroll { to { transform: translateX(-100%); } }
+  .divider { display: block; margin: 12px auto; width: min(400px, 90%); height: 8px; }
+  .box {
+    margin: 12px auto; max-width: 660px;
+    border: 3px outset #c0c0c0; background: rgba(0, 0, 40, 0.88);
+    padding: 12px 14px; text-align: left; line-height: 1.45; font-size: 16px;
+  }
+  .box h2 { font-family: 'Comic Sans MS', cursive; color: #ff9900; font-size: 22px; margin: 0 0 8px; text-align: center; }
+  .demo { display: block; max-width: 100%; height: auto; margin: 0 auto; border: 4px ridge #c0c0c0; }
+  ul.stars { list-style: none; padding: 0; margin: 6px 0; }
+  ul.stars li { padding-left: 22px; position: relative; margin: 4px 0; }
+  ul.stars li::before { content: '\2605'; position: absolute; left: 0; color: #ffd700; }
+  .tags { text-align: center; margin-top: 6px; }
+  .tags span {
+    display: inline-block; margin: 3px; padding: 2px 8px;
+    background: #c0c0c0; color: #000; font: bold 12px Arial, sans-serif;
+    border: 2px solid; border-color: #fff #000 #000 #fff;
+  }
+  .big-btn {
+    display: inline-block; margin: 6px; padding: 8px 16px;
+    background: #c0c0c0; color: #000 !important; text-decoration: none;
+    font: bold 15px Arial, sans-serif;
+    border: 3px solid; border-color: #fff #000 #000 #fff;
+  }
+  .big-btn:active { border-color: #000 #fff #fff #000; }
+  /* playable mini game */
+  .game { background: #000; border: 3px inset #808080; padding: 10px; font-family: 'Courier New', monospace; color: #00ff00; text-align: center; }
+  .game pre { margin: 0 auto 8px; display: inline-block; text-align: left; font-size: 15px; line-height: 1.15; }
+  .word { font-size: 26px; letter-spacing: 8px; margin: 6px 0; }
+  .keys { display: flex; flex-wrap: wrap; justify-content: center; gap: 3px; max-width: 420px; margin: 8px auto 0; }
+  .keys button {
+    width: 28px; height: 28px; font: bold 14px 'Courier New', monospace;
+    background: #c0c0c0; border: 2px solid; border-color: #fff #000 #000 #fff; cursor: pointer;
+  }
+  .keys button:disabled { background: #555; color: #888; border-color: #333; cursor: default; }
+  .msg { min-height: 22px; color: #ffff00; font-weight: bold; }
+  .counter { display: inline-flex; gap: 2px; padding: 3px; background: #222; border: 2px inset #888; font: bold 20px 'Courier New', monospace; }
+  .counter b { background: #000; color: #00ff00; padding: 0 4px; }
+  .buttons img { margin: 2px; }
+  small { color: #aaa; }
+  .sparkle { position: fixed; pointer-events: none; font-size: 14px; animation: fall 0.9s ease-out forwards; z-index: 10; }
+  @keyframes fall { to { transform: translateY(24px) scale(0.2); opacity: 0; } }
+  @media (max-width: 520px) { h1 { font-size: 30px; } }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; } }
+</style>
+</head>
+<body>
+  <img src="../gifs/fire.gif" alt="" width="200" height="24">
+  <h1>HangMan.exe</h1>
+  <div class="sub">~ a C++ console game by Carlos ~ <img src="../gifs/new.gif" alt="new" width="42" height="30" style="vertical-align:middle"></div>
+  <img src="../gifs/fire.gif" alt="" width="200" height="24">
+
+  <div class="marquee"><span>*** Guess the word before the stick man is hanged!!! *** 6 misses and it's GAME OVER *** Written 100% in C++ *** Play it right here on this page ***</span></div>
+
+  <div class="box">
+    <h2>~ Watch it run ~</h2>
+    <img class="demo" src="demo.gif" alt="HangMan running in a terminal" width="620" height="420">
+  </div>
+
+  <img class="divider" src="../gifs/rainbow.gif" alt="">
+
+  <div class="box">
+    <h2>~ What is it? ~</h2>
+    The classic word game in a C++ console. A random word is picked from a built-in list,
+    and every wrong letter adds a body part to the ASCII gallows. Six misses and it's over!
+    <ul class="stars">
+      <li><b>Game</b> class tracks the word, the revealed letters and the misses</li>
+      <li><b>Message</b> class draws everything: the title screen, the gallows and the YOU WIN banner</li>
+      <li>Input is validated, so only new letters count</li>
+      <li>Made in January 2025</li>
+    </ul>
+    <div class="tags"><span>C++</span><span>OOP</span><span>ASCII ART</span><span>CONSOLE GAME</span></div>
+  </div>
+
+  <div class="box">
+    <h2>~ Play it here!! <span class="blink" style="color:#ff0000">LIVE</span> ~</h2>
+    <div class="game">
+      <pre id="gallows"></pre>
+      <div class="word" id="word"></div>
+      <div class="msg" id="msg"></div>
+      <div class="keys" id="keys"></div>
+      <button class="big-btn" id="again" style="margin-top:10px">New word</button>
+    </div>
+  </div>
+
+  <div>
+    <a class="big-btn" href="https://github.com/carlosz98/C---HangMan" target="_blank" rel="noopener">Get the source code</a>
+    <a class="big-btn" href="https://github.com/carlosz98" target="_blank" rel="noopener">More of my projects</a>
+  </div>
+
+  <img class="divider" src="../gifs/rainbow.gif" alt="">
+  <p>You are hangman victim number:</p>
+  <div class="counter" id="counter"></div>
+  <div class="buttons" style="margin-top:12px">
+    <img src="../gifs/btn-win98.gif" alt="Best viewed in Windows 98" width="88" height="31">
+    <img src="../gifs/btn-notepad.gif" alt="Made with Notepad" width="88" height="31">
+    <img src="../gifs/btn-mochi.gif" alt="Mochi approved" width="88" height="31">
+  </div>
+  <p><img src="../gifs/construction.gif" alt="Under construction" width="160" height="60"></p>
+  <p><small>&copy; 2025 Carlos. No stick men were harmed in the making of this page.</small></p>
+
+<script>
+  // A tiny playable version of the game, same rules as the C++ one.
+  (function () {
+    var WORDS = ['WINDOWS', 'KEYBOARD', 'COMPUTER', 'PROGRAM', 'MOCHI', 'GEOCITIES', 'NETSCAPE', 'MODEM', 'PIXEL', 'CONSOLE', 'VARIABLE', 'FUNCTION'];
+    var STAGES = [
+      '  +---+\n  |   |\n      |\n      |\n      |\n      |\n=========',
+      '  +---+\n  |   |\n  O   |\n      |\n      |\n      |\n=========',
+      '  +---+\n  |   |\n  O   |\n  |   |\n      |\n      |\n=========',
+      '  +---+\n  |   |\n  O   |\n /|   |\n      |\n      |\n=========',
+      '  +---+\n  |   |\n  O   |\n /|\\  |\n      |\n      |\n=========',
+      '  +---+\n  |   |\n  O   |\n /|\\  |\n /    |\n      |\n=========',
+      '  +---+\n  |   |\n  O   |\n /|\\  |\n / \\  |\n      |\n========='
+    ];
+    var word, guessed, misses, over;
+    var $ = function (id) { return document.getElementById(id); };
+    function draw() {
+      $('gallows').textContent = STAGES[misses];
+      $('word').textContent = word.split('').map(function (c) { return guessed[c] ? c : '_'; }).join(' ');
+    }
+    function guess(c, btn) {
+      if (over || guessed[c]) return;
+      guessed[c] = true; btn.disabled = true;
+      if (word.indexOf(c) === -1) misses++;
+      draw();
+      if (word.split('').every(function (x) { return guessed[x]; })) { over = true; $('msg').textContent = '*** YOU WIN!!! ***'; }
+      else if (misses >= 6) { over = true; $('msg').textContent = 'GAME OVER! The word was ' + word; }
+      else $('msg').textContent = (6 - misses) + ' misses left';
+    }
+    function start() {
+      word = WORDS[Math.floor(Math.random() * WORDS.length)];
+      guessed = {}; misses = 0; over = false;
+      $('msg').textContent = 'Pick a letter!';
+      var keys = $('keys'); keys.innerHTML = '';
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').forEach(function (c) {
+        var b = document.createElement('button'); b.textContent = c;
+        b.onclick = function () { guess(c, b); };
+        keys.appendChild(b);
+      });
+      draw();
+    }
+    document.addEventListener('keydown', function (e) {
+      var c = (e.key || '').toUpperCase();
+      if (!/^[A-Z]$/.test(c)) return;
+      var btn = Array.prototype.find.call($('keys').children, function (b) { return b.textContent === c; });
+      if (btn) guess(c, btn);
+    });
+    $('again').onclick = start;
+    start();
+  })();
+
+  (function () {
+    var n = 666;
+    try { n = (parseInt(localStorage.getItem('hangmanHits'), 10) || 666) + 1; localStorage.setItem('hangmanHits', n); } catch (e) {}
+    var el = document.getElementById('counter');
+    String(n).padStart(6, '0').split('').forEach(function (d) { var b = document.createElement('b'); b.textContent = d; el.appendChild(b); });
+  })();
+
+  (function () {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var chars = ['*', '+', '.', '★'], colors = ['#ffff00', '#ff66ff', '#00ffff', '#00ff00'], last = 0;
+    document.addEventListener('mousemove', function (e) {
+      var now = Date.now(); if (now - last < 40) return; last = now;
+      var s = document.createElement('span'); s.className = 'sparkle';
+      s.textContent = chars[Math.floor(Math.random() * chars.length)];
+      s.style.left = (e.clientX + 6) + 'px'; s.style.top = (e.clientY + 6) + 'px';
+      s.style.color = colors[Math.floor(Math.random() * colors.length)];
+      document.body.appendChild(s); setTimeout(function () { s.remove(); }, 900);
+    });
+  })();
+</script>
+</body>
+</html>

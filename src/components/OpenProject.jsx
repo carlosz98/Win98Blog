@@ -46,7 +46,13 @@ function OpenProject() {
     inlineStyle,
     iconFocusIcon,
     deleteTap,
+    ieProject, projectPageUrl, setProjectMode,
   } = useContext(UseContext);
+
+  // Basic/Neoretro switch, shown while the IE window is on the opened project.
+  const currentProject = iconInfo.find(item => item.folderId === 'Project' && item.name === ieProject && item.page);
+  const neoMode = !!currentProject && projectUrl === projectPageUrl(currentProject);
+  const showModeSwitch = !!currentProject && (neoMode || projectUrl === currentProject.url);
 
   // When a page opens, dim the desktop so the project is the focus.
   const wasOpen = useRef(false);
@@ -273,6 +279,16 @@ case 'Clasicos':
               <img src={home} alt="" style={{ top: '-1px' }} />
               <p>Home</p>
             </div>
+            {showModeSwitch && (
+              <div
+                className={`ie_mode_switch${neoMode ? ' neo' : ''}`}
+                onClick={(e) => { e.stopPropagation(); setProjectMode(neoMode ? 'basic' : 'neo'); }}
+                title="Switch how this project looks"
+              >
+                <div className="ie_mode_track"><div className="ie_mode_knob" /></div>
+                <span>{neoMode ? 'Neoretro website' : 'Basic retro HTML'}</span>
+              </div>
+            )}
           </div>
 
           <div className="address_container">
