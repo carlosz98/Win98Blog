@@ -571,6 +571,7 @@
         "folderId": "Project",
         "size": 60,
         "type": ".exe",
+        "page": "oldweb/hangman/index.html",
         "x": 56,
         "y": 56,
         "category": "C++",

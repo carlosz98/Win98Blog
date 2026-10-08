@@ -394,6 +394,8 @@ function App() {
   
   function projectname() {
       if(projectUrl.length < 1) return;
+      const localPage = iconInfo.find(item => item.page && projectUrl.endsWith(item.page));
+      if (localPage) return localPage.name;
       const projectlinkletter = projectUrl.slice(8).split('.')[0];
       return projectlinkletter[0].toUpperCase() + projectlinkletter.slice(1);
   }
@@ -1204,7 +1206,8 @@ function handleShowInfolderMobile(name, type) {
   function openProjectLink(name) {
     const project = iconInfo.find(item => item.folderId === 'Project' && item.name === name && item.url);
     if (!project) return false;
-    openInIE(project.url);
+    // A project with its own retro page in public/oldweb opens that instead of GitHub.
+    openInIE(project.page ? `${window.location.origin}${import.meta.env.BASE_URL}${project.page}` : project.url);
     return true;
   }
 
