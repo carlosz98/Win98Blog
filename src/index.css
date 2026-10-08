@@ -1378,3 +1378,65 @@ html.win-busy, html.win-busy * {
     .mochi-paw { display: none; }
     .mochi-hello span { animation: none; opacity: 1; }
 }
+
+/* Attention effect on the featured desktop icon (Projects) */
+.icon_featured .featured_sparkles,
+.icon_featured .featured_badge { position: absolute; pointer-events: none; }
+.fx_sparkle > img { animation: featured-hop 5s ease-in-out infinite; }
+.featured_sparkles { inset: -4px 4px 18px; }
+.featured_sparkles i {
+    position: absolute;
+    width: 9px;
+    height: 9px;
+    background:
+        linear-gradient(#fff, #fff) center / 3px 9px no-repeat,
+        linear-gradient(#fff, #fff) center / 9px 3px no-repeat;
+    filter: drop-shadow(0 0 2px #fff6a0) drop-shadow(0 0 1px #ffd800);
+    opacity: 0;
+    animation: featured-twinkle 2.4s ease-in-out infinite;
+}
+.featured_sparkles i:nth-child(1) { top: 0; right: 2px; }
+.featured_sparkles i:nth-child(2) { top: 40%; left: 0; animation-delay: 0.8s; transform: scale(0.7); }
+.featured_sparkles i:nth-child(3) { bottom: 0; right: 6px; animation-delay: 1.6s; transform: scale(0.8); }
+@keyframes featured-hop {
+    0%, 82%, 100% { translate: 0 0; }
+    86% { translate: 0 -7px; }
+    90% { translate: 0 0; }
+    93% { translate: 0 -3px; }
+    96% { translate: 0 0; }
+}
+@keyframes featured-twinkle {
+    0%, 100% { opacity: 0; scale: 0.4; }
+    50% { opacity: 1; scale: 1; }
+}
+
+.featured_badge {
+    top: -6px;
+    right: -10px;
+    padding: 1px 4px;
+    background: #ff0000;
+    color: #ffff00;
+    font-size: 10px;
+    border: 1px solid #000;
+    box-shadow: 1px 1px 0 #000;
+    rotate: 12deg;
+    white-space: nowrap;
+    animation: featured-wiggle 3s ease-in-out infinite;
+}
+@keyframes featured-wiggle {
+    0%, 80%, 100% { rotate: 12deg; }
+    85% { rotate: 0deg; }
+    90% { rotate: 18deg; }
+    95% { rotate: 8deg; }
+}
+
+.fx_glow img { animation: featured-glow 2.2s ease-in-out infinite; }
+@keyframes featured-glow {
+    0%, 100% { filter: drop-shadow(0 0 0 rgba(255, 255, 120, 0)); }
+    50% { filter: drop-shadow(0 0 6px #ffff78) drop-shadow(0 0 2px #fff); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .fx_sparkle > img, .featured_sparkles i, .featured_badge, .fx_glow img { animation: none; }
+    .featured_sparkles i { opacity: 1; }
+}
