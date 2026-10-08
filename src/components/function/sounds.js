@@ -107,3 +107,37 @@ export function playCounter() {
   note(ac, 987.77, t + 0.32, 0.12, 0.06, 'square');
   note(ac, 1318.51, t + 0.42, 0.4, 0.06, 'square');
 }
+
+// A synthesized "meow": a buzzy tone through a vowel-like filter that
+// rises then falls, with a little wobble.
+export function playMeow() {
+  const ac = audio();
+  if (!ac) return;
+  const t = ac.currentTime + 0.02;
+  const len = 0.75;
+  const osc = ac.createOscillator();
+  osc.type = 'sawtooth';
+  osc.frequency.setValueAtTime(520, t);
+  osc.frequency.linearRampToValueAtTime(820, t + 0.22);
+  osc.frequency.linearRampToValueAtTime(700, t + 0.45);
+  osc.frequency.exponentialRampToValueAtTime(430, t + len);
+  const wobble = ac.createOscillator();
+  const wobbleGain = ac.createGain();
+  wobble.frequency.value = 7;
+  wobbleGain.gain.value = 12;
+  wobble.connect(wobbleGain).connect(osc.frequency);
+  const vowel = ac.createBiquadFilter();
+  vowel.type = 'bandpass';
+  vowel.Q.value = 4;
+  vowel.frequency.setValueAtTime(900, t);
+  vowel.frequency.linearRampToValueAtTime(1900, t + 0.25);
+  vowel.frequency.linearRampToValueAtTime(1100, t + len);
+  const gain = ac.createGain();
+  gain.gain.setValueAtTime(0, t);
+  gain.gain.linearRampToValueAtTime(0.35, t + 0.06);
+  gain.gain.setValueAtTime(0.35, t + 0.4);
+  gain.gain.exponentialRampToValueAtTime(0.0001, t + len);
+  osc.connect(vowel).connect(gain).connect(ac.destination);
+  osc.start(t); wobble.start(t);
+  osc.stop(t + len + 0.05); wobble.stop(t + len + 0.05);
+}
