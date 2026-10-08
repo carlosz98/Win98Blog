@@ -8,19 +8,22 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 
 // The desktop icon that gets an attention effect, so visitors find Carlos's work.
-// FEATURED_EFFECT: 'sparkle' (hops now and then with twinkling sparkles),
-// 'badge' (a "My work!" sticker), or 'glow' (a pulsing yellow halo).
+// FEATURED_EFFECTS can mix 'glow' (pulsing yellow halo), 'badge' (a "My work!"
+// sticker) and 'sparkle' (hops now and then with twinkling sparkles).
 const FEATURED_ICON = 'Project';
-const FEATURED_EFFECT = 'sparkle';
+const FEATURED_EFFECTS = ['glow', 'badge'];
 
 function FeaturedBadge() {
-  if (FEATURED_EFFECT === 'badge') return <span className="featured_badge">My work!</span>;
-  if (FEATURED_EFFECT === 'sparkle') return (
-    <span className="featured_sparkles" aria-hidden="true">
-      <i /><i /><i />
-    </span>
+  return (
+    <>
+      {FEATURED_EFFECTS.includes('badge') && <span className="featured_badge">My work!</span>}
+      {FEATURED_EFFECTS.includes('sparkle') && (
+        <span className="featured_sparkles" aria-hidden="true">
+          <i /><i /><i />
+        </span>
+      )}
+    </>
   );
-  return null;
 }
 
 function Dragdrop() {
@@ -168,7 +171,7 @@ function Dragdrop() {
             }}
           >
             <div
-              className={icon.name === FEATURED_ICON ? `icon icon_featured fx_${FEATURED_EFFECT}` : 'icon'}
+              className={icon.name === FEATURED_ICON ? `icon icon_featured ${FEATURED_EFFECTS.map(e => `fx_${e}`).join(' ')}` : 'icon'}
               data-tip={icon.description}
               style={iconContainerSize(iconScreenSize)}
               ref={(el) => iconRefs.current[icon.name] = el} 
