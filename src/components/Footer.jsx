@@ -21,6 +21,7 @@ import { BsFillCaretRightFill } from "react-icons/bs";
 import binEmp from '../assets/bin2.png'
 import bin from '../assets/bin.png'
 import news from '../assets/news.png'
+import catBannerCat from '../assets/cat-banner-cat.png'
 
 
 export default function Footer() {
@@ -508,6 +509,10 @@ export default function Footer() {
                 <div className="time"
                     ref={timeBarRef}
                 >
+                    <div className="tray_cat_banner" title="No time spent with a cat is wasted.">
+                        <img src={catBannerCat} alt="" />
+                        <span>No time spent with<br/>a cat is wasted.</span>
+                    </div>
                     <div className="icon_time_container">
                         <img src={news} alt="news"
                                 onClick={(e) => {
