@@ -7,6 +7,22 @@ import { IoIosSearch } from "react-icons/io";
 import { motion, AnimatePresence } from 'framer-motion';
 
 
+// The desktop icon that gets an attention effect, so visitors find Carlos's work.
+// FEATURED_EFFECT: 'sparkle' (hops now and then with twinkling sparkles),
+// 'badge' (a "My work!" sticker), or 'glow' (a pulsing yellow halo).
+const FEATURED_ICON = 'Project';
+const FEATURED_EFFECT = 'sparkle';
+
+function FeaturedBadge() {
+  if (FEATURED_EFFECT === 'badge') return <span className="featured_badge">My work!</span>;
+  if (FEATURED_EFFECT === 'sparkle') return (
+    <span className="featured_sparkles" aria-hidden="true">
+      <i /><i /><i />
+    </span>
+  );
+  return null;
+}
+
 function Dragdrop() {
   const [searchPopup, setSearchPopup] = useState(false);
   const [searchValue, setSearchValue] = useState('');
@@ -152,7 +168,7 @@ function Dragdrop() {
             }}
           >
             <div
-              className='icon'
+              className={icon.name === FEATURED_ICON ? `icon icon_featured fx_${FEATURED_EFFECT}` : 'icon'}
               data-tip={icon.description}
               style={iconContainerSize(iconScreenSize)}
               ref={(el) => iconRefs.current[icon.name] = el} 
@@ -181,6 +197,7 @@ function Dragdrop() {
                   : imageMapping(icon.pic)} alt={icon.name} className={icon.focus ? 'img_focus' : ''} 
                 style={iconImgSize(iconScreenSize)}
               />
+              {icon.name === FEATURED_ICON && <FeaturedBadge />}
               <p className={icon.focus ? 'p_focus' : ''}
                 style={iconTextSize(iconScreenSize)}
               >
