@@ -1268,34 +1268,31 @@ html.win-busy, html.win-busy * {
 .footer .time .tray_cat_banner {
     display: flex;
     align-items: center;
-    gap: 3px;
+    gap: 4px;
     height: 24px;
-    margin: 0 3px;
-    padding: 0 5px 0 2px;
-    background: #ddddce;
-    border: 1px solid;
-    border-color: #fff #808080 #808080 #fff;
-    box-shadow: 1px 1px #000;
+    margin: 0 2px;
+    padding: 0 5px 0 3px;
+    background: #b3b2b2;
+    border: 2px solid;
+    border-color: #f5f2f2 #1e1d1d #1e1d1d #f5f2f2;
     cursor: pointer;
     user-select: none;
 }
+.footer .time .tray_cat_banner:active {
+    border-color: #1e1d1d #f5f2f2 #f5f2f2 #1e1d1d;
+}
+.footer .time .tray_cat_banner.tray_cat_catOnly { padding: 0 3px; }
 .footer .time .tray_cat_banner img {
-    height: 20px;
+    height: 18px;
     width: auto;
     -webkit-user-drag: none;
 }
 .footer .time .tray_cat_banner span {
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 9px;
+    font-size: 10px;
     line-height: 10px;
-    font-weight: bold;
-    color: #222;
+    color: #000;
     text-align: center;
     white-space: nowrap;
-}
-.footer .time .tray_cat_banner:active {
-    border-color: #808080 #fff #fff #808080;
-    box-shadow: none;
 }
 @media (max-width: 500px) {
     .footer .time .tray_cat_banner { display: none; }

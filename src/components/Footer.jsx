@@ -16,6 +16,10 @@ import speaker from '../assets/speaker.png'
 import { isMuted, setMuted, playClick, playMeow } from './function/sounds'
 import CatWindow from './CatWindow'
 import CatIntro from './CatIntro'
+import PixelMochi from './PixelMochi'
+
+// Taskbar cat look: 'pixel' (pixel-art Mochi + text), 'photo' (cat from the banner + text), 'catOnly' (just the cat)
+const TRAY_CAT = 'pixel'
 import { clippyPhrase, clippySuggest } from './function/ClippyFunction';
 import { BsCheck  } from "react-icons/bs";
 import Calendar from 'react-calendar';
@@ -525,14 +529,14 @@ export default function Footer() {
                 <div className="time"
                     ref={timeBarRef}
                 >
-                    <div className="tray_cat_banner" title="No time spent with a cat is wasted."
+                    <div className={`tray_cat_banner tray_cat_${TRAY_CAT}`} title="No time spent with a cat is wasted."
                         onClick={(e) => {
                             e.stopPropagation()
                             playCatIntro()
                         }}
                     >
-                        <img src={catBannerCat} alt="" />
-                        <span>No time spent with<br/>a cat is wasted.</span>
+                        {TRAY_CAT === 'pixel' ? <PixelMochi size={18} /> : <img src={catBannerCat} alt="" />}
+                        {TRAY_CAT !== 'catOnly' && <span>No time spent with<br/>a cat is wasted.</span>}
                     </div>
                     <div className="icon_time_container">
                         <img src={news} alt="news"
