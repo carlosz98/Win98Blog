@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>~*~ Carlos's Projects ~*~</title>
+<style>
+  :root { --bg: #000010; --text: #fff; --panel: rgba(0,0,40,.88); --title: #0ff; --glow: #06f; --font: 'Comic Sans MS', cursive; }
+  body {
+    margin: 0; padding: 12px 10px 40px;
+    background: var(--bg-color, #000010) var(--bg-img, none);
+    color: #fff; font-family: 'Times New Roman', Times, serif;
+    text-align: center; cursor: crosshair;
+  }
+  a { color: #00ffff; }
+  h1 {
+    font-family: var(--font); font-size: 40px; margin: 4px 0 0; color: var(--title);
+    text-shadow: 3px 3px 0 var(--glow), 0 0 12px var(--glow); letter-spacing: 1px;
+    overflow-wrap: anywhere;
+  }
+  .sub { color: #ffff00; font-size: 18px; margin: 4px 0 8px; text-shadow: 1px 1px 0 #000; }
+  .blink { animation: blink 1s steps(1) infinite; }
+  @keyframes blink { 50% { visibility: hidden; } }
+  .marquee {
+    overflow: hidden; white-space: nowrap; background: #000; border: 2px ridge #c0c0c0;
+    padding: 3px 0; margin: 8px auto; max-width: 660px;
+    font-family: 'Courier New', monospace; color: var(--title);
+  }
+  .marquee span { display: inline-block; padding-left: 100%; animation: scroll 16s linear infinite; }
+  @keyframes scroll { to { transform: translateX(-100%); } }
+  .divider { display: block; margin: 12px auto; width: min(400px, 90%); height: 8px; }
+  .box {
+    margin: 12px auto; max-width: 660px; border: 3px outset #c0c0c0;
+    background: var(--panel); color: var(--text);
+    padding: 12px 14px; text-align: left; line-height: 1.45; font-size: 16px;
+  }
+  .box h2 { font-family: var(--font); color: #ff9900; font-size: 22px; margin: 0 0 8px; text-align: center; text-shadow: 1px 1px 0 #000; }
+  .demo { display: block; max-width: 100%; height: auto; margin: 0 auto; border: 4px ridge #c0c0c0; }
+  .soon { text-align: center; color: #ff0000; font-weight: bold; margin-top: 6px; }
+  .video { position: relative; width: 100%; padding-top: 56.25%; border: 4px ridge #c0c0c0; box-sizing: border-box; background: #000; }
+  .video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .tags { text-align: center; margin-top: 8px; }
+  .tags span {
+    display: inline-block; margin: 3px; padding: 2px 8px; background: #c0c0c0; color: #000;
+    font: bold 12px Arial, sans-serif; border: 2px solid; border-color: #fff #000 #000 #fff; text-transform: uppercase;
+  }
+  .big-btn {
+    display: inline-block; margin: 6px; padding: 8px 16px; background: #c0c0c0; color: #000 !important;
+    text-decoration: none; font: bold 15px Arial, sans-serif; border: 3px solid; border-color: #fff #000 #000 #fff; cursor: pointer;
+  }
+  .big-btn:active { border-color: #000 #fff #fff #000; }
+  .toy { background: #000; border: 3px inset #808080; padding: 10px; color: #00ff00; font-family: 'Courier New', monospace; text-align: center; }
+  .toy input { width: 70px; font: 14px 'Courier New', monospace; }
+  .toy table { margin: 0 auto; }
+  .toy canvas { max-width: 100%; background: #70c5ce; image-rendering: pixelated; cursor: pointer; display: block; margin: 0 auto; }
+  .counter { display: inline-flex; gap: 2px; padding: 3px; background: #222; border: 2px inset #888; font: bold 20px 'Courier New', monospace; }
+  .counter b { background: #000; color: #00ff00; padding: 0 4px; }
+  .label { color: #fff; text-shadow: 1px 1px 0 #000; }
+  .buttons img { margin: 2px; }
+  small { color: #ddd; text-shadow: 1px 1px 0 #000; }
+  .sparkle { position: fixed; pointer-events: none; font-size: 14px; animation: fall .9s ease-out forwards; z-index: 10; }
+  @keyframes fall { to { transform: translateY(24px) scale(.2); opacity: 0; } }
+  @media (max-width: 520px) { h1 { font-size: 28px; } }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; } }
+</style>
+<script src="projects.js"></script>
+</head>
+<body>
+  <img src="../gifs/fire.gif" alt="" width="200" height="24">
+  <h1 id="title"></h1>
+  <div class="sub"><span id="sub"></span> <img src="../gifs/new.gif" alt="new" width="42" height="30" style="vertical-align:middle"></div>
+  <img src="../gifs/fire.gif" alt="" width="200" height="24">
+
+  <div class="marquee"><span id="marquee"></span></div>
+
+  <div class="box">
+    <h2>~ Check it out ~</h2>
+    <img class="demo" id="media" alt="">
+    <div class="soon" id="soon" hidden><span class="blink">*** REAL FOOTAGE COMING SOON ***</span></div>
+  </div>
+
+  <img class="divider" src="../gifs/rainbow.gif" alt="">
+
+  <div class="box">
+    <h2>~ What is it? ~</h2>
+    <div id="body"></div>
+    <div class="tags" id="tags"></div>
+  </div>
+
+  <div class="box" id="video-box" hidden>
+    <h2>~ Watch the video!! ~</h2>
+    <div class="video"><iframe id="video" title="Project video" allow="encrypted-media; picture-in-picture" allowfullscreen></iframe></div>
+  </div>
+
+  <div class="box" id="toy-box" hidden>
+    <h2 id="toy-title"></h2>
+    <div class="toy" id="toy"></div>
+  </div>
+
+  <div>
+    <a class="big-btn" id="source" target="_blank" rel="noopener">Get the source code</a>
+    <a class="big-btn" href="https://github.com/carlosz98" target="_blank" rel="noopener">More of my projects</a>
+  </div>
+
+  <img class="divider" src="../gifs/rainbow.gif" alt="">
+  <p class="label">You are visitor number:</p>
+  <div class="counter" id="counter"></div>
+  <div class="buttons" style="margin-top:12px">
+    <img src="../gifs/btn-win98.gif" alt="Best viewed in Windows 98" width="88" height="31">
+    <img src="../gifs/btn-notepad.gif" alt="Made with Notepad" width="88" height="31">
+    <img src="../gifs/btn-mochi.gif" alt="Mochi approved" width="88" height="31">
+    <img src="../gifs/btn-800x600.gif" alt="Optimized for 800x600" width="88" height="31">
+  </div>
+  <p><img src="../gifs/construction.gif" alt="Under construction" width="160" height="60"></p>
+  <p><small id="footer"></small></p>
+
+<script>
+  function initPage() {
+    var $ = function (id) { return document.getElementById(id); };
+    var key = new URLSearchParams(location.search).get('p');
+    var p = window.PROJECTS[key];
+    if (!p) { $('title').textContent = '404 Page Not Found'; $('sub').textContent = '~ this project ran away ~'; return; }
+    var t = window.THEMES[p.theme] || window.THEMES.stars;
+    var root = document.documentElement.style;
+    root.setProperty('--bg-color', t.bgColor);
+    root.setProperty('--bg-img', 'url(../gifs/' + t.bg + ')');
+    root.setProperty('--text', t.text);
+    root.setProperty('--panel', t.panel);
+    root.setProperty('--title', t.title);
+    root.setProperty('--glow', t.glow);
+    root.setProperty('--font', t.font);
+
+    document.title = '~*~ ' + p.name + '.exe ~*~ by Carlos';
+    $('title').textContent = p.name + '.exe';
+    $('sub').textContent = p.sub;
+    $('marquee').textContent = '*** ' + p.title + ' *** ' + p.marquee;
+    $('media').src = '../../progress/past/' + p.media;
+    $('media').alt = p.title;
+    $('soon').hidden = !p.placeholder;
+    $('body').textContent = p.body;
+    p.tags.forEach(function (tag) { var s = document.createElement('span'); s.textContent = tag; $('tags').appendChild(s); });
+    if (p.video) {
+      $('video-box').hidden = false;
+      $('video').src = 'https://www.youtube-nocookie.com/embed/' + p.video;
+    }
+    $('source').href = p.source;
+    if (/github\.com\/carlosz98\/?$/.test(p.source)) $('source').textContent = 'Visit my GitHub';
+    $('footer').textContent = '© 2025 Carlos. Hand-coded with love (and Mochi on the keyboard).';
+
+    var n = 1000 + Math.floor(Math.random() * 500);
+    try { n = (parseInt(localStorage.getItem('oldwebHits-' + key), 10) || n) + 1; localStorage.setItem('oldwebHits-' + key, n); } catch (e) {}
+    String(n).padStart(6, '0').split('').forEach(function (d) { var b = document.createElement('b'); b.textContent = d; $('counter').appendChild(b); });
+
+    if (p.toy && TOYS[p.toy]) { $('toy-box').hidden = false; TOYS[p.toy]($('toy'), $('toy-title')); }
+  }
+
+  var TOYS = {
+    // Same idea as the C++ tool: credits x grade points, rounded to two decimals.
+    gpa: function (el, title) {
+      title.innerHTML = '~ Try it here!! <span class="blink" style="color:#f00">LIVE</span> ~';
+      el.innerHTML = '<table id="rows"><tr><th>Class</th><th>Credits</th><th>Grade</th></tr></table>' +
+        '<button class="big-btn" id="add">+ Add class</button> <button class="big-btn" id="calc">Calculate GPA</button>' +
+        '<div id="gpa" style="font-size:24px;color:#ff0;margin-top:6px">GPA: -.--</div>';
+      var rows = el.querySelector('#rows');
+      function add(name, cr, gr) {
+        var tr = document.createElement('tr');
+        tr.innerHTML = '<td><input value="' + name + '" style="width:110px"></td><td><input type="number" min="0" value="' + cr + '"></td><td><input type="number" min="0" max="4" step="0.1" value="' + gr + '"></td>';
+        rows.appendChild(tr);
+      }
+      add('Math', 3, 4.0); add('English', 3, 3.3); add('Game Dev', 4, 3.7);
+      el.querySelector('#add').onclick = function () { add('Class ' + rows.rows.length, 3, 3.0); };
+      el.querySelector('#calc').onclick = function () {
+        var pts = 0, crs = 0, bad = false;
+        Array.prototype.slice.call(rows.rows, 1).forEach(function (r) {
+          var c = parseFloat(r.cells[1].firstChild.value), g = parseFloat(r.cells[2].firstChild.value);
+          if (isNaN(c) || isNaN(g) || c < 0 || g < 0 || g > 4) { bad = true; return; }
+          pts += c * g; crs += c;
+        });
+        el.querySelector('#gpa').textContent = bad ? 'Invalid input! Grades go from 0.0 to 4.0' : crs ? 'GPA: ' + (pts / crs).toFixed(2) : 'GPA: -.--';
+      };
+    },
+    // A tiny Flappy Bird: click, tap or press Space to flap.
+    flappy: function (el, title) {
+      title.innerHTML = '~ Play it here!! <span class="blink" style="color:#f00">LIVE</span> ~';
+      el.innerHTML = '<canvas id="fb" width="320" height="240"></canvas><div id="fbmsg" style="margin-top:6px;color:#ff0">Click or press SPACE to flap!</div>';
+      var cv = el.querySelector('#fb'), ctx = cv.getContext('2d'), msg = el.querySelector('#fbmsg');
+      var bird, pipes, score, best = 0, state = 'ready', tick = 0;
+      function reset() { bird = { y: 110, v: 0 }; pipes = []; score = 0; tick = 0; }
+      function flap() {
+        if (state !== 'play') { reset(); state = 'play'; msg.textContent = 'Score: 0'; }
+        bird.v = -4.2;
+      }
+      cv.addEventListener('mousedown', flap);
+      cv.addEventListener('touchstart', function (e) { e.preventDefault(); flap(); });
+      document.addEventListener('keydown', function (e) { if (e.code === 'Space') { e.preventDefault(); flap(); } });
+      function step() {
+        if (state === 'play') {
+          tick++;
+          bird.v += 0.25; bird.y += bird.v;
+          if (tick % 90 === 1) pipes.push({ x: 320, gap: 50 + Math.random() * 110 });
+          pipes.forEach(function (p) { p.x -= 2; });
+          if (pipes.length && pipes[0].x < -40) { pipes.shift(); }
+          pipes.forEach(function (p) {
+            if (!p.passed && p.x + 40 < 60) { p.passed = true; score++; msg.textContent = 'Score: ' + score; }
+            if (p.x < 72 && p.x + 40 > 52 && (bird.y - 8 < p.gap - 38 || bird.y + 8 > p.gap + 38)) state = 'over';
+          });
+          if (bird.y > 232 || bird.y < 0) state = 'over';
+          if (state === 'over') { best = Math.max(best, score); msg.textContent = 'GAME OVER! Score ' + score + ' / Best ' + best + '. Click to retry'; }
+        }
+        ctx.fillStyle = '#70c5ce'; ctx.fillRect(0, 0, 320, 240);
+        ctx.fillStyle = '#ded895'; ctx.fillRect(0, 228, 320, 12);
+        pipes.forEach(function (p) {
+          ctx.fillStyle = '#5ab52a';
+          ctx.fillRect(p.x, 0, 40, p.gap - 38); ctx.fillRect(p.x, p.gap + 38, 40, 240);
+          ctx.fillStyle = '#2e6b14';
+          ctx.fillRect(p.x - 3, p.gap - 50, 46, 12); ctx.fillRect(p.x - 3, p.gap + 38, 46, 12);
+        });
+        var y = bird ? bird.y : 110;
+        ctx.fillStyle = '#ffd700'; ctx.fillRect(54, y - 8, 18, 16);
+        ctx.fillStyle = '#fff'; ctx.fillRect(64, y - 6, 6, 6);
+        ctx.fillStyle = '#000'; ctx.fillRect(67, y - 4, 2, 2);
+        ctx.fillStyle = '#ff6600'; ctx.fillRect(72, y, 6, 4);
+        requestAnimationFrame(step);
+      }
+      reset(); step();
+    }
+  };
+  initPage();
+
+  (function () {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var chars = ['*', '+', '.', '★'], colors = ['#ffff00', '#ff66ff', '#00ffff', '#00ff00'], last = 0;
+    document.addEventListener('mousemove', function (e) {
+      var now = Date.now(); if (now - last < 40) return; last = now;
+      var s = document.createElement('span'); s.className = 'sparkle';
+      s.textContent = chars[Math.floor(Math.random() * chars.length)];
+      s.style.left = (e.clientX + 6) + 'px'; s.style.top = (e.clientY + 6) + 'px';
+      s.style.color = colors[Math.floor(Math.random() * colors.length)];
+      document.body.appendChild(s); setTimeout(function () { s.remove(); }, 900);
+    });
+  })();
+</script>
+</body>
+</html>
