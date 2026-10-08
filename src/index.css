@@ -1321,3 +1321,63 @@ html.win-busy, html.win-busy * {
 .cat-window-view video { width: 100%; aspect-ratio: 9 / 16; object-fit: contain; }
 .cat-window-caption { margin: 4px 6px 6px; font-size: 12px; text-align: center; }
 @media (max-width: 500px) { .df-window.cat-window { width: calc(100vw - 10px); height: auto; } }
+
+/* "Hi, I'm Mochi" intro when the cat banner is clicked */
+.mochi-intro {
+    position: fixed;
+    inset: 0 0 35px 0;
+    pointer-events: none;
+    z-index: 9998;
+    overflow: hidden;
+    animation: mochi-fade 2.4s ease forwards;
+}
+.mochi-paw {
+    position: absolute;
+    width: 26px;
+    height: 26px;
+    fill: #3b2f2f;
+    opacity: 0;
+    filter: drop-shadow(1px 1px 0 #fff);
+    animation: mochi-paw-step 1.6s ease forwards;
+}
+.mochi-hello {
+    position: absolute;
+    left: 50%;
+    top: 38%;
+    transform: translateX(-50%);
+    display: flex;
+    font-family: 'Arial Black', 'Arial Rounded MT Bold', Arial, Helvetica, sans-serif;
+    font-size: clamp(30px, 7vw, 64px);
+    font-weight: 900;
+    letter-spacing: 1px;
+    color: #ffde59;
+    text-shadow:
+        -2px -2px 0 #3b2f2f, 2px -2px 0 #3b2f2f, -2px 2px 0 #3b2f2f, 2px 2px 0 #3b2f2f,
+        5px 5px 0 #ff7eb6, 7px 7px 0 #3b2f2f;
+    white-space: nowrap;
+}
+.mochi-hello span {
+    font-family: inherit;
+    display: inline-block;
+    opacity: 0;
+    animation: mochi-letter 0.5s cubic-bezier(.3, 1.6, .5, 1) forwards;
+}
+@keyframes mochi-paw-step {
+    0% { opacity: 0; scale: 0.4; }
+    15% { opacity: 0.9; scale: 1.1; }
+    25% { scale: 1; }
+    70% { opacity: 0.9; }
+    100% { opacity: 0; }
+}
+@keyframes mochi-letter {
+    0% { opacity: 0; transform: translateY(40px) scale(0.3) rotate(-20deg); }
+    100% { opacity: 1; transform: translateY(0) scale(1) rotate(0); }
+}
+@keyframes mochi-fade {
+    0%, 80% { opacity: 1; }
+    100% { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .mochi-paw { display: none; }
+    .mochi-hello span { animation: none; opacity: 1; }
+}

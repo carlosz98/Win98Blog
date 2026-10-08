@@ -6,7 +6,7 @@ import myCatWebm from '../../assets/my-cat.webm';
 // and set type to 'image' (jpg/png/gif) or 'video'. A video lists its
 // sources in order; the browser plays the first one it supports.
 export const MY_CAT = {
-  name: 'MyCat',
+  name: 'Mochi',
   type: 'video',
   sources: [myCatWebm, myCatMp4],
   caption: 'No time spent with a cat is wasted.',

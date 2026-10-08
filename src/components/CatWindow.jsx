@@ -37,7 +37,7 @@ function CatWindow({ open, setOpen }) {
             ? <video autoPlay loop muted playsInline>
                 {MY_CAT.sources.map(src => <source key={src} src={src} type={src.endsWith('.webm') ? 'video/webm' : 'video/mp4'} />)}
               </video>
-            : <img src={MY_CAT.src} alt="Carlos's cat" />}
+            : <img src={MY_CAT.src} alt="Mochi, Carlos's cat" />}
         </div>
         <p className="cat-window-caption">{MY_CAT.caption}</p>
       </div>

@@ -15,6 +15,7 @@ import btc_icon from '../assets/btc_icon.webp'
 import speaker from '../assets/speaker.png'
 import { isMuted, setMuted, playClick, playMeow } from './function/sounds'
 import CatWindow from './CatWindow'
+import CatIntro from './CatIntro'
 import { clippyPhrase, clippySuggest } from './function/ClippyFunction';
 import { BsCheck  } from "react-icons/bs";
 import Calendar from 'react-calendar';
@@ -39,6 +40,19 @@ export default function Footer() {
     const [width, setWidth] = useState(0);
     const [muted, setMutedState] = useState(isMuted());
     const [catOpen, setCatOpen] = useState(false);
+    const [catIntro, setCatIntro] = useState(0);
+    const catIntroTimers = useRef([]);
+    useEffect(() => () => catIntroTimers.current.forEach(clearTimeout), []);
+
+    const playCatIntro = () => {
+        catIntroTimers.current.forEach(clearTimeout);
+        playMeow();
+        setCatIntro(n => n + 1);
+        catIntroTimers.current = [
+            setTimeout(() => setCatOpen(true), 1300),
+            setTimeout(() => setCatIntro(0), 2500),
+        ];
+    };
 
     useEffect(() => {
         const onMute = (e) => setMutedState(e.detail);
@@ -514,8 +528,7 @@ export default function Footer() {
                     <div className="tray_cat_banner" title="No time spent with a cat is wasted."
                         onClick={(e) => {
                             e.stopPropagation()
-                            playMeow()
-                            setCatOpen(true)
+                            playCatIntro()
                         }}
                     >
                         <img src={catBannerCat} alt="" />
@@ -683,6 +696,7 @@ export default function Footer() {
             ))}
             </div>
             )}
+            {catIntro > 0 && <CatIntro key={catIntro} show />}
             <CatWindow open={catOpen} setOpen={setCatOpen} />
             {calenderToggle && (
                 <div className="calender_container"
