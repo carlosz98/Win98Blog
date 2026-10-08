@@ -13,7 +13,13 @@ import shutdownicon from '../assets/shutdownicon.png';
 import settings from '../assets/setting.png';
 import btc_icon from '../assets/btc_icon.webp'
 import speaker from '../assets/speaker.png'
-import { isMuted, setMuted, playClick } from './function/sounds'
+import { isMuted, setMuted, playClick, playMeow } from './function/sounds'
+import CatWindow from './CatWindow'
+import CatIntro from './CatIntro'
+import PixelMochi from './PixelMochi'
+
+// Taskbar cat look: 'pixel' (pixel-art Mochi + text), 'photo' (cat from the banner + text), 'catOnly' (just the cat)
+const TRAY_CAT = 'pixel'
 import { clippyPhrase, clippySuggest } from './function/ClippyFunction';
 import { BsCheck  } from "react-icons/bs";
 import Calendar from 'react-calendar';
@@ -21,6 +27,7 @@ import { BsFillCaretRightFill } from "react-icons/bs";
 import binEmp from '../assets/bin2.png'
 import bin from '../assets/bin.png'
 import news from '../assets/news.png'
+import catBannerCat from '../assets/cat-banner-cat.png'
 
 
 export default function Footer() {
@@ -36,6 +43,20 @@ export default function Footer() {
     const [calValue, calOnChange] = useState(new Date());
     const [width, setWidth] = useState(0);
     const [muted, setMutedState] = useState(isMuted());
+    const [catOpen, setCatOpen] = useState(false);
+    const [catIntro, setCatIntro] = useState(0);
+    const catIntroTimers = useRef([]);
+    useEffect(() => () => catIntroTimers.current.forEach(clearTimeout), []);
+
+    const playCatIntro = () => {
+        catIntroTimers.current.forEach(clearTimeout);
+        playMeow();
+        setCatIntro(n => n + 1);
+        catIntroTimers.current = [
+            setTimeout(() => setCatOpen(true), 1300),
+            setTimeout(() => setCatIntro(0), 2500),
+        ];
+    };
 
     useEffect(() => {
         const onMute = (e) => setMutedState(e.detail);
@@ -508,6 +529,15 @@ export default function Footer() {
                 <div className="time"
                     ref={timeBarRef}
                 >
+                    <div className={`tray_cat_banner tray_cat_${TRAY_CAT}`} title="No time spent with a cat is wasted."
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            playCatIntro()
+                        }}
+                    >
+                        {TRAY_CAT === 'pixel' ? <PixelMochi size={18} /> : <img src={catBannerCat} alt="" />}
+                        {TRAY_CAT !== 'catOnly' && <span>No time spent with<br/>a cat is wasted.</span>}
+                    </div>
                     <div className="icon_time_container">
                         <img src={news} alt="news"
                                 onClick={(e) => {
@@ -670,6 +700,8 @@ export default function Footer() {
             ))}
             </div>
             )}
+            {catIntro > 0 && <CatIntro key={catIntro} show />}
+            <CatWindow open={catOpen} setOpen={setCatOpen} />
             {calenderToggle && (
                 <div className="calender_container"
                     ref={calenderRef}
