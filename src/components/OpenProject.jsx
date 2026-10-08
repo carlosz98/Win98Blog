@@ -1,5 +1,5 @@
 import UseContext from '../Context'
-import { useContext, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import Draggable from 'react-draggable'
 import { motion } from 'framer-motion';
 import ie from '../assets/ie.png'
@@ -14,6 +14,7 @@ import iconInfo from '../icon.json'
 import folderIcon from '../assets/folder.png'
 import folderOpenIcon from '../assets/folderopen.png'
 import { BOOKMARK_FOLDERS } from './function/coolSites'
+import GithubView, { parseGithubUrl } from './GithubView'
 
 
 function OpenProject() {
@@ -22,6 +23,7 @@ function OpenProject() {
   const [expandAddy, setExpandAddy] = useState(false);
   const [favOpen, setFavOpen] = useState(false);
   const [favFolder, setFavFolder] = useState(null);
+  const [spotlight, setSpotlight] = useState(false);
 
   const allIEProjects = iconInfo
     .filter(item => item.folderId === 'Project')
@@ -45,6 +47,21 @@ function OpenProject() {
     iconFocusIcon,
     deleteTap,
   } = useContext(UseContext);
+
+  // When a page opens, dim the desktop so the project is the focus.
+  const wasOpen = useRef(false);
+  useEffect(() => {
+    const open = openProjectExpand.show && !openProjectExpand.hide;
+    if (open && !wasOpen.current) setSpotlight(true);
+    if (!open) setSpotlight(false);
+    wasOpen.current = open;
+  }, [openProjectExpand.show, openProjectExpand.hide]);
+
+  function navigate(url) {
+    setProjectUrl(url);
+    setBackTrackIe(prev => [...prev, url]);
+    setForwardTrackIe([]);
+  }
 
   function handleDragStop(event, data) {
     const positionX = data.x 
@@ -117,6 +134,9 @@ case 'Clasicos':
 
   return (
     <>
+      {spotlight && openProjectExpand.show && !openProjectExpand.hide && (
+        <div className="ie-spotlight" onClick={() => setSpotlight(false)} />
+      )}
       <Draggable
         axis="both" 
         handle={'.folder_dragbar'}
@@ -132,7 +152,7 @@ case 'Clasicos':
         onStart={() => handleSetFocusItemTrue('Internet')}
       >
         <div
-          className='folder_folder-open-project' 
+          className={`folder_folder-open-project${spotlight ? ' ie-pop' : ''}`} 
           onClick={(e) => {
             e.stopPropagation();
             handleSetFocusItemTrue('Internet');
@@ -287,7 +307,10 @@ case 'Clasicos':
             onClick={() => iconFocusIcon('Internet')}
             style={openProjectExpand.expand ? { height: 'calc(100svh - 175px)' } : {}}
           >
-            {openProjectExpand.show && (
+            {openProjectExpand.show && parseGithubUrl(projectUrl) && (
+              <GithubView key={iframeKey + projectUrl} url={projectUrl} onNavigate={navigate} />
+            )}
+            {openProjectExpand.show && !parseGithubUrl(projectUrl) && (
               <iframe
                 key={iframeKey}
                 src={projectUrl}
@@ -301,7 +324,7 @@ case 'Clasicos':
             )}
           </div>
 
-          <div className='ifram_text_container'>
+          <div className='ifram_text_container' style={parseGithubUrl(projectUrl) ? { display: 'none' } : undefined}>
             <p>
               If page does not load, please click{' '}
               <a href={projectUrl.length < 1 ? '#' : projectUrl} target="_blank" rel="noopener noreferrer">

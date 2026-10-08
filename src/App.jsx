@@ -1200,11 +1200,11 @@ function handleShowInfolderMobile(name, type) {
     });
   }
 
-  // Project folder entries open their GitHub repo in a new tab.
+  // Project folder entries open their GitHub repo inside the IE window.
   function openProjectLink(name) {
     const project = iconInfo.find(item => item.folderId === 'Project' && item.name === name && item.url);
     if (!project) return false;
-    window.open(project.url, '_blank', 'noopener');
+    openInIE(project.url);
     return true;
   }
 
@@ -1217,7 +1217,7 @@ function handleShowInfolderMobile(name, type) {
     reactToOpen(lowerCaseName);
 
     if(lowerCaseName === 'github') {
-      window.open('https://github.com/carlosz98', '_blank', 'noopener');
+      openInIE('https://github.com/carlosz98');
       setStartActive(false);
       return;
     }

@@ -1,0 +1,105 @@
+.gh-page {
+  height: 100%;
+  overflow: auto;
+  background: #fff;
+  color: #000;
+  padding: 10px 12px 16px;
+  font-size: 13px;
+  user-select: text;
+}
+.gh-head, .gh-profile { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.gh-path { font-size: 17px; flex: 1; min-width: 0; word-break: break-word; }
+.gh-link { color: #0000ee; text-decoration: underline; cursor: pointer; }
+.gh-btn {
+  display: inline-block;
+  padding: 3px 10px;
+  background: #c0c0c0;
+  color: #000;
+  text-decoration: none;
+  font-size: 12px;
+  border: 2px solid;
+  border-color: #fff #000 #000 #fff;
+  box-shadow: inset -1px -1px #808080;
+  white-space: nowrap;
+}
+.gh-btn:active { border-color: #000 #fff #fff #000; box-shadow: inset 1px 1px #808080; }
+.gh-desc { margin: 8px 0 4px; font-size: 14px; }
+.gh-stats { display: flex; flex-wrap: wrap; gap: 14px; margin: 6px 0 10px; color: #444; font-size: 12px; }
+.gh-stats a { color: #0000ee; }
+.gh-langs { margin-bottom: 10px; }
+.gh-langbar { display: flex; height: 8px; border: 1px solid #808080; overflow: hidden; }
+.gh-langbar span { display: block; height: 100%; }
+.gh-langnames { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 4px; font-size: 11px; }
+.gh-langnames i, .gh-small i { display: inline-block; width: 8px; height: 8px; margin-right: 4px; border: 1px solid #555; }
+.gh-readme-box { border: 2px groove #fff; padding: 8px 10px; margin: 0; min-width: 0; }
+.gh-readme-box legend { padding: 0 4px; font-size: 12px; }
+.gh-muted { color: #555; }
+.gh-small { font-size: 11px; color: #333; }
+
+.gh-readme { font-family: Arial, Helvetica, sans-serif; line-height: 1.45; overflow-wrap: anywhere; }
+.gh-readme * { font-family: inherit; }
+.gh-readme h1, .gh-readme h2 { border-bottom: 1px solid #c0c0c0; padding-bottom: 3px; margin: 14px 0 8px; }
+.gh-readme h1 { font-size: 20px; }
+.gh-readme h2 { font-size: 17px; }
+.gh-readme h3 { font-size: 15px; margin: 12px 0 6px; }
+.gh-readme p, .gh-readme ul, .gh-readme ol { margin: 6px 0; }
+.gh-readme ul, .gh-readme ol { padding-left: 22px; }
+.gh-readme ul { list-style: disc; }
+.gh-readme ol { list-style: decimal; }
+.gh-readme a { color: #0000ee; }
+.gh-readme img { max-width: 100%; height: auto; }
+.gh-readme code { font-family: 'Courier New', monospace; background: #f0f0f0; padding: 0 3px; }
+.gh-readme pre { background: #f0f0f0; border: 1px solid #c0c0c0; padding: 8px; overflow: auto; }
+.gh-readme pre code { padding: 0; }
+.gh-readme pre * { font-family: 'Courier New', monospace; }
+.gh-readme table { border-collapse: collapse; margin: 6px 0; }
+.gh-readme th, .gh-readme td { border: 1px solid #c0c0c0; padding: 3px 6px; }
+.gh-readme blockquote { border-left: 3px solid #c0c0c0; margin: 6px 0; padding-left: 10px; color: #444; }
+
+.gh-profile img { width: 64px; height: 64px; border: 2px solid; border-color: #808080 #fff #fff #808080; }
+.gh-profile h2 { font-size: 18px; margin: 0; }
+.gh-profile > div { flex: 1; min-width: 160px; }
+.gh-profile p { margin: 4px 0 0; }
+.gh-profile + .gh-readme-box { margin-top: 12px; }
+.gh-repos { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 6px; }
+.gh-repo {
+  display: flex; flex-direction: column; gap: 3px;
+  padding: 6px 8px;
+  background: #f4f4f4;
+  border: 1px solid #c0c0c0;
+  cursor: pointer;
+}
+.gh-repo b { color: #0000ee; text-decoration: underline; word-break: break-word; }
+.gh-repo .gh-muted { font-size: 12px; }
+.gh-repo:hover { background: #000080; }
+.gh-repo:hover * { color: #fff; }
+
+.gh-loading { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; background: #fff; padding: 20px; text-align: center; }
+.gh-progress { width: 220px; height: 16px; border: 2px solid; border-color: #808080 #fff #fff #808080; padding: 1px; overflow: hidden; }
+.gh-progress span { display: block; height: 100%; width: 40%; background: repeating-linear-gradient(90deg, #000080 0 10px, transparent 10px 12px); animation: gh-progress 1.2s linear infinite; }
+@keyframes gh-progress { from { transform: translateX(-100%); } to { transform: translateX(250%); } }
+
+/* Spotlight: dims the desktop so the opened project is the focus */
+.ie-spotlight {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 998;
+  animation: ie-spotlight-in 0.35s ease;
+}
+@keyframes ie-spotlight-in { from { opacity: 0; } to { opacity: 1; } }
+.folder_folder-open-project.ie-pop {
+  animation: ie-pop 0.35s cubic-bezier(.2, 1.4, .4, 1), ie-glow 1.6s ease 0.35s 2;
+}
+@keyframes ie-pop {
+  from { scale: 0.85; opacity: 0.4; }
+  to { scale: 1; opacity: 1; }
+}
+@keyframes ie-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 255, 160, 0); }
+  50% { box-shadow: 0 0 0 4px #ffff9e, 0 0 24px 6px rgba(255, 255, 160, 0.8); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .folder_folder-open-project.ie-pop, .ie-spotlight { animation: none; }
+}
+.gh-readme a.anchor, .gh-readme .anchor { display: none; }
