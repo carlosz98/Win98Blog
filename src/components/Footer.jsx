@@ -11,7 +11,7 @@ import project from '../assets/regFolder.png';
 import resume from '../assets/folder.png';
 import shutdownicon from '../assets/shutdownicon.png';
 import settings from '../assets/setting.png';
-import btc_icon from '../assets/btc_icon.webp'
+import btc_icon from '../assets/btc_pixel.png'
 import speaker from '../assets/speaker.png'
 import { isMuted, setMuted, playClick, playMeow } from './function/sounds'
 import CatWindow from './CatWindow'
@@ -546,7 +546,7 @@ export default function Footer() {
                                 }}
                         />
                         {isBitcoinInstalled && (
-                            <img src={btc_icon} alt="btc_icon"
+                            <img src={btc_icon} alt="btc_icon" style={{width: '16px', imageRendering: 'pixelated'}}
     
                                 onClick={() => btcShow.show ? deleteTap('Bitcoin') : handleShow('Bitcoin')}
                             />
