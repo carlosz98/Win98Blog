@@ -7,16 +7,16 @@ import { IoIosSearch } from "react-icons/io";
 import { motion, AnimatePresence } from 'framer-motion';
 
 
-// The desktop icon that gets an attention effect, so visitors find Carlos's work.
-// FEATURED_EFFECTS can mix 'glow' (pulsing yellow halo), 'badge' (a "My work!"
-// sticker) and 'sparkle' (hops now and then with twinkling sparkles).
-const FEATURED_ICON = 'Project';
+// Desktop icons that get an attention effect, so visitors find Carlos's work.
+// FEATURED_EFFECTS can mix 'glow' (pulsing yellow halo), 'badge' (a sticker with
+// the text below) and 'sparkle' (hops now and then with twinkling sparkles).
+const FEATURED_BADGES = { Project: 'My work!', DevFeed: 'New posts!' };
 const FEATURED_EFFECTS = ['glow', 'badge'];
 
-function FeaturedBadge() {
+function featuredBadge(text) {
   return (
     <>
-      {FEATURED_EFFECTS.includes('badge') && <span className="featured_badge">My work!</span>}
+      {FEATURED_EFFECTS.includes('badge') && <span className="featured_badge">{text}</span>}
       {FEATURED_EFFECTS.includes('sparkle') && (
         <span className="featured_sparkles" aria-hidden="true">
           <i /><i /><i />
@@ -171,7 +171,7 @@ function Dragdrop() {
             }}
           >
             <div
-              className={icon.name === FEATURED_ICON ? `icon icon_featured ${FEATURED_EFFECTS.map(e => `fx_${e}`).join(' ')}` : 'icon'}
+              className={FEATURED_BADGES[icon.name] ? `icon icon_featured ${FEATURED_EFFECTS.map(e => `fx_${e}`).join(' ')}` : 'icon'}
               data-tip={icon.description}
               style={iconContainerSize(iconScreenSize)}
               ref={(el) => iconRefs.current[icon.name] = el} 
@@ -200,7 +200,7 @@ function Dragdrop() {
                   : imageMapping(icon.pic)} alt={icon.name} className={icon.focus ? 'img_focus' : ''} 
                 style={iconImgSize(iconScreenSize)}
               />
-              {icon.name === FEATURED_ICON && <FeaturedBadge />}
+              {FEATURED_BADGES[icon.name] && featuredBadge(FEATURED_BADGES[icon.name])}
               <p className={icon.focus ? 'p_focus' : ''}
                 style={iconTextSize(iconScreenSize)}
               >
