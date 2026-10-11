@@ -390,5 +390,45 @@ window.PROJECTS = {
   "source": "https://github.com/carlosz98/AndroidDevelopment_Retro_FinalProject",
   "theme": "checker",
   "toy": null
+ },
+ "pethome-vet": {
+  "name": "PetHomeVet",
+  "title": "PetHome Vet: a vet clinic website",
+  "sub": "~ keeping tails wagging ~",
+  "marquee": "Book a visit in 4 steps *** My Pets portal *** Light and dark mode *** Paw prints everywhere ***",
+  "body": "A full rebuild of my PetHome project for MAC 272 (Web Development 2), turned from a pet adoption center into a veterinary clinic site. Pet owners can filter services and prices, meet the vets, and book a visit in 4 steps (pet and owner, service and vet, date and time, review) with live open slots. The My Pets portal shows upcoming visits, vaccine status, weight history and invoices with a pay button. It's plain HTML, CSS and vanilla JavaScript with light and dark mode, and every pet animation (walking paw prints, a peeking cat, paw and bone confetti, a scroll-progress dog) is drawn in code. Next step: a PHP and MySQL back end.",
+  "tags": [
+   "HTML",
+   "CSS",
+   "JavaScript",
+   "ResponsiveDesign",
+   "WebDev"
+  ],
+  "media": "pethome-vet.gif",
+  "placeholder": false,
+  "video": null,
+  "source": "https://github.com/carlosz98/PetHome-Vet-Project",
+  "theme": "bricks",
+  "toy": null
+ },
+ "mp3-wizard": {
+  "name": "MP3Wizard",
+  "title": "The MP3 Wizard: Spotify to Zune",
+  "sub": "~ Spotify playlists to MP3, like magic ~",
+  "marquee": "Paste a playlist *** Get tagged MP3s *** Album art every time *** Built for my Zune 30GB ***",
+  "body": "A Windows desktop app I built for my Zune 30GB: paste a Spotify playlist link and get MP3s back, each one tagged and with its album cover. It finds each song on YouTube (with SoundCloud as a backup), skips remixes, live and sped-up versions, checks the length against Spotify, then saves 320 kbps MP3s with title, artist, album, year and 500x500 cover art. It has a built-in player, a Zune Check tab that repairs old songs' covers and albums, a one-click installer, and a wizard who comments on every download. Written in Python with PyQt6, yt-dlp and mutagen, styled after the old P2P apps.",
+  "tags": [
+   "Python",
+   "PyQt6",
+   "yt-dlp",
+   "Desktop",
+   "Zune"
+  ],
+  "media": "mp3-wizard.gif",
+  "placeholder": false,
+  "video": null,
+  "source": "https://github.com/carlosz98/the-mp3-wizard",
+  "theme": "stars",
+  "toy": null
  }
 };

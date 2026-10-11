@@ -630,6 +630,32 @@
         "category": "Web",
         "description": "First version of the Windows 98 blog (2025).",
         "url": "https://github.com/carlosz98/Win98---Blog"
+    },
+    {
+        "name": "PetHomeVet",
+        "pic": "Project",
+        "folderId": "Project",
+        "size": 400,
+        "type": ".exe",
+        "page": "oldweb/project/index.html?p=pethome-vet",
+        "x": 60,
+        "y": 60,
+        "category": "Web",
+        "description": "Veterinary clinic website in HTML, CSS and JavaScript: services, vets, 4-step booking and a My Pets portal.",
+        "url": "https://github.com/carlosz98/PetHome-Vet-Project"
+    },
+    {
+        "name": "MP3Wizard",
+        "pic": "Project",
+        "folderId": "Project",
+        "size": 900,
+        "type": ".exe",
+        "page": "oldweb/project/index.html?p=mp3-wizard",
+        "x": 61,
+        "y": 61,
+        "category": "Python",
+        "description": "Windows app that turns Spotify playlists into tagged MP3s with album art for the Zune, built with Python and PyQt6.",
+        "url": "https://github.com/carlosz98/the-mp3-wizard"
     }
     ,{
     "name": "TheOldNet",
