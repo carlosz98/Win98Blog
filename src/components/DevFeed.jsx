@@ -26,6 +26,8 @@ const PROJECTS = [
   { name: 'Win98Blog v2', color: '#3a6a6a', emoji: '🖥️' },
   { name: 'RetroiOS',    color: '#3a3a8a', emoji: '🍎' },
   { name: 'ECommerce',   color: '#8a3a6a', emoji: '🛍️' },
+  { name: 'PetHomeVet',  color: '#c0392b', emoji: '🩺' },
+  { name: 'MP3Wizard',   color: '#4a2a8a', emoji: '🧙' },
 ];
 
 const SHARE_URL = 'https://github.com/carlosz98';
