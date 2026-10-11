@@ -49,6 +49,7 @@
     text-decoration: none; font: bold 15px Arial, sans-serif; border: 3px solid; border-color: #fff #000 #000 #fff; cursor: pointer;
   }
   .big-btn:active { border-color: #000 #fff #fff #000; }
+  .big-btn[hidden] { display: none; }
   .toy { background: #000; border: 3px inset #808080; padding: 10px; color: #00ff00; font-family: 'Courier New', monospace; text-align: center; }
   .toy input { width: 70px; font: 14px 'Courier New', monospace; }
   .toy table { margin: 0 auto; }
@@ -98,6 +99,7 @@
   </div>
 
   <div>
+    <a class="big-btn" id="live" target="_blank" rel="noopener" hidden>Visit the live site!</a>
     <a class="big-btn" id="source" target="_blank" rel="noopener">Get the source code</a>
     <a class="big-btn" href="https://github.com/carlosz98" target="_blank" rel="noopener">More of my projects</a>
   </div>
@@ -144,6 +146,7 @@
       $('video').src = 'https://www.youtube-nocookie.com/embed/' + p.video;
     }
     $('source').href = p.source;
+    if (p.live) { $('live').href = p.live; $('live').hidden = false; }
     if (/github\.com\/carlosz98\/?$/.test(p.source)) $('source').textContent = 'Visit my GitHub';
     $('footer').textContent = '© 2025 Carlos. Hand-coded with love (and Mochi on the keyboard).';
 

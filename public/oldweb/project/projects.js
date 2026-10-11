@@ -409,7 +409,8 @@ window.PROJECTS = {
   "video": null,
   "source": "https://github.com/carlosz98/PetHome-Vet-Project",
   "theme": "bricks",
-  "toy": null
+  "toy": null,
+  "live": "https://carlosz98.github.io/PetHome-Vet-Project/"
  },
  "mp3-wizard": {
   "name": "MP3Wizard",
