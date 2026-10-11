@@ -48,6 +48,27 @@ const ANNOUNCEMENTS = [
     collection: 'scrapbook',
     data: { kind: 'image', src: `${SITE}progress/magazine-flip.gif`, tag: 'magazine', caption: 'Working on a 3D magazine for the site. Pick it up off the desk and flip through!' },
   },
+  // New projects, Oct 11 2026: The MP3 Wizard and PetHome Vet (newest first, so created last-to-first).
+  {
+    key: 'mp3-wizard-scrap-app',
+    collection: 'scrapbook',
+    data: { kind: 'image', src: `${SITE}progress/mp3-wizard-app.jpg`, tag: 'projects', caption: 'The MP3 Wizard: paste a Spotify playlist, get tagged MP3s with album art for my Zune 30GB.' },
+  },
+  {
+    key: 'mp3-wizard-scrap-gif',
+    collection: 'scrapbook',
+    data: { kind: 'image', src: `${SITE}progress/past/mp3-wizard.gif`, tag: 'projects', caption: 'Please hold, the wizard is installing. He also comments on every download.' },
+  },
+  {
+    key: 'pethome-vet-scrap-book',
+    collection: 'scrapbook',
+    data: { kind: 'image', src: `${SITE}progress/pethome-book.jpg`, tag: 'projects', caption: 'PetHome Vet: booking a visit takes 4 short steps, with a live summary on the side.' },
+  },
+  {
+    key: 'pethome-vet-scrap-gif',
+    collection: 'scrapbook',
+    data: { kind: 'image', src: `${SITE}progress/past/pethome-vet.gif`, tag: 'projects', caption: 'New project: PetHome Vet, my pet adoption site rebuilt as a vet clinic. Plain HTML, CSS and JS.' },
+  },
   // One DevFeed post per earlier project, newest landing on top.
   ...PAST_PROJECT_POSTS.map(({ key, media, video, ...rest }) => ({
     key,
