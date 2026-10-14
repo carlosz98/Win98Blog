@@ -69,6 +69,31 @@ const ANNOUNCEMENTS = [
     collection: 'scrapbook',
     data: { kind: 'image', src: `${SITE}progress/past/pethome-vet.gif`, tag: 'projects', caption: 'New project: PetHome Vet, my pet adoption site rebuilt as a vet clinic. Plain HTML, CSS and JS.' },
   },
+  // GunBound was rebuilt as a full Unity project: new Scrapbook shots, and the
+  // existing DevFeed post gets the new text and GIF (the post itself stays put).
+  {
+    key: 'gunbound-v2-scrap-2',
+    collection: 'scrapbook',
+    data: { kind: 'image', src: `${SITE}progress/gunbound-2.jpg`, tag: 'projects', caption: 'GunBound: every shot carves a crater. Dig deep enough and the other guy falls in.' },
+  },
+  {
+    key: 'gunbound-v2-scrap-1',
+    collection: 'scrapbook',
+    data: { kind: 'image', src: `${SITE}progress/gunbound-1.jpg`, tag: 'projects', caption: 'GunBound rebuilt: Knight vs Dragon on Adium, with the classic GunBound HUD.' },
+  },
+  {
+    key: 'gunbound-v2-scrap-gif',
+    collection: 'scrapbook',
+    data: { kind: 'image', src: `${SITE}progress/past/gunbound.gif`, tag: 'projects', caption: 'Rebuilt my GunBound replica as a full Unity 6 game. Mind the wind!' },
+  },
+  {
+    key: 'gunbound-v2-devfeed',
+    collection: 'devfeed_posts',
+    refresh: 'past-gunbound',
+    data: (({ title, body, tags, media }) => ({ title, body, tags, media: `${SITE}progress/past/${media}` }))(
+      PAST_PROJECT_POSTS.find(p => p.key === 'past-gunbound'),
+    ),
+  },
   // One DevFeed post per earlier project, newest landing on top.
   ...PAST_PROJECT_POSTS.map(({ key, media, video, ...rest }) => ({
     key,
@@ -95,7 +120,8 @@ export async function publishAnnouncements() {
   try {
     for (const a of ANNOUNCEMENTS) {
       if (done.includes(a.key)) continue;
-      await devfeedStore.ensurePost(a.collection, a.key, a.data);
+      if (a.refresh) await devfeedStore.refreshPost(a.collection, a.refresh, a.data);
+      else await devfeedStore.ensurePost(a.collection, a.key, a.data);
       done.push(a.key);
       try { localStorage.setItem(DONE_KEY, JSON.stringify(done)); } catch { /* no storage */ }
     }

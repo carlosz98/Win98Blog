@@ -498,7 +498,7 @@
         "x": 49,
         "y": 49,
         "category": "Game",
-        "description": "2D Gunbound replica built in Unity in 3 days — 2D sprite animation, C# scripting, complete UI.",
+        "description": "GunBound / DragonBound replica rebuilt in Unity 6: destructible maps, Knight vs Dragon, wind, DragonBound turn rules and the classic HUD.",
         "url": "https://github.com/carlosz98/Gunboun---Replica-in-Unity"
     },
     {

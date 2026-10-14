@@ -88,6 +88,13 @@ function createFirestoreStore() {
       await setDoc(ref, { ...data, createdAt: serverTimestamp() });
       return true;
     },
+    // Changes fields on a post that already exists, e.g. to swap in new media (admin only).
+    async refreshPost(collectionName, id, fields) {
+      const ref = doc(db, collectionName, id);
+      if (!(await getDoc(ref)).exists()) return false;
+      await updateDoc(ref, fields);
+      return true;
+    },
     addPost: post => addDoc(postsCol, { ...post, likes: 0, likedBy: [], comments: [], createdAt: serverTimestamp() }),
     deletePost: post => deleteDoc(doc(postsCol, post.id)),
     toggleLike(post, userId) {
@@ -139,6 +146,7 @@ function createLocalStore() {
     async logout() { sessionStorage.removeItem('df_admin'); },
     async seedIfEmpty() {},
     async ensurePost() { return false; },
+    async refreshPost() { return false; },
     async addPost(post) {
       write(posts => [{ ...post, id: Date.now(), time: formatTime(), likes: 0, likedBy: [], comments: [] }, ...posts]);
     },
