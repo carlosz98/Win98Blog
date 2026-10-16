@@ -1,0 +1,77 @@
+<h2 id="week-1-introduction-to-php">Week 1 — Introduction to PHP</h2>
+<p><em>Topics for this week (details to be filled in as class covers them):</em></p>
+<ul><li><p><strong>Introduction to PHP</strong> — what PHP is, where it runs (server-side), and its role in web development</p></li><li><p><strong>PHP tags</strong> — how to open/close PHP code blocks inside a file, e.g. <code>&lt;?php ... ?&gt;</code></p></li><li><p><strong>Data types</strong> — the basic types PHP works with (strings, integers, floats, booleans, arrays, etc.)</p></li><li><p><strong>Operators</strong> — arithmetic, comparison, logical, and assignment operators</p></li><li><p><strong>Embedding PHP in HTML forms</strong> — mixing PHP with HTML, and handling form input/output</p></li></ul>
+<h3 id="what-is-a-php-file">What is a PHP file?</h3>
+<p>A <strong>PHP file</strong> is a text file (extension <code>.php</code>) that mixes HTML and PHP code. When a browser requests it, the server executes any PHP code inside, then sends only the resulting HTML to the browser — the client never sees the PHP source itself.</p>
+<pre><code class="language-php">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;body&gt;
+
+&lt;?php
+  echo &quot;Hello, world!&quot;;
+?&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<h3 id="getting-started">Getting Started</h3>
+<p><strong>Tools needed:</strong></p>
+<ul><li><p>A code editor (e.g. VS Code, PHPStorm)</p></li><li><p>PHP installed (interpreter to run <code>.php</code> files)</p></li><li><p>A web server (Apache, Nginx, or similar) to handle requests</p></li><li><p>MySQL installed for the database</p></li><li><p>A browser to view the result</p></li></ul>
+<p><em>Professor recommends: <strong>Brackets</strong> (code editor) + <strong>XAMPP</strong> (local server stack). Using <strong>VS Code</strong> instead of Brackets here.</em></p>
+<p><strong>Web servers — Apache vs. others:</strong></p>
+<ul><li><p><strong>Apache</strong> — the most common web server for PHP; handles <code>.php</code> files out of the box via <code>mod_php</code>, widely supported, huge community, easy to configure with <code>.htaccess</code> files.</p></li><li><p><strong>Nginx</strong> — a faster, more lightweight alternative; doesn&#39;t run PHP directly — it hands <code>.php</code> requests off to a separate process (PHP-FPM) to execute, then returns the result. Popular for high-traffic sites needing better performance under load.</p></li></ul>
+<p><strong>How the server processes an incoming request:</strong></p>
+<p><strong>Simple flow:</strong> <code>Browser → Apache → PHP → result → Browser</code></p>
+<p>Apache receives the request and, seeing the <code>.php</code> extension, hands the file to PHP instead of serving it as plain text. PHP runs the code (logic, DB queries, etc.) and generates HTML. That HTML goes back through Apache to the browser — the visitor only ever sees the output, never the PHP source.</p>
+<p><strong>Example with a database:</strong></p>
+<p><code>Browser → Apache → PHP → MySQL → PHP → Apache → Browser</code></p>
+<p>The browser requests a page → Apache hands it to PHP → PHP queries MySQL for data (e.g. <code>SELECT * FROM users</code>) → MySQL returns the result to PHP → PHP builds that data into HTML → the HTML goes back through Apache → the browser displays the final page.</p>
+<ol><li><p>The browser sends an HTTP request for a page (e.g. <code>index.php</code>) to the web server.</p></li><li><p>The web server sees the <code>.php</code> extension and passes the file to the PHP interpreter (directly, or via PHP-FPM for Nginx).</p></li><li><p>PHP executes the code — running logic, querying MySQL if needed, and building the page content.</p></li><li><p>PHP hands the generated HTML back to the web server.</p></li><li><p>The web server sends that HTML back to the browser as the HTTP response — the visitor only ever sees HTML, never the PHP code.</p></li></ol>
+<p><strong>XAMPP:</strong></p>
+<p>XAMPP is a free, cross-platform local development stack that bundles everything needed to run PHP + MySQL projects on your own computer: <strong>X</strong> (cross-platform) + <strong>A</strong>pache + <strong>M</strong>ySQL/MariaDB + <strong>P</strong>HP + <strong>P</strong>erl. Instead of installing and configuring each tool separately, XAMPP installs them together with a simple control panel to start/stop Apache and MySQL — making it the easiest way to get a local PHP + MySQL environment running for practice and development before deploying to a real server.</p>
+<p><strong>XAMPP includes:</strong></p>
+<ul><li><p><strong>Apache</strong> — the web server</p></li><li><p><strong>MySQL/MariaDB</strong> — the database</p></li><li><p><strong>PHP</strong> — the scripting language/interpreter</p></li><li><p><strong>phpMyAdmin</strong> — a web-based GUI for managing MySQL databases</p></li><li><p><strong>Perl</strong> — another scripting language (optional)</p></li></ul>
+<p><strong>How the stack works in practice:</strong></p>
+<ol><li><p><strong>Client request</strong> — the browser requests a page from the server.</p></li><li><p><strong>Web server processes the request</strong> — Apache receives it and routes <code>.php</code> files to PHP.</p></li><li><p><strong>PHP executes the script</strong> — runs the code, talks to MySQL/MariaDB if needed, builds the output.</p></li><li><p><strong>Response is sent</strong> — the generated HTML goes back through Apache to the browser.</p></li></ol>
+<p><strong>PHP parser:</strong> the part of the PHP engine that reads a <code>.php</code> file, checks its syntax, and converts the code into a form the interpreter can execute step by step — it&#39;s what catches syntax errors before the script actually runs.</p>
+<p><strong>Key Features of XAMPP:</strong></p>
+<ul><li><p><strong>All-in-one package</strong> — bundles Apache, MySQL/MariaDB, PHP, and Perl together, so there&#39;s nothing extra to install separately.</p></li><li><p><strong>Cross-platform</strong> — available for Windows, macOS, and Linux.</p></li><li><p><strong>User-friendly interface</strong> — a simple control panel to start/stop Apache and MySQL with one click, plus phpMyAdmin for managing databases visually.</p></li><li><p><strong>Open source</strong> — free to download and use.</p></li></ul>
+<h3 id="key-features-of-php">Key Features of PHP</h3>
+<ul><li><p><strong>Server-side execution</strong> — PHP code runs on the server before the page is sent to the browser; the client only ever sees the resulting HTML.</p></li><li><p><strong>Ease of use</strong> — simple, C-like syntax that&#39;s beginner-friendly and quick to write.</p></li><li><p><strong>Open source</strong> — free to use, with a large community and extensive documentation.</p></li><li><p><strong>Cross-platform</strong> — runs on Windows, Linux, macOS, and most web servers (Apache, Nginx, etc.).</p></li><li><p><strong>Integration with databases</strong> — strong native support for MySQL and other databases, making it easy to build data-driven sites.</p></li><li><p><strong>Built-in functions</strong> — a huge standard library (string handling, arrays, file I/O, etc.) with no extra setup needed.</p></li><li><p><strong>Interoperability</strong> — works well with HTML, JavaScript, XML, and other web technologies, and can talk to many external services/APIs.</p></li><li><p><strong>Security features</strong> — includes tools for input validation, encryption (e.g. <code>password_hash()</code>), and session management to help build secure applications.</p></li></ul>
+<blockquote><p><strong>Hashing vs. encryption:</strong> hashing (e.g. <code>password_hash()</code>) is one-way — you can&#39;t get the original value back, it&#39;s used to verify data like passwords. Encryption is two-way — data is scrambled with a key and can be decrypted back to its original form, used when you need to recover the original data later.</p></blockquote>
+<p><strong>Why/when to use each:</strong></p>
+<ul><li><p><strong>Hashing</strong> — for storing passwords (<code>password_hash()</code> / <code>password_verify()</code>) and checking data integrity (e.g. verifying a downloaded file wasn&#39;t corrupted). Useful because you never need the original value back — you only ever need to check if an input <em>matches</em>. Even if the database is breached, attackers only get hashes, not real passwords.</p></li><li><p><strong>Encryption</strong> — for data you&#39;ll need to read again later, like a credit card number, address, or private messages, and for protecting sensitive data in transit or at rest. Useful because it&#39;s reversible with the right key, so the app can decrypt and use the real value when needed.</p></li></ul>
+<p><strong>Rule of thumb:</strong> if you&#39;ll ever need the original value back, encrypt it. If you only ever need to check whether an input matches, hash it. Using encryption for passwords is risky (a leaked key exposes every password); using hashing for something like a credit card number would make the data useless to your own app.</p>
+<h2 id="introduction-to-mysql">Introduction to MySQL</h2>
+<p><strong>MySQL</strong> is an open-source relational database management system (RDBMS) used to store, organize, and retrieve data — commonly paired with PHP to power the data layer of web applications.</p>
+<h3 id="key-features-of-mysql">Key Features of MySQL</h3>
+<ul><li><p><strong>Relational database structure</strong> — data is organized into tables with rows and columns, and tables can be linked to each other through relationships (e.g. foreign keys).</p></li><li><p><strong>SQL language</strong> — uses Structured Query Language (SQL) to create, read, update, and delete data (CRUD), as well as manage the database structure itself.</p></li><li><p><strong>Open source</strong> — free to use, widely supported, with a large community and strong documentation.</p></li><li><p><strong>Cross-platform</strong> — runs on Windows, Linux, macOS, and integrates with most web server environments.</p></li><li><p><strong>High performance</strong> — optimized for fast read/write operations, even with large datasets.</p></li><li><p><strong>Scalability</strong> — can handle anything from small personal projects to large, high-traffic applications.</p></li><li><p>Integration — connects easily with many languages and platforms, especially PHP (via mysqli or PDO), making it a natural pairing for web apps.</p></li><li><p>Dynamic content management — MySQL stores content (posts, products, user records) that can be created, updated, or removed without changing the site&#39;s code, powering things like blogs, e-commerce catalogs, and admin dashboards.</p></li></ul>
+<p><strong>Example:</strong></p>
+<pre><code class="language-sql">INSERT INTO posts (title, content, created_at) VALUES (&#39;New Post&#39;, &#39;Post content here&#39;, NOW());</code></pre>
+<p><em>(Adding a row to a <code>posts</code> table — the site&#39;s content updates dynamically without touching the PHP code.)</em></p>
+<h3 id="php-mysql">PHP + MySQL</h3>
+<p>PHP connects to MySQL to read and write data behind a website — this is the core of most dynamic web apps (login systems, forms, dashboards, etc.).</p>
+<ul><li><p><strong>mysqli</strong> — the MySQL-specific extension for PHP; simpler, works only with MySQL.</p></li><li><p><strong>PDO (PHP Data Objects)</strong> — a more flexible extension that works with MySQL <em>and</em> other databases (Postgres, SQLite, etc.) using the same syntax.</p></li></ul>
+<pre><code class="language-php">&lt;?php
+$conn = new mysqli(&quot;localhost&quot;, &quot;username&quot;, &quot;password&quot;, &quot;database_name&quot;);
+
+if ($conn-&gt;connect_error) {
+    die(&quot;Connection failed: &quot; . $conn-&gt;connect_error);
+}
+
+$result = $conn-&gt;query(&quot;SELECT * FROM users&quot;);
+while ($row = $result-&gt;fetch_assoc()) {
+    echo $row[&quot;username&quot;];
+}
+
+$conn-&gt;close();
+?&gt;</code></pre>
+<p><em>(Basic example — connects to a database, runs a query, and loops through the results.)</em></p>
+<blockquote><p><strong>SQL injection:</strong> malicious SQL slipped in through user input; avoid it by using prepared statements instead of raw string queries.</p></blockquote>
+<h3 id="benefits-of-php-mysql-together">Benefits of PHP + MySQL Together</h3>
+<ul><li><p><strong>Ease of integration</strong> — PHP has built-in extensions (<code>mysqli</code>, <code>PDO</code>) made specifically to talk to MySQL, so connecting the two takes very little setup.</p></li><li><p><strong>Cost effectiveness</strong> — both are open source and free, keeping hosting and development costs low.</p></li><li><p><strong>Scalability</strong> — the combination handles everything from small personal sites to large, high-traffic applications.</p></li><li><p><strong>Security</strong> — both provide built-in tools (prepared statements, hashing functions, etc.) to help build secure applications.</p></li></ul>
+<p><em>(This section will be expanded with explanations and code examples as notes come in from class.)</em></p>
+<h2 id="career-notes">Career Notes</h2>
+<h3 id="servicenow-javascript">ServiceNow &amp; JavaScript</h3>
+<p>ServiceNow is a major enterprise IT platform (ticketing, workflow automation, ITSM) worth knowing about as a JS developer:</p>
+<ul><li><p><strong>Server-side scripting</strong> (Business Rules, Script Includes) runs on Rhino/GlideScript — a JavaScript-based engine, so core JS skills (functions, objects, async patterns) carry over directly.</p></li><li><p><strong>Client-side scripting</strong> (Client Scripts, UI Policies) is vanilla JS against ServiceNow&#39;s form DOM (<code>g_form</code>, <code>g_user</code> APIs) — same JS, a proprietary API layer on top.</p></li><li><p><strong>Newer app development</strong> (Service Portal, UI Builder) leans on AngularJS/modern JS, so front-end skills transfer even more directly.</p></li><li><p><strong>Career angle:</strong> ServiceNow dev/admin roles are in high demand and pay well; the ramp-up from a JS background is shorter than learning it cold, making it a solid pivot or side-skill.</p></li></ul>
+<hr>

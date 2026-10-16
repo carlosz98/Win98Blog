@@ -1,0 +1,232 @@
+<h2 id="codecademy---php">CodeCademy - PHP</h2>
+<p>Extra practice hours outside of class. This section is a running log of my Codecademy PHP progress — new lessons get added below as they&#39;re completed.</p>
+<h3 id="introduction-to-php-how-is-php-executed">Introduction to PHP — How is PHP Executed?</h3>
+<p><strong>Big idea:</strong> PHP doesn&#39;t have to run through a web server. Besides sending HTML to a browser (what we did with Apache/XAMPP in class), PHP can also be run from the <strong>terminal</strong> as a general-purpose programming language — no HTML or web involved. When run this way, the program&#39;s output is printed straight to the terminal. That&#39;s handy for testing functionality or writing simple local programs.</p>
+<p><strong>Two ways PHP gets executed:</strong></p>
+<table><thead><tr><th></th><th>Web (what we did in class)</th><th>Terminal (this lesson)</th></tr></thead><tbody><tr><td>Started by</td><td>Browser requesting a <code>.php</code> page from Apache</td><td>Running the file yourself from the command line</td></tr><tr><td>Output goes to</td><td>The browser, as HTML</td><td>The terminal, as plain text</td></tr><tr><td>Needs a web server?</td><td>Yes (Apache via XAMPP)</td><td>No</td></tr></tbody></table>
+<p><strong>Opening tag required, closing tag optional:</strong></p>
+<p>Every PHP file still has to start with <code>&lt;?php</code> so PHP knows where the code begins. When a file contains <em>only</em> PHP, the closing <code>?&gt;</code> tag isn&#39;t needed — by convention it&#39;s left out.</p>
+<pre><code class="language-php">&lt;?php
+echo &quot;Hello, World!&quot;;</code></pre>
+<p>Running this prints <code>Hello, World!</code> to the terminal.</p>
+<p><strong>Whitespace is ignored:</strong></p>
+<p>PHP generally ignores tabs, spaces, and new lines, so extra spacing doesn&#39;t change the result. This produces exactly the same output as the example above:</p>
+<pre><code class="language-php">&lt;?php
+echo     &quot;Hello, World!&quot;;</code></pre>
+<p><strong>PHP isn&#39;t always case-sensitive:</strong></p>
+<p>Keywords like <code>echo</code> work no matter how they&#39;re capitalized, so this runs too:</p>
+<pre><code class="language-php">&lt;?php
+Echo &quot;Hello, World!&quot;;</code></pre>
+<p>Even so, best practice is to stick with the standard casing — <code>echo</code>, not <code>Echo</code>.</p>
+<blockquote><p>📝 <strong>Extra detail worth remembering:</strong> the case-insensitivity applies to keywords and function names (<code>echo</code>, <code>if</code>, <code>date()</code>). <strong>Variable names are still case-sensitive</strong> — <code>$name</code> and <code>$Name</code> are two different variables.</p></blockquote>
+<p><strong>Checkpoint exercise — print <code>I love PHP!</code> instead of <code>Hello, World!</code>:</strong></p>
+<pre><code class="language-php">&lt;?php
+echo &quot;I love PHP!&quot;;</code></pre>
+<p>Only the text inside the quotes changes; the opening tag and <code>echo</code> stay the same.</p>
+<p><strong>Key takeaways:</strong></p>
+<ul><li><p>PHP can run in the terminal, not just through a browser.</p></li><li><p><code>&lt;?php</code> is always required; the closing <code>?&gt;</code> is optional (and usually omitted) in PHP-only files.</p></li><li><p>Whitespace is ignored.</p></li><li><p>Keywords like <code>echo</code> aren&#39;t case-sensitive, but use standard casing anyway.</p></li></ul>
+<h3 id="introduction-to-php-php-comments">Introduction to PHP — PHP Comments</h3>
+<p><strong>What comments are for:</strong> text placed in a file that the computer doesn&#39;t execute and the end user never sees. They&#39;re used to:</p>
+<ul><li><p><strong>Annotate code</strong> so it&#39;s clearer to yourself or other developers.</p></li><li><p><strong>Temporarily disable code</strong> — comment a line out to stop it running without deleting it (same idea as when we commented out the <code>Subtotal</code> line in the order form).</p></li></ul>
+<p>PHP has two main styles.</p>
+<p><strong>1. Single-line comments</strong> — <code>//</code> or <code>#</code></p>
+<p>Used for short explanations or quick clarifications. Anything after the symbol on that same line is ignored by PHP. Either symbol works:</p>
+<pre><code class="language-php">// I will always remember this
+echo &quot;Hello world&quot;; // My first PHP statement</code></pre>
+<pre><code class="language-php"># I will always remember this
+echo &quot;Hello, World!&quot;; # My first PHP statement</code></pre>
+<p>A single-line comment can sit on its own line or at the end of a line of code.</p>
+<p><strong>2. Multi-line comments</strong> — <code>/* ... */</code></p>
+<p>Used for longer descriptions, a detailed guide to a section of code, or to disable several lines at once. Starts with <code>/*</code> and ends with <code>*/</code>, and can span as many lines as needed:</p>
+<pre><code class="language-php">/* This comment
+   runs across
+   several lines. */
+echo &quot;Hello, World!&quot;;</code></pre>
+<p><strong>Quick comparison:</strong></p>
+<table><thead><tr><th>Style</th><th>Symbol(s)</th><th>Best for</th></tr></thead><tbody><tr><td>Single-line</td><td><code>//</code> or <code>#</code></td><td>Short notes, end-of-line explanations</td></tr><tr><td>Multi-line</td><td><code>/* ... */</code></td><td>Longer descriptions, disabling several lines</td></tr></tbody></table>
+<blockquote><p>📝 <strong>Connects to class:</strong> in Week 2, Day 1 we used <code>//</code> and <code>/* */</code>. The <code>#</code> style is new here — it does exactly the same job as <code>//</code>. Most PHP code uses <code>//</code>, so that&#39;s the one to default to.</p></blockquote>
+<blockquote><p>⚠️ <strong>Gotcha:</strong> a single-line comment stops at the end of the line <strong>or</strong> at a closing <code>?&gt;</code> tag, whichever comes first. So a <code>?&gt;</code> written inside a <code>//</code> comment will actually end PHP mode.</p></blockquote>
+<p><strong>Checkpoint exercise:</strong> predict what shows up in the terminal and what doesn&#39;t, then run the code to check. The rule to apply: comments (single-line and multi-line) never appear in the output — only the <code>echo</code> statements do.</p>
+<pre><code class="language-php">&lt;?php
+// This never shows up
+echo &quot;I am printed&quot;; // neither does this part
+
+/* echo &quot;I am NOT printed&quot;; */</code></pre>
+<p><em>(Illustrative example of the same idea — the second <code>echo</code> is commented out, so only &quot;I am printed&quot; reaches the terminal.)</em></p>
+<p><strong>Key takeaways:</strong></p>
+<ul><li><p>Comments are ignored by PHP and never displayed.</p></li><li><p><code>//</code> and <code>#</code> make single-line comments; <code>/* ... */</code> makes multi-line ones.</p></li><li><p>Comments are also a quick way to switch code off without deleting it.</p></li></ul>
+<h3 id="introduction-to-php-todo-learn-php">Introduction to PHP — Todo: Learn PHP</h3>
+<p><strong>What this lesson is:</strong> a look at a working PHP application before diving into the details. It&#39;s a todo list, and the goal isn&#39;t to understand the code yet — it&#39;s to see how PHP behaves in a real app.</p>
+<p><strong>How it works behind the scenes:</strong> PHP runs on the back-end to build a dynamic website. Each time the visitor changes the task list, the browser makes a <strong>new request</strong> for the page, the PHP code <strong>runs again</strong> on the server, and it sends back a <strong>fresh version of the HTML</strong> with the updated list. That&#39;s the same request/response flow from Week 1: <code>Browser → Apache → PHP → result → Browser</code>.</p>
+<p><strong>Why a todo list?</strong> It&#39;s a classic demo for any web framework or technology because it shows all four <strong>CRUD</strong> behaviors in a small, familiar app:</p>
+<table><thead><tr><th>CRUD</th><th>Todo app action</th><th>SQL equivalent</th></tr></thead><tbody><tr><td><strong>C</strong>reate</td><td>Add a new item to the list</td><td><code>INSERT</code></td></tr><tr><td><strong>R</strong>ead</td><td>View the existing list</td><td><code>SELECT</code></td></tr><tr><td><strong>U</strong>pdate</td><td>Change an item&#39;s completion status</td><td><code>UPDATE</code></td></tr><tr><td><strong>D</strong>elete</td><td>Remove an item from the list</td><td><code>DELETE</code></td></tr></tbody></table>
+<blockquote><p>📝 <strong>Connects to class:</strong> CRUD is the same idea from the MySQL notes in Week 1 (&quot;SQL language — create, read, update, and delete data&quot;). A todo app is just PHP driving those four operations.</p></blockquote>
+<p><strong>Exercise (hands-on, no code to write):</strong></p>
+<ul><li><p>Type something in the box and click <strong>Add</strong> to create a task — keep going to build a whole list.</p></li><li><p>Mark some items complete.</p></li><li><p>Delete some items.</p></li><li><p>Continue to the next exercise when ready.</p></li></ul>
+<p><strong>Come back to this later:</strong> once more PHP is covered, revisit this example and think about how you&#39;d build a similar app yourself.</p>
+<p><strong>The todo app&#39;s full code</strong> (no need to understand it all yet — this is a preview of what&#39;s coming):</p>
+<pre><code class="language-php">&lt;?php
+require &#39;vendor/autoload.php&#39;;
+# This logic handles connecting to the database, where we store our todo status
+$pdo = new \PDO(&quot;sqlite:&quot; . &quot;db/sqlite.db&quot;);
+
+# This PHP logic handles user actions
+# New TODO
+if (isset($_POST[&#39;submit&#39;])) 
+{
+  $description = $_POST[&#39;description&#39;];
+  $sth = $pdo-&gt;prepare(&quot;INSERT INTO todos (description) VALUES (:description)&quot;);
+  $sth-&gt;bindValue(&#39;:description&#39;, $description, PDO::PARAM_STR);
+  $sth-&gt;execute();
+}
+# Delete TODO
+elseif (isset($_POST[&#39;delete&#39;]))
+{ 
+  $id = $_POST[&#39;id&#39;];
+  $sth = $pdo-&gt;prepare(&quot;delete from todos where id = :id&quot;);
+  $sth-&gt;bindValue(&#39;:id&#39;, $id, PDO::PARAM_INT);
+  $sth-&gt;execute();
+}
+# Update completion status
+elseif (isset($_POST[&#39;complete&#39;]))
+{
+    $id = $_POST[&#39;id&#39;];
+    $sth = $pdo-&gt;prepare(&quot;UPDATE todos SET complete = 1 where id = :id&quot;);
+    $sth-&gt;bindValue(&#39;:id&#39;, $id, PDO::PARAM_INT);
+    $sth-&gt;execute();
+}
+# Here is the HTML:
+?&gt;
+&lt;!DOCTYPE HTML&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;title&gt;Todo List&lt;/title&gt;
+&lt;/head&gt;
+
+&lt;body class=&quot;container&quot;&gt;
+  &lt;h1&gt;Todo List&lt;/h1&gt;
+  &lt;form method=&quot;post&quot; action=&quot;&quot;&gt;
+    &lt;input type=&quot;text&quot; name=&quot;description&quot; value=&quot;&quot;&gt;
+    &lt;input type=&quot;submit&quot; name=&quot;submit&quot; value=&quot;Add&quot;&gt;
+  &lt;/form&gt;
+  &lt;h2&gt;Current Todos&lt;/h2&gt;
+  &lt;table class=&quot;table table-striped&quot;&gt;
+    &lt;thead&gt;&lt;th&gt;Task&lt;/th&gt;&lt;th&gt;&lt;/th&gt;&lt;th&gt;&lt;/th&gt;&lt;/thead&gt;
+    &lt;tbody&gt;
+
+&lt;?php
+  # Entering PHP mode, 
+$sth = $pdo-&gt;prepare(&quot;SELECT * FROM todos ORDER BY id DESC&quot;);
+$sth-&gt;execute();
+
+foreach ($sth as $row) {
+  # Exiting PHP Mode
+    ?&gt; 
+&lt;tr&gt;
+  &lt;td&gt;
+      &lt;!-- This is PHP shorthand for inserting dynamic text into HTML --&gt;
+      &lt;?=htmlspecialchars($row[&#39;description&#39;])?&gt;&lt;/td&gt;
+  &lt;td&gt;
+    &lt;?php # Here we are mixing HTML and PHP to get the desired document
+if (!$row[&#39;complete&#39;]) {
+        ?&gt;
+    &lt;form method=&quot;POST&quot;&gt;
+      &lt;button type=&quot;submit&quot; name=&quot;complete&quot;&gt;Complete&lt;/button&gt;
+      &lt;input type=&quot;hidden&quot; name=&quot;id&quot; value=&quot;&lt;?=$row[&#39;id&#39;]?&gt;&quot;&gt;
+      &lt;input type=&quot;hidden&quot; name=&quot;complete&quot; value=&quot;true&quot;&gt;
+    &lt;/form&gt;
+    &lt;?php
+} else {
+        ?&gt;
+    Task Complete!
+    &lt;?php
+}
+    ?&gt;
+  &lt;/td&gt;
+  &lt;td&gt;
+    &lt;form method=&quot;POST&quot;&gt;
+      &lt;button type=&quot;submit&quot; name=&quot;delete&quot;&gt;Delete&lt;/button&gt;
+      &lt;input type=&quot;hidden&quot; name=&quot;id&quot; value=&quot;&lt;?=$row[&#39;id&#39;]?&gt;&quot;&gt;
+      &lt;input type=&quot;hidden&quot; name=&quot;delete&quot; value=&quot;true&quot;&gt;
+    &lt;/form&gt;
+  &lt;/td&gt;
+&lt;/tr&gt;
+&lt;?php
+}
+?&gt;
+    &lt;/tbody&gt;
+  &lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p><strong>What each part does:</strong></p>
+<ul><li><p><strong><code>require &#39;vendor/autoload.php&#39;;</code></strong> — loads the autoloader file that pulls in the app&#39;s outside libraries (this file is typically generated by Composer, PHP&#39;s package manager).</p></li><li><p><strong><code>$pdo = new \PDO(&quot;sqlite:&quot; . &quot;db/sqlite.db&quot;);</code></strong> — connects to the database where the todos are stored. This one uses <strong>PDO</strong> with an SQLite file, which matches our Week 1 note that PDO works with MySQL <em>and</em> other databases using the same syntax. The <code>.</code> joins the two strings into one connection string.</p></li><li><p><strong><code>if (isset($_POST[&#39;submit&#39;])) ... elseif ... elseif</code></strong> — decides which action the visitor just took. <code>isset()</code> checks whether that key exists in <code>$_POST</code>, i.e. which button was pressed (Add, Delete, or Complete). Only one branch runs per request.</p></li><li><p><strong>Prepared statements</strong> (<code>prepare()</code>, <code>bindValue()</code>, <code>execute()</code>) — the SQL uses placeholders like <code>:description</code> and <code>:id</code>, and the real values are attached separately with <code>bindValue()</code>. This is exactly the defense against SQL injection from the Week 1 notes: user input is treated as data, never as SQL. <code>PDO::PARAM_STR</code> and <code>PDO::PARAM_INT</code> declare whether the value is text or a whole number.</p></li><li><p><strong><code>?&gt;</code> and <code>&lt;?php</code> in the middle of the file</strong> — the code switches out of PHP mode to write plain HTML, then back in again. That&#39;s how PHP and HTML get mixed in one page.</p></li><li><p><strong><code>foreach ($sth as $row)</code></strong> — loops over every row returned by the <code>SELECT</code> query, repeating the HTML inside for each todo.</p></li><li><p><strong><code>&lt;?= ... ?&gt;</code></strong> — shorthand for <code>&lt;?php echo ... ?&gt;</code>; it drops a PHP value straight into the HTML.</p></li><li><p><strong><code>htmlspecialchars($row[&#39;description&#39;])</code></strong> — sanitizes the task text before displaying it, the same protection we used in the order form.</p></li><li><p><strong><code>if (!$row[&#39;complete&#39;])</code></strong> — shows the <strong>Complete</strong> button only for unfinished tasks; finished ones show &quot;Task Complete!&quot; instead.</p></li><li><p><strong>Hidden inputs</strong> (<code>&lt;input type=&quot;hidden&quot; name=&quot;id&quot; ...&gt;</code>) — quietly send the task&#39;s <code>id</code> along with the form so PHP knows <em>which</em> row to update or delete.</p></li><li><p><strong><code>#</code> comments</strong> — this code uses the <code>#</code> single-line comment style from the previous lesson.</p></li></ul>
+<p><strong>CRUD in this code:</strong></p>
+<table><thead><tr><th>CRUD</th><th>SQL used in the code</th></tr></thead><tbody><tr><td>Create</td><td><code>INSERT INTO todos (description) VALUES (:description)</code></td></tr><tr><td>Read</td><td><code>SELECT * FROM todos ORDER BY id DESC</code></td></tr><tr><td>Update</td><td><code>UPDATE todos SET complete = 1 where id = :id</code></td></tr><tr><td>Delete</td><td><code>delete from todos where id = :id</code></td></tr></tbody></table>
+<h3 id="introduction-to-php-review-questions">Introduction to PHP — Review Questions</h3>
+<p><strong>Q: When embedding PHP in HTML, what tags must be used to contain the PHP portion of code?</strong></p>
+<p>✅ <strong><code>&lt;?php</code> and <code>?&gt;</code></strong></p>
+<blockquote><p>When used inside HTML, both an opening and closing tag must be used for PHP — this is different from a PHP-only file, where the closing <code>?&gt;</code> can be left out (see <em>How is PHP Executed?</em> above). The distinction matters: once HTML is mixed in, PHP needs to know exactly where its code block ends so it can switch back to outputting plain HTML.</p></blockquote>
+<p><strong>Q: Which is true about dynamic web pages?</strong></p>
+<p>✅ <strong>A dynamic PHP web page can provide a page that is customized for each visitor.</strong></p>
+<blockquote><p>PHP generates HTML <strong>every time it&#39;s executed</strong> — not once and reused — so each request can produce a different result depending on things like form input, a logged-in user, or data pulled from a database. That&#39;s the whole reason the todo app updates immediately after adding/completing/deleting a task: every action is a fresh request, and PHP builds a brand-new page in response.</p><p>This connects directly to the order form from Week 2: the same <code>processorder.php</code> file produces a completely different result depending on what quantities were submitted — that&#39;s a dynamic page in action.</p></blockquote>
+<h3 id="php-strings-and-variables-creating-variables">PHP Strings and Variables — Creating Variables</h3>
+<p><strong>Two things happen in one statement:</strong></p>
+<pre><code class="language-php">$my_name = &quot;Aisle Nevertell&quot;;</code></pre>
+<p>This line does two jobs at once:</p>
+<ol><li><p><strong>Declares</strong> a new variable named <code>my_name</code>.</p></li><li><p><strong>Assigns</strong> it the value <code>&quot;Aisle Nevertell&quot;</code>.</p></li></ol>
+<p>After this runs, <code>$my_name</code> holds that string. These two steps <em>can</em> be done separately, but in practice they&#39;re almost always combined into one line like this.</p>
+<p><strong>The pieces:</strong></p>
+<ul><li><p><strong><code>$</code></strong> — the <strong>sigil</strong>, a character that marks something as a variable so the computer (and other developers) can spot it instantly. Every PHP variable starts with one.</p></li><li><p><strong><code>=</code></strong> — the <strong>assignment operator</strong>, covered earlier (Week 2) as different from <code>==</code>. Here it&#39;s doing exactly that job: assigning the value on the right to the variable on the left.</p></li></ul>
+<p><strong>Naming rules for variables:</strong></p>
+<ul><li><p>Can contain letters, numbers, and underscores (<code>_</code>).</p></li><li><p>Must <strong>start</strong> with a letter or underscore — never a number.</p></li><li><p><strong>Case-sensitive</strong> — <code>$my_example</code> and <code>$My_example</code> are two completely different variables. (This is the same case-sensitivity idea from the <em>How is PHP Executed?</em> lesson — except there it was about keywords like <code>echo</code> NOT being case-sensitive. Variables are the opposite: they ARE case-sensitive.)</p></li></ul>
+<p><strong>Naming convention — snake_case:</strong></p>
+<p>When a variable name has more than one word, PHP convention is to separate the words with underscores — known as <strong>snake_case</strong>:</p>
+<pre><code class="language-php">$mood = &quot;:)&quot;;
+$favorite_food = &quot;Red curry with eggplant&quot;;</code></pre>
+<blockquote><p>📝 <strong>Connects to class:</strong> this is exactly the naming style already used in the order form — <code>$tireqty</code>, <code>$oilqty</code>, <code>$totalamount</code> all follow this same lowercase, no-space pattern (though not always with underscores between words).</p></blockquote>
+<p><strong>Checkpoint exercises:</strong></p>
+<pre><code class="language-php">&lt;?php
+// 1. Any variable holding a string
+$myName = &quot;Carlos Vargas&quot;;
+
+// 2. $biography — starts with a newline character, then a sentence about yourself
+$biography = &quot;\nMy Bio&quot;;
+
+// 3. $favorite_food — concatenating &quot;\n&quot;, &quot;tur&quot;, &quot;duck&quot;, and &quot;en&quot; together
+$favorite_food = &quot;\n&quot; . &quot;tur&quot; . &quot;duck&quot; . &quot;en&quot;;
+// $favorite_food now holds: &quot;\nturducken&quot;</code></pre>
+<ul><li><p><strong><code>&quot;\n&quot;</code></strong> — the <strong>newline escape sequence</strong> inside a double-quoted string; it inserts a line break into the string&#39;s value (won&#39;t visually show a break in HTML output without <code>&lt;br&gt;</code>, but it does in plain terminal output).</p></li><li><p><strong>Checkpoint 3</strong> is a concatenation exercise using <code>.</code> — the same operator from Week 2 — chaining four separate strings (<code>&quot;\n&quot;</code>, <code>&quot;tur&quot;</code>, <code>&quot;duck&quot;</code>, <code>&quot;en&quot;</code>) into one: <code>&quot;\nturducken&quot;</code>.</p></li></ul>
+<p><strong>Key takeaways:</strong></p>
+<ul><li><p>A variable is declared and assigned together with <code>$name = value;</code>.</p></li><li><p>Variable names: letters/numbers/underscores, must start with a letter or underscore, and are case-sensitive.</p></li><li><p>snake_case (underscores between words) is the PHP convention for multi-word variable names.</p></li><li><p><code>&quot;\n&quot;</code> is a newline character usable inside double-quoted strings.</p></li></ul>
+<h3 id="php-strings-and-variables-using-variables">PHP Strings and Variables — Using Variables</h3>
+<p><strong>Once declared, a variable can be reused as many times as needed</strong> — just reference it with <code>$</code> + its name, and it&#39;ll be replaced by the value it holds:</p>
+<pre><code class="language-php">$favorite_food = &quot;Red curry with eggplant, green beans, and peanuts&quot;;
+echo $favorite_food;
+// Prints: Red curry with eggplant, green beans, and peanuts</code></pre>
+<pre><code class="language-php">$dog_name = &quot;Tadpole&quot;;
+echo $dog_name;
+// Prints: Tadpole</code></pre>
+<p><strong>The rule:</strong> except during assignment (the moment <code>$var = value</code> runs), anywhere else the computer sees a variable, it swaps in the value the variable holds. Because of this, a variable can be used in an operation exactly like a plain value of that type would be — including concatenation:</p>
+<pre><code class="language-php">$dog_name = &quot;Tadpole&quot;;
+echo &quot;My dog is named &quot; . $dog_name;
+// Prints: My dog is named Tadpole</code></pre>
+<p><strong>Combining several variables in one line:</strong></p>
+<pre><code class="language-php">$dog_name = &quot;Tadpole&quot;;
+$favorite_food = &quot;salmon&quot;;
+$color = &quot;brown&quot;;
+
+echo &quot;I have a &quot; . $color . &quot; dog named &quot; . $dog_name . &quot; and her favorite food is &quot; . $favorite_food . &quot;.&quot;;
+// Prints: I have a brown dog named Tadpole and her favorite food is salmon.</code></pre>
+<p>Each <code>.</code> glues one more piece — literal text or a variable&#39;s value — onto the growing string, same as we did building up the order form&#39;s output (<code>&quot;Total including tax: &quot; . number_format($totalamount, 2) . &quot;&lt;br&gt;&quot;</code>).</p>
+<p><strong>Checkpoint exercise — create <code>$name</code> and <code>$language</code>:</strong></p>
+<pre><code class="language-php">&lt;?php
+$name = &quot;Carlos&quot;;
+$language = &quot;PHP&quot;;</code></pre>
+<p><strong>Key takeaways:</strong></p>
+<ul><li><p>A variable is referenced the same way it&#39;s declared: <code>$</code> + name.</p></li><li><p>Outside of assignment, PHP always substitutes a variable&#39;s current value wherever it&#39;s used.</p></li><li><p>Variables can be concatenated with <code>.</code> right alongside literal strings, and several variables can be chained together in one <code>echo</code> statement.</p></li></ul>
+<hr>
+<p><strong>The demo todo app in action:</strong></p>
+<p><img src="__BASE__class-notes/img/9b0df25ca916925b291dc3dc64babf93.png" loading="lazy" alt="Todo List demo app with items &quot;more&quot;, &quot;WATER&quot;, and &quot;Drink water&quot;, each with Complete and Delete buttons"></p>
+<p>✅ <strong>End of extra practice session.</strong> Covered how PHP runs from the terminal, comments (<code>//</code>, <code>#</code>, <code>/* */</code>), a full CRUD todo app walkthrough, two review questions, and variable creation/usage (declaration, naming rules, snake_case, concatenation).</p>
+<p><strong>Next up: Week 3, Day 1 — Tuesday.</strong></p>
+<hr>

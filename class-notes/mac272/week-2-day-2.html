@@ -1,0 +1,484 @@
+<h2 id="week-2-day-2-today-order-form">Week 2, Day 2  — Order Form</h2>
+<h3 id="troubleshooting-my-file-isnt-showing-up">🐛 Troubleshooting: &quot;My file isn&#39;t showing up&quot;</h3>
+<p>Ran into this while trying to load an <code>OrderForm</code> project (an HTML form that submits to a PHP file).</p>
+<p><strong>Symptom:</strong> visiting <code>localhost/OrderForm/</code> showed nothing / a 404, or the browser kept showing an old page.</p>
+<p><strong>Cause:</strong> the two related files ended up saved in <strong>different folders</strong> — <code>orderform.html</code> had been saved into <code>htdocs/MAC272/</code>, while <code>processorder.php</code> was saved into <code>htdocs/OrderForm/</code>. Since the form submits to <code>processorder.php</code> as a relative path, it needs to sit right next to the HTML file, in the <em>same</em> folder. There was also no <code>index.php</code>/<code>index.html</code> inside <code>OrderForm/</code>, so visiting just the folder URL had nothing to auto-load.</p>
+<p><strong>Fix:</strong></p>
+<ol><li><p>Pick one project folder (in <code>htdocs</code>) — here, <code>OrderForm</code>.</p></li><li><p>Move <strong>both</strong> files into that same folder, so they sit side by side.</p></li><li><p>Visit the exact path + filename in the browser: <code>localhost/OrderForm/orderform.html</code>.</p></li></ol>
+<p><strong>How to double-check next time:</strong></p>
+<ul><li><p>In VS Code&#39;s Explorer sidebar, confirm both files show up nested under the <em>same</em> folder — not spread across two.</p></li><li><p>The URL in the browser must match: <code>localhost/&lt;folder&gt;/&lt;filename&gt;</code> exactly (case-sensitive), matching where the files actually live on disk.</p></li><li><p>If a page still won&#39;t update, hard refresh (<code>Cmd+Shift+R</code>) to rule out a stale browser cache.</p></li></ul>
+<p><strong>In pictures — the debugging trail:</strong></p>
+<ol><li><p>The empty <code>OrderForm</code> folder inside <code>htdocs</code>, next to <code>MAC272</code>:</p></li></ol>
+<p><img src="__BASE__class-notes/img/518562df06b0d6619c9cfd14f849f231.png" loading="lazy" alt="OrderForm folder inside htdocs, initially empty"></p>
+<ol start="2"><li><p>Visiting the wrong path gave a 404:</p></li></ol>
+<p><img src="__BASE__class-notes/img/c52f0eccea85627aafa7fa3bce15e780.png" loading="lazy" alt="404 Object not found error in browser"></p>
+<ol start="3"><li><p>VS Code revealed the real cause — <code>orderform.html</code> and <code>processorder.php</code> were actually sitting inside <code>MAC272</code>, not <code>OrderForm</code>:</p></li></ol>
+<p><img src="__BASE__class-notes/img/1c3205b09dd37d6bf69ec8646c5f7478.png" loading="lazy" alt="VS Code Explorer showing files nested under MAC272 instead of OrderForm"></p>
+<ol start="4"><li><p>And a second Save dialog showed <code>processorder.php</code> had been saved separately into <code>OrderForm</code> — confirming the files were split across two folders:</p></li></ol>
+<p><img src="__BASE__class-notes/img/5335443d97a5ab97958d0a15517059b3.png" loading="lazy" alt="Save dialog showing processorder.php saved inside the OrderForm folder"></p>
+<ol start="5"><li><p>After moving both files into the same folder and hitting the right URL — success:</p></li></ol>
+<p><img src="__BASE__class-notes/img/a391a994c18fc7593737fdc695f7d2cf.png" loading="lazy" alt="Working order form and submitted result in the browser"></p>
+<h3 id="forms-post">Forms &amp; <code>$_POST</code></h3>
+<p><strong>Why POST?</strong> An HTML form&#39;s <code>method</code> attribute controls how its data is sent to the server:</p>
+<ul><li><p><strong>GET</strong> — appends form data to the URL as a query string (e.g. <code>?tiresqty=2&amp;oilqty=1</code>). Visible in the address bar, limited in length, and gets cached/bookmarked — fine for things like search boxes, not for real data submission.</p></li><li><p><strong>POST</strong> — sends form data in the body of the HTTP request instead of the URL. Not visible in the address bar, no practical size limit, and doesn&#39;t get cached or bookmarked — the right choice whenever a form is submitting/creating/changing data (like an order form), or when the data shouldn&#39;t be exposed in a URL.</p></li></ul>
+<p>On the PHP side, data sent via POST is read using the <code>$_POST</code> superglobal array, keyed by each input&#39;s <code>name</code> attribute — e.g. <code>$_POST[&#39;tiresqty&#39;]</code> grabs the value from <code>&lt;input name=&quot;tiresqty&quot;&gt;</code>.</p>
+<p><strong>The order form (<code>orderform.html</code>):</strong></p>
+<pre><code class="language-html">&lt;form action=&quot;processorder.php&quot; method=&quot;post &quot;&gt;
+    &lt;table style=&quot;border: 0px; &quot;&gt;
+    &lt;tr style=&quot;background: #cccccc; &quot;&gt;
+        &lt;td style=&quot;width: 150px; text-align: center;&quot;&gt;Item &lt;/td&gt;
+        &lt;td style=&quot;width: 150px; text-align: center;&quot;&gt;Quantity &lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+            &lt;td&gt;Tires&lt;/td&gt;
+            &lt;td&gt;&lt;input type=&quot;text&quot; name=&quot;tiresqty&quot; size=&quot;3&quot; maxlength=&quot;3&quot; /&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+            &lt;td&gt;Oil&lt;/td&gt;
+            &lt;td&gt;&lt;input type=&quot;text&quot; name=&quot;oilqty&quot; size=&quot;3&quot; maxlength=&quot;3&quot; /&gt;&lt;/td&gt; 
+        &lt;/tr&gt;
+        &lt;tr&gt;
+            &lt;td&gt;Spark Plugs&lt;/td&gt;
+            &lt;td&gt;&lt;input type=&quot;text&quot; name=&quot;sparkqty&quot; size=&quot;3&quot; maxlength=&quot;3&quot; /&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+            &lt;td colspan=&quot;2&quot; style=&quot;text-align: center;&quot;&gt;&lt;input type=&quot;submit&quot; value=&quot;Submit Order&quot; /&lt;/td&gt;
+        &lt;/tr&gt;
+    &lt;/table&gt;
+&lt;/form&gt;&quot;&gt;</code></pre>
+<p><strong>Update — Added &quot;How did you find Bob&#39;s?&quot; dropdown (Week 3, Day 1):</strong></p>
+<p>A new <code>&lt;select&gt;</code> dropdown was added to the order form as an extra question, using the same <code>&lt;form&gt;</code>. This introduces a new form element type beyond text inputs — a dropdown menu, where each <code>&lt;option&gt;</code> pairs a short submitted <code>value</code> with the text the user actually sees.</p>
+<pre><code class="language-html">&lt;form action=&quot;processorder.php&quot; method=&quot;post&quot;&gt;
+    &lt;table style=&quot;border: 0px;&quot;&gt;
+    &lt;tr style=&quot;background: #cccccc;&quot;&gt;
+        &lt;td style=&quot;width: 150px; text-align: center;&quot;&gt;Item&lt;/td&gt;
+        &lt;td style=&quot;width: 150px; text-align: center;&quot;&gt;Quantity&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td&gt;Tires&lt;/td&gt;
+        &lt;td&gt;&lt;input type=&quot;text&quot; name=&quot;tiresqty&quot; size=&quot;3&quot; maxlength=&quot;3&quot; /&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td&gt;Oil&lt;/td&gt;
+        &lt;td&gt;&lt;input type=&quot;text&quot; name=&quot;oilqty&quot; size=&quot;3&quot; maxlength=&quot;3&quot; /&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td&gt;Spark Plugs&lt;/td&gt;
+        &lt;td&gt;&lt;input type=&quot;text&quot; name=&quot;sparkqty&quot; size=&quot;3&quot; maxlength=&quot;3&quot; /&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td colspan=&quot;2&quot; style=&quot;text-align: center;&quot;&gt;&lt;input type=&quot;submit&quot; value=&quot;Submit Order&quot; /&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td&gt;How did you find Bob&#39;s?&lt;/td&gt;
+        &lt;td&gt;&lt;select name=&quot;find&quot;&gt;
+            &lt;option value=&quot;a&quot;&gt;I am a regular customer&lt;/option&gt;
+            &lt;option value=&quot;b&quot;&gt;TV advertising&lt;/option&gt;
+            &lt;option value=&quot;c&quot;&gt;Phone directory&lt;/option&gt;
+            &lt;option value=&quot;d&quot;&gt;Word of mouth&lt;/option&gt;
+            &lt;/select&gt;
+        &lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;/table&gt;
+&lt;/form&gt;</code></pre>
+<p><strong>Key points on <code>&lt;select&gt;</code>:</strong></p>
+<ul><li><p><code>name=&quot;find&quot;</code> — this is what <code>$_POST[&#39;find&#39;]</code> will use to read the chosen answer on the PHP side once <code>processorder.php</code> is updated to handle it.</p></li><li><p>Each <code>&lt;option value=&quot;...&quot;&gt;</code> submits its short <code>value</code> (<code>&quot;a&quot;</code>, <code>&quot;b&quot;</code>, <code>&quot;c&quot;</code>, <code>&quot;d&quot;</code>) even though the visible text is longer — keeps the submitted data clean and easy to check with conditionals (e.g. <code>if ($_POST[&#39;find&#39;] == &quot;a&quot;)</code>).</p></li><li><p>Since this field is a dropdown, exactly one option is always selected by default (the first one, unless changed) — unlike text inputs, it can&#39;t come back empty.</p></li><li><p><strong>Update — <code>processorder.php</code> now handles the <code>find</code> dropdown:</strong></p><pre><code class="language-php">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;title&gt;Bob&#39;s Auto Parts - Order Results&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;h1&gt;Bob&#39;s Auto Parts&lt;/h1&gt;
+        &lt;h2&gt;Order Results&lt;/h2&gt;
+        &lt;?php
+        echo &quot;&lt;p&gt;Order Processed &quot;;
+        echo date(&#39;H:i, jS F Y&#39;);
+        echo &quot;&lt;/p&gt;&quot;;
+
+        //Create short variable names
+
+        $tireqty = $_POST[&#39;tiresqty&#39;];
+        $oilqty = $_POST[&#39;oilqty&#39;];
+        $sparkqty = $_POST[&#39;sparkqty&#39;];
+
+        $totalqty = 0;
+        $totalqty = $tireqty + $oilqty + $sparkqty;
+
+        if ($totalqty == 0) {
+            echo &quot;You didn&#39;t order anything on the previous page!&lt;br&gt;&quot;;
+        }
+        else {
+            echo &#39;&lt;p&gt;Your order is as follows:&lt;/p&gt;&#39;;
+            echo htmlspecialchars($tireqty) . &#39; Tires&lt;br&gt;&#39;;
+            echo htmlspecialchars($oilqty) . &#39; bottles of oil&lt;br&gt;&#39;;
+            echo htmlspecialchars($sparkqty) . &#39; spark plugs&lt;br&gt;&#39;;
+        }
+
+        echo &quot;&lt;p&gt; item ordered: &quot; . $totalqty . &quot;&lt;br&gt;&quot;;
+
+        $totalamount = 0;
+
+        define(&#39;tireprice&#39;, 100);
+        define(&#39;oilprice&#39;, 21);
+        define(&#39;sparkprice&#39;, 6);
+
+        $totalamount = $tireqty * tireprice
+        + $oilqty * oilprice
+        + $sparkqty * sparkprice;
+
+        // this was commented because we are now adding tax rate
+        //echo &quot;Subtotal: &quot; . number_format($totalamount, 2) . &quot;&lt;br&gt;&quot;;
+
+        //Calculate the tax rate
+
+        $taxrate = 0.10; //local sales tax is 10%
+        $totalamount = $totalamount * (1 + $taxrate);
+        echo &quot;Total including tax: &quot; . number_format($totalamount, 2) . &quot;&lt;br&gt;&quot;;
+
+        $find = $_POST[&#39;find&#39;];
+        if($find == &#39;a&#39;) {
+            echo &quot;&lt;p&gt;Regular Customer&lt;/p&gt;&quot;;
+        }
+        else if($find == &#39;b&#39;) {
+            echo &quot;&lt;p&gt;Customer reffered by TV advert&lt;/p&gt;&quot;;
+        }
+        else if($find == &#39;c&#39;) {
+            echo &quot;&lt;p&gt;Customer reffered by phone directory&lt;/p&gt;&quot;;
+        }
+        else if($find == &#39;d&#39;) {
+            echo &quot;&lt;p&gt;Customer reffered by word of mouth&lt;/p&gt;&quot;;
+        }
+        else {
+            echo &quot;&lt;p&gt;We do not know how this customer found us&lt;/p&gt;&quot;;
+        }  
+        //type of the variable
+        //echo gettype($tireqty) . &#39;&lt;br&gt;&#39;;
+        ?&gt;
+    &lt;/body&gt;
+&lt;/html&gt;</code></pre><p><strong>Notes:</strong></p><ul><li><p>The <code>&lt;p&gt; item ordered: ...</code> line runs regardless of whether the order was empty — it&#39;s outside the if/else, so it always prints the total (including <code>0</code>).</p></li><li><p>The <code>find</code> value from the new dropdown is read with <code>$_POST[&#39;find&#39;]</code> and matched against <code>&#39;a&#39;</code>–<code>&#39;d&#39;</code> using an <code>if</code>/<code>else if</code> chain, with a fallback <code>else</code> in case something unexpected comes through.</p></li></ul><p><strong>Update — Fixed Version:</strong></p><p>Two small fixes applied: the unclosed <code>&lt;p&gt;</code> tag on the &quot;item ordered&quot; line, and the &quot;reffered&quot; spelling (×3) in the <code>find</code> branches.</p><pre><code class="language-php">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;title&gt;Bob&#39;s Auto Parts - Order Results&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;h1&gt;Bob&#39;s Auto Parts&lt;/h1&gt;
+        &lt;h2&gt;Order Results&lt;/h2&gt;
+        &lt;?php
+        echo &quot;&lt;p&gt;Order Processed &quot;;
+        echo date(&#39;H:i, jS F Y&#39;);
+        echo &quot;&lt;/p&gt;&quot;;
+
+        //Create short variable names
+
+        $tireqty = $_POST[&#39;tiresqty&#39;];
+        $oilqty = $_POST[&#39;oilqty&#39;];
+        $sparkqty = $_POST[&#39;sparkqty&#39;];
+
+        $totalqty = 0;
+        $totalqty = $tireqty + $oilqty + $sparkqty;
+
+        if ($totalqty == 0) {
+            echo &quot;You didn&#39;t order anything on the previous page!&lt;br&gt;&quot;;
+        }
+        else {
+            echo &#39;&lt;p&gt;Your order is as follows:&lt;/p&gt;&#39;;
+            echo htmlspecialchars($tireqty) . &#39; Tires&lt;br&gt;&#39;;
+            echo htmlspecialchars($oilqty) . &#39; bottles of oil&lt;br&gt;&#39;;
+            echo htmlspecialchars($sparkqty) . &#39; spark plugs&lt;br&gt;&#39;;
+        }
+
+        echo &quot;&lt;p&gt;Item ordered: &quot; . $totalqty . &quot;&lt;/p&gt;&quot;;
+
+        $totalamount = 0;
+
+        define(&#39;tireprice&#39;, 100);
+        define(&#39;oilprice&#39;, 21);
+        define(&#39;sparkprice&#39;, 6);
+
+        $totalamount = $tireqty * tireprice
+        + $oilqty * oilprice
+        + $sparkqty * sparkprice;
+
+        // this was commented because we are now adding tax rate
+        //echo &quot;Subtotal: &quot; . number_format($totalamount, 2) . &quot;&lt;br&gt;&quot;;
+
+        //Calculate the tax rate
+
+        $taxrate = 0.10; //local sales tax is 10%
+        $totalamount = $totalamount * (1 + $taxrate);
+        echo &quot;Total including tax: &quot; . number_format($totalamount, 2) . &quot;&lt;br&gt;&quot;;
+
+        $find = $_POST[&#39;find&#39;];
+        if($find == &#39;a&#39;) {
+            echo &quot;&lt;p&gt;Regular Customer&lt;/p&gt;&quot;;
+        }
+        else if($find == &#39;b&#39;) {
+            echo &quot;&lt;p&gt;Customer referred by TV advert&lt;/p&gt;&quot;;
+        }
+        else if($find == &#39;c&#39;) {
+            echo &quot;&lt;p&gt;Customer referred by phone directory&lt;/p&gt;&quot;;
+        }
+        else if($find == &#39;d&#39;) {
+            echo &quot;&lt;p&gt;Customer referred by word of mouth&lt;/p&gt;&quot;;
+        }
+        else {
+            echo &quot;&lt;p&gt;We do not know how this customer found us&lt;/p&gt;&quot;;
+        }
+        //type of the variable
+        //echo gettype($tireqty) . &#39;&lt;br&gt;&#39;;
+        ?&gt;
+    &lt;/body&gt;
+&lt;/html&gt;</code></pre><p><strong>Fixes:</strong></p><ol><li><p><code>&lt;p&gt; item ordered: ... &lt;br&gt;</code> → <code>&lt;p&gt;Item ordered: ... &lt;/p&gt;</code> — the <code>&lt;p&gt;</code> tag was never closed; swapped the trailing <code>&lt;br&gt;</code> for a proper <code>&lt;/p&gt;</code> and capitalized &quot;Item&quot; for consistency with the other output lines.</p></li><li><p>&quot;Customer reffered by...&quot; → &quot;Customer referred by...&quot; (×3) — spelling fix across all three branches.</p></li></ol><p><strong>Proof — form with dropdown and the processed result:</strong></p><p><img src="__BASE__class-notes/img/07953426133c5047f9c29d195d46e69e.png" loading="lazy" alt="Order form with Tires: 2, Oil: 3, Spark Plugs: 1, and &quot;How did you find Bob&#39;s?&quot; dropdown set to Word of mouth"></p><p><img src="__BASE__class-notes/img/2146b35b645a2a237a113b952dce8662.png" loading="lazy" alt="Order results page showing Order Processed timestamp, 2 Tires, 3 bottles of oil, 1 spark plugs, Item ordered: 6, Total including tax: 295.90, and Customer referred by word of mouth"></p></li></ul>
+<p><em>Typos in the working file to clean up: the extra space in <code>method=&quot;post &quot;</code>, the malformed submit button tag <code>/&lt;/td&gt;</code> (should be <code>/&gt;&lt;/td&gt;</code> — the <code>/&gt;</code> and <code>&lt;td&gt;</code> got merged), and a stray <code>&quot;&gt;</code> after the closing <code>&lt;/form&gt;</code> tag. None of these break rendering completely in most browsers, but they&#39;re worth fixing so the HTML is valid.</em></p>
+<h3 id="code-walkthrough">Code Walkthrough</h3>
+<p><strong><code>orderform.html</code> (the form):</strong></p>
+<ul><li><p><code>&lt;form action=&quot;processorder.php&quot; method=&quot;post&quot;&gt;</code> — when submitted, the browser sends this form&#39;s data to <code>processorder.php</code> using POST (see the <em>Forms &amp; <code>$_POST</code></em> note above for why).</p></li><li><p>The <code>&lt;table&gt;</code> is just for layout — lining up the &quot;Item&quot; / &quot;Quantity&quot; columns; it has no effect on the form&#39;s actual behavior.</p></li><li><p>The header row (<code>&lt;tr style=&quot;background: #cccccc;&quot;&gt;</code>) is styled gray to visually separate it from the data rows.</p></li><li><p>Each product row has a label (<code>Tires</code>, <code>Oil</code>, <code>Spark Plugs</code>) next to a text input:</p><ul><li><p><code>name=&quot;tiresqty&quot;</code> (etc.) — this is the key PHP will use to read the value: <code>$_POST[&#39;tiresqty&#39;]</code>. Without a <code>name</code>, PHP has no way to identify that field&#39;s data.</p></li><li><p><code>size=&quot;3&quot;</code> — how wide the input box appears (3 characters).</p></li><li><p><code>maxlength=&quot;3&quot;</code> — the max number of characters the user is allowed to type in.</p></li></ul></li><li><p><code>&lt;input type=&quot;submit&quot; value=&quot;Submit Order&quot; /&gt;</code> — the button that triggers the form to actually send its data.</p></li></ul>
+<p><strong><code>processorder.php</code> (the results page):</strong></p>
+<ul><li><p>Standard HTML skeleton (<code>&lt;!DOCTYPE html&gt;</code>, <code>&lt;head&gt;</code>, <code>&lt;title&gt;</code>, <code>&lt;body&gt;</code>) — this is the page the browser lands on <em>after</em> submitting the form.</p></li><li><p><code>&lt;h1&gt;</code> / <code>&lt;h2&gt;</code> — the page heading and subheading, plain HTML, no PHP involved.</p></li><li><p>Inside the <code>&lt;?php ... ?&gt;</code> block, three <code>echo</code> statements build one HTML paragraph across three lines:</p><ul><li><p><code>echo &quot;&lt;p&gt;Order Processed &quot;;</code> — opens a <code>&lt;p&gt;</code> tag and starts the message.</p></li><li><p><code>echo date(&#39;H:i, jS F Y&#39;);</code> — inserts the current server date/time. Breaking down the format string: <code>H:i</code> = 24-hour time (e.g. <code>18:27</code>), <code>jS</code> = day of month with ordinal suffix (e.g. <code>24th</code>), <code>F</code> = full month name (e.g. <code>September</code>), <code>Y</code> = 4-digit year (e.g. <code>2026</code>).</p></li><li><p><code>echo &quot;&lt;/p&gt;&quot;;</code> — closes the paragraph.</p></li></ul></li><li><p>$_POST[&#39;tiresqty&#39;] (etc.) — pulls each submitted value out of the $_POST superglobal, matching the name attribute from the form, and stores it in a short variable ($tireqty, $oilqty, $sparkqty) for easy reuse.</p></li><li><p>htmlspecialchars() — wraps user-submitted values before printing them, converting characters like &lt; &gt; &amp; &quot; into safe HTML entities. This prevents a user from breaking the page&#39;s HTML or injecting malicious script tags (a basic XSS protection) — always good practice when echoing anything a user typed.</p></li></ul>
+<p><strong>The results page (<code>processorder.php</code>):</strong></p>
+<pre><code class="language-php">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;title&gt;Bob&#39;s Auto Parts - Order Results&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;h1&gt;Bob&#39;s Auto Parts&lt;/h1&gt;
+        &lt;h2&gt;Order Results&lt;/h2&gt;
+        &lt;?php
+        echo &quot;&lt;p&gt;Order Processed &quot;;
+        echo date(&#39;H:i, jS F Y&#39;);
+        echo &quot;&lt;/p&gt;&quot;;
+
+        //Create short variable names
+
+        $tireqty = $_POST[&#39;tiresqty&#39;];
+        $oilqty = $_POST[&#39;oilqty&#39;];
+        $sparkqty = $_POST[&#39;sparkqty&#39;];
+
+        if ($totalqty == 0) {
+            echo &quot;You didn&#39;t order anythingon the previous page!&quot;&lt;br&gt;;
+        }
+        else {
+            echo &#39;&lt;p&gt;Your order is as follows:&lt;/p&gt;&#39;;
+            echo htmlspecialchars($tireqty) . &#39; Tires&lt;br&gt;&#39;;
+            echo htmlspecialchars($oilqty) . &#39; bottles of oil&lt;br&gt;&#39;;
+            echo htmlspecialchars($sparkqty) . &#39; spark plugs&lt;br&gt;&#39;;
+        }
+
+        $totalqty = 0;
+        $totalqty = $tireqty + $oilqty + $sparkqty;
+        echo &quot;&lt;p&gt; item ordered: &quot; . $totalqty . &quot;&lt;br&gt;&quot;;
+
+        $totalamount = 0;
+
+        define(&#39;tireprice&#39;, 100);
+        define(&#39;oilprice&#39;, 21);
+        define(&#39;sparkprice&#39;, 6);
+
+        $totalamount = $tireqty * tireprice
+        + $oilqty * oilprice
+        + $sparkqty * sparkprice;
+
+        // this was commented because we are now adding tax rate
+        //echo &quot;Subtotal: &quot; . number_format($totalamount, 2) . &quot;&lt;br&gt;&quot;;
+
+        //Calculate the tax rate
+
+        $taxrate = 0.10; //local sales tax is 10%
+        $totalamount = $totalamount * (1 + $taxrate);
+        echo &quot;Total including tax: &quot; . number_format($totalamount, 2) . &quot;&lt;br&gt;&quot;;
+
+        //type of the variable
+        //echo gettype($tireqty) . &#39;&lt;br&gt;&#39;;
+        ?&gt;
+    &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<h3 id="guarding-against-an-empty-order">Guarding Against an Empty Order</h3>
+<p>New addition: a check for whether the customer actually ordered anything, using <code>if/else</code> around the order summary.</p>
+<blockquote><p>⚠️ <strong>Heads up — two problems here now:</strong></p><p><strong>1. New syntax error:</strong> the line</p><pre><code class="language-php">echo &quot;You didn&#39;t order anythingon the previous page!&quot;&lt;br&gt;;</code></pre><p>is broken — the <code>.</code> concatenation operator and the quotes around <code>&lt;br&gt;</code> are both missing. As written, PHP sees a string followed directly by a bare <code>&lt;br&gt;</code> with no operator connecting them, which is invalid syntax and will throw a parse error, stopping the whole page. Fix:</p><pre><code class="language-php">echo &quot;You didn&#39;t order anything on the previous page!&lt;br&gt;&quot;;</code></pre><p>(also fixed the missing space in &quot;anything on&quot;)</p><p><strong>2. Still-unresolved logic bug:</strong> <code>$totalqty</code> is checked before it&#39;s ever calculated (see <em>Guarding Against an Empty Order</em> above) — since <code>$totalqty</code> doesn&#39;t exist yet at that point, <code>null == 0</code> is <code>true</code>, so this branch fires every time regardless of what was actually ordered. Moving the <code>$totalqty</code> calculation above the <code>if</code> block fixes both issues at once.</p></blockquote>
+<h3 id="update-fixed-version">Update — Fixed Version</h3>
+<p>Both issues above are now corrected:</p>
+<ol><li><p><strong>Reordered the calculation:</strong> <code>$totalqty = $tireqty + $oilqty + $sparkqty;</code> now runs <strong>before</strong> the <code>if ($totalqty == 0)</code> check, so the variable actually has a real value by the time it&#39;s tested — no more <code>null == 0</code> false positive.</p></li><li><p><strong>Fixed the broken string:</strong> <code>&quot;You didn&#39;t order anythingon the previous page!&quot;&lt;br&gt;;</code> → <code>&quot;You didn&#39;t order anything on the previous page!&lt;br&gt;&quot;;</code> — one properly quoted string, with the missing space added and <code>&lt;br&gt;</code> back inside the quotes.</p></li></ol>
+<pre><code class="language-php">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;title&gt;Bob&#39;s Auto Parts - Order Results&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;h1&gt;Bob&#39;s Auto Parts&lt;/h1&gt;
+        &lt;h2&gt;Order Results&lt;/h2&gt;
+        &lt;?php
+        echo &quot;&lt;p&gt;Order Processed &quot;;
+        echo date(&#39;H:i, jS F Y&#39;);
+        echo &quot;&lt;/p&gt;&quot;;
+
+        //Create short variable names
+
+        $tireqty = $_POST[&#39;tiresqty&#39;];
+        $oilqty = $_POST[&#39;oilqty&#39;];
+        $sparkqty = $_POST[&#39;sparkqty&#39;];
+
+        $totalqty = 0;
+        $totalqty = $tireqty + $oilqty + $sparkqty;
+
+        if ($totalqty == 0) {
+            echo &quot;You didn&#39;t order anything on the previous page!&lt;br&gt;&quot;;
+        }
+        else {
+            echo &#39;&lt;p&gt;Your order is as follows:&lt;/p&gt;&#39;;
+            echo htmlspecialchars($tireqty) . &#39; Tires&lt;br&gt;&#39;;
+            echo htmlspecialchars($oilqty) . &#39; bottles of oil&lt;br&gt;&#39;;
+            echo htmlspecialchars($sparkqty) . &#39; spark plugs&lt;br&gt;&#39;;
+        }
+
+        echo &quot;&lt;p&gt; item ordered: &quot; . $totalqty . &quot;&lt;br&gt;&quot;;
+
+        $totalamount = 0;
+
+        define(&#39;tireprice&#39;, 100);
+        define(&#39;oilprice&#39;, 21);
+        define(&#39;sparkprice&#39;, 6);
+
+        $totalamount = $tireqty * tireprice
+        + $oilqty * oilprice
+        + $sparkqty * sparkprice;
+
+        // this was commented because we are now adding tax rate
+        //echo &quot;Subtotal: &quot; . number_format($totalamount, 2) . &quot;&lt;br&gt;&quot;;
+
+        //Calculate the tax rate
+
+        $taxrate = 0.10; //local sales tax is 10%
+        $totalamount = $totalamount * (1 + $taxrate);
+        echo &quot;Total including tax: &quot; . number_format($totalamount, 2) . &quot;&lt;br&gt;&quot;;
+
+        //type of the variable
+        //echo gettype($tireqty) . &#39;&lt;br&gt;&#39;;
+        ?&gt;
+    &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p><strong>Confirmed working — testing the empty-order case:</strong></p>
+<p><img src="__BASE__class-notes/img/44c8960074d71646fd3b623c4b32cb9d.png" loading="lazy" alt="Order form with all quantities left at 0"></p>
+<p><img src="__BASE__class-notes/img/37012749b4c3a1f72a05c57111339def.png" loading="lazy" alt="Order results correctly showing &quot;You didn&#39;t order anything on the previous page!&quot;, item ordered: 0, Total including tax: 0.00"></p>
+<p><strong>New addition — pricing with <code>define()</code>:</strong></p>
+<pre><code class="language-php">define(&#39;tireprice&#39;, 100);
+define(&#39;oilprice&#39;, 21);
+define(&#39;sparkprice&#39;, 6);
+
+$totalamount = $tireqty * tireprice
++ $oilqty * oilprice
++ $sparkqty * sparkprice;</code></pre>
+<ul><li><p><code>define(&#39;name&#39;, value)</code> creates a <strong>constant</strong> — like a variable, but its value can never change once set. Unlike variables, constants are written <em>without</em> a <code>$</code> when used (<code>tireprice</code>, not <code>$tireprice</code>).</p></li><li><p>Constants are handy here because prices are fixed values that shouldn&#39;t accidentally get reassigned somewhere else in the script.</p></li><li><p>The math relies on normal <strong>order of operations</strong> — multiplication (<code>*</code>) happens before addition (<code>+</code>), so each item&#39;s quantity × its price is calculated first, then the three results are summed. No parentheses needed, though adding them (<code>($tireqty * tireprice) + ...</code>) can make the intent clearer to read.</p></li></ul>
+<p><strong><code>number_format()</code>:</strong></p>
+<p><code>number_format($totalamount, 2)</code> formats a number as a string with commas for thousands and a fixed number of decimal places (2 = cents) — e.g. <code>1234.5</code> becomes <code>1,234.50</code>. Useful for displaying prices cleanly.</p>
+<p>That <code>2</code> is the function&#39;s <strong>second parameter</strong> — it tells <code>number_format()</code> how many decimal places to show, which is why it&#39;s standard for money (guarantees cents always show, e.g. <code>682</code> becomes <code>682.00</code> instead of just <code>682</code>).</p>
+<blockquote><p>✅ <strong>Resolved differently than planned:</strong> instead of fixing the double-print (<code>$totalamount . number_format(...)</code>), the <code>Subtotal:</code> line was <strong>commented out entirely</strong> and replaced with a new line that adds tax before printing the total — see <em>Calculating Tax</em> below.</p></blockquote>
+<p><strong>Live example — still showing the double-print bug:</strong></p>
+<p><img src="__BASE__class-notes/img/ebc9cdd4e5ab5359e6c6d7ec7f185e51.png" loading="lazy" alt="Order form filled in with 3 Tires, 4 Oil, 4 Spark Plugs"></p>
+<p><img src="__BASE__class-notes/img/fe5ca7b26772f24c2cb22e8bd6866f0f.png" loading="lazy" alt="Order results showing item ordered: 11 and Subtotal: 408408.00 — the raw 408 and formatted 408.00 both printed"></p>
+<blockquote><p>📝 <strong>Lesson learned:</strong> when concatenating a value into an output string, only include it <strong>once</strong>. Writing <code>$totalamount . number_format($totalamount, 2)</code> puts the same number in twice — the raw version <em>and</em> the formatted version — instead of picking one. If you want a formatted number in your output, use <code>number_format(...)</code> on its own; don&#39;t also concatenate the original variable alongside it.</p></blockquote>
+<h3 id="calculating-tax">Calculating Tax</h3>
+<pre><code class="language-php">// this was commented because we are now adding tax rate
+//echo &quot;Subtotal: &quot; . number_format($totalamount, 2) . &quot;&lt;br&gt;&quot;;
+
+//Calculate the tax rate
+
+$taxrate = 0.10; //local sales tax is 10%
+$totalamount = $totalamount * (1 + $taxrate);
+echo &quot;Total including tax: &quot; . number_format($totalamount, 2) . &quot;&lt;br&gt;&quot;;</code></pre>
+<ul><li><p><strong>Commenting out old code</strong> (<code>//echo &quot;Subtotal: &quot;...</code>) instead of deleting it is a common practice while iterating — it keeps the previous line around for reference or easy rollback, without it actually running.</p></li><li><p><strong><code>$taxrate = 0.10;</code></strong> — a plain variable (not a constant this time) holding 10% as a decimal.</p></li><li><p><strong><code>$totalamount * (1 + $taxrate)</code></strong> — the standard way to add a percentage on top of a number: multiplying by <code>1.10</code> gives the original amount <em>plus</em> 10%, in one step. (Equivalent to <code>$totalamount + ($totalamount * $taxrate)</code>, just more compact.)</p></li><li><p>The parentheses matter here — <code>(1 + $taxrate)</code> is calculated first, then multiplied by <code>$totalamount</code>. Order of operations would otherwise multiply <code>$taxrate</code> by <code>$totalamount</code> first and only then add <code>1</code>, giving a very wrong result.</p></li></ul>
+<p><strong>Example:</strong> subtotal <code>408</code> × <code>1.10</code> = <strong><code>448.80</code></strong> — matches the live output below.</p>
+<p><strong>Live result:</strong></p>
+<p><img src="__BASE__class-notes/img/3a638b27570d8b5906b48296b8c9e9e6.png" loading="lazy" alt="Order results showing 3 Tires, 4 bottles of oil, 4 spark plugs, item ordered: 11, Total including tax: 448.80"></p>
+<h3 id="full-walkthrough-both-files-latest-version">Full Walkthrough — Both Files, Latest Version</h3>
+<p>A complete pass through the current code, tying together variables, the <code>.</code> operator, and every function used.</p>
+<p><strong><code>orderform.html</code> — the form side:</strong></p>
+<pre><code class="language-html">&lt;form action=&quot;processorder.php&quot; method=&quot;post&quot;&gt;</code></pre>
+<ul><li><p>Submits to <code>processorder.php</code> using <strong>POST</strong>, so the data goes in the request body, not the URL.</p></li></ul>
+<pre><code class="language-html">&lt;input type=&quot;text&quot; name=&quot;tiresqty&quot; size=&quot;3&quot; maxlength=&quot;3&quot; /&gt;</code></pre>
+<ul><li><p>Each input&#39;s <code>name</code> (<code>tiresqty</code>, <code>oilqty</code>, <code>sparkqty</code>) is the <strong>key</strong> PHP will use to read that value back out of <code>$_POST</code>. No <code>name</code> = PHP has no way to find it.</p></li></ul>
+<p><strong><code>processorder.php</code> — the processing side:</strong></p>
+<pre><code class="language-php">$tireqty = $_POST[&#39;tiresqty&#39;];
+$oilqty = $_POST[&#39;oilqty&#39;];
+$sparkqty = $_POST[&#39;sparkqty&#39;];</code></pre>
+<ul><li><p><strong>Variables</strong> (<code>$tireqty</code>, etc.) store each submitted value so we can reuse it below without retyping <code>$_POST[&#39;tiresqty&#39;]</code> every time. They&#39;re plain PHP variables — created the moment you assign them with <code>=</code>.</p></li></ul>
+<pre><code class="language-php">echo htmlspecialchars($tireqty) . &#39; Tires&lt;br&gt;&#39;;</code></pre>
+<ul><li><p><strong>Function:</strong> <code>htmlspecialchars($tireqty)</code> — sanitizes the value before printing (safe against broken/malicious HTML).</p></li><li><p><strong>The <code>.</code> operator:</strong> glues the sanitized value together with the literal text <code>&#39; Tires&lt;br&gt;&#39;</code> into one string for <code>echo</code> to print. Remember: <code>.</code> joins <strong>text</strong>; it is <em>not</em> the same as <code>+</code>, which does <strong>math</strong>. That distinction is exactly why this line uses <code>.</code> (we&#39;re building a sentence) while the total below uses <code>+</code> (we&#39;re adding numbers).</p></li></ul>
+<pre><code class="language-php">$totalqty = 0;
+$totalqty = $tireqty + $oilqty + $sparkqty;</code></pre>
+<ul><li><p><strong>Variable:</strong> <code>$totalqty</code> starts at <code>0</code>, then gets reassigned to the sum.</p></li><li><p><strong>The <code>+</code> operator:</strong> real addition — PHP automatically converts the submitted strings into numbers first (type juggling), then adds them.</p></li></ul>
+<pre><code class="language-php">define(&#39;tireprice&#39;, 100);
+$totalamount = $tireqty * tireprice + $oilqty * oilprice + $sparkqty * sparkprice;</code></pre>
+<ul><li><p><strong>Function:</strong> <code>define()</code> creates a constant (fixed price per item — no <code>$</code>, can&#39;t change later).</p></li><li><p>Multiplication happens before addition (order of operations), giving the correct total cost.</p></li></ul>
+<pre><code class="language-php">echo &quot;Subtotal: &quot; . number_format($totalamount, 2) . &quot;&lt;br&gt;&quot;;</code></pre>
+<ul><li><p><strong>Function:</strong> <code>number_format($totalamount, 2)</code> — formats the total with 2 decimal places.</p></li><li><p><strong>The <code>.</code> operator again:</strong> stitches the label, the formatted number, and the <code>&lt;br&gt;</code> into one final string — the same joining job as before, just with a function&#39;s <em>return value</em> instead of a plain variable.</p></li></ul>
+<p><strong>In short:</strong> variables hold data, <code>.</code> joins text/strings together for output, <code>+</code> (and <code>*</code>) do real arithmetic, and functions (<code>htmlspecialchars</code>, <code>number_format</code>, <code>define</code>, <code>date</code>) are PHP&#39;s built-in tools for sanitizing, formatting, and defining values along the way.</p>
+<h3 id="built-in-functions-used-so-far">Built-in Functions Used So Far</h3>
+<p>PHP ships with thousands of built-in functions — ready to use with no setup. Here&#39;s what each one we&#39;ve used actually does:</p>
+<ul><li><p><strong><code>echo</code></strong> — not technically a function (it&#39;s a language construct), but works like one: outputs one or more strings to the page. Can take multiple comma-separated arguments (<code>echo &quot;a&quot;, &quot;b&quot;;</code>) or be chained with <code>.</code>.</p></li><li><p><strong><code>date()</code></strong> — returns the current server date/time, formatted according to a format string you pass in (e.g. <code>&#39;H:i, jS F Y&#39;</code>). Each letter in the format string means something specific (H = hour, i = minutes, j = day, S = ordinal suffix, F = full month, Y = year).</p></li><li><p><strong><code>htmlspecialchars()</code></strong> — takes a string and converts HTML-sensitive characters (<code>&lt;</code>, <code>&gt;</code>, <code>&amp;</code>, <code>&quot;</code>) into safe HTML entities before printing. Protects against a user&#39;s input accidentally (or maliciously) breaking the page&#39;s HTML or injecting script tags.</p></li><li><p><strong><code>number_format()</code></strong> — takes a number and returns it as a nicely formatted string, with thousands separators and a fixed number of decimal places (e.g. <code>number_format(1234.5, 2)</code> → <code>&quot;1,234.50&quot;</code>).</p></li><li><p><strong><code>define()</code></strong> — not a formatting function, but a built-in used to create a constant: a named value that can&#39;t be changed later in the script.</p></li></ul>
+<h3 id="why-the-dot-operator">Why the <code>.</code> (Dot) Operator?</h3>
+<p>In PHP, <code>.</code> is the <strong>string concatenation operator</strong> — it joins (glues together) two pieces into one string. This is different from many other languages (JavaScript, Java, etc.) where <code>+</code> is used to join strings — in PHP, <code>+</code> is reserved strictly for math, so a separate symbol (<code>.</code>) exists just for combining text.</p>
+<pre><code class="language-php">$name = &quot;Carlos&quot;;
+echo &quot;Hello &quot; . $name . &quot;!&quot;;  // → Hello Carlos!</code></pre>
+<p>This matters because mixing them up causes real bugs:</p>
+<ul><li><p><code>&quot;5&quot; + &quot;3&quot;</code> → <code>8</code> (PHP treats both as numbers and adds them)</p></li><li><p><code>&quot;5&quot; . &quot;3&quot;</code> → <code>&quot;53&quot;</code> (PHP treats both as text and glues them together)</p></li></ul>
+<p>That&#39;s exactly why, earlier, <code>$tireqty * tireprice + $oilqty * oilprice + ...</code> uses <code>+</code> (real math on numbers) while building the output string (<code>&quot;Subtotal: &quot; . number_format(...)</code>) uses <code>.</code> (joining text) — same script, two different jobs for two different operators.</p>
+<p><strong>Totaling the order:</strong></p>
+<ul><li><p><code>$totalqty = 0;</code> initializes the variable first (good habit before adding to it).</p></li><li><p><code>$tireqty + $oilqty + $sparkqty</code> — PHP automatically converts these form values (technically strings) into numbers to do the math. This is called <strong>type juggling</strong> — no manual conversion needed for simple numeric strings.</p></li><li><p>The result is concatenated with <code>.</code> into the output string, same pattern as before.</p></li></ul>
+<p><strong>Final result — form filled in and submitted:</strong></p>
+<p><img src="__BASE__class-notes/img/0384e6dec2f9d169498a0d81402d81fa.png" loading="lazy" alt="Order form filled in with 2 Tires, 2 Oil, 2 Spark Plugs"></p>
+<p><img src="__BASE__class-notes/img/0d9f7b9b76d762a5114c3812f524abf5.png" loading="lazy" alt="Order results page showing 2 Tires, 2 bottles of oil, 2 spark plugs, and total item ordered: 6"></p>
+<blockquote><p>✅ <strong>Fixed and working:</strong> the semicolon/stray-quote issue, the broken <code>date()</code> format string, the <code>tireqty</code>/<code>tiresqty</code> key mismatch, and the misspelled <code>htmlscpecialchars()</code> have all been corrected in the code above — the form now submits and processes successfully.</p></blockquote>
+<h3 id="comparison-operators-vs">Comparison Operators: <code>==</code> vs. <code>=</code></h3>
+<p>These look similar but do completely different jobs — mixing them up is one of the most common beginner bugs.</p>
+<ul><li><p><strong><code>=</code></strong> — the <strong>assignment</strong> operator. It sets a variable&#39;s value.</p><pre><code class="language-php">$a = $b;  // $a now HOLDS whatever $b&#39;s value is</code></pre></li><li><p><strong><code>==</code></strong> — the <strong>equality (comparison)</strong> operator. It checks whether two values are equal, and returns <code>true</code> or <code>false</code> — it does <strong>not</strong> change either variable.</p><pre><code class="language-php">$a == $b;  // checks: does $a&#39;s value equal $b&#39;s value? (true or false)</code></pre></li></ul>
+<p><strong>Why it matters:</strong> using <code>=</code> where you meant <code>==</code> doesn&#39;t cause an error — it silently <em>assigns</em> instead of <em>comparing</em>, which can quietly break your logic:</p>
+<pre><code class="language-php">if ($a = $b) {   // ⚠️ assigns $b&#39;s value to $a, then checks if that value is &quot;truthy&quot;
+    // this can run even when you meant to check equality
+}
+
+if ($a == $b) {  // ✅ correctly compares $a and $b without changing either
+    echo &quot;They&#39;re equal!&quot;;
+}</code></pre>
+<p><strong>Other comparison operators</strong> (from the <code>if/else</code> notes earlier), same family as <code>==</code>:</p>
+<table><thead><tr><th>Operator</th><th>Meaning</th></tr></thead><tbody><tr><td><code>==</code></td><td>equal in value</td></tr><tr><td><code>===</code></td><td>equal in value <strong>and</strong> type (e.g. <code>5 === &quot;5&quot;</code> is <code>false</code>, since one&#39;s an int and one&#39;s a string)</td></tr><tr><td><code>!=</code></td><td>not equal</td></tr><tr><td><code>!==</code></td><td>not equal in value or type</td></tr><tr><td><code>&gt;</code> / <code>&lt;</code></td><td>greater than / less than</td></tr><tr><td><code>&gt;=</code> / <code>&lt;=</code></td><td>greater than or equal / less than or equal</td></tr></tbody></table>
+<p><strong>Rule of thumb:</strong> one <code>=</code> sets a value; two or three (<code>==</code>, <code>===</code>) check one.</p>
+<h3 id="full-operators-reference">Full Operators Reference</h3>
+<p>PHP groups operators into a few families — here&#39;s each, with what it does.</p>
+<p><strong>Arithmetic Operators</strong> — perform math on numbers:</p>
+<table><thead><tr><th>Operator</th><th>Meaning</th><th>Example</th></tr></thead><tbody><tr><td><code>+</code></td><td>Addition</td><td><code>$a + $b</code></td></tr><tr><td><code>-</code></td><td>Subtraction</td><td><code>$a - $b</code></td></tr><tr><td><code>*</code></td><td>Multiplication</td><td><code>$a * $b</code></td></tr><tr><td><code>/</code></td><td>Division</td><td><code>$a / $b</code></td></tr><tr><td><code>%</code></td><td>Modulus (remainder)</td><td><code>$a % $b</code></td></tr><tr><td><code>**</code></td><td>Exponentiation (power)</td><td><code>$a ** $b</code></td></tr></tbody></table>
+<p><strong>Assignment Operators</strong> — set or update a variable&#39;s value:</p>
+<table><thead><tr><th>Operator</th><th>Meaning</th><th>Same as</th></tr></thead><tbody><tr><td><code>=</code></td><td>Assign</td><td>—</td></tr><tr><td><code>+=</code></td><td>Add and assign</td><td><code>$a = $a + $b</code></td></tr><tr><td><code>-=</code></td><td>Subtract and assign</td><td><code>$a = $a - $b</code></td></tr><tr><td><code>*=</code></td><td>Multiply and assign</td><td><code>$a = $a * $b</code></td></tr><tr><td><code>/=</code></td><td>Divide and assign</td><td><code>$a = $a / $b</code></td></tr><tr><td><code>.=</code></td><td>Concatenate and assign</td><td><code>$a = $a . $b</code></td></tr></tbody></table>
+<p><strong>Comparison Operators</strong> — compare two values, return <code>true</code>/<code>false</code> (full detail above):</p>
+<table><thead><tr><th>Operator</th><th>Meaning</th></tr></thead><tbody><tr><td><code>==</code></td><td>Equal in value</td></tr><tr><td><code>===</code></td><td>Equal in value and type</td></tr><tr><td><code>!=</code> / <code>&lt;&gt;</code></td><td>Not equal</td></tr><tr><td><code>!==</code></td><td>Not equal in value or type</td></tr><tr><td><code>&gt;</code> / <code>&lt;</code></td><td>Greater than / less than</td></tr><tr><td><code>&gt;=</code> / <code>&lt;=</code></td><td>Greater than or equal / less than or equal</td></tr></tbody></table>
+<p><strong>Logical Operators</strong> — combine multiple true/false conditions:</p>
+<table><thead><tr><th>Operator</th><th>Meaning</th><th>Example</th></tr></thead><tbody><tr><td><code>&amp;&amp;</code> (or <code>and</code>)</td><td>True only if <strong>both</strong> sides are true</td><td><code>$a &gt; 5 &amp;&amp; $b &lt; 10</code></td></tr><tr><td>|| (or <code>or</code>)</td><td>True if <strong>either</strong> side is true</td><td><code>$a &gt; 5 || $b &lt; 10</code></td></tr><tr><td><code>!</code></td><td>Reverses true/false (NOT)</td><td><code>!$a</code></td></tr></tbody></table>
+<pre><code class="language-php">$age = 20;
+if ($age &gt;= 18 &amp;&amp; $age &lt; 65) {
+    echo &quot;Adult&quot;;
+}</code></pre>
+<p><strong>Quick definitions:</strong></p>
+<ul><li><p><strong>Arithmetic</strong> — operators that do math and produce a number.</p></li><li><p><strong>Assignment</strong> — operators that store a value in a variable.</p></li><li><p><strong>Comparison</strong> — operators that check a relationship between two values and produce <code>true</code>/<code>false</code>.</p></li><li><p><strong>Logical</strong> — operators that combine or invert <code>true</code>/<code>false</code> conditions, usually inside an <code>if</code>.</p></li></ul>
+<h3 id="checking-a-variables-type-gettype">Checking a Variable&#39;s Type — <code>gettype()</code></h3>
+<pre><code class="language-php">//type of the variable
+
+echo gettype($tireqty) . &#39;&lt;br&gt;&#39;;</code></pre>
+<p><strong><code>gettype($tireqty)</code></strong> — a built-in function that returns a string naming the variable&#39;s current data type: <code>&quot;string&quot;</code>, <code>&quot;integer&quot;</code>, <code>&quot;double&quot;</code> (float), <code>&quot;boolean&quot;</code>, <code>&quot;array&quot;</code>, <code>&quot;NULL&quot;</code>, etc. Handy for debugging — e.g. confirming that <code>$tireqty</code> (pulled from <code>$_POST</code>) actually arrives as a <code>&quot;string&quot;</code>, even though it&#39;s later used in math thanks to type juggling.</p>
+<blockquote><p>⚠️ <strong>Heads up:</strong> the line as typed has a small typo — <code>gettype($tireqty): &#39;&lt;br&gt;&#39;</code> uses a colon (<code>:</code>) instead of the concatenation operator (<code>.</code>). A colon there isn&#39;t valid PHP syntax in this context and will throw a parse error. Corrected:</p><pre><code class="language-php">echo gettype($tireqty) . &#39;&lt;br&gt;&#39;;</code></pre></blockquote>
+<p><strong><code>settype()</code></strong> — the counterpart to <code>gettype()</code>: instead of just <em>checking</em> a variable&#39;s type, it actually <strong>changes</strong> it, converting the variable in place.</p>
+<pre><code class="language-php">settype($tireqty, &#39;integer&#39;);
+echo gettype($tireqty); // now prints &quot;integer&quot; instead of &quot;string&quot;</code></pre>
+<ul><li><p>Takes the variable itself (not a copy) plus the target type as a string (<code>&#39;integer&#39;</code>, <code>&#39;string&#39;</code>, <code>&#39;float&#39;</code>/<code>&#39;double&#39;</code>, <code>&#39;boolean&#39;</code>, <code>&#39;array&#39;</code>).</p></li><li><p>Unlike <code>gettype()</code> (which returns a new string and leaves the variable untouched), <code>settype()</code> modifies <code>$tireqty</code> directly — it returns <code>true</code>/<code>false</code> for success, not the value.</p></li><li><p>Useful when you want to be explicit and guarantee a value really is a number (instead of relying on PHP&#39;s automatic type juggling), e.g. right after pulling something out of <code>$_POST</code>.</p></li></ul>
+<p><strong>The <code>is_*()</code> family — type-checking functions:</strong></p>
+<p>Instead of comparing <code>gettype()</code>&#39;s string output, PHP has a dedicated <code>is_*()</code> function for each type. Each one takes a variable and returns <code>true</code> or <code>false</code> directly — cleaner than writing <code>gettype($x) == &#39;integer&#39;</code>.</p>
+<table><thead><tr><th>Function</th><th>Checks for</th></tr></thead><tbody><tr><td><code>is_array()</code></td><td>Is it an array?</td></tr><tr><td><code>is_string()</code></td><td>Is it a string?</td></tr><tr><td><code>is_int()</code> / <code>is_integer()</code> / <code>is_long()</code></td><td>Is it a whole number (int)? — all three are aliases for the same check</td></tr><tr><td><code>is_float()</code> / <code>is_double()</code></td><td>Is it a decimal number? — <code>is_double()</code> is just an alias for <code>is_float()</code></td></tr><tr><td><code>is_bool()</code></td><td>Is it <code>true</code>/<code>false</code>?</td></tr><tr><td><code>is_null()</code></td><td>Is it <code>null</code> (no value)?</td></tr><tr><td><code>is_numeric()</code></td><td>Is it a number <strong>or</strong> a numeric string (e.g. <code>&quot;42&quot;</code>)? — useful for validating form input</td></tr></tbody></table>
+<pre><code class="language-php">if (is_numeric($tireqty)) {
+    echo &quot;Valid quantity&lt;br&gt;&quot;;
+} else {
+    echo &quot;That&#39;s not a number!&lt;br&gt;&quot;;
+}</code></pre>
+<p><strong>Why these are useful:</strong> validating form input is the big one — since everything from <code>$_POST</code> arrives as a string, <code>is_numeric()</code> is a quick way to check &quot;did the user actually type a number?&quot; before doing math with it, rather than trusting the input blindly.</p>
+<hr>
+<hr>
+<hr>
