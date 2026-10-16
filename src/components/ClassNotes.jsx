@@ -144,7 +144,7 @@ export default function ClassNotes({ show, setShow }) {
 
         <div className="cn-status">
           <span>{currentPage ? currentPage.title : 'Class Notes'}</span>
-          <span>{index ? `${index.classes.length} class` : ''}</span>
+          <span>{index ? `${index.classes.length} ${index.classes.length === 1 ? "class" : "classes"}` : ''}</span>
         </div>
       </div>
     </Draggable>

@@ -65,6 +65,8 @@ layout = [
   ('Project 1', [('project-1', 'Deliverable 1 — Project proposal', find('project-1'))]),
 ]
 used = set()
+other = {k: v for k, v in secs.items() if re.match(r'mac-\d+-', k)}
+secs = {k: v for k, v in secs.items() if k not in other}
 folders = []
 for ftitle, pages in layout:
     plist = []
@@ -78,8 +80,18 @@ for ftitle, pages in layout:
         (out / cls / f'{slug}.html').write_text(body, encoding='utf-8')
         plist.append({'slug': slug, 'title': ptitle, 'topics': h3s(body)})
     folders.append({'title': ftitle, 'pages': plist})
-assert used == set(secs), set(secs) - used
+assert used == set(secs), set(secs) - used  # every MAC 272 section is placed
 
-index = {'classes': [{'id': cls, 'title': 'MAC 272 - WEB DEVELOPMENT 2', 'folders': folders}]}
+classes = [{'id': cls, 'title': 'MAC 272 - WEB DEVELOPMENT 2', 'folders': folders}]
+# Other classes: each H2 that starts with "MAC ### —" becomes its own class with one "Notes" page.
+for k, (title, body) in other.items():
+    m = re.match(r'(MAC \d+)\s*[—-]\s*(.*)', title)
+    code, name = m.group(1), m.group(2).upper()
+    cid = code.lower().replace(' ', '')
+    (out / cid).mkdir(exist_ok=True)
+    (out / cid / 'notes.html').write_text(body, encoding='utf-8')
+    classes.append({'id': cid, 'title': f'{code} - {name}',
+                    'folders': [{'title': 'Overview', 'pages': [{'slug': 'notes', 'title': 'Notes', 'topics': h3s(body)}]}]})
+index = {'classes': classes}
 (out / 'index.json').write_text(json.dumps(index, indent=1, ensure_ascii=False), encoding='utf-8')
 print('pages:', sum(len(f['pages']) for f in folders), 'images:', len(list((out / 'img').iterdir())))

@@ -428,6 +428,150 @@
      ]
     }
    ]
+  },
+  {
+   "id": "mac125",
+   "title": "MAC 125 - ADVANCED C/C++ PROGRAMMING",
+   "folders": [
+    {
+     "title": "Overview",
+     "pages": [
+      {
+       "slug": "notes",
+       "title": "Notes",
+       "topics": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "mac190",
+   "title": "MAC 190 - OBJECT-ORIENTED PROGRAMMING (JAVA)",
+   "folders": [
+    {
+     "title": "Overview",
+     "pages": [
+      {
+       "slug": "notes",
+       "title": "Notes",
+       "topics": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "mac109",
+   "title": "MAC 109 - INTRODUCTION TO VISUAL PROGRAMMING (C#)",
+   "folders": [
+    {
+     "title": "Overview",
+     "pages": [
+      {
+       "slug": "notes",
+       "title": "Notes",
+       "topics": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "mac280",
+   "title": "MAC 280 - GAME PROGRAMMING",
+   "folders": [
+    {
+     "title": "Overview",
+     "pages": [
+      {
+       "slug": "notes",
+       "title": "Notes",
+       "topics": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "mac232",
+   "title": "MAC 232 - UNIX NETWORK OPERATING SYSTEMS (LINUX)",
+   "folders": [
+    {
+     "title": "Overview",
+     "pages": [
+      {
+       "slug": "notes",
+       "title": "Notes",
+       "topics": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "mac110",
+   "title": "MAC 110 - SYSTEMS ANALYSIS AND DESIGN",
+   "folders": [
+    {
+     "title": "Overview",
+     "pages": [
+      {
+       "slug": "notes",
+       "title": "Notes",
+       "topics": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "mac250",
+   "title": "MAC 250 - DATABASE CONCEPTS AND PROGRAMMING (SQL)",
+   "folders": [
+    {
+     "title": "Overview",
+     "pages": [
+      {
+       "slug": "notes",
+       "title": "Notes",
+       "topics": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "mac220",
+   "title": "MAC 220 - APPLICATION DEVELOPMENT FOR ANDROID DEVICES (KOTLIN)",
+   "folders": [
+    {
+     "title": "Overview",
+     "pages": [
+      {
+       "slug": "notes",
+       "title": "Notes",
+       "topics": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "mac221",
+   "title": "MAC 221 - APP DEVELOPMENT FOR IPHONE/IPAD (IOS)",
+   "folders": [
+    {
+     "title": "Overview",
+     "pages": [
+      {
+       "slug": "notes",
+       "title": "Notes",
+       "topics": []
+      }
+     ]
+    }
+   ]
   }
  ]
 }
