@@ -1,0 +1,378 @@
+<h2 id="week-3-day-2-today">Week 3, Day 2</h2>
+<h3 id="php-integers-review">PHP Integers (Review)</h3>
+<p><strong>Integer (<code>int</code>):</strong> a whole number — no decimal point, positive or negative.</p>
+<pre><code class="language-php">$age = 27;
+$temperature = -10;</code></pre>
+<p><strong>Storage — integers vs. floats:</strong></p>
+<table><thead><tr><th></th><th><code>int</code></th><th><code>float</code></th></tr></thead><tbody><tr><td>Represents</td><td>Whole numbers only</td><td>Numbers with decimals</td></tr><tr><td>Precision</td><td>Exact — stored as the exact value, no rounding</td><td>Approximate — stored in a format (IEEE 754) that trades exactness for being able to hold a huge range of values</td></tr><tr><td>Size/range</td><td>Platform-dependent, but typically 64-bit on modern systems (roughly ±9.2 quintillion)</td><td>Also platform-dependent, usually a 64-bit &quot;double&quot; — same size as <code>int</code> on most systems, but spent on range + decimals instead of whole-number precision</td></tr><tr><td>Common issue</td><td>None — math stays exact</td><td>Rounding errors can creep in, since not every decimal value can be represented exactly in binary</td></tr></tbody></table>
+<p><strong>Why float imprecision happens</strong> — a classic example:</p>
+<pre><code class="language-php">$result = 0.1 + 0.2;
+echo $result; // 0.3, looks fine...
+var_dump($result == 0.3); // bool(false) !</code></pre>
+<p>Even though it displays as <code>0.3</code>, internally PHP (like virtually every programming language) stores <code>0.1</code> and <code>0.2</code> as binary floating-point approximations, not the exact decimal values — so the actual sum is something like <code>0.30000000000000004</code>. This is why comparing floats with <code>==</code> is risky; it&#39;s a hardware/storage limitation, not a PHP bug.</p>
+<p><strong>In practice:</strong> use <code>int</code> whenever you&#39;re counting whole things (quantities, ages, IDs) — it&#39;s exact and has no rounding risk. Use <code>float</code> for money, measurements, or anything with decimals, but be cautious comparing floats directly with <code>==</code>.</p>
+<p><strong>Example — int × float:</strong></p>
+<pre><code class="language-php">&lt;?php
+$a = 5;       // int
+$b = 5.34;    // float
+$c = &quot;25&quot;;    // string (numeric string)
+
+echo $a . &quot;&lt;br&gt;&quot;; // 5
+echo $b . &quot;&lt;br&gt;&quot;; // 5.34
+echo $c . &quot;&lt;br&gt;&quot;; // 25
+
+$r = $a * $b;
+echo $r . &quot;&lt;br&gt;&quot;; // 26.7
+var_dump($r);      // float(26.7)
+?&gt;</code></pre>
+<p>Output:</p>
+<pre><code>5
+5.34
+25
+26.7
+float(26.7)</code></pre>
+<p>Here&#39;s what&#39;s different between the two: <code>echo</code> just prints the raw value as text — <code>$a</code>, <code>$b</code>, and <code>$c</code> all come out looking like plain numbers on the page, with no visible distinction between the <code>int</code>, <code>float</code>, and <code>string</code> types. You genuinely can&#39;t tell from the <code>echo</code> output alone that <code>$c</code> is a string and not a number — they all just look like <code>5</code>, <code>5.34</code>, <code>25</code>.</p>
+<p><code>var_dump()</code> is the one that reveals the actual type underneath — <code>float(26.7)</code> tells you explicitly that <code>$r</code> is a float, something plain <code>echo</code> output can never show you.</p>
+<p><strong>Why a &quot;whole number&quot; result can still be a float:</strong></p>
+<pre><code class="language-php">$a = 4;      // int
+$b = 2.5;    // float
+
+$r = $a * $b;
+var_dump($r); // float(10)</code></pre>
+<p>Mathematically <code>4 * 2.5 = 10</code>, a clean whole number — but PHP still reports it as <code>float(10)</code>, not <code>int(10)</code>. The result type is decided by the <strong>types of the operands</strong>, not by what the final value looks like: if either operand is a <code>float</code>, the result is always a <code>float</code>, even when that float lands exactly on a whole number with nothing after the decimal. PHP never &quot;downgrades&quot; a float back to an int just because the decimal came out to <code>.0</code>.</p>
+<p>Multiplying an <code>int</code> (<code>$a</code>) by a <code>float</code> (<code>$b</code>) automatically converts the result to a <code>float</code> — PHP always &quot;upgrades&quot; the result to whichever type can hold more precision, so <code>int * float</code> → <code>float</code>, never the other way around. <code>$c</code> isn&#39;t used in the math here, but it&#39;s a good example of a numeric string sitting unused — if it had been included in the multiplication, PHP would auto-convert it to a number first (type juggling, covered earlier).</p>
+<h3 id="integer-literal-formats-decimal-hexadecimal-octal">Integer Literal Formats — Decimal, Hexadecimal, Octal</h3>
+<pre><code class="language-php">&lt;?php
+$decimal = 100;      // base 10 — the normal way, no prefix
+$hex = 0x64;          // base 16 — prefixed with 0x, digits 0-9 and A-F
+$octal = 0144;         // base 8 — prefixed with a leading 0, digits 0-7
+
+echo $decimal . &quot;&lt;br&gt;&quot;; // 100
+echo $hex . &quot;&lt;br&gt;&quot;;     // 100
+echo $octal . &quot;&lt;br&gt;&quot;;   // 100
+?&gt;</code></pre>
+<p>All three lines above represent the <strong>same value, <code>100</code></strong> — just written in different number bases. PHP converts all of them to the same internal integer; <code>echo</code> always displays the decimal (base 10) form regardless of which format was used to write it.</p>
+<table><thead><tr><th>Format</th><th>Base</th><th>Prefix</th><th>Example</th><th>Equals (decimal)</th></tr></thead><tbody><tr><td>Decimal</td><td>10</td><td>none</td><td><code>100</code></td><td>100</td></tr><tr><td>Hexadecimal</td><td>16</td><td><code>0x</code></td><td><code>0x64</code></td><td>100</td></tr><tr><td>Octal</td><td>8</td><td>leading <code>0</code></td><td><code>0144</code></td><td>100</td></tr></tbody></table>
+<p><strong>Why these exist:</strong> decimal is the everyday format. Hexadecimal shows up constantly in things like color codes (<code>#FF0000</code> in CSS) and memory addresses. Octal is rarer today but was historically used for file permissions (Unix <code>chmod 0755</code>, for example).</p>
+<p><strong>Common mistake:</strong> a leading <code>0</code> on a number that wasn&#39;t meant to be octal — <code>$num = 0123;</code> is actually interpreted as octal (equal to <code>83</code> in decimal), not as the literal number &quot;one hundred twenty-three.&quot; This trips people up if a number is zero-padded for formatting and the leading zero accidentally signals octal instead.</p>
+<h3 id="integer-limits-phpintmax-phpintmin-phpintsize">Integer Limits — <code>PHP_INT_MAX</code>, <code>PHP_INT_MIN</code>, <code>PHP_INT_SIZE</code></h3>
+<pre><code class="language-php">&lt;?php
+echo PHP_INT_MAX . &quot;&lt;br&gt;&quot;; // 9223372036854775807
+echo PHP_INT_MIN . &quot;&lt;br&gt;&quot;; // -9223372036854775808
+echo PHP_INT_SIZE . &quot;&lt;br&gt;&quot;; // 8
+?&gt;</code></pre>
+<p>PHP has three built-in constants describing the limits of the <code>int</code> type on the current system:</p>
+<table><thead><tr><th>Constant</th><th>What it tells you</th><th>Typical value (64-bit system)</th></tr></thead><tbody><tr><td><code>PHP_INT_MAX</code></td><td>The largest integer PHP can hold</td><td><code>9223372036854775807</code></td></tr><tr><td><code>PHP_INT_MIN</code></td><td>The smallest (most negative) integer PHP can hold</td><td><code>-9223372036854775808</code></td></tr><tr><td><code>PHP_INT_SIZE</code></td><td>How many bytes an integer takes up in memory</td><td><code>8</code> (= 64 bits, on most modern systems)</td></tr></tbody></table>
+<p>These values depend on the platform PHP is running on — a 32-bit system would show much smaller <code>PHP_INT_MAX</code>/<code>MIN</code> values and <code>PHP_INT_SIZE</code> would be <code>4</code> instead of <code>8</code>. That&#39;s why they&#39;re constants looked up at runtime rather than numbers to hardcode — the actual limit isn&#39;t guaranteed to be the same everywhere.</p>
+<p><strong>What happens past the limit:</strong> PHP doesn&#39;t error — it automatically converts the number to a <code>float</code> instead, since floats can represent a much larger range (just with less precision):</p>
+<pre><code class="language-php">$overflow = PHP_INT_MAX + 1;
+var_dump($overflow); // float(9.2233720368548E+18)</code></pre>
+<h3 id="isint"><code>is_int()</code></h3>
+<p><strong>Definition:</strong> <code>is_int()</code> checks whether a variable&#39;s value is of type <code>int</code>, returning <code>true</code> or <code>false</code>. Part of the same <code>is_*()</code> family covered earlier (<code>is_array()</code>, <code>is_double()</code>, etc.) — a quick way to check a type without needing the full output of <code>gettype()</code> or <code>var_dump()</code>.</p>
+<pre><code class="language-php">&lt;?php
+$a = 5;       // int
+$b = 5.34;    // float
+$c = &quot;25&quot;;    // string
+
+var_dump(is_int($a)); // bool(true)
+var_dump(is_int($b)); // bool(false) -- it&#39;s a float, not an int
+var_dump(is_int($c)); // bool(false) -- it&#39;s a string, even though it &quot;looks&quot; numeric
+?&gt;</code></pre>
+<p><strong>Key point — <code>is_int()</code> checks the actual type, not whether something looks like a number:</strong> <code>&quot;25&quot;</code> is a numeric string, and PHP will happily do math with it (type juggling), but <code>is_int(&quot;25&quot;)</code> still returns <code>false</code> because the variable&#39;s real, stored type is <code>string</code>, not <code>int</code>. <code>is_numeric()</code> is the function that would return <code>true</code> for a string like <code>&quot;25&quot;</code> — <code>is_int()</code> is stricter and only accepts the real thing.</p>
+<p><strong>Common use — inside a condition, as a guard:</strong></p>
+<pre><code class="language-php">if (is_int($tireqty)) {
+    echo &quot;Valid quantity.&lt;br&gt;&quot;;
+} else {
+    echo &quot;Quantity must be a whole number.&lt;br&gt;&quot;;
+}</code></pre>
+<p>This is the kind of check that&#39;s useful before doing math with form data — though worth noting, <code>$_POST</code> values always arrive as strings, so <code>is_int($_POST[&#39;tiresqty&#39;])</code> would actually be <code>false</code> even for a valid number like <code>&quot;5&quot;</code>; <code>is_numeric()</code> or converting with <code>(int)</code> first would be the more realistic check in that situation.</p>
+<h3 id="float-literal-formats">Float Literal Formats</h3>
+<pre><code class="language-php">&lt;?php
+$standard = 5.34;      // standard decimal notation
+$noDecimalPart = 7.0;   // still a float, even with nothing meaningful after the dot
+$scientific = 1.2e3;    // scientific notation: 1.2 × 10^3
+$scientificNeg = 7E-10; // scientific notation with a negative exponent
+
+echo $standard . &quot;&lt;br&gt;&quot;;      // 5.34
+echo $noDecimalPart . &quot;&lt;br&gt;&quot;; // 7
+echo $scientific . &quot;&lt;br&gt;&quot;;    // 1200
+echo $scientificNeg . &quot;&lt;br&gt;&quot;; // 7.0E-10
+?&gt;</code></pre>
+<table><thead><tr><th>Format</th><th>Example</th><th>Meaning</th></tr></thead><tbody><tr><td>Standard decimal</td><td><code>5.34</code></td><td>The everyday way to write a float</td></tr><tr><td>Scientific (exponential) notation</td><td><code>1.2e3</code> or <code>1.2E3</code></td><td><code>1.2 × 10³</code> = <code>1200</code> — useful for very large or very small numbers</td></tr><tr><td>Negative exponent</td><td><code>7E-10</code></td><td><code>7 × 10⁻¹⁰</code> — a very small decimal, common in scientific/precision contexts</td></tr></tbody></table>
+<p>Scientific notation exists for the same reason it does in math class: writing out <code>0.0000000007</code> by hand is error-prone, while <code>7E-10</code> is compact and exact about the magnitude.</p>
+<hr>
+<h3 id="float-limits-phpfloatmax-phpfloatmin-phpfloatepsilon-phpfloatdig">Float Limits — <code>PHP_FLOAT_MAX</code>, <code>PHP_FLOAT_MIN</code>, <code>PHP_FLOAT_EPSILON</code>, <code>PHP_FLOAT_DIG</code></h3>
+<pre><code class="language-php">&lt;?php
+echo PHP_FLOAT_MAX . &quot;&lt;br&gt;&quot;;     // 1.7976931348623E+308
+echo PHP_FLOAT_MIN . &quot;&lt;br&gt;&quot;;     // 2.2250738585072E-308
+echo PHP_FLOAT_EPSILON . &quot;&lt;br&gt;&quot;; // 2.2204460492503E-16
+echo PHP_FLOAT_DIG . &quot;&lt;br&gt;&quot;;     // 15
+?&gt;</code></pre>
+<table><thead><tr><th>Constant</th><th>What it tells you</th></tr></thead><tbody><tr><td><code>PHP_FLOAT_MAX</code></td><td>The largest float PHP can represent</td></tr><tr><td><code>PHP_FLOAT_MIN</code></td><td>The smallest <em>positive</em> float PHP can represent (closest to zero without being zero)</td></tr><tr><td><code>PHP_FLOAT_EPSILON</code></td><td>The smallest difference PHP can reliably tell apart between two floats — ties directly back to the <code>0.1 + 0.2 != 0.3</code> imprecision issue from earlier; this is the margin used when comparing floats &quot;close enough&quot; instead of with <code>==</code></td></tr><tr><td><code>PHP_FLOAT_DIG</code></td><td>How many decimal digits of precision a float can reliably hold (typically 15)</td></tr></tbody></table>
+<p><strong>Practical use of <code>PHP_FLOAT_EPSILON</code></strong> — the safe way to compare two floats instead of <code>==</code>:</p>
+<pre><code class="language-php">$x = 0.1 + 0.2;
+$y = 0.3;
+
+if (abs($x - $y) &lt; PHP_FLOAT_EPSILON) {
+    echo &quot;Equal enough.&lt;br&gt;&quot;;
+} else {
+    echo &quot;Not equal.&lt;br&gt;&quot;;
+}
+// Output: Equal enough.</code></pre>
+<hr>
+<h3 id="isfloat"><code>is_float()</code></h3>
+<p><strong>Definition:</strong> <code>is_float()</code> checks whether a variable&#39;s value is of type <code>float</code>, returning <code>true</code> or <code>false</code>. (<code>is_double()</code> is an alias for the exact same thing — same reasoning as <code>gettype()</code> returning <code>&quot;double&quot;</code> instead of <code>&quot;float&quot;</code>.)</p>
+<pre><code class="language-php">&lt;?php
+$a = 5;       // int
+$b = 5.34;    // float
+$c = &quot;25&quot;;    // string
+
+var_dump(is_float($a)); // bool(false) -- it&#39;s an int, not a float
+var_dump(is_float($b)); // bool(true)
+var_dump(is_float($c)); // bool(false) -- it&#39;s a string
+?&gt;</code></pre>
+<p>Same logic as <code>is_int()</code> from earlier: <code>is_float()</code> checks the variable&#39;s actual stored type, not whether the value merely looks like a decimal. A numeric string like <code>&quot;5.34&quot;</code> would still return <code>false</code> from <code>is_float()</code>, the same way <code>&quot;25&quot;</code> returned <code>false</code> from <code>is_int()</code>.</p>
+<h3 id="php-inf-infinity-and-nan-not-a-number">PHP <code>INF</code> (Infinity) and <code>NAN</code> (Not a Number)</h3>
+<p>Both are special <strong>float</strong> values — not errors, not exceptions — that PHP returns when a calculation goes beyond what a normal number can represent.</p>
+<pre><code class="language-php">&lt;?php
+$big = PHP_FLOAT_MAX * 2; // multiplying past the max float
+var_dump($big);             // float(INF)
+
+$invalid = sqrt(-1);        // square root of a negative number
+var_dump($invalid);         // float(NAN)
+
+echo $big . &quot;&lt;br&gt;&quot;;         // INF
+echo $invalid . &quot;&lt;br&gt;&quot;;     // NAN
+?&gt;</code></pre>
+<table><thead><tr><th></th><th><code>INF</code></th><th><code>NAN</code></th></tr></thead><tbody><tr><td>Means</td><td>A number larger than the maximum representable float (overflow)</td><td>The result of a math operation that has no valid numeric answer</td></tr><tr><td>Common cause</td><td>Dividing by a very small number, multiplying past <code>PHP_FLOAT_MAX</code>, <code>1/0</code> style overflow</td><td><code>sqrt(-1)</code>, <code>0/0</code>, <code>INF - INF</code>, invalid math</td></tr><tr><td>Type</td><td><code>float</code></td><td><code>float</code></td></tr><tr><td>Check with</td><td><code>is_infinite()</code></td><td><code>is_nan()</code></td></tr></tbody></table>
+<p><strong>Checking for them:</strong></p>
+<pre><code class="language-php">var_dump(is_infinite($big));    // bool(true)
+var_dump(is_nan($invalid));     // bool(true)
+var_dump(is_finite($big));      // bool(false) -- opposite of is_infinite()</code></pre>
+<p><strong>Important quirk — <code>NAN</code> is never equal to anything, including itself:</strong></p>
+<pre><code class="language-php">$x = NAN;
+var_dump($x == NAN); // bool(false) !!
+var_dump($x === NAN); // bool(false) !!</code></pre>
+<p>This isn&#39;t a bug — it&#39;s standard IEEE 754 floating-point behavior (same spec that governs how all floats are stored, from earlier). Since <code>NAN</code> represents &quot;not a valid number,&quot; it&#39;s defined to never equal any value, not even another <code>NAN</code>. This is exactly why <code>is_nan()</code> exists — it&#39;s the only reliable way to check for it; <code>== NAN</code> or <code>=== NAN</code> will always silently return <code>false</code>, even when the variable genuinely holds <code>NAN</code>.</p>
+<h3 id="strings-double-vs-single-quotes-review">Strings — Double vs. Single Quotes (Review)</h3>
+<pre><code class="language-php">&lt;?php
+$x = &quot;john&quot;;
+
+echo &quot;Hello $x&quot;; // Hello john
+echo &#39;Hello $x&#39;; // Hello $x
+?&gt;</code></pre>
+<p>The difference comes down to <strong>double quotes vs. single quotes</strong>:</p>
+<ul><li><p><strong>Double quotes (<code>&quot;Hello $x&quot;</code>)</strong> — PHP scans the string for variables and replaces them with their actual value. This is called <strong>string interpolation</strong>. <code>$x</code> inside the double-quoted string gets swapped out for <code>&quot;john&quot;</code>, producing <code>Hello john</code>.</p></li><li><p><strong>Single quotes (<code>&#39;Hello $x&#39;</code>)</strong> — PHP treats everything inside as literal text, exactly as typed, with no variable substitution. <code>$x</code> is just the two characters <code>$</code> and <code>x</code> sitting in the string — it prints exactly as written: <code>Hello $x</code>.</p></li></ul>
+<p>Not a bug or inconsistency — it&#39;s a deliberate difference in how PHP treats the two quote types. Double quotes do extra work (interpolation, and also escape sequences like <code>\n</code> for a newline); single quotes do none of that and are slightly faster for plain static text since PHP doesn&#39;t have to scan them for variables.</p>
+<h3 id="string-concatenation-review">String Concatenation (Review)</h3>
+<pre><code class="language-php">&lt;?php
+$x = &quot;Hello, &quot;;
+$y = &quot;World&quot;;
+$z = $x . $y;
+
+echo $z; // Hello, World
+?&gt;</code></pre>
+<p>This uses the <strong><code>.</code> (dot) concatenation operator</strong> — covered back in Week 2 — which joins two strings together into one, end to end, with no space added automatically unless it&#39;s already baked into one of the strings (notice <code>$x</code> has a trailing space: <code>&quot;Hello, &quot;</code>, which is why the result reads naturally instead of coming out as <code>&quot;Hello,World&quot;</code>).</p>
+<p><strong>Why <code>.</code> instead of <code>+</code>:</strong> <code>+</code> is for arithmetic, <code>.</code> is specifically for joining strings. Using <code>+</code> here would trigger type juggling instead of joining — PHP would try to treat <code>$x</code> and <code>$y</code> as numbers, and since neither is numeric, it leads to an error rather than combining the text.</p>
+<pre><code class="language-php">echo $x + $y; // ❌ not what you want — PHP tries math, not text joining
+echo $x . $y; // ✅ &quot;Hello, World&quot;</code></pre>
+<h3 id="type-casting">Type Casting</h3>
+<pre><code class="language-php">&lt;?php
+$x = &quot;42&quot;;          // string
+$y = (int) $x;       // explicitly cast to int
+var_dump($y);         // int(42)
+
+$a = 5;
+$b = (float) $a;      // explicitly cast to float
+var_dump($b);          // float(5)
+
+$c = 3.99;
+$d = (int) $c;         // cast float to int
+var_dump($d);           // int(3) -- truncates, does NOT round
+
+$e = 0;
+$f = (bool) $e;         // cast to boolean
+var_dump($f);            // bool(false)
+?&gt;</code></pre>
+<p><strong>Definition:</strong> type casting is manually, explicitly telling PHP to treat a value as a different type, by putting the target type in parentheses right before the value: <code>(int)</code>, <code>(float)</code>, <code>(string)</code>, <code>(bool)</code>, <code>(array)</code>.</p>
+<p><strong>This is different from type juggling</strong> (covered earlier): type juggling is PHP <em>automatically</em> converting types behind the scenes when an operation needs it (like <code>&quot;10&quot; + &quot;20&quot;</code> auto-converting to numbers). Type casting is <em>explicitly</em> forcing the conversion, whether PHP would have done it automatically or not.</p>
+<table><thead><tr><th>Cast</th><th>Effect</th></tr></thead><tbody><tr><td><code>(int)</code></td><td>Converts to a whole number — truncates any decimal (doesn&#39;t round)</td></tr><tr><td><code>(float)</code></td><td>Converts to a decimal number</td></tr><tr><td><code>(string)</code></td><td>Converts to text</td></tr><tr><td><code>(bool)</code></td><td>Converts to <code>true</code>/<code>false</code> (same falsy rules as <code>empty()</code>: <code>0</code>, <code>&quot;&quot;</code>, <code>&quot;0&quot;</code>, <code>NULL</code>, empty array → <code>false</code>)</td></tr><tr><td><code>(array)</code></td><td>Wraps a non-array value into a single-element array</td></tr></tbody></table>
+<p><strong>Important gotcha — <code>(int)</code> truncates, it doesn&#39;t round:</strong></p>
+<pre><code class="language-php">var_dump((int) 3.99); // int(3), not int(4)
+var_dump((int) 3.01); // int(3)</code></pre>
+<p>Even though <code>3.99</code> is almost <code>4</code>, casting to <code>int</code> just chops off everything after the decimal point rather than rounding to the nearest whole number. For actual rounding, use <code>round()</code> — casting is not a substitute for it.</p>
+<p><strong>Full list of allowed casts (including aliases):</strong></p>
+<table><thead><tr><th>Cast</th><th>Also written as</th><th>Converts to</th></tr></thead><tbody><tr><td><code>(int)</code></td><td><code>(integer)</code></td><td>Whole number</td></tr><tr><td><code>(float)</code></td><td><code>(double)</code>, <code>(real)</code> <em>(deprecated)</em></td><td>Decimal number</td></tr><tr><td><code>(string)</code></td><td>—</td><td>Text</td></tr><tr><td><code>(bool)</code></td><td><code>(boolean)</code></td><td><code>true</code>/<code>false</code></td></tr><tr><td><code>(array)</code></td><td>—</td><td>An array</td></tr><tr><td><code>(object)</code></td><td>—</td><td>An object (a built-in <code>stdClass</code> object, original value stored as a property)</td></tr><tr><td><code>(unset)</code></td><td>—</td><td><code>NULL</code> <em>(removed in PHP 8 — no longer valid)</em></td></tr></tbody></table>
+<p><strong>The aliases matter</strong> because you&#39;ll see both styles in different code/textbooks — <code>(integer)</code>/<code>(int)</code>, <code>(boolean)</code>/<code>(bool)</code>, and <code>(double)</code>/<code>(float)</code> all do exactly the same thing. This connects back to <code>gettype()</code> returning <code>&quot;integer&quot;</code>, <code>&quot;boolean&quot;</code>, and <code>&quot;double&quot;</code> instead of the short forms — PHP&#39;s internal type names are the longer versions, even though the short cast syntax is what&#39;s normally used in code.</p>
+<p><strong><code>(array)</code> on a non-array</strong> doesn&#39;t error — it wraps the value:</p>
+<pre><code class="language-php">$x = &quot;hello&quot;;
+$arr = (array) $x;
+var_dump($arr); // array(1) { [0]=&gt; string(5) &quot;hello&quot; }</code></pre>
+<p><strong><code>(object)</code></strong> similarly wraps a value or array into a generic object, where array keys become object properties:</p>
+<pre><code class="language-php">$data = [&quot;name&quot; =&gt; &quot;Carlos&quot;, &quot;age&quot; =&gt; 27];
+$obj = (object) $data;
+echo $obj-&gt;name; // Carlos</code></pre>
+<h3 id="type-juggling-with-a-numeric-string-in-arithmetic">Type Juggling with a Numeric String in Arithmetic</h3>
+<pre><code class="language-php">&lt;?php
+$a = 10;
+$b = 10;
+$c = &#39;10&#39;; // numeric string
+
+$total = $a + $b + $c;
+echo $total; // 30
+var_dump($total); // int(30)
+?&gt;</code></pre>
+<p>This is <strong>type juggling</strong> again, not type casting — nobody explicitly wrote <code>(int) $c</code> anywhere, but PHP converts it automatically because <code>+</code> is an arithmetic operator.</p>
+<p><strong>Step by step:</strong></p>
+<ol><li><p><code>$a + $b</code> → <code>10 + 10</code> → <code>20</code> (both are already <code>int</code>, straightforward)</p></li><li><p><code>20 + $c</code> → PHP sees <code>$c</code> is a string, but checks: is it a <em>numeric</em> string? Yes — <code>&#39;10&#39;</code> contains only digits, so PHP auto-converts it to the integer <code>10</code> behind the scenes before doing the math.</p></li><li><p><code>20 + 10</code> → <code>30</code></p></li></ol>
+<p>So even though <code>$c</code> was declared as a string with quotes, PHP silently converts it to a number the moment it&#39;s used in an arithmetic operation — same rule as <code>&quot;10&quot; + &quot;20&quot;</code> from Lab #1. The result is an <code>int</code>, not a string.</p>
+<p><strong>Limit of this behavior:</strong> it only works because <code>&#39;10&#39;</code> <em>looks</em> like a valid number. If <code>$c</code> had been something like <code>&#39;10abc&#39;</code> or <code>&#39;ten&#39;</code>, PHP would either partially convert it (reading only the leading numeric part, with a warning) or treat it as <code>0</code>, depending on the PHP version — a non-numeric string can&#39;t be cleanly juggled into a number the same way.</p>
+<hr>
+<h2 id="1-arrays">1. Arrays</h2>
+<p><strong>Definition:</strong> an array is a single variable that holds multiple values at once, instead of one value per variable. PHP arrays are flexible — they can hold any mix of types (strings, ints, floats, even other arrays), and PHP has three main kinds:</p>
+<p><strong>PHP is dynamically typed</strong> — this is exactly why arrays (and variables generally) don&#39;t need a declared type or fixed size up front. The type of each element is decided at runtime based on what&#39;s actually stored in it, rather than being locked in ahead of time the way it is in a statically typed language like C/C++ (see the comparison below).</p>
+<p><strong>Two ways to declare an array:</strong></p>
+<pre><code class="language-php">$a = array(&quot;x&quot;, &quot;y&quot;, &quot;z&quot;); // built-in array() function — the original syntax
+$b = [&quot;x&quot;, &quot;y&quot;, &quot;z&quot;];       // shorter syntax — elements inside square brackets (modern, preferred)</code></pre>
+<p><strong>Three kinds of array:</strong> numeric (indexed), associative, and multidimensional — covered individually below.</p>
+<table><thead><tr><th>Type</th><th>Keys</th><th>Example use</th></tr></thead><tbody><tr><td>Indexed array</td><td>Automatic numeric keys, starting at <code>0</code></td><td>A simple list of items</td></tr><tr><td>Associative array</td><td>Custom, named keys you choose</td><td>Key-value data, like a record</td></tr><tr><td>Multidimensional array</td><td>An array containing other arrays</td><td>Tables, grids, nested data</td></tr></tbody></table>
+<h3 id="php-arrays-vs-cc-arrays">PHP Arrays vs. C/C++ Arrays</h3>
+<pre><code class="language-cpp">// C++ — must declare type and fixed size upfront
+int numbers[3] = {10, 20, 30};
+numbers[3] = 40; // ❌ undefined behavior — fixed at size 3, no bounds checking
+
+string fruits[3] = {&quot;Apple&quot;, &quot;Banana&quot;, &quot;Cherry&quot;}; // a SEPARATE array needed for a different type</code></pre>
+<pre><code class="language-php">&lt;?php
+// PHP — no declared type, no fixed size
+$numbers = [10, 20, 30];
+$numbers[] = 40; // ✅ totally fine — array just grows
+
+$mixed = [10, &quot;Banana&quot;, 3.14, true]; // one array, four different types, no problem
+?&gt;</code></pre>
+<table><thead><tr><th></th><th>C / C++</th><th>PHP</th></tr></thead><tbody><tr><td>Size</td><td>Fixed at declaration — can&#39;t grow or shrink</td><td>Dynamic — grows and shrinks freely</td></tr><tr><td>Type</td><td>Must be one single type (all <code>int</code>, all <code>string</code>, etc.)</td><td>Can mix any types in the same array</td></tr><tr><td>Keys</td><td>Numeric index only, always sequential from <code>0</code></td><td>Numeric <em>or</em> associative (named) keys, in any order</td></tr><tr><td>Bounds checking</td><td>None — writing past the end is undefined behavior, a common source of bugs/crashes</td><td>Safe — PHP manages the memory and size automatically</td></tr><tr><td>What it really is</td><td>A contiguous block of raw memory</td><td>Internally an <strong>ordered hash map</strong> — PHP&#39;s indexed and associative arrays are actually the same underlying structure</td></tr></tbody></table>
+<p><strong>Why this matters:</strong> in C/C++, the exact size and type need to be planned ahead of time, and growing an array means manually managing memory (often switching to something like <code>std::vector</code> for that flexibility). PHP arrays are flexible by default — no upfront planning needed, which is part of why PHP is easier to write quickly, at the cost of the low-level control and raw performance C/C++ arrays give you.</p>
+<h3 id="indexed-arrays">Indexed Arrays</h3>
+<pre><code class="language-php">&lt;?php
+$fruits = [&quot;Apple&quot;, &quot;Banana&quot;, &quot;Cherry&quot;];
+
+echo $fruits[0]; // Apple
+echo $fruits[1]; // Banana
+echo $fruits[2]; // Cherry
+
+var_dump($fruits);
+?&gt;</code></pre>
+<p>Each item automatically gets a numeric index starting at <code>0</code> — <code>$fruits[0]</code> is the <em>first</em> item, not the second. This is the same <code>$fruits</code> array from the <code>foreach</code> section earlier.</p>
+<h3 id="associative-arrays">Associative Arrays</h3>
+<p><strong>Example — representing a person&#39;s data:</strong></p>
+<pre><code class="language-php">&lt;?php
+$person = [
+    &quot;name&quot; =&gt; &quot;Carlos&quot;,
+    &quot;age&quot; =&gt; 27,
+    &quot;city&quot; =&gt; &quot;New York&quot;
+];
+
+echo $person[&quot;name&quot;] . &quot;&lt;br&gt;&quot;; // Carlos
+echo $person[&quot;age&quot;] . &quot;&lt;br&gt;&quot;;  // 27
+echo $person[&quot;city&quot;] . &quot;&lt;br&gt;&quot;; // New York
+?&gt;</code></pre>
+<p>Same idea as <code>$prices</code> above, applied to a different kind of data — a <strong>person record</strong>. Instead of indexing by position (<code>0</code>, <code>1</code>, <code>2</code>), each piece of information has a meaningful name attached to it (<code>&quot;name&quot;</code>, <code>&quot;age&quot;</code>, <code>&quot;city&quot;</code>), which makes the code much more readable than trying to remember &quot;position 1 is the age.&quot;</p>
+<p>This is a preview of a very common pattern: representing one real-world &quot;thing&quot; (a person, a product, an order) as a single associative array, with each of its properties as a key — the array version of what a database row or an object would normally hold.</p>
+<p><strong>Terminology note — &quot;dictionary&quot;:</strong> PHP&#39;s associative array is the same concept other languages call a <strong>dictionary</strong> (Python uses that term explicitly), or a <strong>hash map</strong>/<strong>hash table</strong> in Java, C++ (<code>std::map</code>/<code>std::unordered_map</code>), and elsewhere — different languages, same underlying idea: a collection of key-value pairs, looked up by key instead of by numeric position. PHP just uses one word, &quot;array,&quot; for all three kinds (indexed, associative, multidimensional) rather than having separate names the way other languages do.</p>
+<p><strong>Example — using the <code>array()</code> built-in function syntax:</strong></p>
+<pre><code class="language-php">&lt;?php
+$ages = array(&quot;Joe&quot; =&gt; 22, &quot;Alex&quot; =&gt; 25, &quot;Peter&quot; =&gt; 30);
+
+echo $ages[&quot;Joe&quot;]; // 22
+?&gt;</code></pre>
+<p>Same associative array concept as <code>$person</code> and <code>$prices</code> above, just written with the <code>array()</code> function syntax instead of <code>[]</code>, and with names as the keys and ages as the values. <code>$ages[&quot;Joe&quot;]</code> looks up the value stored under the key <code>&quot;Joe&quot;</code> and prints <code>22</code> — the same lookup pattern used throughout: <code>$arrayName[&quot;keyName&quot;]</code>.</p>
+<pre><code class="language-php">&lt;?php
+$prices = [&quot;Tire&quot; =&gt; 100, &quot;Oil&quot; =&gt; 21, &quot;Spark Plug&quot; =&gt; 6];
+
+echo $prices[&quot;Tire&quot;]; // 100
+echo $prices[&quot;Oil&quot;];  // 21
+?&gt;</code></pre>
+<p>Instead of numbers, each value has a named key chosen explicitly (<code>&quot;Tire&quot;</code>, <code>&quot;Oil&quot;</code>, <code>&quot;Spark Plug&quot;</code>) using the <code>=&gt;</code> arrow syntax. This is the same <code>$prices</code> array used in the <code>foreach</code> with keys example earlier — useful when a plain position number (<code>0</code>, <code>1</code>, <code>2</code>) wouldn&#39;t mean anything on its own.</p>
+<h3 id="multidimensional-arrays">Multidimensional Arrays</h3>
+<pre><code class="language-php">&lt;?php
+$order = [
+    [&quot;item&quot; =&gt; &quot;Tires&quot;, &quot;qty&quot; =&gt; 2, &quot;price&quot; =&gt; 100],
+    [&quot;item&quot; =&gt; &quot;Oil&quot;, &quot;qty&quot; =&gt; 3, &quot;price&quot; =&gt; 21],
+    [&quot;item&quot; =&gt; &quot;Spark Plugs&quot;, &quot;qty&quot; =&gt; 1, &quot;price&quot; =&gt; 6],
+];
+
+echo $order[0][&quot;item&quot;]; // Tires
+echo $order[1][&quot;qty&quot;];  // 3
+?&gt;</code></pre>
+<p>An array of arrays — each element of <code>$order</code> is itself an associative array. This is exactly how the order form&#39;s data (tires, oil, spark plugs) could be represented as one structured variable instead of three separate ones (<code>$tireqty</code>, <code>$oilqty</code>, <code>$sparkqty</code>).</p>
+<h3 id="multidimensional-array-indexed-inner-arrays">Multidimensional Array — Indexed Inner Arrays</h3>
+<pre><code class="language-php">&lt;?php
+
+$cars = array(
+    array(&quot;Volvo&quot;, 22, 18),
+    array(&quot;BMW&quot;, 15, 13),
+    array(&quot;Saab&quot;, 5, 2),
+    array(&quot;Land Rover&quot;, 17, 15)
+);
+
+echo $cars[0][0] . &quot; In stock: &quot; . $cars[0][1] . &quot;, sold: &quot; . $cars[0][2] . &quot;.&lt;br&gt;&quot;;</code></pre>
+<p>Output:</p>
+<pre><code>Volvo In stock: 22, sold: 18.</code></pre>
+<p><strong>How this code works, step by step:</strong></p>
+<ul><li><p><code>$cars</code> is the <strong>outer array</strong> — it holds 4 elements, and each element is itself an array (this is what makes it multidimensional).</p></li><li><p>Each <strong>inner array</strong> represents one car, with 3 values in a fixed order: <code>[name, quantity in stock, quantity sold]</code>. The first inner array <code>array(&quot;Volvo&quot;, 22, 18)</code> means: name = <code>&quot;Volvo&quot;</code>, in stock = <code>22</code>, sold = <code>18</code>.</p></li><li><p>No <code>=&gt;</code> keys anywhere, so every level uses plain numeric indexing — the outer array&#39;s rows are <code>$cars[0]</code>, <code>$cars[1]</code>, <code>$cars[2]</code>, <code>$cars[3]</code>, and each inner array&#39;s values sit at position <code>[0]</code>, <code>[1]</code>, <code>[2]</code>.</p></li><li><p><code>$cars[0]</code> grabs the <strong>first row</strong> — the whole Volvo array: <code>[&quot;Volvo&quot;, 22, 18]</code>.</p></li><li><p><code>$cars[0][0]</code> goes one level deeper into that row and grabs position <code>0</code> — <code>&quot;Volvo&quot;</code>.</p></li><li><p><code>$cars[0][1]</code> is position <code>1</code> of that row — <code>22</code> (in stock).</p></li><li><p><code>$cars[0][2]</code> is position <code>2</code> — <code>18</code> (sold).</p></li><li><p>The <code>.</code> operators concatenate it all into one sentence, printed with <code>echo</code>.</p></li></ul>
+<p>So the two bracket pairs mean: <em>the first <code>[row]</code> picks which car, then <code>[position]</code> picks which piece of data about that car.</em> This is the general rule for reading any multidimensional array — one <code>[]</code> per level of nesting.</p>
+<p>Same multidimensional array pattern from earlier (like <code>$order</code>), except <code>$cars</code> is an array of <strong>indexed</strong> arrays this time, not associative — each inner array is accessed purely by position: <code>$cars[0][0]</code> is <code>&quot;Volvo&quot;</code> (row 0, position 0 = the name), <code>$cars[0][1]</code> is <code>22</code> (in stock), <code>$cars[0][2]</code> is <code>18</code> (sold).</p>
+<p><strong>Small gotcha worth noting:</strong> the original version of this line (<code>$cars[0][0] . &quot;In stock: &quot;</code>, no leading space) would print <code>VolvoIn stock: 22, sold: 18.</code> — no error, just a missing space, since concatenation never adds spacing on its own. A space needs to be included explicitly in one of the strings, same rule covered back with the order form&#39;s &quot;Order Processed&quot; line.</p>
+<h3 id="matrix-2d-array">Matrix (2D Array)</h3>
+<pre><code class="language-php">&lt;?php
+$matrix = [
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9]
+];
+
+echo $matrix[0][0]; // 1 (row 0, column 0)
+echo $matrix[1][2]; // 6 (row 1, column 2)
+echo $matrix[2][1]; // 8 (row 2, column 1)
+?&gt;</code></pre>
+<p>A <strong>matrix</strong> is just a specific use of the multidimensional array covered above — a grid of rows and columns, where each row is itself an array. <code>$matrix[row][column]</code> accesses a specific cell, same double-index pattern as <code>$order[0][&quot;item&quot;]</code> from earlier, just with numeric indexes instead of named keys on the inner array.</p>
+<p><strong>Printing the whole matrix with nested <code>for</code> loops</strong> (same nested-loop pattern from the <code>for</code> Loop deep dive earlier):</p>
+<pre><code class="language-php">&lt;?php
+for ($row = 0; $row &lt; count($matrix); $row++) {
+    for ($col = 0; $col &lt; count($matrix[$row]); $col++) {
+        echo $matrix[$row][$col] . &quot; &quot;;
+    }
+    echo &quot;&lt;br&gt;&quot;;
+}
+?&gt;</code></pre>
+<p>Output:</p>
+<pre><code>1 2 3
+4 5 6
+7 8 9</code></pre>
+<p>The outer loop walks through each <strong>row</strong>, and the inner loop walks through each <strong>column</strong> within that row — exactly the same mechanics as the <code>(row, col)</code> nested loop example from earlier, just printing real data from an array instead of coordinate pairs.</p>
+<h3 id="creating-arrays-two-syntaxes">Creating Arrays — Two Syntaxes</h3>
+<pre><code class="language-php">$a = [&quot;x&quot;, &quot;y&quot;, &quot;z&quot;];          // short syntax (modern, preferred)
+$b = array(&quot;x&quot;, &quot;y&quot;, &quot;z&quot;);      // array() syntax (older, still valid)</code></pre>
+<p>Both produce the exact same array — <code>[]</code> is just newer, shorter syntax introduced in PHP 5.4; <code>array()</code> is the original way and still works everywhere.</p>
+<h3 id="array-length-count">Array Length — <code>count()</code></h3>
+<pre><code class="language-php">&lt;?php
+$fruits = [&quot;Apple&quot;, &quot;Banana&quot;, &quot;Cherry&quot;];
+$arrlength = count($fruits); // array length function
+
+for ($x = 0; $x &lt; $arrlength; $x++) {
+    echo $fruits[$x];
+    echo &quot;&lt;br&gt;&quot;;
+}
+?&gt;</code></pre>
+<p>Output:</p>
+<pre><code>Apple
+Banana
+Cherry</code></pre>
+<p><strong><code>count()</code></strong> is the array length function — it returns the number of elements in an array, the same one already used back in the <code>for</code> loop section when looping through <code>$items</code>. Storing it in <code>$arrlength</code> first (rather than calling <code>count($fruits)</code> fresh on every loop check) is a small efficiency habit — it only needs to be calculated once, since the array isn&#39;t changing size during the loop.</p>
+<p>This is functionally the same as the earlier <code>foreach</code> version of this loop — just written with a <code>for</code> loop and manual indexing instead.</p>
+<h3 id="useful-array-functions-quick-preview">Useful Array Functions (quick preview)</h3>
+<table><thead><tr><th>Function</th><th>What it does</th></tr></thead><tbody><tr><td><code>count($array)</code></td><td>Number of elements (already used in the <code>for</code> loop section)</td></tr><tr><td><code>array_push($array, $value)</code></td><td>Adds a value to the end</td></tr><tr><td><code>array_pop($array)</code></td><td>Removes and returns the last value</td></tr><tr><td><code>in_array($value, $array)</code></td><td>Checks if a value exists in the array</td></tr><tr><td><code>array_keys($array)</code></td><td>Returns all the keys as a new array</td></tr><tr><td><code>array_values($array)</code></td><td>Returns all the values as a new array, re-indexed</td></tr></tbody></table>
+<p><strong>Why this is important:</strong> arrays + <code>foreach</code> (from earlier) are the foundation for handling real, structured data — instead of a separate variable for every single piece of information (like the order form currently does with <code>$tireqty</code>, <code>$oilqty</code>, <code>$sparkqty</code>), an array lets related data be grouped, looped over, and scaled to any number of items.</p>
+<hr>
+<p>✅ <strong>End of Week 3, Day 2.</strong> Covered PHP integers (decimal/hex/octal formats, <code>PHP_INT_MAX</code>/<code>MIN</code>/<code>SIZE</code>, <code>is_int()</code>), floats (literal formats, <code>PHP_FLOAT_*</code> limits, <code>is_float()</code>, why int × float is always a float), <code>INF</code> and <code>NAN</code>, strings (single vs. double quotes, concatenation), type casting and type juggling with numeric strings, and arrays — indexed, associative (a.k.a. dictionaries), multidimensional, matrices, <code>count()</code>, and how PHP arrays differ from C/C++ arrays.</p>
+<p><strong>Next up: Week 4, Day 1 — Tuesday.</strong></p>
+<hr>

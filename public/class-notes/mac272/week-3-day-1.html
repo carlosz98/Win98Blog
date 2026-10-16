@@ -1,0 +1,426 @@
+<h2 id="week-3-day-1">Week 3, Day 1</h2>
+<h3 id="automatic-type-conversion-type-juggling">Automatic Type Conversion (Type Juggling)</h3>
+<p>PHP is a <strong>loosely typed</strong> language — you never have to declare a variable&#39;s type up front, and PHP will automatically convert a value from one type to another when the context calls for it. This is called <strong>type juggling</strong> (mentioned briefly back in Week 2 when adding up <code>$tireqty + $oilqty + $sparkqty</code>, even though those values arrived from <code>$_POST</code> as strings).</p>
+<p><strong>How it works:</strong> when an operator expects a certain type but gets a different one, PHP converts the value on the fly instead of throwing an error.</p>
+<pre><code class="language-php">$quantity = &quot;5&quot;;      // a string
+$price = 10;           // an integer
+
+$total = $quantity * $price;
+echo $total;            // 50
+echo gettype($total);   // &quot;integer&quot;</code></pre>
+<p>Here, <code>$quantity</code> starts as the <strong>string</strong> <code>&quot;5&quot;</code>. Because it&#39;s used with the multiplication operator <code>*</code>, PHP automatically converts it to the <strong>integer</strong> <code>5</code> behind the scenes, does the math, and the result (<code>$total</code>) comes out as an integer — <code>50</code> — even though one of the original values was text.</p>
+<p><strong>Where this shows up in our own code:</strong> exactly this happened with the order form&#39;s <code>$_POST</code> values:</p>
+<pre><code class="language-php">$tireqty = $_POST[&#39;tiresqty&#39;];   // arrives as a STRING, e.g. &quot;3&quot;
+$totalqty = $tireqty + $oilqty + $sparkqty;   // PHP converts each to a number to add them</code></pre>
+<p><strong>Important distinction — this is different from <code>settype()</code>:</strong> type juggling happens <strong>automatically and temporarily</strong>, just for that one operation — the original variable&#39;s type doesn&#39;t actually change. <code>settype()</code> (covered earlier), by contrast, <strong>permanently converts</strong> the variable itself.</p>
+<pre><code class="language-php">$quantity = &quot;5&quot;;
+$total = $quantity * 10;   // juggling: $quantity is still the string &quot;5&quot; after this
+echo gettype($quantity);   // &quot;string&quot; — unchanged</code></pre>
+<p><strong>Key takeaways:</strong></p>
+<ul><li><p>PHP automatically converts between types when an operation needs it — this is type juggling.</p></li><li><p>It&#39;s temporary and happens only for that operation; the original variable keeps its original type.</p></li><li><p>This is why form data (always strings from <code>$_POST</code>) can be used directly in math without manually converting it first.</p></li></ul>
+<h3 id="quick-review-define">Quick Review: <code>define()</code></h3>
+<p>Already covered in Week 2 (used for <code>tireprice</code>, <code>oilprice</code>, <code>sparkprice</code>), but worth a quick refresher example:</p>
+<pre><code class="language-php">define(&quot;PI&quot;, 3.14);
+echo PI;          // 3.14
+echo PI * 2;       // 6.28</code></pre>
+<ul><li><p><code>define(&quot;PI&quot;, 3.14);</code> creates a <strong>constant</strong> named <code>PI</code> holding the value <code>3.14</code>.</p></li><li><p>Used <strong>without</strong> a <code>$</code> — unlike a regular variable, a constant is referenced by name alone.</p></li><li><p>Once defined, its value <strong>can&#39;t be changed</strong> later in the script — attempting to redefine <code>PI</code> would trigger a warning/error, which is exactly the point: constants protect fixed values (like a mathematical constant, or a tax rate, or item prices) from being accidentally overwritten somewhere else in the code.</p></li></ul>
+<p><strong>Constants vs. Variables:</strong></p>
+<table><thead><tr><th></th><th>Variable</th><th>Constant</th></tr></thead><tbody><tr><td>Declared with</td><td><code>$name = value;</code></td><td><code>define(&quot;NAME&quot;, value);</code></td></tr><tr><td>Referenced with</td><td><code>$name</code> (dollar sign required)</td><td><code>NAME</code> (no dollar sign)</td></tr><tr><td>Naming convention</td><td>usually <code>snake_case</code> or <code>camelCase</code>, lowercase</td><td>usually <code>ALL_CAPS</code> by convention</td></tr><tr><td>Value can change later?</td><td>Yes</td><td>No — fixed for the rest of the script</td></tr><tr><td>Case-sensitive?</td><td>Yes, always</td><td>Yes, by default</td></tr></tbody></table>
+<pre><code class="language-php">$radius = 5;
+define(&quot;PI&quot;, 3.14);
+
+$area = PI * ($radius * $radius);
+echo $area;   // 78.5
+
+$radius = 10;   // fine — variables can be reassigned
+// define(&quot;PI&quot;, 3.15);   // NOT allowed — PI is already defined</code></pre>
+<p><strong>Rule of thumb:</strong> if the value should never change during the script (a price, a tax rate, a mathematical constant like PI), use a <strong>constant</strong>. If the value is expected to change (user input, a running total, a loop counter), use a <strong>variable</strong>.</p>
+<h3 id="checking-variables-isset-unset-empty">Checking Variables: <code>isset()</code>, <code>unset()</code>, <code>empty()</code></h3>
+<p>Three built-in functions for working with whether a variable exists and what it holds.</p>
+<p><strong><code>isset($var)</code></strong> — checks whether a variable <strong>exists</strong> and is <strong>not <code>null</code></strong>. Returns <code>true</code> or <code>false</code>.</p>
+<pre><code class="language-php">$name = &quot;Carlos&quot;;
+echo isset($name);        // true (1)
+
+$nothing = null;
+echo isset($nothing);      // false
+
+echo isset($undeclared);   // false — never even set</code></pre>
+<blockquote><p>📝 <strong>Connects to class:</strong> this is exactly the function used in the todo app to check which button was pressed — <code>if (isset($_POST[&#39;submit&#39;]))</code> checks whether the &quot;Add&quot; button&#39;s data actually arrived with the request.</p></blockquote>
+<p><strong><code>unset($var)</code></strong> — <strong>destroys</strong> a variable entirely, as if it was never declared. After this, <code>isset()</code> on that variable returns <code>false</code> again.</p>
+<pre><code class="language-php">$name = &quot;Carlos&quot;;
+echo isset($name);   // true
+
+unset($name);
+echo isset($name);   // false
+// echo $name;       // would trigger a warning — the variable no longer exists</code></pre>
+<p><strong><code>empty($var)</code></strong> — checks whether a variable is &quot;empty&quot; — meaning it doesn&#39;t exist, <strong>or</strong> it holds a falsy value: <code>&quot;&quot;</code>, <code>0</code>, <code>&quot;0&quot;</code>, <code>null</code>, <code>false</code>, or an empty array <code>[]</code>. Returns <code>true</code> or <code>false</code>.</p>
+<pre><code class="language-php">$tireqty = &quot;&quot;;
+var_dump(empty($tireqty));   // true — empty string
+
+$tireqty = &quot;0&quot;;
+var_dump(empty($tireqty));   // true — &quot;0&quot; counts as empty
+
+$tireqty = &quot;3&quot;;
+var_dump(empty($tireqty));   // false — has a real value
+
+var_dump(empty($undeclared)); // true — doesn&#39;t exist</code></pre>
+<p><strong>Quick comparison:</strong></p>
+<table><thead><tr><th>Function</th><th>Checks</th><th><code>true</code> when</th></tr></thead><tbody><tr><td><code>isset($var)</code></td><td>Does it exist and isn&#39;t <code>null</code>?</td><td>Variable is declared with a real (non-null) value</td></tr><tr><td><code>unset($var)</code></td><td>(not a check — an action)</td><td>Deletes the variable</td></tr><tr><td><code>empty($var)</code></td><td>Is it &quot;nothing&quot;?</td><td>Doesn&#39;t exist, OR holds <code>&quot;&quot;</code>, <code>0</code>, <code>&quot;0&quot;</code>, <code>null</code>, <code>false</code>, or <code>[]</code></td></tr></tbody></table>
+<blockquote><p>⚠️ <strong>Gotcha:</strong> <code>empty(&quot;0&quot;)</code> is <code>true</code> — the string <code>&quot;0&quot;</code> counts as empty in PHP, even though it&#39;s not actually blank. This has tripped people up when validating form input like a quantity of <code>0</code>.</p></blockquote>
+<p><strong>Key takeaways:</strong></p>
+<ul><li><p><code>isset()</code> — does this variable exist and have a non-null value?</p></li><li><p><code>unset()</code> — delete a variable completely.</p></li><li><p><code>empty()</code> — broader check than <code>isset()</code>; also catches &quot;technically set but effectively blank&quot; values like <code>&quot;&quot;</code> or <code>0</code>.</p></li></ul>
+<h3 id="vardump"><code>var_dump()</code></h3>
+<p><strong>What it does:</strong> prints a variable&#39;s <strong>value, data type, and length/size</strong> all at once — much more detailed than <code>echo</code> or even <code>gettype()</code>. It already showed up above in the <code>empty()</code> examples; here&#39;s what it&#39;s actually doing.</p>
+<pre><code class="language-php">$name = &quot;Carlos&quot;;
+var_dump($name);
+// string(6) &quot;Carlos&quot;
+
+$age = 27;
+var_dump($age);
+// int(27)
+
+$price = 9.99;
+var_dump($price);
+// float(9.99)
+
+$isStudent = true;
+var_dump($isStudent);
+// bool(true)
+
+$nothing = null;
+var_dump($nothing);
+// NULL</code></pre>
+<p><strong>Reading the output:</strong> <code>string(6) &quot;Carlos&quot;</code> means — this is a <strong>string</strong>, it&#39;s <strong>6 characters long</strong>, and its value is <code>&quot;Carlos&quot;</code>. Every type gets this same treatment: type name, size/length where relevant, then the actual value.</p>
+<p><strong>Where it&#39;s genuinely useful — arrays:</strong></p>
+<pre><code class="language-php">$order = [&quot;tires&quot; =&gt; 3, &quot;oil&quot; =&gt; 4, &quot;sparkplugs&quot; =&gt; 4];
+var_dump($order);
+
+/*
+array(3) {
+  [&quot;tires&quot;]=&gt;
+  int(3)
+  [&quot;oil&quot;]=&gt;
+  int(4)
+  [&quot;sparkplugs&quot;]=&gt;
+  int(4)
+}
+*/</code></pre>
+<p>This is where <code>var_dump()</code> shines — it shows every key, every value, and every value&#39;s type inside a complex structure like an array, all in one call.</p>
+<p><strong><code>var_dump()</code> vs. <code>gettype()</code> vs. <code>echo</code>:</strong></p>
+<table><thead><tr><th>Function</th><th>Shows</th></tr></thead><tbody><tr><td><code>echo</code></td><td>Just the value (converted to a displayable string)</td></tr><tr><td><code>gettype($x)</code></td><td>Just the type, as a string (<code>&quot;string&quot;</code>, <code>&quot;integer&quot;</code>, etc.)</td></tr><tr><td><code>var_dump($x)</code></td><td>Type <strong>and</strong> value <strong>and</strong> length, for one variable or a whole array/object at once</td></tr></tbody></table>
+<p><strong>Key takeaways:</strong></p>
+<ul><li><p><code>var_dump()</code> is a debugging tool — like <code>gettype()</code>, not typically left in a finished app.</p></li><li><p>It shows type, size, and value together, which makes it especially useful for inspecting arrays or figuring out why a comparison isn&#39;t behaving as expected.</p></li><li><p>Use it any time you&#39;re not 100% sure what a variable actually contains.</p></li></ul>
+<h3 id="echo-vs-print"><code>echo</code> vs. <code>print</code></h3>
+<p>Both output text to the page, but differ slightly:</p>
+<table><thead><tr><th></th><th><code>echo</code></th><th><code>print</code></th></tr></thead><tbody><tr><td>Multiple arguments?</td><td>Yes — <code>echo &quot;a&quot;, &quot;b&quot;;</code></td><td>No — only one value</td></tr><tr><td>Returns a value?</td><td>No</td><td>Yes — always returns <code>1</code></td></tr><tr><td>Speed</td><td>Marginally faster</td><td>Marginally slower</td></tr></tbody></table>
+<pre><code class="language-php">echo &quot;Hello&quot;, &quot; &quot;, &quot;World&quot;;   // works — multiple arguments
+// print &quot;Hello&quot;, &quot; &quot;, &quot;World&quot;;  // ❌ error — print takes only one argument
+
+print &quot;Hello World&quot;;           // fine — single argument</code></pre>
+<p><strong>In practice:</strong> functionally interchangeable for simple output. <code>echo</code> is the more common convention — and what we&#39;ve used in every example so far (the order form, the todo app, etc.).</p>
+<p><strong>Why <code>print</code> &quot;returns&quot; 1 — and what that actually means:</strong></p>
+<p>Output (what shows on the page) and a function&#39;s <strong>return value</strong> (what it hands back to whatever called it) are two separate things. <code>print</code> always returns <code>1</code> after it runs — that <code>1</code> isn&#39;t displayed unless you explicitly do something with it, like assign it or <code>echo</code> it:</p>
+<pre><code class="language-php">$result = print &quot;Hello&quot;;
+// Output shown on page: Hello
+// $result now holds: 1  (print&#39;s return value — not shown unless echoed)
+
+echo $result; // THIS actually prints &quot;1&quot; to the page</code></pre>
+<p><code>echo</code>, by contrast, has <strong>no return value at all</strong> — it can&#39;t be assigned:</p>
+<pre><code class="language-php">$result = echo &quot;Hello&quot;; // ❌ parse error — echo cannot be used in an expression</code></pre>
+<p>This is why <code>print</code>&#39;s return value lets it (rarely) be used inside a larger expression, while <code>echo</code> never can — though in everyday code this distinction almost never matters.</p>
+<p><strong><code>echo</code> with HTML tags:</strong></p>
+<p><code>echo</code> just outputs whatever string you give it — including HTML tags — and the browser renders that string as actual HTML, not as plain text. This is the core of how PHP mixes with a webpage: build the HTML as a string, <code>echo</code> it, and the browser displays it normally.</p>
+<pre><code class="language-php">echo &quot;&lt;h1&gt;Order Confirmation&lt;/h1&gt;&quot;;
+echo &quot;&lt;p&gt;Thank you for your order!&lt;/p&gt;&quot;;</code></pre>
+<p>Variables can be interpolated right inside the tags, same as any other double-quoted string:</p>
+<pre><code class="language-php">$name = &quot;Carlos&quot;;
+echo &quot;&lt;h1&gt;Hello, $name!&lt;/h1&gt;&quot;;
+echo &quot;&lt;p&gt;Your order total is $&quot; . number_format($total, 2) . &quot;&lt;/p&gt;&quot;;</code></pre>
+<h3 id="practice-declaring-variables-of-different-types">Practice: Declaring Variables of Different Types</h3>
+<p>A script declaring and initializing five variables — string, integer, float, boolean, and NULL — then printing them with both <code>echo</code> and <code>var_dump()</code>:</p>
+<pre><code class="language-php">&lt;?php
+// Declaring and initializing five variables of different types
+$studentName = &quot;Carlos&quot;;      // string
+$age = 27;                    // integer
+$gpa = 3.85;                  // float (decimal)
+$isEnrolled = true;           // boolean
+$middleName = NULL;           // NULL
+
+// Printing values with echo
+echo &quot;Name: &quot; . $studentName . &quot;&lt;br&gt;&quot;;
+echo &quot;Age: &quot; . $age . &quot;&lt;br&gt;&quot;;
+echo &quot;GPA: &quot; . $gpa . &quot;&lt;br&gt;&quot;;
+echo &quot;Enrolled: &quot; . $isEnrolled . &quot;&lt;br&gt;&quot;; // true prints as &quot;1&quot;, false prints as &quot;&quot; (empty)
+echo &quot;Middle Name: &quot; . $middleName . &quot;&lt;br&gt;&quot;; // NULL prints as nothing
+
+// Inspecting values + types with var_dump()
+var_dump($studentName);
+var_dump($age);
+var_dump($gpa);
+var_dump($isEnrolled);
+var_dump($middleName);
+?&gt;</code></pre>
+<p><strong>Notes on the output:</strong></p>
+<ul><li><p><code>echo</code> on a boolean shows <code>1</code> for <code>true</code> and nothing at all for <code>false</code> — <code>echo</code> can&#39;t display <code>true</code>/<code>false</code> as words.</p></li><li><p><code>echo</code> on <code>NULL</code> prints nothing (an empty string) — no error, just blank output.</p></li><li><p><code>var_dump()</code> is the better debugging tool here — it shows the real type and value for every variable, including <code>bool(true)</code> and <code>NULL</code> explicitly, instead of hiding them like <code>echo</code> does.</p></li></ul>
+<p><strong>Key takeaways:</strong></p>
+<ul><li><p>Every change in the todo app triggers a new request, PHP running again, and updated HTML coming back.</p></li><li><p>CRUD = Create, Read, Update, Delete — the four core operations most data-driven apps are built on.</p></li><li><p>The todo list is the standard &quot;hello world&quot; for showing how a technology handles CRUD.</p></li></ul>
+<hr>
+<h3 id="lab-1-php-basic-concepts">Lab #1 — PHP Basic Concepts</h3>
+<p>First official lab, combining everything covered so far this week: printing text, declaring variables of every basic type, type juggling, constants, <code>isset()</code>/<code>unset()</code>, <code>empty()</code>, and <code>gettype()</code>/<code>var_dump()</code>.</p>
+<p><strong>Instructions:</strong></p>
+<ol><li><p>Create a PHP script that prints &quot;Welcome to PHP Programming!&quot;.</p></li><li><p>Create a PHP script that declares and initializes five different variables (string, integer, float, boolean, and NULL). Print their values using <code>echo</code> and <code>var_dump()</code>.</p></li><li><p>Write a PHP script that creates two string variables &quot;10&quot; and &quot;20&quot; and adds them.</p></li><li><p>Define a constant <code>SITE_NAME</code> with the value &quot;MyWebsite&quot;, and display it on a webpage.</p></li><li><p>Write a PHP script to check if a variable (once you created it) is set using <code>isset()</code>, unset the variable, and then check again.</p></li><li><p>Declare a variable <code>$testVar</code> with an empty string. Use <code>empty()</code> to check if it is empty and display the result.</p></li><li><p>Write a script where: you declare a variable <code>$num = 42.5</code>, use <code>gettype()</code> to check its data type, and use <code>var_dump()</code> to display detailed information about it.</p></li></ol>
+<p><strong>Full solution:</strong></p>
+<pre><code class="language-php">&lt;?php
+
+ECHO &quot;Welcome to PHP Programming!&lt;br&gt;&quot;;
+
+$stringVar = &quot;String&quot;;
+$intVar = 5;
+$floatVar = 2.0;
+$booleanVar = true;
+$nullVar = NULL;
+
+ECHO &quot;String Variable: &quot; . $stringVar . &quot;&lt;br&gt;&quot;;
+ECHO &quot;Integer Varialble: &quot; . $intVar . &quot;&lt;br&gt;&quot;;
+ECHO &quot;Float Variable: &quot; . $floatVar . &quot;&lt;br&gt;&quot;;
+ECHO &quot;Boolean Variable: &quot; . $booleanVar . &quot;&lt;br&gt;&quot;;
+ECHO &quot;Null Variable: &quot; . $nullVar . &quot;&lt;br&gt;&lt;br&gt;&quot;;
+
+var_dump($stringVar);
+var_dump($intVar);
+var_dump($floatVar);
+var_dump($booleanVar);
+var_dump($nullVar);
+
+$num1 = &quot;10&quot;;
+$num2 = &quot;20&quot;;
+$sum = $num1 + $num2;
+ECHO &quot;&lt;br&gt;&lt;br&gt;The sum of: &quot; . $num1 . &quot; and &quot; . $num2 . &quot; is: &quot; . $sum . &quot;&lt;br&gt;&lt;br&gt;&quot;;
+
+const SITE_NAME = &quot;MyWebsite&quot;;
+ECHO &quot;The site name is: &quot; . SITE_NAME . &quot;&lt;br&gt;&lt;br&gt;&quot;;
+
+if(isset($stringVar)) {
+    ECHO &quot;The variable: &quot; . $stringVar . &quot; is set&lt;br&gt;&quot;;
+}
+else {
+    ECHO &quot;The variable: &quot; . $stringVar . &quot; is not set&lt;br&gt;&quot;;
+}
+
+unset($stringVar);
+if (isset($stringVar)) {
+    ECHO &quot;The variable &quot; . $stringVar . &quot;is set&lt;br&gt;&quot;;
+}
+else {
+    ECHO &quot;The variable &quot; . $stringVar . &quot; is not set&lt;br&gt;&lt;br&gt;&quot;;
+}
+
+$textVar = &quot;&quot;;
+if (empty($textVar)) {
+    ECHO &quot;The variable is empty&lt;br&gt;&quot;;
+}
+else {
+    ECHO &quot;The variable is not empty&lt;br&gt;&lt;br&gt;&quot;;
+}
+
+$num = 42.5;
+ECHO &quot;The data type is: &quot; . gettype($num) . &quot;&lt;br&gt;&lt;br&gt;&quot;;
+var_dump($num);
+
+?&gt;</code></pre>
+<p><strong>Output in browser:</strong></p>
+<p><img src="__BASE__class-notes/img/db191c60b4f83528db0eb98dfe8b6800.png" loading="lazy" alt="Lab1 PHP output in browser showing Welcome message, variable values, var_dump results, sum, site name, isset/unset checks, empty check, and data type"></p>
+<p><strong>Output:</strong></p>
+<pre><code>Welcome to PHP Programming!
+String Variable: String
+Integer Variable: 5
+Float Variable: 2
+Boolean Variable: 1
+Null Variable: 
+string(6) &quot;String&quot; int(5) float(2) bool(true) NULL
+The sum of: 10 and 20 is: 30
+The site name is: MyWebsite
+The variable: String is set
+The variable is not set
+The variable is empty
+The data type is: double
+float(42.5)</code></pre>
+<p><strong>Key takeaways:</strong></p>
+<ul><li><p><code>const SITE_NAME = &quot;MyWebsite&quot;;</code> — no <code>$</code> on the constant name. Using <code>$SITE_NAME</code> there is a parse error and blanks the entire page, since PHP won&#39;t run any code with a syntax error in it.</p></li><li><p>All five <code>var_dump()</code> calls ran together on one visual line in the output. This is normal — <code>var_dump()</code> separates entries with plain-text newlines, and HTML collapses those unless wrapped in <code>&lt;pre&gt;</code> or followed by <code>&lt;br&gt;</code>.</p></li><li><p><code>gettype($num)</code> returned <code>&quot;double&quot;</code>, not <code>&quot;float&quot;</code> — PHP internally calls the floating-point type <code>double</code> (a holdover from the C language), even though <code>var_dump()</code> labels the same value <code>float(42.5)</code>. Both are correct; they&#39;re just two different names for the same type.</p></li></ul>
+<hr>
+<h3 id="for-and-foreach-loops"><code>for</code> and <code>foreach</code> Loops</h3>
+<p><strong><code>for</code> loop</strong> — used when you know how many times you want to repeat something, or need a counter. It has three parts: a starting value, a condition to keep looping, and what happens after each pass.</p>
+<pre><code class="language-php">for ($i = 1; $i &lt;= 5; $i++) {
+    echo &quot;Count: &quot; . $i . &quot;&lt;br&gt;&quot;;
+}</code></pre>
+<p>Output:</p>
+<pre><code>Count: 1
+Count: 2
+Count: 3
+Count: 4
+Count: 5</code></pre>
+<p>The three parts, in order every time the loop runs:</p>
+<ol><li><p><code>$i = 1</code> — runs once, before the loop starts (sets the starting point)</p></li><li><p><code>$i &lt;= 5</code> — checked before every pass; loop stops as soon as this is false</p></li><li><p><code>$i++</code> — runs after every pass (increases <code>$i</code> by 1)</p></li></ol>
+<p><strong><code>foreach</code> loop</strong> — used specifically to go through every item in an array, one at a time, without needing to manage a counter yourself.</p>
+<pre><code class="language-php">$fruits = [&quot;Apple&quot;, &quot;Banana&quot;, &quot;Cherry&quot;];
+
+foreach ($fruits as $fruit) {
+    echo $fruit . &quot;&lt;br&gt;&quot;;
+}</code></pre>
+<p>Output:</p>
+<pre><code>Apple
+Banana
+Cherry</code></pre>
+<p><code>foreach</code> automatically walks through the array from start to finish — <code>$fruit</code> takes on each value in turn, no index tracking needed.</p>
+<p><strong><code>foreach</code> with keys</strong> — for associative arrays (arrays with named keys instead of numeric ones), <code>foreach</code> can grab both the key and the value at once:</p>
+<pre><code class="language-php">$prices = [&quot;Tire&quot; =&gt; 100, &quot;Oil&quot; =&gt; 20, &quot;Spark Plug&quot; =&gt; 4];
+
+foreach ($prices as $item =&gt; $price) {
+    echo $item . &quot;: $&quot; . $price . &quot;&lt;br&gt;&quot;;
+}</code></pre>
+<p>Output:</p>
+<pre><code>Tire: $100
+Oil: $20
+Spark Plug: $4</code></pre>
+<p><strong><code>for</code> vs. <code>foreach</code> — when to use which:</strong></p>
+<table><thead><tr><th></th><th><code>for</code></th><th><code>foreach</code></th></tr></thead><tbody><tr><td>Best for</td><td>Counting, repeating a fixed number of times</td><td>Looping through every item in an array</td></tr><tr><td>Needs a counter variable</td><td>Yes (you manage it)</td><td>No (handled automatically)</td></tr><tr><td>Works on arrays</td><td>Yes, but needs index tracking</td><td>Yes — built for this</td></tr><tr><td>Common use</td><td><code>for ($i = 0; $i &lt; 10; $i++)</code></td><td><code>foreach ($array as $value)</code></td></tr></tbody></table>
+<p><strong>In practice:</strong> this connects directly back to the order form from Week 2 — instead of manually writing <code>$_POST[&#39;tiresqty&#39;]</code>, <code>$_POST[&#39;oilqty&#39;]</code>, <code>$_POST[&#39;sparkqty&#39;]</code> separately, a <code>foreach</code> over an array of item names could loop through and process each one the same way, which is the more scalable approach once there are many items instead of just three.</p>
+<hr>
+<h3 id="for-loop-deeper-dive"><code>for</code> Loop — Deeper Dive</h3>
+<p><strong>Definition:</strong> a <code>for</code> loop repeats a block of code a specific number of times, controlled by a counter variable. It&#39;s the go-to loop when you know (or can calculate) exactly how many times something needs to run.</p>
+<p><strong>Syntax:</strong></p>
+<pre><code class="language-php">for (initialization; condition; increment) {
+    // code to repeat
+}</code></pre>
+<p><strong>Example — counting up:</strong></p>
+<pre><code class="language-php">for ($i = 1; $i &lt;= 5; $i++) {
+    echo $i . &quot;&lt;br&gt;&quot;;
+}
+// Output: 1 2 3 4 5 (each on its own line)</code></pre>
+<p><strong>Example — counting down:</strong></p>
+<pre><code class="language-php">for ($i = 5; $i &gt;= 1; $i--) {
+    echo $i . &quot;&lt;br&gt;&quot;;
+}
+// Output: 5 4 3 2 1</code></pre>
+<p><strong>Example — stepping by more than 1:</strong></p>
+<pre><code class="language-php">for ($i = 0; $i &lt;= 10; $i += 2) {
+    echo $i . &quot;&lt;br&gt;&quot;;
+}
+// Output: 0 2 4 6 8 10 (even numbers only)</code></pre>
+<p><strong>Example — looping through an array by index:</strong></p>
+<pre><code class="language-php">$items = [&quot;Tires&quot;, &quot;Oil&quot;, &quot;Spark Plugs&quot;];
+
+for ($i = 0; $i &lt; count($items); $i++) {
+    echo $items[$i] . &quot;&lt;br&gt;&quot;;
+}
+// Output: Tires  Oil  Spark Plugs</code></pre>
+<p><code>count($items)</code> returns the number of elements in the array (3 here), so the loop automatically stops at the last index regardless of array size — no need to hardcode the number of items.</p>
+<p><strong>Example — nested <code>for</code> loop</strong> (a loop inside a loop, useful for grids/tables):</p>
+<pre><code class="language-php">for ($row = 1; $row &lt;= 3; $row++) {
+    for ($col = 1; $col &lt;= 3; $col++) {
+        echo &quot;($row,$col) &quot;;
+    }
+    echo &quot;&lt;br&gt;&quot;;
+}
+// Output:
+// (1,1) (1,2) (1,3)
+// (2,1) (2,2) (2,3)
+// (3,1) (3,2) (3,3)</code></pre>
+<p>The inner loop completes all its passes for every single pass of the outer loop — that&#39;s why the pattern repeats in rows.</p>
+<p><strong>Common mistakes to watch for:</strong></p>
+<ul><li><p>Forgetting the increment (<code>$i++</code>) — causes an infinite loop, since the condition never becomes false.</p></li><li><p>Off-by-one errors — using <code>&lt;</code> instead of <code>&lt;=</code> (or vice versa) skips or adds an extra iteration. With arrays specifically, <code>$i &lt; count($items)</code> is correct; <code>$i &lt;= count($items)</code> would try to access one index past the end and cause an error.</p></li></ul>
+<hr>
+<h3 id="switch-statement"><code>switch</code> Statement</h3>
+<p><strong>Definition:</strong> a <code>switch</code> statement checks one variable against several possible values and runs the code block that matches — a cleaner alternative to a long <code>if</code>/<code>else if</code>/<code>else</code> chain when you&#39;re comparing the same variable against many fixed options.</p>
+<p><strong>Syntax:</strong></p>
+<pre><code class="language-php">switch (variable) {
+    case value1:
+        // code
+        break;
+    case value2:
+        // code
+        break;
+    default:
+        // code if nothing matched
+}</code></pre>
+<p><strong>Example — rewriting the order form&#39;s <code>find</code> dropdown check with <code>switch</code> instead of <code>if</code>/<code>else if</code>:</strong></p>
+<pre><code class="language-php">$find = $_POST[&#39;find&#39;];
+
+switch ($find) {
+    case &#39;a&#39;:
+        echo &quot;&lt;p&gt;Regular Customer&lt;/p&gt;&quot;;
+        break;
+    case &#39;b&#39;:
+        echo &quot;&lt;p&gt;Customer referred by TV advert&lt;/p&gt;&quot;;
+        break;
+    case &#39;c&#39;:
+        echo &quot;&lt;p&gt;Customer referred by phone directory&lt;/p&gt;&quot;;
+        break;
+    case &#39;d&#39;:
+        echo &quot;&lt;p&gt;Customer referred by word of mouth&lt;/p&gt;&quot;;
+        break;
+    default:
+        echo &quot;&lt;p&gt;We do not know how this customer found us&lt;/p&gt;&quot;;
+}</code></pre>
+<p>Same logic, same output as the <code>if</code>/<code>else if</code> version from earlier — <code>switch</code> is just a different way to write it, and reads a little cleaner once there are more than 2-3 options to check against a single variable.</p>
+<p><strong><code>break</code> is critical:</strong> without <code>break</code>, PHP doesn&#39;t stop at the matching case — it keeps running every case <em>below</em> it too, a behavior called &quot;fall-through.&quot;</p>
+<pre><code class="language-php">$grade = &#39;B&#39;;
+
+switch ($grade) {
+    case &#39;A&#39;:
+        echo &quot;Excellent&lt;br&gt;&quot;;
+    case &#39;B&#39;:
+        echo &quot;Good&lt;br&gt;&quot;;
+    case &#39;C&#39;:
+        echo &quot;Passing&lt;br&gt;&quot;;
+    default:
+        echo &quot;Grade recorded&lt;br&gt;&quot;;
+}
+// Output (no breaks):
+// Good
+// Passing
+// Grade recorded</code></pre>
+<p>Even though only <code>&#39;B&#39;</code> matched, execution fell through into <code>&#39;C&#39;</code> and <code>default</code> too because there were no <code>break</code> statements to stop it. Adding <code>break;</code> after each case fixes this and produces only <code>Good</code>.</p>
+<p><strong>Intentional fall-through</strong> is sometimes used on purpose, to group multiple values under one action:</p>
+<pre><code class="language-php">$day = &quot;Sat&quot;;
+
+switch ($day) {
+    case &quot;Sat&quot;:
+    case &quot;Sun&quot;:
+        echo &quot;Weekend&lt;br&gt;&quot;;
+        break;
+    default:
+        echo &quot;Weekday&lt;br&gt;&quot;;
+}
+// Output: Weekend</code></pre>
+<p>Here <code>&quot;Sat&quot;</code> and <code>&quot;Sun&quot;</code> share the same <code>case</code> block on purpose — since <code>&quot;Sat&quot;</code> has no <code>break</code>, it falls through into the <code>&quot;Sun&quot;</code> case&#39;s code, which is exactly what&#39;s wanted.</p>
+<p><strong><code>switch</code> vs. <code>if</code>/<code>else if</code>:</strong></p>
+<table><thead><tr><th></th><th><code>switch</code></th><th><code>if</code>/<code>else if</code></th></tr></thead><tbody><tr><td>Best for</td><td>One variable checked against many fixed values</td><td>Any condition, including ranges (<code>&gt;</code>, <code>&lt;</code>) and multiple variables</td></tr><tr><td>Comparison type</td><td>Loose (<code>==</code>), always</td><td>Whatever operator you write (<code>==</code>, <code>===</code>, <code>&lt;</code>, etc.)</td></tr><tr><td>Needs <code>break</code></td><td>Yes, or it falls through</td><td>Not applicable — each branch is independent</td></tr><tr><td>Readability</td><td>Cleaner with many options on one variable</td><td>Cleaner for complex/mixed conditions</td></tr></tbody></table>
+<hr>
+<h3 id="exit"><code>exit</code></h3>
+<p><strong>Definition:</strong> <code>exit</code> immediately stops the PHP script from running any further — nothing after it executes, no matter what code comes next in the file. <code>die()</code> is an alias for <code>exit</code> (they do exactly the same thing; <code>die</code> reads a little more literally for error cases).</p>
+<p><strong>Syntax:</strong></p>
+<pre><code class="language-php">exit; // stops the script here, no message
+exit(); // same thing, with parentheses
+exit(&quot;message&quot;); // stops the script AND prints a message first</code></pre>
+<p><strong>Basic example:</strong></p>
+<pre><code class="language-php">echo &quot;This will print.&lt;br&gt;&quot;;
+exit(&quot;Stopping here.&lt;br&gt;&quot;);
+echo &quot;This will NEVER print.&lt;br&gt;&quot;;</code></pre>
+<p>Output:</p>
+<pre><code>This will print.
+Stopping here.</code></pre>
+<p>The third line never runs — <code>exit()</code> halts the script the moment it&#39;s reached, so nothing after it in the file matters, even if it&#39;s valid code.</p>
+<p><strong>Common real use — guarding against missing data:</strong></p>
+<pre><code class="language-php">if (!isset($_POST[&#39;tiresqty&#39;])) {
+    exit(&quot;Error: no order data received.&quot;);
+}
+
+// rest of processorder.php only runs if the check above passed
+$tireqty = $_POST[&#39;tiresqty&#39;];</code></pre>
+<p>This is a safer version of the empty-order check from earlier — instead of just printing a message and letting the rest of the script keep running (and possibly erroring on missing <code>$_POST</code> data), <code>exit()</code> stops everything immediately so nothing broken runs afterward.</p>
+<p><strong><code>exit</code> vs. <code>return</code>:</strong> <code>return</code> only exits the current function (or <code>include</code>d file) and hands control back to whatever called it; <code>exit</code> shuts down the <em>entire</em> script everywhere, even inside a deeply nested function call. Use <code>return</code> for normal function flow, <code>exit</code> only when something is wrong enough that continuing the whole page doesn&#39;t make sense.</p>
+<hr>
+<p>✅ <strong>End of Week 3, Day 1.</strong> Covered automatic type conversion (type juggling), <code>define()</code> and constants vs. variables, <code>isset()</code>/<code>unset()</code>/<code>empty()</code>, <code>var_dump()</code>, <code>echo</code> vs. <code>print</code> (including why <code>print</code> returns <code>1</code>), Lab #1 (five variable types, string-number addition, constants, isset/unset, empty, gettype/var_dump), the order form&#39;s new &quot;How did you find Bob&#39;s?&quot; dropdown with the <code>processorder.php</code> update, <code>for</code> and <code>foreach</code> loops (including a deeper dive with nested loops), <code>switch</code> statements, and <code>exit</code>.</p>
+<p><strong>Next up: Week 3, Day 2 — Thursday.</strong></p>
+<hr>

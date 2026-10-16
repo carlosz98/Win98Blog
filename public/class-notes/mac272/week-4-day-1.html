@@ -1,0 +1,474 @@
+<h2 id="week-4-day-1-today">Week 4, Day 1</h2>
+<h3 id="strict-declaration-declarestricttypes1">Strict Declaration — <code>declare(strict_types=1)</code></h3>
+<p><strong>Definition:</strong> by default, PHP is <em>forgiving</em> about types — if a function expects an <code>int</code> and receives the string <code>&quot;5&quot;</code>, PHP quietly converts it (type juggling). A <strong>strict declaration</strong> turns that forgiveness off for function calls and return values in the file where it&#39;s declared: PHP now requires the exact type, and throws a <code>TypeError</code> if it doesn&#39;t get it.</p>
+<pre><code class="language-php">&lt;?php
+declare(strict_types=1); // must be the very first statement in the file
+
+function add(int $a, int $b): int {
+    return $a + $b;
+}
+
+echo add(5, 10);    // 15 — both arguments really are ints
+echo add(&quot;5&quot;, 10);  // ❌ Fatal error: Uncaught TypeError — &quot;5&quot; is a string, not an int
+?&gt;</code></pre>
+<p><strong>The same code without the strict declaration</strong> (PHP&#39;s default &quot;weak&quot;/coercive mode):</p>
+<pre><code class="language-php">&lt;?php
+function add(int $a, int $b): int {
+    return $a + $b;
+}
+
+echo add(&quot;5&quot;, 10); // 15 — PHP silently converts the numeric string &quot;5&quot; to the int 5
+?&gt;</code></pre>
+<table><thead><tr><th></th><th>Weak mode (default)</th><th>Strict mode (<code>strict_types=1</code>)</th></tr></thead><tbody><tr><td>Passing <code>&quot;5&quot;</code> to an <code>int</code> parameter</td><td>Accepted — converted to <code>5</code></td><td><code>TypeError</code></td></tr><tr><td>Returning the wrong type from a function</td><td>Converted if possible</td><td><code>TypeError</code></td></tr><tr><td>Passing an <code>int</code> to a <code>float</code> parameter</td><td>Accepted</td><td>Still accepted — the one allowed exception (an int can safely widen to a float)</td></tr><tr><td>Non-numeric string (<code>&quot;abc&quot;</code>) to an <code>int</code> parameter</td><td><code>TypeError</code></td><td><code>TypeError</code></td></tr></tbody></table>
+<p><strong>Rules to remember:</strong></p>
+<ul><li><p><code>declare(strict_types=1);</code> must be the <strong>very first statement</strong> in the file — only comments may come before it. Any output ahead of it (including plain HTML outside <code>&lt;?php ... ?&gt;</code>) causes a fatal error. This is why it can&#39;t be used in a page like <code>processorder.php</code>, which starts with <code>&lt;!DOCTYPE html&gt;</code> before the PHP block.</p></li><li><p>It applies <strong>per file</strong>, and it governs calls <em>made from</em> that file — not the file where the function happens to be defined.</p></li><li><p>It affects <strong>function arguments and return values</strong> (including PHP&#39;s built-in functions, e.g. <code>strlen(123)</code> is a <code>TypeError</code> in strict mode but returns <code>3</code> in weak mode). It does <strong>not</strong> change operators: <code>&quot;10&quot; + &quot;20&quot;</code> still juggles to <code>30</code> exactly as in the Lab #1 example.</p></li></ul>
+<p><strong>Why use it:</strong> strict mode catches type mistakes immediately, at the exact line where the wrong type was passed, instead of letting PHP silently convert the value and produce a surprising result later. The tradeoff is less flexibility — data arriving as strings (like everything in <code>$_POST</code>) must be cast explicitly, e.g. <code>add((int) $_POST[&#39;tiresqty&#39;], 10)</code>, which ties directly back to type casting from last week.</p>
+<h3 id="typed-function-example-addnumbers">Typed Function Example — <code>addNumbers()</code></h3>
+<pre><code class="language-php">&lt;?php
+declare(strict_types=1);
+
+function addNumbers(int $a, int $b): int {
+    return $a + $b;
+}
+
+echo addNumbers(5, 10);   // 15
+echo addNumbers(&quot;5&quot;, 10); // ❌ TypeError — &quot;5&quot; is a string, and strict mode won&#39;t convert it
+?&gt;</code></pre>
+<p><strong>Anatomy of the function line:</strong></p>
+<ul><li><p><code>int $a, int $b</code> — <strong>parameter type declarations</strong>: each argument must be an <code>int</code>.</p></li><li><p><code>: int</code> — the <strong>return type declaration</strong>: the function must return an <code>int</code>.</p></li><li><p><code>return $a + $b;</code> — <code>return</code> takes one expression. To send back two values, return an array instead: <code>return [$a, $b];</code>.</p></li></ul>
+<p><strong>Common syntax mistakes when typing this out</strong> (the garbled version <code>function addNumbers(int$a, int$b, { return $a, $b</code>):</p>
+<ol><li><p>No space between the type and the variable (<code>int$a</code> instead of <code>int $a</code>).</p></li><li><p>The parameter list is never closed — the <code>)</code> is missing before <code>{</code>, and there is a stray trailing comma.</p></li><li><p><code>return $a, $b</code> — a comma is not valid after <code>return</code>; use <code>+</code> to add the values (or return an array to return both).</p></li><li><p>Missing <code>;</code> after the return statement and the closing <code>}</code> of the function.</p></li></ol>
+<h3 id="the-instructors-example-addnumbers5-5-days">The Instructor&#39;s Example — <code>addNumbers(5, &quot;5 days&quot;)</code></h3>
+<pre><code class="language-php">&lt;?php
+function addNumbers(int $a, int $b): int {
+    return $a + $b;
+}
+
+echo addNumbers(5, &quot;5 days&quot;);
+?&gt;</code></pre>
+<p><code>&quot;5 days&quot;</code> starts with a number but is not a <em>purely</em> numeric string, so PHP will not convert it to an <code>int</code> — this call throws a <code>TypeError</code> whether strict mode is on or off. Compare it with <code>&quot;5&quot;</code>, which weak mode accepts and strict mode rejects. These results were run on PHP 8.4:</p>
+<table><thead><tr><th>Call</th><th>Weak mode (default)</th><th>Strict mode (<code>strict_types=1</code>)</th></tr></thead><tbody><tr><td><code>addNumbers(5, 5)</code></td><td><code>10</code></td><td><code>10</code></td></tr><tr><td><code>addNumbers(5, &quot;5&quot;)</code></td><td><code>10</code> — numeric string converted</td><td><code>TypeError</code></td></tr><tr><td><code>addNumbers(5, &quot;5 days&quot;)</code></td><td><code>TypeError</code></td><td><code>TypeError</code></td></tr><tr><td><code>addNumbers(5, &quot;days&quot;)</code></td><td><code>TypeError</code></td><td><code>TypeError</code></td></tr><tr><td><code>addNumbers(5, 5.5)</code></td><td><code>10</code> — the <code>.5</code> is silently cut off (5.5 becomes 5)</td><td><code>TypeError</code></td></tr><tr><td><code>addNumbers(5, 5.0)</code></td><td><code>10</code></td><td><code>TypeError</code></td></tr><tr><td><code>addNumbers(5, true)</code></td><td><code>6</code> — <code>true</code> becomes <code>1</code></td><td><code>TypeError</code></td></tr></tbody></table>
+<p>A <code>TypeError</code> can be caught instead of crashing the page:</p>
+<pre><code class="language-php">try {
+    echo addNumbers(5, &quot;5 days&quot;);
+} catch (TypeError $e) {
+    echo &quot;Error: &quot; . $e-&gt;getMessage();
+}
+// Error: addNumbers(): Argument #2 ($b) must be of type int, string given, called in ... on line N</code></pre>
+<p><em>(In older PHP 7 versions, <code>&quot;5 days&quot;</code> was accepted with a notice; PHP 8 rejects it.)</em></p>
+<hr>
+<h3 id="why-use-strict-types">Why Use Strict Types?</h3>
+<p><strong>The problem it solves:</strong> in the default (weak/coercive) mode, PHP converts values to fit a type declaration, and some of those conversions lose or change information without any warning — <code>5.5</code> quietly becomes <code>5</code>, <code>true</code> quietly becomes <code>1</code>. The code runs, returns a plausible number, and the bug surfaces much later (a wrong order total, say) far from where it started.</p>
+<p><strong>Reasons to use it:</strong></p>
+<ol><li><p><strong>Bugs show up immediately</strong> — the <code>TypeError</code> points at the exact call that passed the wrong type.</p></li><li><p><strong>No silent data loss</strong> — values are never truncated, rounded, or reinterpreted behind your back.</p></li><li><p><strong>The function signature becomes a contract</strong> — <code>int $a, int $b): int</code> states precisely what goes in and what comes out, which makes the code self-documenting.</p></li><li><p><strong>Predictable behavior</strong> — the same input always either works exactly or fails loudly, instead of depending on PHP&#39;s conversion rules.</p></li><li><p><strong>Familiar to C/C++/Java developers</strong> — it brings PHP closer to the statically typed languages covered in the array comparison earlier.</p></li><li><p><strong>Better tooling</strong> — editors and static-analysis tools can catch type mistakes before the code ever runs.</p></li></ol>
+<p><strong>Tradeoffs:</strong></p>
+<ul><li><p>Data that arrives as strings (everything in <code>$_POST</code> / <code>$_GET</code>) must be converted explicitly with a cast, e.g. <code>addNumbers((int) $_POST[&#39;qty&#39;], 10)</code>.</p></li><li><p>It only covers function arguments and return values — operators like <code>+</code> still juggle types (<code>&quot;10&quot; + &quot;20&quot;</code> is still <code>30</code>).</p></li><li><p>It is per file, so a project needs the declaration at the top of each file.</p></li></ul>
+<hr>
+<h3 id="strict-types-everything-to-know">Strict Types — Everything to Know</h3>
+<ul><li><p><strong>Two typing modes:</strong> <em>weak/coercive</em> (the default — PHP converts when it safely can) and <em>strict</em> (<code>declare(strict_types=1);</code> — the type must match exactly).</p></li><li><p><strong>Scalar type declarations</strong> (<code>int</code>, <code>float</code>, <code>string</code>, <code>bool</code>) and <code>strict_types</code> were introduced together in <strong>PHP 7.0</strong>.</p></li><li><p><strong>Other declarable types:</strong> <code>array</code>, <code>callable</code>, <code>iterable</code>, <code>object</code>, class names, <code>mixed</code> (PHP 8.0), <strong>nullable</strong> types (<code>?int</code> — an int or <code>null</code>), and <strong>union</strong> types (<code>int|string</code>, PHP 8.0). Return types additionally allow <code>void</code>.</p></li><li><p><strong>The one exception in strict mode:</strong> an <code>int</code> may be passed where a <code>float</code> is expected, because the conversion is lossless.</p></li><li><p><strong>Scope:</strong> <code>strict_types</code> affects calls <em>made from</em> the file that declares it. A function&#39;s return type is checked using the mode of the file where the function is <em>defined</em>.</p></li><li><p><strong>Placement:</strong> it must be the first statement in the file (only comments may precede it); output before it, including HTML outside <code>&lt;?php</code>, is a fatal error.</p></li><li><p><strong>It cannot be turned on or off mid-file</strong> — it is a file-level directive, not a runtime setting.</p></li><li><p><strong>Failure mode:</strong> a mismatch throws <code>TypeError</code>, which can be caught with <code>try</code>/<code>catch</code>.</p></li><li><p><strong>What it does not affect:</strong> arithmetic and string operators, <code>echo</code>, casts like <code>(int)</code>, or <code>settype()</code> — it only governs function and method arguments and return values (built-in PHP functions included, e.g. <code>strlen(123)</code> is a <code>TypeError</code> in strict mode).</p></li><li><p><strong>Performance:</strong> it is not a speed feature — the benefit is correctness.</p></li></ul>
+<hr>
+<h3 id="default-argument-values-setheight">Default Argument Values — <code>setHeight()</code></h3>
+<p><strong>Definition — default value:</strong> a default value is the value a parameter automatically takes when the caller does not supply that argument. It is written in the function&#39;s parameter list with <code>=</code>, for example <code>$minheight = 50</code>. A parameter with a default becomes <strong>optional</strong>; a parameter without one is <strong>required</strong>.</p>
+<pre><code class="language-php">function required($x)       { echo $x; }
+function optional($x = 50)  { echo $x; }
+
+optional();   // 50 — default used
+required();   // ❌ ArgumentCountError: Too few arguments to function required()</code></pre>
+<p>In short: the default is a fallback. It is used <strong>only</strong> when the argument is missing, and any value passed in overrides it.</p>
+<pre><code class="language-php">&lt;?php
+function setHeight(int $minheight = 50) {
+    echo &quot;The height is : $minheight &lt;br&gt;&quot;;
+}
+
+setHeight(350);
+setHeight();     // no argument passed — uses the default value of 50
+setHeight(135);
+setHeight(80);
+?&gt;</code></pre>
+<p>Output in the browser:</p>
+<pre><code>The height is : 350
+The height is : 50
+The height is : 135
+The height is : 80</code></pre>
+<p><strong>What is happening, line by line:</strong></p>
+<ul><li><p><code>function setHeight(int $minheight = 50)</code> — declares a function with one parameter, <code>$minheight</code>, which must be an <code>int</code>. The <code>= 50</code> gives the parameter a <strong>default value</strong>, which makes it <strong>optional</strong>.</p></li><li><p><code>echo &quot;The height is : $minheight &lt;br&gt;&quot;;</code> — a double-quoted string, so <code>$minheight</code> is interpolated (replaced by its value), and <code>&lt;br&gt;</code> moves the browser to the next line.</p></li><li><p><code>setHeight(350);</code> — an argument is passed, so <code>$minheight</code> is <code>350</code>. The default is ignored.</p></li><li><p><code>setHeight();</code> — no argument passed, so PHP falls back to the default and <code>$minheight</code> is <code>50</code>. This is the line the example exists to show.</p></li><li><p><code>setHeight(135);</code> and <code>setHeight(80);</code> — an argument is passed each time, so each call uses its own value.</p></li></ul>
+<p><strong>Key idea:</strong> a default value is only used when the caller leaves that argument out. Any value the caller does pass always wins.</p>
+<p><strong>Rules to remember:</strong></p>
+<ul><li><p>Optional parameters (those with defaults) should come <strong>after</strong> the required ones. Writing <code>function f($a = 1, $b)</code> is deprecated in PHP 8.</p></li><li><p>A default must be a constant value (a number, string, array, <code>null</code>, a constant) — not the result of a function call or a variable.</p></li><li><p>It combines with type declarations (<code>int $minheight = 50</code>) and with strict types: <code>setHeight(&quot;350&quot;)</code> throws a <code>TypeError</code> in strict mode, while the default <code>50</code> is used without any problem when the argument is omitted.</p></li></ul>
+<p><strong>Why it is useful:</strong> it lets one function cover the common case with no arguments (<code>setHeight()</code>) while still allowing a custom value (<code>setHeight(350)</code>), and it avoids writing a second version of the function.</p>
+<p><strong>Update — the version written in class:</strong></p>
+<pre><code class="language-php">&lt;?php
+function setHeight( $minheight = 50) {
+    echo &quot;The height is: $minheight &lt;br&gt;&quot;;
+}
+
+setHeight(350);
+setHeight(); // here it will use the default value of 50</code></pre>
+<p>Output in the browser:</p>
+<pre><code>The height is: 350
+The height is: 50</code></pre>
+<p><strong>Differences from the typed version above:</strong></p>
+<ul><li><p>There is <strong>no <code>int</code> type declaration</strong> on <code>$minheight</code>, so the function accepts any type. <code>setHeight(&quot;tall&quot;)</code> would print <code>The height is: tall</code> with no error, whereas the <code>int</code> version would throw a <code>TypeError</code>. Adding <code>int</code> (as in <code>int $minheight = 50</code>) is what makes the type checks — and strict mode — apply to this function.</p></li><li><p>Only <strong>two calls</strong> are made, which is all that is needed to show the idea: <code>setHeight(350)</code> passes a value, and <code>setHeight()</code> passes nothing, so the default <code>50</code> is used.</p></li><li><p>The file has <strong>no closing <code>?&gt;</code></strong>. That is valid — PHP does not require it at the end of a file, and leaving it off is common practice for files that contain only PHP.</p></li></ul>
+<hr>
+<h3 id="variable-scope-local-global-and-static">Variable Scope — Local, Global, and Static</h3>
+<p><strong>Scope</strong> is the part of a program where a variable can be seen and used. PHP has three scopes you need to know.</p>
+<p><strong>In brief:</strong></p>
+<table><thead><tr><th>Scope</th><th>Declared</th><th>Visible</th><th>Lifetime</th></tr></thead><tbody><tr><td><strong>Local</strong></td><td>Inside a function</td><td>Only inside that function</td><td>Created when the function runs, destroyed when it ends</td></tr><tr><td><strong>Global</strong></td><td>Outside any function</td><td>Outside functions — and inside only through <code>global</code> or <code>$GLOBALS</code></td><td>The whole script</td></tr><tr><td><strong>Static</strong></td><td>Inside a function, with <code>static</code></td><td>Only inside that function</td><td>Keeps its value between calls for the rest of the script</td></tr></tbody></table>
+<h4 id="local-scope">Local scope</h4>
+<p>A variable created inside a function exists only inside that function. Function parameters are local too.</p>
+<pre><code class="language-php">&lt;?php
+function localOnly() {
+    $y = 99;        // local to localOnly()
+    echo $y;        // 99
+}
+
+localOnly();
+echo $y;            // ⚠️ Warning: Undefined variable $y — it does not exist out here
+?&gt;</code></pre>
+<ul><li><p>The variable is created each time the function is called and thrown away when it returns, so nothing carries over to the next call.</p></li><li><p>Two functions can each use a variable with the same name without interfering with each other, and a local <code>$x</code> does not touch a global <code>$x</code> — they are separate variables.</p></li></ul>
+<pre><code class="language-php">$x = &quot;global x&quot;;
+function shadow() {
+    $x = &quot;local x&quot;;  // a brand-new local variable, unrelated to the global $x
+    echo $x;          // local x
+}
+shadow();
+echo $x;              // global x — unchanged</code></pre>
+<h4 id="global-scope">Global scope</h4>
+<p>A variable created outside every function is global. <strong>Unlike C/C++ and JavaScript, a PHP function cannot see global variables automatically</strong> — inside the function it is treated as if it did not exist.</p>
+<pre><code class="language-php">&lt;?php
+$x = 5;                       // global
+
+function noAccess() {
+    var_dump(isset($x));      // bool(false) — the global $x is invisible in here
+}
+noAccess();
+?&gt;</code></pre>
+<p>There are two ways to reach a global from inside a function, and both work on the <strong>real</strong> global variable, not a copy:</p>
+<pre><code class="language-php">&lt;?php
+$x = 5;
+
+function withGlobal() {
+    global $x;      // 1) the global keyword brings $x into the function
+    $x++;
+    return $x;
+}
+echo withGlobal(); // 6
+echo $x;           // 6 — the global itself was changed
+
+function viaGlobals() {
+    $GLOBALS[&#39;x&#39;] += 10; // 2) $GLOBALS is an array holding every global variable
+}
+viaGlobals();
+echo $x;           // 16
+?&gt;</code></pre>
+<ul><li><p><strong>Superglobals</strong> such as <code>$_POST</code>, <code>$_GET</code>, and <code>$GLOBALS</code> are the exception: they are available in every scope automatically, which is why <code>$_POST[&#39;tiresqty&#39;]</code> works inside any function.</p></li><li><p><strong>Best practice:</strong> avoid relying on globals. A function that silently reads or changes a global has a hidden dependency, which makes bugs hard to track down. Pass values in as parameters and send results back with <code>return</code>.</p></li></ul>
+<h4 id="static-scope">Static scope</h4>
+<p>A <code>static</code> variable is local to its function, but it <strong>is not destroyed</strong> when the function ends — it remembers its value for the next call. It is initialized only once, the first time the line runs.</p>
+<pre><code class="language-php">&lt;?php
+function counter() {
+    static $n = 0;   // set to 0 on the first call only
+    $n++;
+    echo $n . &quot; &quot;;
+}
+counter(); counter(); counter();   // 1 2 3
+
+function plain() {
+    $n = 0;          // reset to 0 on every call
+    $n++;
+    echo $n . &quot; &quot;;
+}
+plain(); plain(); plain();         // 1 1 1
+?&gt;</code></pre>
+<ul><li><p>The only difference between the two functions is the word <code>static</code> — that is what keeps <code>$n</code> alive between calls.</p></li><li><p>It is still <strong>not visible outside</strong> the function; it is a local variable with a longer memory.</p></li><li><p>Typical uses: counters, running totals, and caching a result so it is calculated once.</p></li></ul>
+<p><strong>Example from class — <code>myTest()</code>:</strong></p>
+<pre><code class="language-php">&lt;?php
+
+function myTest() {
+    static $x = 0;
+    echo $x;
+    $x++;
+}
+
+myTest();
+myTest();
+myTest();</code></pre>
+<p>Output in the browser:</p>
+<pre><code>012</code></pre>
+<p><em>(The version written in class had <code>static $x = -;</code>, which is a parse error — a value is required after the <code>=</code>. The starting value is <code>0</code>.)</em></p>
+<p><strong>Why the output is <code>012</code>, call by call:</strong></p>
+<table><thead><tr><th>Call</th><th>What happens</th><th>Printed</th><th><code>$x</code> afterward</th></tr></thead><tbody><tr><td>1st <code>myTest()</code></td><td><code>static $x = 0;</code> runs and sets <code>$x</code> to <code>0</code>; <code>echo</code> prints it; <code>$x++</code> makes it <code>1</code></td><td><code>0</code></td><td><code>1</code></td></tr><tr><td>2nd <code>myTest()</code></td><td>The <code>static</code> line is skipped — <code>$x</code> still holds <code>1</code>; <code>echo</code> prints it; <code>$x++</code> makes it <code>2</code></td><td><code>1</code></td><td><code>2</code></td></tr><tr><td>3rd <code>myTest()</code></td><td><code>$x</code> still holds <code>2</code>; <code>echo</code> prints it; <code>$x++</code> makes it <code>3</code></td><td><code>2</code></td><td><code>3</code></td></tr></tbody></table>
+<ul><li><p>The three numbers appear as <code>012</code> because <code>echo $x</code> adds no space or line break. Add <code>&lt;br&gt;</code> (<code>echo $x . &quot;&lt;br&gt;&quot;;</code>) to see them on separate lines.</p></li><li><p><code>echo</code> comes <strong>before</strong> <code>$x++</code>, so each call prints the value from <em>before</em> the increment — that is why it starts at <code>0</code>, not <code>1</code>.</p></li><li><p>Without the word <code>static</code>, <code>$x</code> would be set to <code>0</code> on every call and the output would be <code>000</code>.</p></li><li><p>The <code>static</code> initialization (<code>= 0</code>) only runs <strong>once</strong>, on the first call. Every later call reuses the stored value.</p></li></ul>
+<p><strong>What if <code>static</code> is removed?</strong></p>
+<pre><code class="language-php">&lt;?php
+
+function myTest() {
+    $x = 0;      // no static — an ordinary local variable
+    echo $x;
+    $x++;
+}
+
+myTest();
+myTest();
+myTest();</code></pre>
+<p>Output in the browser:</p>
+<pre><code>000</code></pre>
+<p><strong>Why it is <code>000</code>, call by call:</strong></p>
+<table><thead><tr><th>Call</th><th>What happens</th><th>Printed</th></tr></thead><tbody><tr><td>1st <code>myTest()</code></td><td><code>$x</code> is created and set to <code>0</code>; <code>echo</code> prints <code>0</code>; <code>$x++</code> makes it <code>1</code>; the function ends and <code>$x</code> is <strong>destroyed</strong></td><td><code>0</code></td></tr><tr><td>2nd <code>myTest()</code></td><td>A <strong>brand-new</strong> <code>$x</code> is created and set to <code>0</code> again; <code>echo</code> prints <code>0</code>; <code>$x++</code> makes it <code>1</code>; destroyed again</td><td><code>0</code></td></tr><tr><td>3rd <code>myTest()</code></td><td>Same thing — a fresh <code>$x = 0</code></td><td><code>0</code></td></tr></tbody></table>
+<ul><li><p>Without <code>static</code>, <code>$x</code> is an ordinary <strong>local variable</strong>. It exists only while the function is running and is thrown away when the function returns, so nothing is remembered between calls.</p></li><li><p>The <code>$x++</code> does happen on every call, but it increments a variable that is about to be destroyed — the <code>1</code> is never seen.</p></li><li><p>Every call runs <code>$x = 0;</code> again from the start, so every call prints <code>0</code>.</p></li><li><p>With <code>static $x = 0;</code> the variable is <strong>kept</strong> after the function ends and the <code>= 0</code> runs only the first time, so the value carries over and the output becomes <code>012</code>.</p></li></ul>
+<p><strong>Side by side:</strong></p>
+<table><thead><tr><th></th><th><code>static $x = 0;</code></th><th><code>$x = 0;</code></th></tr></thead><tbody><tr><td>Variable after the function returns</td><td>Kept</td><td>Destroyed</td></tr><tr><td>Is <code>= 0</code> run on every call?</td><td>No — only the first call</td><td>Yes</td></tr><tr><td>Output of three calls</td><td><code>012</code></td><td><code>000</code></td></tr></tbody></table>
+<p><strong>Variation — <code>echo</code> before <em>and</em> after the increment:</strong></p>
+<pre><code class="language-php">&lt;?php
+
+function myTest() {
+    static $x = 0;
+    echo $x;
+    $x++;
+    echo $x;
+}
+
+myTest();
+myTest();
+myTest();</code></pre>
+<p>Output in the browser:</p>
+<pre><code>011223</code></pre>
+<p>This is not the number &quot;eleven million...&quot; — it is three pairs of digits printed with no separator: <code>01</code> <code>12</code> <code>23</code>.</p>
+<p><strong>Why it is <code>011223</code>, call by call:</strong></p>
+<table><thead><tr><th>Call</th><th><code>$x</code> on entry</th><th>1st <code>echo</code></th><th><code>$x++</code></th><th>2nd <code>echo</code></th><th>Pair printed</th></tr></thead><tbody><tr><td>1st <code>myTest()</code></td><td><code>0</code> (set by <code>static $x = 0;</code>)</td><td><code>0</code></td><td><code>$x</code> becomes <code>1</code></td><td><code>1</code></td><td><code>01</code></td></tr><tr><td>2nd <code>myTest()</code></td><td><code>1</code> (remembered)</td><td><code>1</code></td><td><code>$x</code> becomes <code>2</code></td><td><code>2</code></td><td><code>12</code></td></tr><tr><td>3rd <code>myTest()</code></td><td><code>2</code> (remembered)</td><td><code>2</code></td><td><code>$x</code> becomes <code>3</code></td><td><code>3</code></td><td><code>23</code></td></tr></tbody></table>
+<ul><li><p>Because <code>$x</code> is <code>static</code>, the value left at the end of one call is the starting value of the next. That is why each call&#39;s first number repeats the previous call&#39;s last number (<code>1</code> then <code>1</code>, <code>2</code> then <code>2</code>).</p></li><li><p>With <code>&lt;br&gt;</code> after each <code>echo</code> (<code>echo $x . &quot;&lt;br&gt;&quot;;</code>) the numbers appear one per line: <code>0 1 1 2 2 3</code>.</p></li><li><p><strong>If <code>static</code> is removed</strong>, <code>$x</code> resets to <code>0</code> on every call, and the same three calls print <code>010101</code> — each call prints <code>0</code> then <code>1</code>.</p></li></ul>
+<h4 id="related-passing-outer-variables-into-closures">Related: passing outer variables into closures</h4>
+<p>An anonymous function has its own local scope too. It receives outer variables explicitly with <code>use</code>, while an arrow function (<code>fn</code>) captures them automatically — in both cases as a copy of the value.</p>
+<pre><code class="language-php">$total = 100;
+$f = function() use ($total) { return $total + 1; };
+$g = fn() =&gt; $total + 2;
+echo $f();   // 101
+echo $g();   // 102</code></pre>
+<p><strong>Quick comparison:</strong></p>
+<table><thead><tr><th>Question</th><th>Local</th><th>Global</th><th>Static</th></tr></thead><tbody><tr><td>Visible inside functions?</td><td>Only its own function</td><td>Only with <code>global</code> / <code>$GLOBALS</code></td><td>Only its own function</td></tr><tr><td>Survives after the function ends?</td><td>No</td><td>Yes</td><td>Yes</td></tr><tr><td>Remembers the value on the next call?</td><td>No</td><td>Yes (it is the same variable)</td><td>Yes</td></tr></tbody></table>
+<hr>
+<h3 id="classes-in-php-and-how-scope-works-inside-them">Classes in PHP — and How Scope Works Inside Them</h3>
+<p>PHP fully supports object-oriented programming. Functions are what has been covered so far, so scope was shown with functions — classes build on the same ideas.</p>
+<p><strong>Definitions:</strong></p>
+<table><thead><tr><th>Term</th><th>Meaning</th></tr></thead><tbody><tr><td><strong>Class</strong></td><td>A blueprint that describes what a kind of object has and can do</td></tr><tr><td><strong>Object</strong></td><td>One actual thing built from a class, created with <code>new</code></td></tr><tr><td><strong>Property</strong></td><td>A variable that belongs to a class/object</td></tr><tr><td><strong>Method</strong></td><td>A function that belongs to a class/object</td></tr><tr><td><strong><code>$this</code></strong></td><td>Inside a method, the object the method is currently running on</td></tr><tr><td><strong>Constructor</strong></td><td>The special method <code>__construct()</code>, which runs automatically when an object is created</td></tr><tr><td><strong>Visibility</strong></td><td>Who may access a property or method: <code>public</code> (anywhere), <code>private</code> (only inside the class), <code>protected</code> (the class and its subclasses)</td></tr><tr><td><strong><code>static</code></strong></td><td>A property or method that belongs to the class itself, shared by every object, instead of to one object</td></tr></tbody></table>
+<pre><code class="language-php">&lt;?php
+class Counter {
+    public int $count = 0;                  // property — each object has its own
+    public static int $instances = 0;       // static property — one copy shared by the class
+    private int $secret = 7;                // private — only code inside the class can use it
+    const MAX = 10;                         // class constant
+
+    public function __construct() {         // constructor — runs on `new`
+        self::$instances++;
+    }
+
+    public function add(): void {           // method
+        $local = 1;                         // local variable — same rules as in any function
+        $this-&gt;count += $local;             // $this = the object this method was called on
+    }
+
+    public static function describe(): string {   // static method
+        return &quot;Counter class, max &quot; . self::MAX;
+    }
+}
+
+$a = new Counter();
+$b = new Counter();
+$a-&gt;add(); $a-&gt;add(); $b-&gt;add();
+
+echo $a-&gt;count . &quot; &quot; . $b-&gt;count;   // 2 1 — each object keeps its own count
+echo Counter::$instances;           // 2 — the static property is shared
+echo Counter::describe();           // Counter class, max 10
+echo $a-&gt;secret;                    // ❌ Error: Cannot access private property Counter::$secret
+?&gt;</code></pre>
+<p><strong>Scope rules inside a class:</strong></p>
+<ul><li><p><strong>Local variables:</strong> a method is just a function, so variables created inside it (like <code>$local</code>) are local and disappear when it returns.</p></li><li><p><strong>Properties are not globals:</strong> they are reached through the object with <code>$this-&gt;count</code> (or <code>$a-&gt;count</code> from outside), and each object has its own copy.</p></li><li><p><strong>Globals are still not visible</strong> inside a method — a method needs <code>global</code> or <code>$GLOBALS</code>, exactly like a plain function. In a test, <code>isset($x)</code> for a global <code>$x</code> was <code>false</code> inside a method.</p></li><li><p><strong><code>static</code> has a second meaning in classes:</strong> inside a function, <code>static $n</code> keeps a value between calls; on a class property or method, <code>static</code> means it belongs to the class itself and is accessed with <code>ClassName::</code> or <code>self::</code> instead of <code>$this-&gt;</code>.</p></li><li><p><strong>Visibility adds a layer of scope:</strong> <code>private</code> and <code>protected</code> restrict who may use a property or method, which is how a class protects its own data.</p></li></ul>
+<hr>
+<h3 id="lab-2-functions-and-variable-scope">Lab #2 — Functions and Variable Scope</h3>
+<p><strong>MAC 272 — Lab 2.</strong> Practices functions with parameters, functions that return a value, and variable scope (global vs. local).</p>
+<p><strong>Instructions:</strong></p>
+<ol><li><p><strong>Q1 — <code>basic_function.php</code>:</strong> create a function with three parameters representing <code>coursecode</code>, <code>coursename</code>, and <code>grade</code>. Call the function with different values and print out the results.</p></li><li><p><strong>Q2 — <code>max_function.php</code>:</strong> create a function named <code>maxNum</code> that returns the maximum number between two numbers. Call the function with different values and print out the results.</p></li><li><p><strong>Q3 — <code>calculate_Multiply.php</code>:</strong> define a function called <code>add($a, $b)</code> that takes two numbers as parameters and returns their product (multiplication). Call the function with different numbers and print the results. <em>(The handout names the function <code>add</code> but asks for multiplication — the file is named <code>calculate_Multiply.php</code>.)</em></p></li><li><p><strong>Q4 — <code>variable_scope.php</code>:</strong></p><ul><li><p>a. Define a global variable <code>$num = 10</code>.</p></li><li><p>b. Create a function <code>modifyNum()</code> that attempts to modify <code>$num</code> inside the function <strong>without</strong> using <code>global</code>.</p></li><li><p>c. Print <code>$num</code> before and after calling <code>modifyNum()</code>.</p></li><li><p>d. Now modify the function using the <code>global</code> keyword and observe the changes.</p></li></ul></li></ol>
+<p><strong>Concepts used:</strong> function parameters and arguments, <code>return</code>, comparison with <code>if</code>/<code>else</code>, and the global-vs-local scope rules covered earlier today (a function cannot see or change a global variable unless it uses <code>global</code> or <code>$GLOBALS</code>).</p>
+<h4 id="q1-basicfunctionphp-my-code">Q1 — basic_function.php (my code)</h4>
+<pre><code class="language-php">&lt;?
+function courseInfo ($coursecode, $coursename, $grade) {
+    echo &quot;Course Code: $coursecode&lt;br&gt;&quot;;
+    echo &quot;Course Name: $coursename&lt;br&gt;&quot;;
+    echo &quot;Grade: $grade&lt;br&gt;&quot;;
+}
+
+courseInfo(&quot;MAC272&quot;, &quot;Mathematics&quot;, &quot;A&quot;, &quot;&lt;br&gt;&quot;);
+courseInfo(&quot;MAC250&quot;, &quot;Mathematics&quot;, &quot;B&quot;, &quot;&lt;br&gt;&quot;);
+courseInfo(&quot;MAC101&quot;, &quot;Mathematics&quot;, &quot;B&quot;, &quot;&lt;br&gt;&quot;);</code></pre>
+<p><strong>What happened:</strong> the browser showed raw code instead of the course info.</p>
+<p><strong>Problem 1 — <code>&lt;?</code> instead of <code>&lt;?php</code>.</strong> Short open tags are disabled by default, so PHP never ran. The browser read <code>&lt;?function ... &lt;br&gt;</code> as an HTML bogus comment and hid everything up to the first <code>&gt;</code>, then showed the rest as text. The opening tag must be <code>&lt;?php</code>.</p>
+<p><strong>Problem 2 — extra 4th argument.</strong> <code>courseInfo()</code> takes 3 parameters, but <code>&quot;&lt;br&gt;&quot;</code> is passed as a 4th. PHP silently ignores extra arguments to user functions, so that <code>&lt;br&gt;</code> never prints. Put the line break inside the function instead.</p>
+<h4 id="update-q1-fixed-version">Update — Q1 Fixed Version</h4>
+<pre><code class="language-php">&lt;?php
+function courseInfo($coursecode, $coursename, $grade) {
+    echo &quot;Course Code: $coursecode&lt;br&gt;&quot;;
+    echo &quot;Course Name: $coursename&lt;br&gt;&quot;;
+    echo &quot;Grade: $grade&lt;br&gt;&lt;br&gt;&quot;;
+}
+
+courseInfo(&quot;MAC272&quot;, &quot;Mathematics&quot;, &quot;A&quot;);
+courseInfo(&quot;MAC250&quot;, &quot;Mathematics&quot;, &quot;B&quot;);
+courseInfo(&quot;MAC101&quot;, &quot;Mathematics&quot;, &quot;B&quot;);</code></pre>
+<p>Output in the browser:</p>
+<pre><code>Course Code: MAC272
+Course Name: Mathematics
+Grade: A
+
+Course Code: MAC250
+Course Name: Mathematics
+Grade: B
+
+Course Code: MAC101
+Course Name: Mathematics
+Grade: B</code></pre>
+<h4 id="q2-maxfunctionphp">Q2 — max_function.php</h4>
+<pre><code class="language-php">&lt;?php
+function maxNum($a, $b) {
+    if ($a &gt; $b) {
+        return $a;
+    } else {
+        return $b;
+    }
+}
+
+echo &quot;Max of 10 and 25 is: &quot; . maxNum(10, 25) . &quot;&lt;br&gt;&quot;;   // 25
+echo &quot;Max of 80 and 12 is: &quot; . maxNum(80, 12) . &quot;&lt;br&gt;&quot;;   // 80
+echo &quot;Max of -5 and -9 is: &quot; . maxNum(-5, -9) . &quot;&lt;br&gt;&quot;;   // -5
+echo &quot;Max of 7 and 7 is: &quot; . maxNum(7, 7) . &quot;&lt;br&gt;&quot;;       // 7</code></pre>
+<p><strong>How it works:</strong> the function compares the two parameters and uses <code>return</code> to hand back the larger one. The caller concatenates that returned value into the echo. If both numbers are equal, the else branch returns the second one, which is the same value. PHP has a built-in <code>max()</code>, but the lab asks for a custom function.</p>
+<p><em>(Draft from the class helper — to be replaced with my own version.)</em></p>
+<h4 id="q3-calculatemultiplyphp">Q3 — calculate_Multiply.php</h4>
+<pre><code class="language-php">&lt;?php
+function add($a, $b) {
+    return $a * $b;
+}
+
+echo &quot;3 and 4: &quot; . add(3, 4) . &quot;&lt;br&gt;&quot;;     // 12
+echo &quot;10 and 5: &quot; . add(10, 5) . &quot;&lt;br&gt;&quot;;   // 50
+echo &quot;2.5 and 4: &quot; . add(2.5, 4) . &quot;&lt;br&gt;&quot;; // 10</code></pre>
+<p><strong>Note:</strong> the handout names the function <code>add</code> but asks for the product, so the function is called <code>add</code> and returns <code>$a * $b</code>. A clearer name such as <code>multiply</code> would be better; confirm with the instructor. <code>2.5 * 4</code> gives a float, but PHP prints <code>10</code> because a float with no fractional part is echoed without <code>.0</code>.</p>
+<p><em>(Draft from the class helper — to be replaced with my own version.)</em></p>
+<h4 id="q4-variablescopephp-my-code">Q4 — variable_scope.php (my code)</h4>
+<pre><code class="language-php">&lt;?php
+ $num = 10;
+
+function modifyNum() {
+    $num = $num + 10;
+}
+
+// c. before and after
+echo &quot;Before: &quot; . $num . &quot;&lt;br&gt;&quot;;
+modifyNum();
+echo &quot;After: &quot; . $num . &quot;&lt;br&gt;&lt;br&gt;&quot;;
+
+funtion modifyNumGlo() {
+    global $num;
+    $num = $num + 10;
+}
+
+echo &quot;Before (global): &quot; . $num . &quot;&lt;br&gt;&quot;;
+modifyNumGlobal();
+echo &quot;After (global): &quot; . $num . &quot;&lt;br&gt;&quot;;</code></pre>
+<p><strong>Problem 1 — <code>funtion</code> typo.</strong> It should be <code>function</code>. PHP parses the whole file before running it, so this is a parse error and nothing prints at all, not even the first &quot;Before&quot; line.</p>
+<p><strong>Problem 2 — name mismatch.</strong> The function is defined as <code>modifyNumGlo()</code> but called as <code>modifyNumGlobal()</code>. After fixing the typo this would be a fatal error: &quot;Call to undefined function modifyNumGlobal()&quot;. The defined name and the called name must match.</p>
+<p><strong>Note:</strong> <code>modifyNum()</code> is meant to have no <code>global</code>. It is the &quot;without global&quot; demonstration and is expected to fail to change the variable.</p>
+<h4 id="update-q4-fixed-version">Update — Q4 Fixed Version</h4>
+<pre><code class="language-php">&lt;?php
+$num = 10;
+
+// b. tries to modify $num WITHOUT global
+function modifyNum() {
+    $num = $num + 10;
+}
+
+// c. before and after
+echo &quot;Before: &quot; . $num . &quot;&lt;br&gt;&quot;;
+modifyNum();
+echo &quot;After: &quot; . $num . &quot;&lt;br&gt;&lt;br&gt;&quot;;
+
+// d. same idea, now WITH global
+function modifyNumGlobal() {
+    global $num;
+    $num = $num + 10;
+}
+
+echo &quot;Before (global): &quot; . $num . &quot;&lt;br&gt;&quot;;
+modifyNumGlobal();
+echo &quot;After (global): &quot; . $num . &quot;&lt;br&gt;&quot;;</code></pre>
+<p>Output:</p>
+<pre><code>Before: 10
+Warning: Undefined variable $num   (comes from inside modifyNum)
+After: 10
+
+Before (global): 10
+After (global): 20</code></pre>
+<p>If the warning does not show in the browser, display_errors is probably off in the Apache PHP config. The &quot;After: 10&quot; line still proves the global did not change.</p>
+<h4 id="explaining-modifynumglobal-line-by-line">Explaining modifyNumGlobal() line by line</h4>
+<pre><code class="language-php">$num = 10;               // lives in the GLOBAL scope (outside any function)
+
+function modifyNumGlobal() {
+    global $num;         // 1
+    $num = $num + 10;    // 2
+}
+
+echo &quot;Before (global): &quot; . $num . &quot;&lt;br&gt;&quot;;   // 3
+modifyNumGlobal();                           // 4
+echo &quot;After (global): &quot; . $num . &quot;&lt;br&gt;&quot;;    // 5</code></pre>
+<p><strong>Why global is needed.</strong> PHP functions have their own private scope. A variable created outside a function cannot be seen inside it, even with the same name. Each function starts with an empty set of variables.</p>
+<p><strong>1. global $num;</strong> tells PHP that $num inside this function is the same variable as the outer $num. It is a link to the original, not a copy.</p>
+<p><strong>2. $num = $num + 10;</strong> reads the real $num (10), adds 10, and stores 20 back into the same real variable. Without the global line, the right-hand $num would be a new empty local variable, which causes the &quot;Undefined variable&quot; warning in modifyNum().</p>
+<p><strong>3–5. What runs, in order:</strong> line 3 prints &quot;Before (global): 10&quot;; line 4 calls the function, which sets the outer $num to 20; line 5 prints &quot;After (global): 20&quot;. The change stays after the function ends because the function edited the original, not a local copy.</p>
+<table><thead><tr><th></th><th>modifyNum()</th><th>modifyNumGlobal()</th></tr></thead><tbody><tr><td>global $num;</td><td>no</td><td>yes</td></tr><tr><td>$num inside the function</td><td>new local variable (empty)</td><td>the outer $num</td></tr><tr><td>Result</td><td>warning, outer $num stays 10</td><td>outer $num becomes 20</td></tr></tbody></table>
+<h4 id="other-ways-to-change-a-global">Other ways to change a global</h4>
+<p>PHP stores every global variable in the $GLOBALS array, so this does the same thing with no global keyword:</p>
+<pre><code class="language-php">function modifyNumGlobal() {
+    $GLOBALS[&#39;num&#39;] = $GLOBALS[&#39;num&#39;] + 10;
+}</code></pre>
+<p>The global keyword works, but many developers avoid it because any function can quietly change your variables. The usual better approach is to pass the value in and return the new one:</p>
+<pre><code class="language-php">function addTen($n) {
+    return $n + 10;
+}
+$num = addTen($num);   // $num is now 20</code></pre>
+<h4 id="lab-2-output-preview-what-the-browser-shows">Lab #2 — Output Preview (what the browser shows)</h4>
+<p><strong>Q1 — basic_function.php</strong> (fixed version)</p>
+<pre><code>Course Code: MAC272
+Course Name: Mathematics
+Grade: A
+
+Course Code: MAC250
+Course Name: Mathematics
+Grade: B
+
+Course Code: MAC101
+Course Name: Mathematics
+Grade: B</code></pre>
+<p><strong>Q2 — max_function.php</strong></p>
+<pre><code>Max of 10 and 25 is: 25
+Max of 80 and 12 is: 80
+Max of -5 and -9 is: -5
+Max of 7 and 7 is: 7</code></pre>
+<p><strong>Q3 — calculate_Multiply.php</strong></p>
+<pre><code>3 and 4: 12
+10 and 5: 50
+2.5 and 4: 10</code></pre>
+<p><strong>Q4 — variable_scope.php</strong> (fixed version)</p>
+<pre><code>Before: 10
+Warning: Undefined variable $num in ...variable_scope.php on line 5
+After: 10
+
+Before (global): 10
+After (global): 20</code></pre>
+<p>In the browser the warning appears right where <code>modifyNum()</code> runs, between the first Before and After lines. If <code>display_errors</code> is off in Apache, the warning is hidden and only the Before/After lines show.</p>
+<p><strong>Key takeaways from the lab</strong></p>
+<ul><li><p>Functions take parameters and can <code>return</code> a value (Q1–Q3).</p></li><li><p>Echoing inside a function is not the same as returning from it (Q1 echoes, Q2 and Q3 return).</p></li><li><p>Without <code>global</code>, a function cannot see or change an outside variable; with <code>global</code> it can (Q4).</p></li></ul>
+<h3 id="end-of-week-4-day-1-summary">End of Week 4, Day 1 — Summary</h3>
+<p><strong>Covered today</strong></p>
+<ul><li><p><strong>Strict typing:</strong> <code>declare(strict_types=1);</code> must be the first statement and applies per file. Weak mode coerces values (<code>5.5</code> silently becomes <code>5</code> for an int parameter); strict mode throws a <code>TypeError</code>. Typed parameters and return types: <code>function addNumbers(int $a, int $b): int</code>.</p></li><li><p><strong>Default argument values:</strong> <code>function setHeight($minheight = 50)</code>, used when the caller passes nothing; also seen in a class method.</p></li><li><p><strong>Variable scope:</strong> local (only inside the function), global (outside; reach it with <code>global</code> or <code>$GLOBALS</code>), and static (<code>static $x = 0;</code> keeps its value between calls: <code>012</code> with static, <code>000</code> without).</p></li><li><p><strong>Classes in PHP:</strong> PHP does support classes and objects (property, method, <code>$this</code>, constructor, visibility, static members); functions and classes both follow scope rules.</p></li><li><p><strong>Lab #2:</strong> four functions (courseInfo, maxNum, add/multiply, and the global vs. non-global scope demo), each with output preview.</p></li><li><p><strong>Project 1, Deliverable 1</strong> assigned: Project Proposal Report.</p></li></ul>
+<p><strong>Mistakes I made and fixed today</strong></p>
+<ul><li><p><code>&lt;?</code> instead of <code>&lt;?php</code>: PHP never ran, the browser showed raw code.</p></li><li><p>Passing an extra 4th argument to a 3-parameter function: PHP silently ignores it.</p></li><li><p><code>funtion</code> typo: a parse error, so nothing prints at all.</p></li><li><p>Defining <code>modifyNumGlo()</code> but calling <code>modifyNumGlobal()</code>: undefined function.</p></li></ul>
+<p><strong>To do before next class</strong></p>
+<ul><li><p>Replace the Q2 and Q3 drafts with my own code and add browser screenshots for the lab.</p></li><li><p>Start Project 1, Deliverable 1: Project Proposal Report, due <strong>Thursday, 10/29/2026</strong>.</p></li><li><p>Review: strict types vs. type juggling, and <code>global</code> vs. <code>static</code>.</p></li></ul>

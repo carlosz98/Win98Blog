@@ -825,6 +825,16 @@
     "description": "Carlos Monthly: a 3D magazine of retro game posters"
 },
 {
+    "name": "Class Notes",
+    "pic": "ClassNotes",
+    "folderId": "Desktop",
+    "size": 300,
+    "type": ".exe",
+    "x": 64,
+    "y": 64,
+    "description": "Carlos's class notes, organized by class"
+},
+{
     "name": "Cool Sites",
     "pic": "CoolSites",
     "folderId": "Desktop",

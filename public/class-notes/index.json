@@ -1,0 +1,433 @@
+{
+ "classes": [
+  {
+   "id": "mac272",
+   "title": "MAC 272 - WEB DEVELOPMENT 2",
+   "folders": [
+    {
+     "title": "Overview",
+     "pages": [
+      {
+       "slug": "overview",
+       "title": "About these notes",
+       "topics": [
+        {
+         "id": "sessions-covered",
+         "title": "Sessions covered"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Week 1",
+     "pages": [
+      {
+       "slug": "week-1",
+       "title": "Introduction to PHP, MySQL and career notes",
+       "topics": [
+        {
+         "id": "what-is-a-php-file",
+         "title": "What is a PHP file?"
+        },
+        {
+         "id": "getting-started",
+         "title": "Getting Started"
+        },
+        {
+         "id": "key-features-of-php",
+         "title": "Key Features of PHP"
+        },
+        {
+         "id": "key-features-of-mysql",
+         "title": "Key Features of MySQL"
+        },
+        {
+         "id": "php-mysql",
+         "title": "PHP + MySQL"
+        },
+        {
+         "id": "benefits-of-php-mysql-together",
+         "title": "Benefits of PHP + MySQL Together"
+        },
+        {
+         "id": "servicenow-javascript",
+         "title": "ServiceNow & JavaScript"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Week 2",
+     "pages": [
+      {
+       "slug": "week-2-day-1",
+       "title": "Day 1 — Our first PHP program",
+       "topics": [
+        {
+         "id": "default-entry-file",
+         "title": "Default Entry File"
+        },
+        {
+         "id": "starting-apache-on-mac-xampp-vm",
+         "title": "Starting Apache on Mac (XAMPP-VM)"
+        },
+        {
+         "id": "variables",
+         "title": "Variables"
+        },
+        {
+         "id": "single-quotes-vs-double-quotes-concatenation",
+         "title": "Single Quotes vs. Double Quotes (Concatenation)"
+        },
+        {
+         "id": "comments",
+         "title": "Comments"
+        },
+        {
+         "id": "conditional-statements-if-else",
+         "title": "Conditional Statements (if / else)"
+        },
+        {
+         "id": "code-so-far",
+         "title": "📌 Code So Far"
+        }
+       ]
+      },
+      {
+       "slug": "week-2-day-2",
+       "title": "Day 2 — Order form",
+       "topics": [
+        {
+         "id": "troubleshooting-my-file-isnt-showing-up",
+         "title": "🐛 Troubleshooting: \"My file isn't showing up\""
+        },
+        {
+         "id": "forms-post",
+         "title": "Forms & $_POST"
+        },
+        {
+         "id": "code-walkthrough",
+         "title": "Code Walkthrough"
+        },
+        {
+         "id": "guarding-against-an-empty-order",
+         "title": "Guarding Against an Empty Order"
+        },
+        {
+         "id": "update-fixed-version",
+         "title": "Update — Fixed Version"
+        },
+        {
+         "id": "calculating-tax",
+         "title": "Calculating Tax"
+        },
+        {
+         "id": "full-walkthrough-both-files-latest-version",
+         "title": "Full Walkthrough — Both Files, Latest Version"
+        },
+        {
+         "id": "built-in-functions-used-so-far",
+         "title": "Built-in Functions Used So Far"
+        },
+        {
+         "id": "why-the-dot-operator",
+         "title": "Why the . (Dot) Operator?"
+        },
+        {
+         "id": "comparison-operators-vs",
+         "title": "Comparison Operators: == vs. ="
+        },
+        {
+         "id": "full-operators-reference",
+         "title": "Full Operators Reference"
+        },
+        {
+         "id": "checking-a-variables-type-gettype",
+         "title": "Checking a Variable's Type — gettype()"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "CodeCademy - PHP",
+     "pages": [
+      {
+       "slug": "codecademy-php",
+       "title": "Extra practice",
+       "topics": [
+        {
+         "id": "introduction-to-php-how-is-php-executed",
+         "title": "Introduction to PHP — How is PHP Executed?"
+        },
+        {
+         "id": "introduction-to-php-php-comments",
+         "title": "Introduction to PHP — PHP Comments"
+        },
+        {
+         "id": "introduction-to-php-todo-learn-php",
+         "title": "Introduction to PHP — Todo: Learn PHP"
+        },
+        {
+         "id": "introduction-to-php-review-questions",
+         "title": "Introduction to PHP — Review Questions"
+        },
+        {
+         "id": "php-strings-and-variables-creating-variables",
+         "title": "PHP Strings and Variables — Creating Variables"
+        },
+        {
+         "id": "php-strings-and-variables-using-variables",
+         "title": "PHP Strings and Variables — Using Variables"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Week 3",
+     "pages": [
+      {
+       "slug": "week-3-day-1",
+       "title": "Day 1 — Type juggling, loops, Lab #1",
+       "topics": [
+        {
+         "id": "automatic-type-conversion-type-juggling",
+         "title": "Automatic Type Conversion (Type Juggling)"
+        },
+        {
+         "id": "quick-review-define",
+         "title": "Quick Review: define()"
+        },
+        {
+         "id": "checking-variables-isset-unset-empty",
+         "title": "Checking Variables: isset(), unset(), empty()"
+        },
+        {
+         "id": "vardump",
+         "title": "var_dump()"
+        },
+        {
+         "id": "echo-vs-print",
+         "title": "echo vs. print"
+        },
+        {
+         "id": "practice-declaring-variables-of-different-types",
+         "title": "Practice: Declaring Variables of Different Types"
+        },
+        {
+         "id": "lab-1-php-basic-concepts",
+         "title": "Lab #1 — PHP Basic Concepts"
+        },
+        {
+         "id": "for-and-foreach-loops",
+         "title": "for and foreach Loops"
+        },
+        {
+         "id": "for-loop-deeper-dive",
+         "title": "for Loop — Deeper Dive"
+        },
+        {
+         "id": "switch-statement",
+         "title": "switch Statement"
+        },
+        {
+         "id": "exit",
+         "title": "exit"
+        }
+       ]
+      },
+      {
+       "slug": "week-3-day-2",
+       "title": "Day 2 — Numbers, strings, casting, arrays",
+       "topics": [
+        {
+         "id": "php-integers-review",
+         "title": "PHP Integers (Review)"
+        },
+        {
+         "id": "integer-literal-formats-decimal-hexadecimal-octal",
+         "title": "Integer Literal Formats — Decimal, Hexadecimal, Octal"
+        },
+        {
+         "id": "integer-limits-phpintmax-phpintmin-phpintsize",
+         "title": "Integer Limits — PHP_INT_MAX, PHP_INT_MIN, PHP_INT_SIZE"
+        },
+        {
+         "id": "isint",
+         "title": "is_int()"
+        },
+        {
+         "id": "float-literal-formats",
+         "title": "Float Literal Formats"
+        },
+        {
+         "id": "float-limits-phpfloatmax-phpfloatmin-phpfloatepsilon-phpfloatdig",
+         "title": "Float Limits — PHP_FLOAT_MAX, PHP_FLOAT_MIN, PHP_FLOAT_EPSILON, PHP_FLOAT_DIG"
+        },
+        {
+         "id": "isfloat",
+         "title": "is_float()"
+        },
+        {
+         "id": "php-inf-infinity-and-nan-not-a-number",
+         "title": "PHP INF (Infinity) and NAN (Not a Number)"
+        },
+        {
+         "id": "strings-double-vs-single-quotes-review",
+         "title": "Strings — Double vs. Single Quotes (Review)"
+        },
+        {
+         "id": "string-concatenation-review",
+         "title": "String Concatenation (Review)"
+        },
+        {
+         "id": "type-casting",
+         "title": "Type Casting"
+        },
+        {
+         "id": "type-juggling-with-a-numeric-string-in-arithmetic",
+         "title": "Type Juggling with a Numeric String in Arithmetic"
+        },
+        {
+         "id": "php-arrays-vs-cc-arrays",
+         "title": "PHP Arrays vs. C/C++ Arrays"
+        },
+        {
+         "id": "indexed-arrays",
+         "title": "Indexed Arrays"
+        },
+        {
+         "id": "associative-arrays",
+         "title": "Associative Arrays"
+        },
+        {
+         "id": "multidimensional-arrays",
+         "title": "Multidimensional Arrays"
+        },
+        {
+         "id": "multidimensional-array-indexed-inner-arrays",
+         "title": "Multidimensional Array — Indexed Inner Arrays"
+        },
+        {
+         "id": "matrix-2d-array",
+         "title": "Matrix (2D Array)"
+        },
+        {
+         "id": "creating-arrays-two-syntaxes",
+         "title": "Creating Arrays — Two Syntaxes"
+        },
+        {
+         "id": "array-length-count",
+         "title": "Array Length — count()"
+        },
+        {
+         "id": "useful-array-functions-quick-preview",
+         "title": "Useful Array Functions (quick preview)"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Week 4",
+     "pages": [
+      {
+       "slug": "week-4-day-1",
+       "title": "Day 1 — Strict types, functions, scope, Lab #2",
+       "topics": [
+        {
+         "id": "strict-declaration-declarestricttypes1",
+         "title": "Strict Declaration — declare(strict_types=1)"
+        },
+        {
+         "id": "typed-function-example-addnumbers",
+         "title": "Typed Function Example — addNumbers()"
+        },
+        {
+         "id": "the-instructors-example-addnumbers5-5-days",
+         "title": "The Instructor's Example — addNumbers(5, \"5 days\")"
+        },
+        {
+         "id": "why-use-strict-types",
+         "title": "Why Use Strict Types?"
+        },
+        {
+         "id": "strict-types-everything-to-know",
+         "title": "Strict Types — Everything to Know"
+        },
+        {
+         "id": "default-argument-values-setheight",
+         "title": "Default Argument Values — setHeight()"
+        },
+        {
+         "id": "variable-scope-local-global-and-static",
+         "title": "Variable Scope — Local, Global, and Static"
+        },
+        {
+         "id": "classes-in-php-and-how-scope-works-inside-them",
+         "title": "Classes in PHP — and How Scope Works Inside Them"
+        },
+        {
+         "id": "lab-2-functions-and-variable-scope",
+         "title": "Lab #2 — Functions and Variable Scope"
+        },
+        {
+         "id": "end-of-week-4-day-1-summary",
+         "title": "End of Week 4, Day 1 — Summary"
+        }
+       ]
+      },
+      {
+       "slug": "week-4-day-2",
+       "title": "Day 2 — Forms, GET vs POST, Lab #3",
+       "topics": [
+        {
+         "id": "topic-1-login-form-html-form-php-processing",
+         "title": "Topic 1: Login Form (HTML form + PHP processing)"
+        },
+        {
+         "id": "topic-2-form-handling-class-handout-php-tutorial-part-7",
+         "title": "Topic 2: Form Handling (class handout: PHP Tutorial Part 7)"
+        },
+        {
+         "id": "topic-3-lab-3-question-1-register-page-with-php-validation",
+         "title": "Topic 3: Lab #3, Question 1 (Register page with PHP validation)"
+        },
+        {
+         "id": "end-of-week-4-day-2-summary",
+         "title": "End of Week 4, Day 2 — Summary"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Project 1",
+     "pages": [
+      {
+       "slug": "project-1",
+       "title": "Deliverable 1 — Project proposal",
+       "topics": [
+        {
+         "id": "the-report-must-include",
+         "title": "The report must include"
+        },
+        {
+         "id": "example-topics-suggested",
+         "title": "Example topics suggested"
+        },
+        {
+         "id": "notes-on-the-requirements",
+         "title": "Notes on the requirements"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,163 @@
+.cn-window {
+  width: min(900px, calc(100vw - 100px));
+  height: min(600px, calc(100svh - 70px));
+  display: flex;
+  flex-direction: column;
+}
+
+.cn-toolbar {
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  border-bottom: 1px solid #808080;
+  box-shadow: 0 1px 0 #fff;
+  flex-shrink: 0;
+}
+.cn-toolbar button {
+  font: 11px 'MS Sans Serif', Arial, sans-serif;
+  padding: 3px 10px;
+  background: #c5c4c4;
+  border: 2px solid;
+  border-color: #fff #000 #000 #fff;
+  cursor: pointer;
+}
+.cn-toolbar button:active { border-color: #000 #fff #fff #000; }
+
+.cn-main {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  gap: 3px;
+  margin: 3px;
+}
+
+/* Contents tree (left) */
+.cn-tree {
+  width: 260px;
+  flex-shrink: 0;
+  overflow: auto;
+  background: #fff;
+  border: 2px solid;
+  border-color: #808080 #fff #fff #808080;
+  padding: 2px 0;
+}
+.cn-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: 1px solid transparent;
+  font: 11px 'MS Sans Serif', Arial, sans-serif;
+  padding: 2px 4px;
+  cursor: pointer;
+  color: #000;
+}
+.cn-row img { width: 16px; height: 16px; image-rendering: pixelated; flex-shrink: 0; }
+.cn-class { font-weight: bold; }
+.cn-l1 { padding-left: 14px; }
+.cn-l2 { padding-left: 30px; }
+.cn-l3 { padding-left: 48px; color: #000080; }
+.cn-row:hover span:last-child { text-decoration: underline; }
+.cn-row.active { background: #000080; color: #fff; }
+.cn-doc {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  background: #ff0;
+  border: 1px solid #000;
+  font: bold 10px Arial, sans-serif;
+  color: #000;
+}
+.cn-dot { width: 10px; text-align: center; flex-shrink: 0; }
+
+/* Topic pane (right) */
+.cn-content {
+  flex: 1;
+  min-width: 0;
+  overflow: auto;
+  background: #fff;
+  border: 2px solid;
+  border-color: #808080 #fff #fff #808080;
+  padding: 8px 14px 24px;
+  position: relative;
+}
+.cn-crumb {
+  font: 10px 'MS Sans Serif', Arial, sans-serif;
+  color: #808080;
+  margin: 0 0 6px;
+}
+.cn-hint { font-size: 11px; padding: 6px; color: #444; }
+
+.cn-article {
+  font: 13px/1.5 Georgia, 'Times New Roman', serif;
+  color: #000;
+  user-select: text;
+  overflow-wrap: anywhere;
+}
+.cn-article h2 { font: bold 20px Arial, sans-serif; color: #000080; border-bottom: 2px solid #000080; padding-bottom: 3px; margin: 18px 0 10px; }
+.cn-article h2:first-child { margin-top: 4px; }
+.cn-article h3 { font: bold 16px Arial, sans-serif; margin: 18px 0 6px; color: #000; }
+.cn-article h4 { font: bold 13px Arial, sans-serif; margin: 12px 0 4px; }
+.cn-article p, .cn-article li { margin: 6px 0; }
+.cn-article ul, .cn-article ol { padding-left: 22px; margin: 6px 0; }
+.cn-article a { color: #0000ee; }
+.cn-article hr { border: 0; border-top: 2px groove #c0c0c0; margin: 14px 0; }
+.cn-article blockquote {
+  margin: 8px 0;
+  padding: 4px 10px;
+  background: #ffffcc;
+  border: 1px solid #808080;
+  border-left: 4px solid #c0a000;
+}
+.cn-article img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 8px 0;
+  border: 2px solid;
+  border-color: #808080 #fff #fff #808080;
+  background: #c0c0c0;
+}
+.cn-article code { font: 12px 'Courier New', monospace; background: #eee; padding: 0 3px; }
+.cn-article pre {
+  margin: 8px 0;
+  padding: 8px 10px;
+  background: #000;
+  color: #c0c0c0;
+  border: 2px solid;
+  border-color: #808080 #fff #fff #808080;
+  overflow-x: auto;
+  white-space: pre;
+}
+.cn-article pre code { background: transparent; color: inherit; padding: 0; font-size: 12px; line-height: 1.4; }
+.cn-article table { border-collapse: collapse; margin: 8px 0; font: 12px Arial, sans-serif; display: block; overflow-x: auto; max-width: 100%; }
+.cn-article th, .cn-article td { border: 1px solid #808080; padding: 3px 7px; vertical-align: top; }
+.cn-article th { background: #c5c4c4; text-align: left; }
+
+.cn-status {
+  display: flex;
+  gap: 3px;
+  padding: 2px 3px;
+  border-top: 1px solid #808080;
+  font: 11px 'MS Sans Serif', Arial, sans-serif;
+  flex-shrink: 0;
+}
+.cn-status span {
+  padding: 1px 6px;
+  border: 1px solid;
+  border-color: #808080 #fff #fff #808080;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.cn-status span:first-child { flex: 1; }
+
+@media (max-width: 600px) {
+  .cn-main { flex-direction: column; }
+  .cn-tree { width: auto; max-height: 38%; }
+}

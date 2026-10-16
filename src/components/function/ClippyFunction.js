@@ -47,6 +47,7 @@ export const clippyReactions = {
     mediaplayer: { phrase: "Grab some popcorn. Carlos picked these himself.", animation: clippy3 },
     myspecs: { phrase: "Whoa, 32 GB of RAM? In 1998 that would cost more than a house.", animation: clippy3 },
     magazine: { phrase: "Fresh issue of Carlos Monthly! Click the magazine on the desk.", animation: clippy3 },
+    classnotes: { phrase: "Study time! Carlos keeps his class notes here, sorted by class.", animation: clippy3 },
     coolsites: { phrase: "Surf's up! These are Carlos's favorite corners of the web.", animation: clippy3 },
     visitormap:  { phrase: "Look how far people come from to visit Carlos!", animation: clippy2 },
     msn:         { phrase: "That's CarlosBot! Ask it anything about Carlos.", animation: clippy2 },

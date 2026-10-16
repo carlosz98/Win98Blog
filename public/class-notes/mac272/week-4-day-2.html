@@ -1,0 +1,561 @@
+<h2 id="week-4-day-2-thursday-10152026-forms-get-vs-post-redirects-and-lab-3">Week 4, Day 2 — Thursday 10/15/2026: Forms, GET vs POST, Redirects, and Lab #3</h2>
+<p><strong>Tools:</strong> VS Code, Apache (XAMPP), PHP, HTML. <strong>Folders used:</strong> <code>login/</code> (the login project) and <code>Lab6/</code>-style folders for the labs. Today&#39;s class had three topics: a login form, form handling with the PHP superglobals (class handout: PHP Tutorial Part 7), and Lab #3 (a Register page with PHP validation).</p>
+<h3 id="topic-1-login-form-html-form-php-processing">Topic 1: Login Form (HTML form + PHP processing)</h3>
+<p>A login form is the simplest example of HTML and PHP working together. HTML builds the form the user sees. When the user clicks submit, the browser sends the form data to the server, Apache hands the request to PHP, and PHP reads the data, checks it, and sends back a response.</p>
+<p><strong>Flow:</strong> Browser (HTML form) → Apache → PHP script → response back to the browser</p>
+<h4 id="syntax">Syntax</h4>
+<pre><code class="language-html">&lt;form action=&quot;file.php&quot; method=&quot;POST&quot;&gt;
+  &lt;input type=&quot;text&quot; name=&quot;fieldname&quot;&gt;
+  &lt;input type=&quot;submit&quot; value=&quot;Send&quot;&gt;
+&lt;/form&gt;</code></pre>
+<ul><li><p><code>action</code> is the PHP file that receives the data.</p></li><li><p><code>method</code> is how the data is sent. <code>POST</code> sends it in the request body (not shown in the URL). <code>GET</code> puts it in the URL.</p></li><li><p><code>name</code> on each input is the key PHP uses to read the value.</p></li><li><p><code>required</code> makes the browser block submitting an empty field.</p></li><li><p><code>label for=&quot;x&quot;</code> links the label to the input with <code>id=&quot;x&quot;</code>.</p></li></ul>
+<p>PHP basics used today:</p>
+<ul><li><p><code>&lt;?php ... ?&gt;</code> opens and closes a block of PHP code.</p></li><li><p><code>$_SERVER[&quot;REQUEST_METHOD&quot;]</code> tells you how the page was requested (GET or POST).</p></li><li><p><code>$_POST[&#39;name&#39;]</code> reads a value sent by a POST form, using the input&#39;s <code>name</code> attribute.</p></li><li><p><code>==</code> compares two values. <code>&amp;&amp;</code> means AND.</p></li><li><p><code>echo</code> prints output to the page. <code>//</code> starts a one-line comment. <code>if / else</code> runs code depending on a condition.</p></li></ul>
+<h4 id="loginphp-first-version-form-and-php-in-one-file">Login.php (first version, form and PHP in one file)</h4>
+<pre><code class="language-php">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;Login Form&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;!-- HTML Form --&gt;
+&lt;form action=&quot;login_process.php&quot; method=&quot;POST&quot;&gt;
+&lt;label for=&quot;username&quot;&gt;User Name:&lt;/label&gt;
+&lt;input type=&quot;text&quot; id=&quot;username&quot; name=&quot;username&quot; required&gt;
+&lt;br&gt;&lt;br&gt;
+&lt;label for=&quot;password&quot;&gt;Password:&lt;/label&gt;
+&lt;input type=&quot;password&quot; id=&quot;password&quot; name=&quot;password&quot; required&gt;
+&lt;br&gt;&lt;br&gt;
+&lt;input type=&quot;submit&quot; name=&quot;submit&quot; value=&quot;Log in&quot;&gt;
+&lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+&lt;?php
+if ($_SERVER[&quot;REQUEST_METHOD&quot;] == &quot;POST&quot;) {
+$username = $_POST[&#39;username&#39;];
+$password = $_POST[&#39;password&#39;];
+// Validate the credentials
+if ($username == &#39;John&#39; &amp;&amp; $password == &#39;123&#39;) {
+echo &quot;&lt;p style=&#39;color: green;&#39;&gt;Your information is correct.&lt;/p&gt;&quot;;
+} else {
+echo &quot;&lt;p style=&#39;color: red;&#39;&gt;Username or password is not correct.&lt;/p&gt;&quot;;
+}
+}
+?&gt;</code></pre>
+<p><img src="__BASE__class-notes/img/b5a4b0189de1ead6cd6ff6db3c80004b.png" loading="lazy" alt="Login.php in VS Code"></p>
+<p><strong>Line-by-line</strong></p>
+<ul><li><p><strong>Lines 1–18:</strong> the HTML page with the login form. <code>type=&quot;password&quot;</code> hides the characters as the user types.</p></li><li><p><strong>Line 8:</strong> the form sends its data with POST to <code>login_process.php</code>.</p></li><li><p><strong>Line 21:</strong> checks that the page was reached by a form submission (POST) before processing anything.</p></li><li><p><strong>Lines 22–23:</strong> store the submitted username and password in variables. PHP variables start with <code>$</code>.</p></li><li><p><strong>Line 25:</strong> compares the input to the hardcoded values <code>John</code> and <code>123</code>. Both must match.</p></li><li><p><strong>Lines 26 and 28:</strong> <code>echo</code> prints a green message if correct, a red message if not.</p></li></ul>
+<p><strong>Things to watch for</strong></p>
+<ul><li><p><strong>File mismatch:</strong> the form&#39;s <code>action</code> points to <code>login_process.php</code>, but the validation code sits inside <code>Login.php</code>. If the form posts to <code>login_process.php</code>, the validation needs to live in that file (or change <code>action</code> to <code>Login.php</code> to process on the same page). The two-file version below fixes this.</p></li><li><p><strong>Run it through Apache:</strong> PHP only runs when Apache serves the file, at <code>http://localhost/login/Login.php</code>. Opening the file directly from the folder shows the PHP code as text.</p></li><li><p><strong>Case sensitive:</strong> <code>&#39;John&#39;</code> and <code>&#39;john&#39;</code> are different values.</p></li><li><p><strong>Hardcoded credentials</strong> are only for practice. Real logins check a database (MySQL) and store hashed passwords.</p></li><li><p><strong>Stricter comparison:</strong> <code>===</code> also checks the data type and is generally safer than <code>==</code>.</p></li><li><p><strong>Escape output:</strong> when printing user input back on a page, wrap it with <code>htmlspecialchars()</code> to prevent XSS.</p></li></ul>
+<h4 id="two-file-version-project-folder-login">Two-file version (project folder <code>login/</code>)</h4>
+<p>The project is split into two files so the form and the processing each have their own job. Both sit in the same folder, so <code>action=&quot;login_process.php&quot;</code> finds the script.</p>
+<table><thead><tr><th>File</th><th>Job</th></tr></thead><tbody><tr><td><code>Login.php</code></td><td>Shows the HTML form only. Submitting sends the data to <code>login_process.php</code>.</td></tr><tr><td><code>login_process.php</code></td><td>Receives the POST data, checks the credentials, prints the message.</td></tr></tbody></table>
+<p><strong>login_process.php</strong></p>
+<pre><code class="language-php">&lt;?php
+if ($_SERVER[&quot;REQUEST_METHOD&quot;] == &quot;POST&quot;) {
+$username = $_POST[&#39;username&#39;];
+$password = $_POST[&#39;password&#39;];
+// Validate the credentials
+if ($username == &#39;John&#39; &amp;&amp; $password == &#39;123&#39;) {
+echo &quot;&lt;p style=&#39;color: green;&#39;&gt;Your information is correct.&lt;/p&gt;&quot;;
+} else {
+echo &quot;&lt;p style=&#39;color: red;&#39;&gt;Username or password is not correct.&lt;/p&gt;&quot;;
+}
+}
+?&gt;</code></pre>
+<p><img src="__BASE__class-notes/img/e9911b259c6fa6f5912f56226616c772.png" loading="lazy" alt="login_process.php in VS Code"></p>
+<p><strong>How it runs</strong></p>
+<ol><li><p>Open <code>http://localhost/login/Login.php</code> in the browser (served by Apache).</p></li><li><p>Type a username and password, then click Log in.</p></li><li><p>The browser sends a POST request to <code>login_process.php</code>.</p></li><li><p>PHP reads <code>$_POST[&#39;username&#39;]</code> and <code>$_POST[&#39;password&#39;]</code> and compares them to the stored values.</p></li><li><p>The browser shows a green message if both match, or a red message if not.</p></li></ol>
+<p><strong>Notes</strong></p>
+<ul><li><p>Once the PHP block lives in <code>login_process.php</code>, <code>Login.php</code> only needs the form. The copy of the PHP code at the bottom of <code>Login.php</code> is no longer used.</p></li><li><p>Opening <code>login_process.php</code> directly in the browser (a GET request) prints nothing, because the <code>if</code> only runs on POST.</p></li><li><p>The result page has no link back to the form. A simple fix is adding <code>&lt;a href=&quot;Login.php&quot;&gt;Back to login&lt;/a&gt;</code> to the output.</p></li><li><p>Only the <code>name</code> attributes matter for PHP. If <code>name=&quot;username&quot;</code> changes in the form, <code>$_POST[&#39;username&#39;]</code> must change to match.</p></li></ul>
+<h4 id="improved-version-back-link-added">Improved version (back link added)</h4>
+<p>Save both files (Cmd+S on Mac) before testing. VS Code shows a dot on the tab when a file has unsaved changes, and Apache serves only the saved version.</p>
+<p><strong>Login.php</strong> (form only, no PHP block)</p>
+<pre><code class="language-php">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;Login Form&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;!-- HTML Form --&gt;
+&lt;form action=&quot;login_process.php&quot; method=&quot;POST&quot;&gt;
+&lt;label for=&quot;username&quot;&gt;User Name:&lt;/label&gt;
+&lt;input type=&quot;text&quot; id=&quot;username&quot; name=&quot;username&quot; required&gt;
+&lt;br&gt;&lt;br&gt;
+&lt;label for=&quot;password&quot;&gt;Password:&lt;/label&gt;
+&lt;input type=&quot;password&quot; id=&quot;password&quot; name=&quot;password&quot; required&gt;
+&lt;br&gt;&lt;br&gt;
+&lt;input type=&quot;submit&quot; name=&quot;submit&quot; value=&quot;Log in&quot;&gt;
+&lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p><strong>login_process.php</strong> (with a link back to the form)</p>
+<pre><code class="language-php">&lt;?php
+if ($_SERVER[&quot;REQUEST_METHOD&quot;] == &quot;POST&quot;) {
+$username = $_POST[&#39;username&#39;];
+$password = $_POST[&#39;password&#39;];
+// Validate the credentials
+if ($username == &#39;John&#39; &amp;&amp; $password == &#39;123&#39;) {
+echo &quot;&lt;p style=&#39;color: green;&#39;&gt;Your information is correct.&lt;/p&gt;&quot;;
+} else {
+echo &quot;&lt;p style=&#39;color: red;&#39;&gt;Username or password is not correct.&lt;/p&gt;&quot;;
+}
+echo &quot;&lt;a href=&#39;Login.php&#39;&gt;Back to login&lt;/a&gt;&quot;;
+}
+?&gt;</code></pre>
+<p>The only change is the <code>echo</code> line that prints a link. It sits inside the POST check but after the if/else, so it shows for both the correct and incorrect result.</p>
+<h4 id="output-loginphp-in-the-browser">Output: Login.php in the browser</h4>
+<p>The form loads through Apache at <code>http://localhost/login/Login.php</code>. It shows a User Name box, a Password box, and a Log in button, which is what the HTML in <code>Login.php</code> builds.</p>
+<p><img src="__BASE__class-notes/img/4ecad12206994cdf708e1f2caabc8473.png" loading="lazy" alt="Login.php in the browser"></p>
+<ul><li><p><strong>The URL path follows the folder:</strong> <code>localhost/login/Login.php</code> means the file sits in a folder named <code>login</code> inside Apache&#39;s web root.</p></li><li><p><strong>Loading over <code>http://localhost</code></strong> confirms Apache is serving the file, which is what lets PHP run. A <code>file://</code> address would not run PHP.</p></li><li><p><strong>Expected results after clicking Log in:</strong> <code>John</code> and <code>123</code> shows a green &quot;Your information is correct.&quot; message. Anything else shows a red &quot;Username or password is not correct.&quot; message.</p></li></ul>
+<h4 id="quick-reference-everything-used-in-topic-1">Quick reference: everything used in Topic 1</h4>
+<table><thead><tr><th>Item</th><th>What it does</th><th>Example</th></tr></thead><tbody><tr><td><code>&lt;?php ... ?&gt;</code></td><td>Opens and closes a block of PHP code</td><td><code>&lt;?php echo &quot;Hi&quot;; ?&gt;</code></td></tr><tr><td><code>&lt;form action method&gt;</code></td><td>Sends form data to a script</td><td><code>&lt;form action=&quot;login_process.php&quot; method=&quot;POST&quot;&gt;</code></td></tr><tr><td><code>name=&quot;x&quot;</code></td><td>Key PHP uses to read an input</td><td><code>name=&quot;username&quot;</code></td></tr><tr><td><code>required</code></td><td>Browser blocks an empty field</td><td><code>&lt;input type=&quot;text&quot; required&gt;</code></td></tr><tr><td><code>type=&quot;password&quot;</code></td><td>Hides typed characters</td><td><code>&lt;input type=&quot;password&quot;&gt;</code></td></tr><tr><td><code>$_SERVER[&quot;REQUEST_METHOD&quot;]</code></td><td>Gets GET or POST</td><td><code>if ($_SERVER[&quot;REQUEST_METHOD&quot;] == &quot;POST&quot;)</code></td></tr><tr><td><code>$_POST[&#39;x&#39;]</code></td><td>Reads submitted form data</td><td><code>$username = $_POST[&#39;username&#39;];</code></td></tr><tr><td><code>if / else</code></td><td>Runs code based on a condition</td><td><code>if ($a == $b) { ... } else { ... }</code></td></tr><tr><td><code>&amp;&amp;</code></td><td>AND, both conditions must be true</td><td><code>$u == &#39;John&#39; &amp;&amp; $p == &#39;123&#39;</code></td></tr><tr><td><code>echo</code></td><td>Prints output to the page</td><td><code>echo &quot;&lt;p&gt;Hello&lt;/p&gt;&quot;;</code></td></tr><tr><td><code>//</code></td><td>One-line comment</td><td><code>// Validate the credentials</code></td></tr></tbody></table>
+<h3 id="topic-2-form-handling-class-handout-php-tutorial-part-7">Topic 2: Form Handling (class handout: PHP Tutorial Part 7)</h3>
+<p>These notes follow the class handout, with plain-language explanations added.</p>
+<h4 id="the-big-picture">The big picture</h4>
+<ul><li><p><strong>Static webpage:</strong> plain HTML. The content does not change unless something else (JavaScript or server-side code) changes it.</p></li><li><p><strong>Web application:</strong> a set of pages hosted on a web server (like Apache) that uses server-side code (PHP, Node.js, Python) for logic, data processing, and databases.</p></li><li><p><strong>How they talk:</strong> the browser is the HTTP client. It sends a request (open a page, submit a form), the server runs the code, and the server sends back a response (HTML). HTTPS is the same thing with encryption.</p></li><li><p><strong>Form handling in PHP:</strong> collecting, validating, and processing the data a user submits through an HTML form.</p></li></ul>
+<p>In simple words: the user fills in a form, the browser packs the data into a request, Apache gives it to PHP, and PHP reads it and decides what to show back.</p>
+<h4 id="basic-html-form">Basic HTML form</h4>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;title&gt;PHP Form Handling&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;form action=&quot;process.php&quot; method=&quot;post&quot;&gt;
+        &lt;label for=&quot;name&quot;&gt;Name:&lt;/label&gt;
+        &lt;input type=&quot;text&quot; id=&quot;name&quot; name=&quot;name&quot;&gt;
+        &lt;br&gt;&lt;br&gt;
+        &lt;label for=&quot;email&quot;&gt;Email:&lt;/label&gt;
+        &lt;input type=&quot;email&quot; id=&quot;email&quot; name=&quot;email&quot;&gt;
+        &lt;br&gt;&lt;br&gt;
+        &lt;input type=&quot;submit&quot; value=&quot;Submit&quot;&gt;
+    &lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<ul><li><p><code>action</code>: the PHP file that receives and processes the data (here <code>process.php</code>).</p></li><li><p><code>method</code>: how the data is sent, <code>GET</code> or <code>POST</code>.</p></li><li><p><code>name</code> on each input: this becomes the key PHP uses to read the value. The most important point in the handout: any form element in an HTML page is automatically available to your PHP script.</p></li><li><p><code>type=&quot;email&quot;</code>: the browser checks that the text looks like an email address before submitting.</p></li></ul>
+<p><strong>Basic workflow</strong></p>
+<ol><li><p><strong>HTML form:</strong> create the form to collect user input.</p></li><li><p><strong>Form submission:</strong> the browser sends the data with POST or GET to a PHP script.</p></li><li><p><strong>PHP script:</strong> reads the data with <code>$_POST</code>, <code>$_GET</code>, or <code>$_REQUEST</code>.</p></li><li><p><strong>Processing:</strong> validate the data, process it, and optionally store it in a database.</p></li><li><p><strong>Response:</strong> PHP prints a message or redirects the user to another page.</p></li></ol>
+<h4 id="superglobals">Superglobals</h4>
+<p><strong>Superglobals</strong> are predefined PHP variables that are always available, in any function, class, or file, with no <code>global</code> keyword needed. Most are <strong>associative arrays</strong>: key-value pairs where the key is a name and the value is the data.</p>
+<pre><code class="language-php">$person = [&#39;name&#39; =&gt; &#39;John&#39;, &#39;age&#39; =&gt; 25];
+echo $person[&#39;name&#39;];   // John</code></pre>
+<table><thead><tr><th>Superglobal</th><th>What it holds</th></tr></thead><tbody><tr><td><code>$GLOBALS</code></td><td>All variables defined in the global scope</td></tr><tr><td><code>$_SERVER</code></td><td>Server, header, path, and request information</td></tr><tr><td><code>$_REQUEST</code></td><td>Data from <code>$_GET</code>, <code>$_POST</code>, and <code>$_COOKIE</code> combined</td></tr><tr><td><code>$_POST</code></td><td>Form data sent with the POST method</td></tr><tr><td><code>$_GET</code></td><td>Data sent in the URL (GET method)</td></tr><tr><td><code>$_FILES</code></td><td>Files uploaded through a form</td></tr><tr><td><code>$_ENV</code></td><td>Environment variables</td></tr><tr><td><code>$_COOKIE</code></td><td>Cookies stored in the browser</td></tr><tr><td><code>$_SESSION</code></td><td>Session data kept on the server between pages</td></tr></tbody></table>
+<p>The handout covers the first five in detail. The last four come later in the course.</p>
+<p><strong>$GLOBALS</strong> is an array of all global variables. It lets a function read or change a global variable from inside the function. The other way is the <code>global</code> keyword (see Week 4, Day 1, variable scope and Lab #2 Q4).</p>
+<pre><code class="language-php">&lt;?php
+$x = 10;
+$y = 20;
+function sum() {
+    $GLOBALS[&#39;z&#39;] = $GLOBALS[&#39;x&#39;] + $GLOBALS[&#39;y&#39;];
+}
+sum();
+echo $z;   // Outputs: 30
+?&gt;</code></pre>
+<p>Why it is needed: variables created outside a function are not visible inside it by default (this is called scope). <code>$GLOBALS</code> reaches through that wall.</p>
+<p><strong>$_SERVER</strong> holds information about the server and the current request.</p>
+<pre><code class="language-php">$_SERVER[&#39;PHP_SELF&#39;];          // filename of the currently running script
+$_SERVER[&#39;SERVER_NAME&#39;];       // the server&#39;s name
+$_SERVER[&#39;REQUEST_METHOD&#39;];    // how the page was requested (GET or POST)</code></pre>
+<p><strong>$_POST</strong> holds the variables received with the HTTP POST method. A form uses POST when <code>method=&quot;POST&quot;</code>. When the user clicks submit, the data goes to the file named in <code>action</code>.</p>
+<p>Form and processor in two files:</p>
+<pre><code class="language-php">&lt;form method=&quot;POST&quot; action=&quot;demo_request.php&quot;&gt;
+    Name: &lt;input type=&quot;text&quot; name=&quot;fname&quot;&gt;
+    &lt;input type=&quot;submit&quot;&gt;
+&lt;/form&gt;</code></pre>
+<pre><code class="language-php">// demo_request.php
+$name = $_POST[&#39;fname&#39;];
+echo $name;</code></pre>
+<p>Form and PHP in the same file:</p>
+<pre><code class="language-php">&lt;html&gt;
+&lt;body&gt;
+&lt;form method=&quot;POST&quot; action=&quot;&lt;?php echo $_SERVER[&#39;PHP_SELF&#39;];?&gt;&quot;&gt;
+  Name: &lt;input type=&quot;text&quot; name=&quot;fname&quot;&gt;
+  &lt;input type=&quot;submit&quot;&gt;
+&lt;/form&gt;
+&lt;?php
+if ($_SERVER[&quot;REQUEST_METHOD&quot;] == &quot;POST&quot;) {
+  $name = ($_POST[&#39;fname&#39;]);
+  if (empty($name)) {
+    echo &quot;Name is empty&quot;;
+  } else {
+    echo $name;
+  }
+}
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<ul><li><p><strong><code>PHP_SELF</code>:</strong> the current file&#39;s name, so the form sends its data back to the same page.</p></li><li><p><strong><code>action=&quot;&quot;</code>:</strong> leaving the action empty also submits to the current page, and is the safer choice (printing <code>PHP_SELF</code> straight into the page can be abused by attackers).</p></li><li><p><strong><code>empty($name)</code>:</strong> true when the value is blank (empty string, <code>0</code>, or not set).</p></li><li><p><strong>Why the <code>REQUEST_METHOD</code> check:</strong> the first time the page loads (GET) the form is only displayed. The PHP block runs only after the form is submitted (POST).</p></li></ul>
+<p><strong>Walkthrough: the same-file form, step by step</strong></p>
+<p>The confusing part is that <strong>one file does two jobs</strong> and <strong>runs twice</strong>: once to show the form, and once more after the user submits it. Each time, PHP reads the file from top to bottom.</p>
+<p><strong>Run 1: you open the page (a GET request)</strong></p>
+<ol><li><p>PHP reaches <code>action=&quot;&lt;?php echo $_SERVER[&#39;PHP_SELF&#39;];?&gt;&quot;</code> and fills in the current file&#39;s name. If the file is <code>/login/form.php</code>, the browser receives <code>action=&quot;/login/form.php&quot;</code>.</p></li><li><p>The form is sent to the browser and displayed.</p></li><li><p>PHP reaches the <code>if</code>. <code>$_SERVER[&quot;REQUEST_METHOD&quot;]</code> is <code>GET</code> (you only opened the page), so the condition is false and PHP skips everything inside it.</p></li><li><p>Result: you see an empty form and nothing else.</p></li></ol>
+<p><strong>Run 2: you type a name and click submit (a POST request)</strong></p>
+<ol><li><p>The browser sends the data to the address in <code>action</code>, which is the same file.</p></li><li><p>PHP runs the file again from the top and shows the form again.</p></li><li><p>This time <code>REQUEST_METHOD</code> is <code>POST</code>, so the condition is true and PHP enters the block.</p></li><li><p><code>$name = ($_POST[&#39;fname&#39;]);</code> takes the value labeled <code>fname</code> from the form and stores it in <code>$name</code>. The extra parentheses change nothing.</p></li><li><p><code>empty($name)</code> checks if the box was left blank. If it was, the page prints <code>Name is empty</code>. Otherwise it prints what was typed.</p></li></ol>
+<p><strong>What the browser actually receives after typing &quot;Ana&quot;:</strong></p>
+<pre><code class="language-html">&lt;form method=&quot;POST&quot; action=&quot;/login/form.php&quot;&gt;
+  Name: &lt;input type=&quot;text&quot; name=&quot;fname&quot;&gt;
+  &lt;input type=&quot;submit&quot;&gt;
+&lt;/form&gt;
+Ana</code></pre>
+<p>The browser never sees the PHP code, only the finished HTML.</p>
+<table><thead><tr><th>Line</th><th>What it does</th></tr></thead><tbody><tr><td><code>&lt;form method=&quot;POST&quot; action=&quot;&lt;?php echo $_SERVER[&#39;PHP_SELF&#39;];?&gt;&quot;&gt;</code></td><td>Starts the form. Sends the data by POST to the same file (PHP prints the file name into the action).</td></tr><tr><td><code>Name: &lt;input type=&quot;text&quot; name=&quot;fname&quot;&gt;</code></td><td>A text box. The <code>name=&quot;fname&quot;</code> is the label PHP uses to find the value.</td></tr><tr><td><code>&lt;input type=&quot;submit&quot;&gt;</code></td><td>The button that sends the form.</td></tr><tr><td><code>&lt;/form&gt;</code></td><td>Ends the form.</td></tr><tr><td><code>&lt;?php</code></td><td>PHP code starts here.</td></tr><tr><td><code>if ($_SERVER[&quot;REQUEST_METHOD&quot;] == &quot;POST&quot;) {</code></td><td>Only continue if the form was submitted. Without this check, the code would run when the page first loads.</td></tr><tr><td><code>$name = ($_POST[&#39;fname&#39;]);</code></td><td>Gets the typed text and stores it in <code>$name</code>.</td></tr><tr><td><code>if (empty($name)) {</code></td><td>Is the box blank?</td></tr><tr><td><code>echo &quot;Name is empty&quot;;</code></td><td>If blank, print this message.</td></tr><tr><td><code>} else {</code></td><td>Otherwise (the box had text).</td></tr><tr><td><code>echo $name;</code></td><td>Print the typed name.</td></tr><tr><td><code>}</code> <code>}</code></td><td>Close the inner if/else, then the outer <code>if</code> (the POST check).</td></tr><tr><td><code>?&gt;</code></td><td>PHP code ends here.</td></tr></tbody></table>
+<p>The closing <code>}</code> and <code>?&gt;</code> at the bottom are easy to lose when copying. Without the last <code>}</code> PHP shows a parse error, because every <code>{</code> needs a matching <code>}</code>.</p>
+<p><strong>Why put the form and the PHP in one file?</strong> It is convenient for small examples, because the form and its result stay together. The login project uses two files instead (<code>Login.php</code> and <code>login_process.php</code>) to keep the form separate from the processing. Both ways work, and the idea is the same.</p>
+<h4 id="get">$_GET</h4>
+<p>Holds variables received in the URL. They arrive in two ways: a <strong>query string</strong> or an HTML form with <code>method=&quot;GET&quot;</code>.</p>
+<p>A query string is data added to the end of a URL after the <code>?</code>. Pairs are written <code>key=value</code> and joined with <code>&amp;</code>.</p>
+<pre><code class="language-html">&lt;a href=&quot;demo_phpfile.php?subject=PHP&amp;web=W3schools.com&quot;&gt;Test GET&lt;/a&gt;</code></pre>
+<p>This link sends two pairs: <code>subject=PHP</code> and <code>web=W3schools.com</code>.</p>
+<pre><code class="language-php">&lt;?php
+echo &quot;Study &quot; . $_GET[&#39;subject&#39;] . &quot; at &quot; . $_GET[&#39;web&#39;];
+?&gt;</code></pre>
+<p>The <code>.</code> joins strings together (concatenation). Output: <code>Study PHP at W3schools.com</code>.</p>
+<p><strong>GET form:</strong></p>
+<pre><code class="language-html">&lt;form action=&quot;welcome_get.php&quot; method=&quot;GET&quot;&gt;
+    Name: &lt;input type=&quot;text&quot; name=&quot;name&quot;&gt;
+    E-mail: &lt;input type=&quot;text&quot; name=&quot;email&quot;&gt;
+    &lt;input type=&quot;submit&quot;&gt;
+&lt;/form&gt;</code></pre>
+<p>After submitting, the browser address becomes: <code>welcome_get.php?name=John&amp;email=john@example.com</code></p>
+<pre><code class="language-html">&lt;html&gt;
+&lt;body&gt;
+Welcome &lt;?php echo $_GET[&quot;name&quot;]; ?&gt;&lt;br&gt;
+Your email address is: &lt;?php echo $_GET[&quot;email&quot;]; ?&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p><strong>Class demo output (GET form):</strong> the professor typed the name <code>Adam</code> and the email <code>adam@gmail.com</code>. The page showed:</p>
+<pre><code>Welcome Adam
+Your email address is: adam@gmail.com</code></pre>
+<p>The address bar showed the data in the URL:</p>
+<pre><code>welcome_get.php?name=Adam&amp;email=adam%40gmail.com</code></pre>
+<ul><li><p><strong>The data is in the URL because the method is GET,</strong> not POST. With POST the address bar would show only <code>welcome_get.php</code>, and the PHP would read <code>$_POST[&quot;name&quot;]</code> instead of <code>$_GET[&quot;name&quot;]</code>.</p></li><li><p><strong><code>%40</code> is how a URL writes the <code>@</code> symbol.</strong> Browsers encode special characters in the URL, and PHP decodes them back, so <code>$_GET[&quot;email&quot;]</code> still gives <code>adam@gmail.com</code>.</p></li><li><p><strong>Each pair is <code>name=value</code>,</strong> and pairs are joined with <code>&amp;</code>. The names come from the <code>name</code> attributes of the form inputs.</p></li></ul>
+<h4 id="request">$_REQUEST</h4>
+<p>Contains data from <code>$_GET</code>, <code>$_POST</code>, and <code>$_COOKIE</code> together, so it works whichever method was used.</p>
+<pre><code class="language-php">&lt;?php echo $_REQUEST[&#39;fname&#39;]; // the value typed in the &quot;fname&quot; field ?&gt;</code></pre>
+<p><strong>Typo in the handout:</strong> the form field is named <code>fname</code> but the handout reads <code>$_REQUEST[&#39;name&#39;]</code>. The key must match the input&#39;s <code>name</code> attribute exactly, so it should be <code>$_REQUEST[&#39;fname&#39;]</code>. Using <code>$_POST</code> or <code>$_GET</code> is usually clearer because you know where the data came from.</p>
+<h4 id="get-vs-post">GET vs POST</h4>
+<p>Both methods build an array of key-value pairs: the keys are the form control names and the values are what the user typed. <code>$_GET</code> and <code>$_POST</code> are superglobals, so they work anywhere in your code.</p>
+<table><thead><tr><th></th><th>GET</th><th>POST</th></tr></thead><tbody><tr><td>Where the data goes</td><td>In the URL (query string)</td><td>Inside the body of the HTTP request</td></tr><tr><td>Visible to others</td><td>Yes, names and values show in the address bar</td><td>No</td></tr><tr><td>Size limit</td><td>Small (the handout says about 2000 characters)</td><td>Much larger (default 8 MB, set by <code>post_max_size</code> in <code>php.ini</code>)</td></tr><tr><td>Good for</td><td>Searches, links, pages you want to bookmark</td><td>Logins, forms, anything private or large</td></tr><tr><td>Read with</td><td><code>$_GET[&#39;name&#39;]</code></td><td><code>$_POST[&#39;name&#39;]</code></td></tr></tbody></table>
+<p><strong>Rule from the handout:</strong> never use GET for passwords or other sensitive information. Developers prefer POST for sending form data.</p>
+<p><strong>When to use GET and when to use POST (login form example).</strong> The login form uses POST because GET would show everything the user typed. The address bar after clicking Log in:</p>
+<table><thead><tr><th>Method</th><th>Address bar after submitting</th></tr></thead><tbody><tr><td>GET</td><td><code>http://localhost/login/login_process.php?username=John&amp;password=123&amp;submit=Log+in</code></td></tr><tr><td>POST</td><td><code>http://localhost/login/login_process.php</code></td></tr></tbody></table>
+<p>With GET the username and the password sit in plain sight in the URL. The <code>submit=Log+in</code> part appears too, because the button has a <code>name</code>.</p>
+<p><strong>Why that is a problem for a login:</strong></p>
+<ul><li><p>Anyone looking at the screen sees the password in the address bar.</p></li><li><p>The browser saves the full URL in its history, so the password stays on the computer.</p></li><li><p>The URL can be copied, bookmarked, or shared, and the password goes with it.</p></li><li><p>Servers often log the URL of each request, so the password can end up in log files.</p></li></ul>
+<p>POST puts the data in the body of the request, so none of this appears in the URL. POST by itself is not encryption. Real sites also use HTTPS so the data is protected while it travels.</p>
+<p><strong>How to choose:</strong></p>
+<table><thead><tr><th>Ask this</th><th>If yes</th><th>Examples</th></tr></thead><tbody><tr><td>Is the data private or sensitive?</td><td>POST</td><td>Login, password, registration, payment</td></tr><tr><td>Does it save, add, or change something?</td><td>POST</td><td>Contact form, new account, upload, comment</td></tr><tr><td>Is the data large (long text, files)?</td><td>POST</td><td>Message box, file upload</td></tr><tr><td>Is it just searching, filtering, or viewing?</td><td>GET</td><td>Search box, <code>?page=2</code>, <code>product.php?id=5</code></td></tr><tr><td>Should the user be able to bookmark or share the result?</td><td>GET</td><td>A search results page, a product page</td></tr></tbody></table>
+<p>Short version to remember: <strong>GET asks for something to look at, POST sends something to be processed.</strong></p>
+<p><strong>Try it yourself (then change it back):</strong></p>
+<ol><li><p>In <code>Login.php</code>, change <code>method=&quot;POST&quot;</code> to <code>method=&quot;GET&quot;</code> and submit the form.</p></li><li><p>Look at the address bar. The username and password are in the URL.</p></li><li><p>The page prints nothing, because <code>login_process.php</code> still checks for POST and reads <code>$_POST</code>.</p></li><li><p>This shows the form&#39;s <code>method</code> and the PHP code must match. For GET, the PHP would read <code>$_GET[&#39;username&#39;]</code> instead.</p></li><li><p>Change <code>method</code> back to <code>POST</code>.</p></li></ol>
+<p><strong>GET and POST in APIs and web applications.</strong> When working with APIs and web applications, two of the most common HTTP methods are GET and POST. An <strong>API</strong> is a way for programs to talk to each other over HTTP, and every request has a <strong>method</strong> (what you want to do) and a <strong>URL</strong> (where). The same two methods you use in HTML forms are used between apps.</p>
+<table><thead><tr><th></th><th>GET</th><th>POST</th></tr></thead><tbody><tr><td>Main job</td><td><strong>Retrieve</strong> data from the server</td><td><strong>Send</strong> data to the server to be processed or created</td></tr><tr><td>Changes data on the server?</td><td>No, it only reads</td><td>Usually yes (creates or processes something)</td></tr><tr><td>Where the data travels</td><td>In the URL</td><td>In the body of the request</td></tr><tr><td>Safe to repeat?</td><td>Yes. Reloading just asks again.</td><td>No. Repeating may create a duplicate (browsers warn &quot;Confirm Form Resubmission&quot;).</td></tr><tr><td>Web form example</td><td>Search box, <code>welcome_get.php?name=Adam</code></td><td>Login, registration, contact form</td></tr><tr><td>API example</td><td><code>GET /users/5</code> returns the data of user 5</td><td><code>POST /users</code> with a body creates a new user</td></tr></tbody></table>
+<ul><li><p><strong>GET = &quot;give me this.&quot;</strong> You are asking for information.</p></li><li><p><strong>POST = &quot;here, take this.&quot;</strong> You are handing the server information to act on.</p></li></ul>
+<p><strong>More methods exist.</strong> APIs also use <code>PUT</code> or <code>PATCH</code> (update existing data) and <code>DELETE</code> (remove data). HTML forms can only send GET and POST, which is why those two are the ones covered in class.</p>
+<p><strong>Connection to our PHP code:</strong> <code>$_SERVER[&quot;REQUEST_METHOD&quot;]</code> returns whichever method was used for the request (GET or POST). That is why the login code checks <code>== &quot;POST&quot;</code> before reading <code>$_POST</code>.</p>
+<p><strong>GET vs POST in plain words.</strong> GET is a <strong>postcard</strong> and POST is a <strong>sealed envelope</strong>. A postcard (GET) has the message written on the outside: anyone who handles it can read it, and a copy can be kept. It is fine for &quot;Please send me the menu.&quot; A sealed envelope (POST) has the message inside and only the address on the outside. It is the right choice for private or larger messages.</p>
+<p>The same form sent both ways:</p>
+<pre><code class="language-html">&lt;!-- GET version --&gt;
+&lt;form action=&quot;welcome.php&quot; method=&quot;GET&quot;&gt;
+    Name: &lt;input type=&quot;text&quot; name=&quot;name&quot;&gt;
+    &lt;input type=&quot;submit&quot;&gt;
+&lt;/form&gt;
+
+&lt;!-- POST version --&gt;
+&lt;form action=&quot;welcome.php&quot; method=&quot;POST&quot;&gt;
+    Name: &lt;input type=&quot;text&quot; name=&quot;name&quot;&gt;
+    &lt;input type=&quot;submit&quot;&gt;
+&lt;/form&gt;</code></pre>
+<table><thead><tr><th></th><th>GET version</th><th>POST version</th></tr></thead><tbody><tr><td>Address bar after submit</td><td><code>welcome.php?name=Adam</code></td><td><code>welcome.php</code></td></tr><tr><td>PHP reads it with</td><td><code>$_GET[&#39;name&#39;]</code></td><td><code>$_POST[&#39;name&#39;]</code></td></tr><tr><td>Visible to others</td><td>Yes</td><td>No</td></tr><tr><td>Can be bookmarked</td><td>Yes, the data is part of the link</td><td>No, the data is not in the link</td></tr><tr><td>Size limit</td><td>Small (about 2000 characters in the handout)</td><td>Large (8 MB by default)</td></tr></tbody></table>
+<p>The only change in the HTML is the word in <code>method</code>. The change in PHP is <code>$_GET</code> or <code>$_POST</code>. The two always have to match.</p>
+<p><strong>Steps for choosing, in order:</strong> (1) a password or private information: POST. (2) Saving or changing something: POST. (3) A long text or a file: POST. (4) Just looking something up, and the link could be shared: GET.</p>
+<p><strong>Short answers for a quiz:</strong></p>
+<ul><li><p><strong>GET:</strong> sends data in the URL, is visible, has a size limit, can be bookmarked, and should not be used for sensitive data.</p></li><li><p><strong>POST:</strong> sends data in the body of the request, is not visible in the URL, has a much bigger limit, and is preferred for forms and sensitive data.</p></li><li><p><strong>Both</strong> create an array of key-value pairs, and both superglobals (<code>$_GET</code>, <code>$_POST</code>) work anywhere in the code.</p></li></ul>
+<h4 id="browser-redirection">Browser redirection</h4>
+<p>The <code>header()</code> function with a <code>Location:</code> header sends the user to another page. Call <code>exit</code> right after it so the rest of the script stops running.</p>
+<pre><code class="language-php">&lt;?php
+header(&quot;Location: http://www.google.com/&quot;);
+exit;   // Always exit after a redirect to stop script execution.
+?&gt;</code></pre>
+<pre><code class="language-php">&lt;?php
+header(&#39;Location: welcome.php&#39;);   // a page inside our own site
+exit;
+?&gt;</code></pre>
+<ul><li><p><strong>Call <code>header()</code> before any output.</strong> If anything has already been printed (an <code>echo</code>, HTML, even a blank line before <code>&lt;?php</code>), PHP shows a &quot;headers already sent&quot; warning and the redirect fails.</p></li><li><p><strong>Why <code>exit</code>:</strong> <code>header()</code> only asks the browser to go elsewhere. PHP keeps running the rest of the script unless you stop it.</p></li><li><p><strong>Why <code>header()</code> must come first:</strong> an HTTP response has two parts, the <strong>headers</strong> (instructions for the browser, like &quot;go to another page&quot;) and then the <strong>body</strong> (the visible page). Headers always go first. Once PHP prints anything, the body has started and it is too late to send headers.</p></li></ul>
+<p><strong>Optional practice (redirect after a correct login):</strong></p>
+<pre><code class="language-php">// login_process.php
+if ($username == &#39;John&#39; &amp;&amp; $password == &#39;123&#39;) {
+    header(&#39;Location: welcome.php&#39;);
+    exit;
+} else {
+    echo &quot;&lt;p style=&#39;color: red;&#39;&gt;Username or password is not correct.&lt;/p&gt;&quot;;
+}</code></pre>
+<pre><code class="language-php">&lt;?php
+// welcome.php
+echo &quot;&lt;h1&gt;Welcome!&lt;/h1&gt;&quot;;
+?&gt;</code></pre>
+<p>The redirect has to run before any output, so in <code>login_process.php</code> keep the PHP block at the very top of the file.</p>
+<h4 id="understanding-the-why-behind-the-code">Understanding the &quot;why&quot; behind the code</h4>
+<p>Syntax is mostly a set of rules that PHP and the browser need in order to understand you, and each piece has a reason.</p>
+<p><strong>The restaurant analogy.</strong> A form is like ordering at a restaurant.</p>
+<ul><li><p><strong>The HTML form</strong> is the order slip. The user fills it in.</p></li><li><p><strong><code>name=&quot;username&quot;</code></strong> is the label of each item on the slip. The kitchen finds your order by these labels.</p></li><li><p><strong>Apache</strong> is the waiter. It takes the slip to the kitchen.</p></li><li><p><strong>PHP</strong> is the kitchen. It reads the slip, decides what to do, and prepares the answer.</p></li><li><p><strong><code>echo</code></strong> is the plate that comes back. The browser only ever sees the finished plate (HTML), never the recipe (PHP code).</p></li><li><p><strong><code>action</code></strong> is which kitchen gets the slip. <strong><code>method</code></strong> is how the slip is delivered (GET on a note shouted across the room, POST in a sealed envelope).</p></li></ul>
+<p><strong>How to read a PHP line.</strong> Read it left to right as a sentence:</p>
+<pre><code class="language-php">$username = $_POST[&#39;username&#39;];</code></pre>
+<ol><li><p><code>$username</code> is a box I am creating. I picked the name.</p></li><li><p><code>=</code> means put something in the box. It is not a question.</p></li><li><p><code>$_POST</code> is the built-in list of everything the form sent.</p></li><li><p><code>[&#39;username&#39;]</code> means find the item labeled <code>username</code> in that list.</p></li><li><p><code>;</code> means this instruction is finished.</p></li></ol>
+<p>In English: &quot;Take the value labeled username from the form data and store it in a box called <code>$username</code>.&quot;</p>
+<p><strong>Why each piece of syntax exists</strong></p>
+<table><thead><tr><th>Syntax</th><th>What it means</th><th>Why it is written this way</th></tr></thead><tbody><tr><td><code>&lt;?php ... ?&gt;</code></td><td>Start and end of PHP code</td><td>A PHP file mixes HTML and PHP. Apache passes the file to PHP, and PHP only runs what is inside these tags. Everything outside is sent to the browser as plain HTML.</td></tr><tr><td><code>$name</code></td><td>A variable</td><td>The <code>$</code> tells PHP &quot;this is a variable&quot; so it is not confused with other words. You choose the name, and capitals matter.</td></tr><tr><td><code>=</code></td><td>Assign a value</td><td>Puts the right side into the left side. Single <code>=</code> never compares.</td></tr><tr><td><code>==</code></td><td>Compare two values</td><td>Asks &quot;are these equal?&quot; and gives true or false. It is two signs so PHP can tell it from assigning.</td></tr><tr><td><code>&amp;&amp;</code></td><td>AND</td><td>Both conditions must be true. <code>||</code> means OR.</td></tr><tr><td><code>;</code></td><td>End of a statement</td><td>Marks where one instruction stops and the next begins. A missing <code>;</code> is the most common beginner error.</td></tr><tr><td><code>{ }</code></td><td>A block of code</td><td>Groups the lines that belong to an <code>if</code> or <code>else</code>. Everything inside runs together or not at all.</td></tr><tr><td><code>if / else</code></td><td>Decision</td><td>If the condition is true, run the first block, otherwise run the else block.</td></tr><tr><td><code>$_POST[&#39;x&#39;]</code></td><td>Value from the form</td><td><code>$_POST</code> is the list of submitted data. The brackets and quotes pick one item by its label (the <code>name</code> attribute).</td></tr><tr><td><code>$_SERVER[&quot;REQUEST_METHOD&quot;]</code></td><td>How the page was requested</td><td>A page loads in two ways: first you open it (GET), then you submit the form (POST). The check lets the code run only after the submit.</td></tr><tr><td><code>&quot;text&quot;</code> and <code>&#39;text&#39;</code></td><td>A string (text)</td><td>Quotes tell PHP &quot;this is text, not code&quot;.</td></tr><tr><td><code>echo</code></td><td>Print to the page</td><td>Sends text or HTML into the page the browser receives.</td></tr><tr><td><code>.</code></td><td>Join strings</td><td><code>&quot;Hello &quot; . $name</code> glues two pieces of text together.</td></tr><tr><td><code>//</code></td><td>Comment</td><td>PHP ignores the line. It is a note for humans.</td></tr><tr><td><code>empty($x)</code></td><td>Is it blank?</td><td>True when the variable is an empty string, <code>0</code>, or not set.</td></tr><tr><td><code>header(&quot;Location: ...&quot;)</code></td><td>Redirect</td><td>Asks the browser to go to another page.</td></tr><tr><td><code>exit;</code></td><td>Stop the script</td><td>Without it PHP keeps running the rest of the file after the redirect.</td></tr></tbody></table>
+<p><strong>Why the quotes look mixed up</strong></p>
+<pre><code class="language-php">echo &quot;&lt;p style=&#39;color: green;&#39;&gt;Your information is correct.&lt;/p&gt;&quot;;</code></pre>
+<p>The PHP text starts and ends with double quotes (<code>&quot;</code>). The HTML inside needs its own quotes for <code>style=</code>, so it uses single quotes (<code>&#39;</code>). Mixing the two keeps the quotes from colliding. If you used double quotes both times, PHP would think the text ended early. You can swap them: <code>&#39;&lt;p style=&quot;color: green;&quot;&gt;...&lt;/p&gt;&#39;</code> works too. Double-quoted text can hold variables: <code>&quot;Hello $name&quot;</code> prints the value, while single-quoted text prints <code>$name</code> literally.</p>
+<p><strong>Why the HTML form is written this way</strong></p>
+<table><thead><tr><th>HTML</th><th>Why</th></tr></thead><tbody><tr><td><code>&lt;!DOCTYPE html&gt;</code></td><td>Tells the browser this is a modern HTML5 page so it displays it correctly.</td></tr><tr><td><code>&lt;label for=&quot;username&quot;&gt;</code> with <code>&lt;input id=&quot;username&quot;&gt;</code></td><td>The <code>for</code> and <code>id</code> must match. It links the label to its box, so clicking the label puts the cursor in the box.</td></tr><tr><td><code>id</code> vs <code>name</code></td><td><code>id</code> is for HTML, CSS, and labels. <strong><code>name</code> is what PHP reads.</strong> If <code>name</code> is missing or different, PHP gets nothing.</td></tr><tr><td><code>type=&quot;password&quot;</code></td><td>Shows dots instead of the characters. It hides the text on screen but does not encrypt it.</td></tr><tr><td><code>required</code></td><td>The browser refuses to submit an empty box. It is only a convenience, so PHP must check again.</td></tr><tr><td><code>&lt;br&gt;&lt;br&gt;</code></td><td>Line breaks to put space between the fields. Real sites use CSS for spacing.</td></tr><tr><td><code>type=&quot;submit&quot;</code></td><td>The button that sends the form. Its <code>value</code> is the text on the button.</td></tr><tr><td><code>action=&quot;login_process.php&quot;</code></td><td>The address of the PHP file that receives the data.</td></tr><tr><td><code>method=&quot;POST&quot;</code></td><td>Sends the data hidden in the request instead of the URL.</td></tr></tbody></table>
+<p><strong>Why <code>==</code> is not the same as <code>=</code> (common exam trap)</strong></p>
+<pre><code class="language-php">$a = 5;        // puts 5 into $a
+if ($a == 5)   // asks: is $a equal to 5?
+if ($a = 5)    // BUG: puts 5 into $a, which is always true</code></pre>
+<p><strong>Ask yourself these four questions when you are lost reading code:</strong></p>
+<ol><li><p><strong>Is this HTML or PHP?</strong> (Look for <code>&lt;?php</code>.)</p></li><li><p><strong>Where does the data come from?</strong> (<code>$_POST</code>, <code>$_GET</code>, a variable.)</p></li><li><p><strong>What is being decided?</strong> (Find the <code>if</code> and its condition.)</p></li><li><p><strong>What does the user finally see?</strong> (Find the <code>echo</code> or the redirect.)</p></li></ol>
+<h4 id="quick-review-for-topic-2">Quick review for Topic 2</h4>
+<ul><li><p>A form&#39;s <code>name</code> attributes become the keys in <code>$_POST</code> or <code>$_GET</code>.</p></li><li><p><code>action</code> says where to send the data. <code>method</code> says how.</p></li><li><p>Superglobals are always available and are mostly associative arrays.</p></li><li><p><code>$_SERVER[&#39;REQUEST_METHOD&#39;]</code> tells you if the page was loaded (GET) or the form was submitted (POST).</p></li><li><p>GET shows data in the URL and has a small limit. POST hides the data and is the standard for forms.</p></li><li><p><code>header(&#39;Location: ...&#39;)</code> redirects, and it must come before any output and be followed by <code>exit</code>.</p></li><li><p>Common mistakes: a <code>name</code> that does not match the key in PHP, forgetting to save the file, opening the page without Apache (<code>file://</code>), and sending passwords with GET.</p></li></ul>
+<h4 id="current-project-the-login-loginphp-loginprocessphp">Current project: the login (Login.php + login_process.php)</h4>
+<p><span style="white-space:pre-wrap"><strong>Folder:</strong> <code>login/</code>  <strong>Address:</strong> <code>http://localhost/login/Login.php</code>  <strong>Test login:</strong> <code>doncarlis</code> / <code>123</code></span></p>
+<p><em>Change made in class: the username in <code>login_process.php</code> was changed from <code>John</code> (the handout&#39;s example) to <code>doncarlis</code>. The password is still <code>123</code>. Earlier sections of these notes still show <code>John</code>, because that is the handout version.</em></p>
+<p>The user types a username and password into the form (<code>Login.php</code>). When they click Log in, the browser sends the data to <code>login_process.php</code>, which compares it to one fixed username and password and prints a green or red message.</p>
+<p><strong>How the two files work together</strong></p>
+<ol><li><p>You open <code>http://localhost/login/Login.php</code>. Apache gives the file to PHP, and PHP sends back the HTML form.</p></li><li><p>You type a username and password and click <strong>Log in</strong>.</p></li><li><p>The browser sends a POST request to <code>login_process.php</code> (the address in the form&#39;s <code>action</code>). The data travels in the request, not the URL.</p></li><li><p>PHP runs <code>login_process.php</code>, reads <code>$_POST[&#39;username&#39;]</code> and <code>$_POST[&#39;password&#39;]</code>, and compares them to <code>doncarlis</code> and <code>123</code>.</p></li><li><p>PHP prints a green message if both match, or a red message if not. The browser shows that message.</p></li></ol>
+<p><strong>login_process.php with the new username</strong></p>
+<pre><code class="language-php">&lt;?php
+if ($_SERVER[&quot;REQUEST_METHOD&quot;] == &quot;POST&quot;) {
+$username = $_POST[&#39;username&#39;];
+$password = $_POST[&#39;password&#39;];
+// Validate the credentials
+if ($username == &#39;doncarlis&#39; &amp;&amp; $password == &#39;123&#39;) {
+echo &quot;&lt;p style=&#39;color: green;&#39;&gt;Your information is correct.&lt;/p&gt;&quot;;
+} else {
+echo &quot;&lt;p style=&#39;color: red;&#39;&gt;Username or password is not correct.&lt;/p&gt;&quot;;
+}
+}
+?&gt;</code></pre>
+<table><thead><tr><th>Line</th><th>Code</th><th>What it does</th></tr></thead><tbody><tr><td>1</td><td><code>&lt;?php</code></td><td>PHP code starts.</td></tr><tr><td>2</td><td><code>if ($_SERVER[&quot;REQUEST_METHOD&quot;] == &quot;POST&quot;) {</code></td><td>Only continue if the page was reached by a form submit (POST). If someone just types this address in the browser (GET), nothing happens.</td></tr><tr><td>3</td><td><code>$username = $_POST[&#39;username&#39;];</code></td><td>Takes the value labeled <code>username</code> from the form and stores it in <code>$username</code>.</td></tr><tr><td>4</td><td><code>$password = $_POST[&#39;password&#39;];</code></td><td>Same for the password.</td></tr><tr><td>5</td><td><code>// Validate the credentials</code></td><td>A comment for humans. PHP ignores it.</td></tr><tr><td>6</td><td><code>if ($username == &#39;doncarlis&#39; &amp;&amp; $password == &#39;123&#39;) {</code></td><td>Is the username <code>doncarlis</code> <strong>and</strong> the password <code>123</code>? <code>&amp;&amp;</code> means both must be true. This is the line to edit to change the login.</td></tr><tr><td>7</td><td><code>echo &quot;&lt;p style=&#39;color: green;&#39;&gt;...&lt;/p&gt;&quot;;</code></td><td>If yes, print a green paragraph: &quot;Your information is correct.&quot;</td></tr><tr><td>8</td><td><code>} else {</code></td><td>Otherwise.</td></tr><tr><td>9</td><td><code>echo &quot;&lt;p style=&#39;color: red;&#39;&gt;...&lt;/p&gt;&quot;;</code></td><td>Print a red paragraph: &quot;Username or password is not correct.&quot;</td></tr><tr><td>10</td><td><code>}</code></td><td>Closes the <code>else</code>.</td></tr><tr><td>11</td><td><code>}</code></td><td>Closes the outer <code>if</code> (the POST check).</td></tr><tr><td>12</td><td><code>?&gt;</code></td><td>PHP code ends.</td></tr></tbody></table>
+<p><strong>Link between the two files:</strong> the <code>name</code> attributes in <code>Login.php</code> (<code>username</code>, <code>password</code>) must match the keys in <code>login_process.php</code> (<code>$_POST[&#39;username&#39;]</code>, <code>$_POST[&#39;password&#39;]</code>). The <code>action</code> in the form must match the file name exactly.</p>
+<p><strong>What to expect when testing</strong></p>
+<table><thead><tr><th>You type</th><th>Expected result</th><th>Why</th></tr></thead><tbody><tr><td><code>doncarlis</code> and <code>123</code></td><td>Green: &quot;Your information is correct.&quot;</td><td>Both match.</td></tr><tr><td><code>doncarlis</code> and <code>1234</code></td><td>Red: &quot;Username or password is not correct.&quot;</td><td>Password is different.</td></tr><tr><td><code>Doncarlis</code> and <code>123</code></td><td>Red message</td><td>The comparison is case sensitive, so <code>Doncarlis</code> is not <code>doncarlis</code>.</td></tr><tr><td><code>John</code> and <code>123</code></td><td>Red message</td><td>The old username no longer works, because the code now checks for <code>doncarlis</code>.</td></tr><tr><td>Anything else</td><td>Red message</td><td>The <code>else</code> covers every other case.</td></tr><tr><td>A blank box</td><td>The browser asks you to fill it in and sends nothing</td><td>The <code>required</code> attribute.</td></tr></tbody></table>
+<p><strong>Test result: successful login</strong></p>
+<p><strong>Step 1: fill in the form.</strong> The username <code>doncarlis</code> is typed in the first box. The password box shows dots instead of the characters, because the input is <code>type=&quot;password&quot;</code>.</p>
+<p><img src="__BASE__class-notes/img/ee604584f63d68eeba1432326d7ce09f.png" loading="lazy" alt="Form filled in with doncarlis and a hidden password"></p>
+<p><strong>Step 2: click Log in.</strong> The browser sends the data to <code>login_process.php</code>. The username is <code>doncarlis</code> and the password is <code>123</code>, so both conditions are true and PHP prints the green message.</p>
+<p><img src="__BASE__class-notes/img/3bb82570da16aa7e5f8c7707aa4fb49c.png" loading="lazy" alt="Green message: Your information is correct."></p>
+<p>The result page shows only the message, because <code>login_process.php</code> prints nothing else (no form, no link back).</p>
+<p><strong>Limits of this version</strong></p>
+<ul><li><p>The username and password are written inside the code, so only one login works. A real site checks a database (MySQL).</p></li><li><p><code>==</code> compares values loosely. <code>===</code> is the stricter, safer habit.</p></li><li><p>Passwords are compared as plain text. Real sites store hashed passwords.</p></li><li><p>The result page has no link back to the form, and shows on a blank page.</p></li></ul>
+<p><strong>Why there is no database yet (and what changes later).</strong> Right now the login works without a database because the username and password are written directly in the code (<code>&#39;doncarlis&#39;</code> and <code>&#39;123&#39;</code>). This is called <em>hardcoding</em>. It is the simplest way to practice forms, POST, <code>$_POST</code>, and <code>if / else</code> first. After the database is created in class, the login will work differently, as the professor said.</p>
+<p>A <strong>database</strong> is organized storage on the server. This course uses <strong>MySQL</strong>. Data is kept in <strong>tables</strong>, and each table has <strong>rows</strong> (one per item) and <strong>columns</strong> (the fields):</p>
+<table><thead><tr><th>id</th><th>username</th><th>password_hash</th></tr></thead><tbody><tr><td>1</td><td>doncarlis</td><td>(a scrambled version of the password)</td></tr><tr><td>2</td><td>maria</td><td>(a scrambled version of the password)</td></tr></tbody></table>
+<table><thead><tr><th></th><th>Now (hardcoded)</th><th>Later (with a database)</th></tr></thead><tbody><tr><td>Where the login is stored</td><td>Inside <code>login_process.php</code></td><td>In a <code>users</code> table</td></tr><tr><td>How many users</td><td>One</td><td>As many as you want</td></tr><tr><td>Adding a user</td><td>Edit the code</td><td>Add a row (for example, from a registration form)</td></tr><tr><td>Changing a password</td><td>Edit the code</td><td>Update the row</td></tr><tr><td>How PHP checks</td><td>Compares to fixed values with <code>==</code></td><td>Asks the database for the user, then compares</td></tr><tr><td>Password storage</td><td>Plain text in the code</td><td>Stored scrambled (hashed)</td></tr></tbody></table>
+<p><strong>Stays the same:</strong> <code>Login.php</code> (the form), the POST method, reading <code>$_POST[&#39;username&#39;]</code> and <code>$_POST[&#39;password&#39;]</code>, and the green and red messages. <strong>Changes:</strong> only the checking step. Instead of comparing to values written in the code, PHP connects to MySQL and looks the user up.</p>
+<p><strong>Preview of how it could look</strong> (preview only, the professor&#39;s version may differ):</p>
+<pre><code class="language-php">&lt;?php
+// PREVIEW ONLY - the class version may differ
+$conn = new mysqli(&#39;localhost&#39;, &#39;db_user&#39;, &#39;db_password&#39;, &#39;my_database&#39;);
+
+$stmt = $conn-&gt;prepare(&#39;SELECT password_hash FROM users WHERE username = ?&#39;);
+$stmt-&gt;bind_param(&#39;s&#39;, $_POST[&#39;username&#39;]);
+$stmt-&gt;execute();
+$stmt-&gt;bind_result($hash);
+
+if ($stmt-&gt;fetch() &amp;&amp; password_verify($_POST[&#39;password&#39;], $hash)) {
+    echo &quot;&lt;p style=&#39;color: green;&#39;&gt;Your information is correct.&lt;/p&gt;&quot;;
+} else {
+    echo &quot;&lt;p style=&#39;color: red;&#39;&gt;Username or password is not correct.&lt;/p&gt;&quot;;
+}
+?&gt;</code></pre>
+<ul><li><p><strong><code>new mysqli(...)</code>:</strong> connects to the MySQL database (server, user, password, database name).</p></li><li><p><strong><code>SELECT ... WHERE username = ?</code>:</strong> a database question: &quot;give me the password for this username.&quot; The <code>?</code> is a placeholder for the typed value. Using a placeholder (a prepared statement) keeps a user from sneaking SQL commands into the box.</p></li><li><p><strong><code>fetch()</code>:</strong> gets the matching row, if there is one.</p></li><li><p><strong><code>password_verify(...)</code>:</strong> checks the typed password against the stored scrambled version (hash). Real sites never store the plain password.</p></li><li><p>The <code>if / else</code> and the messages are the same ones used now.</p></li></ul>
+<p><strong>VS Code message: &quot;Cannot validate since a PHP installation could not be found&quot;.</strong> A pop-up like this appears in the bottom corner of VS Code (source: PHP Language Features) and tells you to set <code>php.validate.executablePath</code>. It means VS Code can check your PHP for syntax errors while you type, but it needs to run PHP on your computer to do that and cannot find a PHP program, so it skips the check. <strong>It does not break your project.</strong> Apache runs your PHP, not VS Code, so <code>http://localhost/login/Login.php</code> still works. You only lose the red underlines for typos (like a missing <code>;</code> or <code>}</code>) while editing. Optional fix: open Terminal and type <code>which php</code>; if it prints a path, copy it into the VS Code setting <code>php.validate.executablePath</code> and reload the window. If <code>which php</code> prints nothing, PHP is not available in Terminal (the Apache/XAMPP setup uses its own PHP), so you can ignore the message.</p>
+<h4 id="project-files-and-apache-quick-facts">Project files and Apache quick facts</h4>
+<pre><code>login/
+    Login.php            (the form)
+    login_process.php    (checks the data, prints the result)
+    welcome.php          (optional, only for the redirect practice)</code></pre>
+<table><thead><tr><th>File</th><th>Needed?</th><th>Purpose</th></tr></thead><tbody><tr><td><code>Login.php</code></td><td>Yes</td><td>Shows the HTML login form</td></tr><tr><td><code>login_process.php</code></td><td>Yes</td><td>Reads <code>$_POST</code>, compares to the login, prints the message</td></tr><tr><td><code>welcome.php</code></td><td>Optional</td><td>Target of <code>header(&#39;Location: welcome.php&#39;)</code> after a correct login</td></tr><tr><td><code>process.php</code></td><td>Optional</td><td>Receiver for the basic name and email form</td></tr><tr><td><code>demo_request.php</code></td><td>Optional</td><td>Practice for <code>$_POST</code> (reads the <code>fname</code> field)</td></tr><tr><td><code>demo_phpfile.php</code></td><td>Optional</td><td>Practice for <code>$_GET</code> with a query string link</td></tr><tr><td><code>welcome_get.php</code></td><td>Optional</td><td>Practice for a GET form (prints name and email)</td></tr></tbody></table>
+<p>The file names in the handout are examples, so use any names as long as the form&#39;s <code>action</code> matches the PHP file&#39;s name exactly, including capital letters.</p>
+<p><strong>Practice exercises from the handout</strong></p>
+<ol><li><p><strong>POST, two files:</strong> make the form from the <code>$_POST</code> section with <code>action=&quot;demo_request.php&quot;</code>, then make <code>demo_request.php</code> with <code>echo $_POST[&#39;fname&#39;];</code>.</p></li><li><p><strong>POST, one file:</strong> make one file with the form and the <code>REQUEST_METHOD</code> check. Submit it empty and check that &quot;Name is empty&quot; shows.</p></li><li><p><strong>GET link:</strong> make <code>demo_phpfile.php</code> and open <code>demo_phpfile.php?subject=PHP&amp;web=W3schools.com</code> in the browser. Then change the values in the URL and watch the output change.</p></li><li><p><strong>GET form:</strong> make a page with the GET form and <code>welcome_get.php</code>. After submitting, look at the address bar to see the data in the URL.</p></li><li><p><strong>Redirect:</strong> add the <code>header(&#39;Location: welcome.php&#39;); exit;</code> practice to <code>login_process.php</code>.</p></li></ol>
+<p><strong>Apache and PHP quick facts</strong></p>
+<ul><li><p><strong>Apache serves files from its document root.</strong> A file must be inside that folder (or a subfolder) to be reached at <code>http://localhost/...</code>, and the URL path follows the folders (<code>localhost/login/Login.php</code>).</p></li><li><p><strong>PHP runs only when Apache processes the file,</strong> and the file needs the <code>.php</code> extension. A <code>.html</code> file containing PHP code is shown as plain text.</p></li><li><p><strong>Edit, save, refresh:</strong> after changing a PHP file, save it and refresh the browser. No restart is needed.</p></li><li><p><strong>Restart Apache after changing its settings</strong> (<code>httpd.conf</code>) or PHP&#39;s settings (<code>php.ini</code>). For example, <code>post_max_size</code> in <code>php.ini</code> controls the POST size limit.</p></li><li><p><strong>Use <code>http://localhost</code>, not <code>file://</code>.</strong> Double-clicking a file opens it without Apache, so PHP never runs.</p></li></ul>
+<p><strong>Troubleshooting</strong></p>
+<table><thead><tr><th>Problem</th><th>Likely cause</th><th>Fix</th></tr></thead><tbody><tr><td>PHP code shows as text on the page</td><td>File opened without Apache, or not saved with <code>.php</code></td><td>Open it through <code>http://localhost/...</code> and check the extension</td></tr><tr><td>404 Not Found</td><td>File is outside the document root, or the name or folder in the URL is wrong</td><td>Check the folder and the capital letters</td></tr><tr><td>Blank page after submitting</td><td>A PHP error with error display turned off</td><td>Check for a missing <code>;</code> or <code>}</code> and the Apache error log</td></tr><tr><td>&quot;Undefined array key&quot; warning</td><td>The PHP key does not match the input&#39;s <code>name</code></td><td>Make <code>$_POST[&#39;x&#39;]</code> match <code>name=&quot;x&quot;</code></td></tr><tr><td>&quot;Headers already sent&quot;</td><td>Output printed before <code>header()</code></td><td>Put the PHP block first in the file, with nothing before <code>&lt;?php</code></td></tr><tr><td>Old output keeps showing</td><td>File not saved (dot on the VS Code tab)</td><td>Save with Cmd+S and refresh</td></tr><tr><td>Correct login shows the error message</td><td>Typo, extra space, or wrong capitals</td><td>Check <code>doncarlis</code> and <code>123</code> exactly</td></tr></tbody></table>
+<h3 id="topic-3-lab-3-question-1-register-page-with-php-validation">Topic 3: Lab #3, Question 1 (Register page with PHP validation)</h3>
+<p><strong>MAC 272 Lab #3, Q1.</strong> Create a <strong>Register page</strong> with several text boxes and one submit button. The boxes collect name, email, gender, and an address made of street address, city, state, and zip code. The lab sample looks like this:</p>
+<p><img src="__BASE__class-notes/img/d15195c9141a58a431d599c95698f8b3.png" loading="lazy" alt="Lab #3 sample: the Register form with error messages next to each field"></p>
+<p><strong>Required PHP validation:</strong></p>
+<ol><li><p>Make all text fields required.</p></li><li><p>The user can only enter letters and white space in the name field.</p></li><li><p>Remove any space before the name and email.</p></li><li><p>Make sure the email is a valid email.</p></li><li><p>Make sure the gender is selected.</p></li><li><p>The user can only enter numbers in the zip code.</p></li></ol>
+<p><strong>What validation means.</strong> Validation is checking the data the user sent before using it. The browser can be tricked or skipped, so PHP has to check on the server. Every check follows the same pattern: look at the value, and if it breaks a rule, save an error message to show next to that field.</p>
+<p><strong>Which PHP tool solves each requirement</strong></p>
+<table><thead><tr><th>#</th><th>Requirement</th><th>PHP tool</th><th>How it works</th></tr></thead><tbody><tr><td>1</td><td>Fields are required</td><td><code>trim()</code> + <code>== &quot;&quot;</code> or <code>empty()</code></td><td>If the value is blank after trimming, the field is missing.</td></tr><tr><td>2</td><td>Name: letters and spaces only</td><td><code>preg_match(&quot;/^[a-zA-Z ]*$/&quot;, $name)</code></td><td>A pattern (regular expression) that allows only letters and spaces from start to end.</td></tr><tr><td>3</td><td>Remove spaces before name and email</td><td><code>trim()</code></td><td>Cuts spaces from the start and end of the text. <code>ltrim()</code> cuts only the start.</td></tr><tr><td>4</td><td>Valid email</td><td><code>filter_var($email, FILTER_VALIDATE_EMAIL)</code></td><td>A built-in checker. It returns <code>false</code> when the text is not a valid email.</td></tr><tr><td>5</td><td>Gender selected</td><td><code>empty($_POST[&quot;gender&quot;])</code></td><td>A radio group with nothing selected is not sent at all, so the key is missing.</td></tr><tr><td>6</td><td>Zip: numbers only</td><td><code>ctype_digit($zip)</code></td><td>True only if every character is a digit (0 to 9).</td></tr></tbody></table>
+<p><strong>How the regular expression reads: <code>/^[a-zA-Z ]*$/</code></strong></p>
+<table><thead><tr><th>Piece</th><th>Meaning</th></tr></thead><tbody><tr><td><code>/</code> at the start and end</td><td>Marks where the pattern begins and ends, like quotes around it. It is just wrapping.</td></tr><tr><td><code>^</code></td><td>The <strong>start</strong> of the text</td></tr><tr><td><code>[ ]</code></td><td>A group of allowed characters. The text may use <strong>one</strong> of them at each position.</td></tr><tr><td><code>a-z</code></td><td>Any lowercase letter</td></tr><tr><td><code>A-Z</code></td><td>Any uppercase letter</td></tr><tr><td>a space before <code>]</code></td><td>A space is also allowed (the &quot;white space&quot; in the lab)</td></tr><tr><td><code>*</code></td><td>The thing before it can repeat any number of times, including zero</td></tr><tr><td><code>$</code></td><td>The <strong>end</strong> of the text</td></tr></tbody></table>
+<p>In plain English: &quot;From the very start to the very end, there are only letters and spaces.&quot; Picture it as a door check: the pattern looks at every character, one by one. Letter? Fine. Space? Fine. Anything else (a number, <code>!</code>, <code>@</code>)? Rejected.</p>
+<table><thead><tr><th>Text</th><th>Matches?</th><th>Why</th></tr></thead><tbody><tr><td><code>Ana</code></td><td>Yes</td><td>All letters</td></tr><tr><td><code>Ana Lopez</code></td><td>Yes</td><td>Letters and a space</td></tr><tr><td><code>Ana2</code></td><td>No</td><td>The <code>2</code> is not a letter or a space</td></tr><tr><td><code>Ana!</code></td><td>No</td><td>The <code>!</code> is not allowed</td></tr><tr><td>(empty)</td><td>Yes</td><td><code>*</code> allows zero characters, so an empty text fits too</td></tr></tbody></table>
+<ul><li><p><strong>Why the <code>^</code> and <code>$</code> matter:</strong> they force the pattern to cover the whole text. Without them, PHP would only look for letters somewhere inside, so <code>Ana2</code> would still pass.</p></li><li><p><strong>Why an empty name still needs its own check:</strong> since an empty text fits the pattern, the separate &quot;Name is required&quot; check is what catches a blank box.</p></li><li><p><strong>Why <code>!</code> in front of it:</strong> <code>preg_match</code> gives <code>1</code> for a match. The error should show when the name does <strong>not</strong> match, so <code>!</code> flips it: &quot;if the name does not fit the pattern.&quot;</p></li></ul>
+<p><code>preg_match(pattern, text)</code> asks &quot;does this text fit this pattern?&quot; It returns <code>1</code> if yes and <code>0</code> if no. You do not need to memorize regular expressions. You need to be able to read them.</p>
+<p><strong>The <code>trim()</code> function (requirement 3)</strong></p>
+<pre><code class="language-php">trim(string)</code></pre>
+<ul><li><p><strong>What it does:</strong> removes spaces from the start and the end of a text. It also removes tabs and line breaks at the ends.</p></li><li><p><strong>What it does not do:</strong> it does not touch spaces between words, so <code>Ana Lopez</code> stays <code>Ana Lopez</code>. That matters because the name rule allows white space.</p></li><li><p><strong>It returns a new text.</strong> The original variable is not changed unless you save the result.</p></li></ul>
+<table><thead><tr><th>Code</th><th>Result</th></tr></thead><tbody><tr><td><code>trim(&quot; Ana&quot;)</code></td><td><code>&quot;Ana&quot;</code></td></tr><tr><td><code>trim(&quot;Ana &quot;)</code></td><td><code>&quot;Ana&quot;</code></td></tr><tr><td><code>trim(&quot; Ana Lopez &quot;)</code></td><td><code>&quot;Ana Lopez&quot;</code></td></tr><tr><td><span style="white-space:pre-wrap"><code>trim(&quot;  &quot;)</code></span></td><td><code>&quot;&quot;</code> (empty, so it fails the required check)</td></tr><tr><td><code>trim(&quot; ana@mail.com&quot;)</code></td><td><code>&quot;ana@mail.com&quot;</code></td></tr></tbody></table>
+<pre><code class="language-php">$name  = trim($_POST[&quot;name&quot;] ?? &quot;&quot;);
+$email = trim($_POST[&quot;email&quot;] ?? &quot;&quot;);</code></pre>
+<p><strong>Common mistake:</strong> writing <code>trim($name);</code> on its own line does nothing, because the cleaned text is thrown away. Save it: <code>$name = trim($name);</code>. Related functions: <code>trim()</code> (both ends), <code>ltrim()</code> (start only), <code>rtrim()</code> (end only). <code>trim()</code> is not the same as removing every space: <code>str_replace(&quot; &quot;, &quot;&quot;, $name)</code> would turn <code>Ana Lopez</code> into <code>AnaLopez</code>, which is not what the lab wants.</p>
+<p><strong>The <code>filter_var()</code> function (requirement 4)</strong></p>
+<pre><code class="language-php">filter_var(value, filter)</code></pre>
+<pre><code class="language-php">if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    $emailErr = &quot;Invalid email format&quot;;
+}</code></pre>
+<ul><li><p><strong>If the email is valid:</strong> it returns the email text itself. <strong>If it is not valid:</strong> it returns <code>false</code>.</p></li><li><p><strong>Why the <code>!</code> in the <code>if</code>:</strong> the error should be saved when the result is <code>false</code>, so <code>!</code> flips it to &quot;if the email is NOT valid.&quot;</p></li><li><p>It checks the <strong>format</strong> only. It cannot tell if the mailbox really exists. Run <code>trim()</code> first, because a space before the address would make a good email count as invalid.</p></li></ul>
+<table><thead><tr><th>Email typed</th><th>Result</th></tr></thead><tbody><tr><td><code>ana@mail.com</code></td><td>Valid (returns the email)</td></tr><tr><td><code>ana@</code></td><td><code>false</code> (invalid)</td></tr><tr><td><code>ana.com</code></td><td><code>false</code> (no <code>@</code>)</td></tr><tr><td><code>ana mail@x.com</code></td><td><code>false</code> (space inside)</td></tr></tbody></table>
+<p>Other filters use the same two-parameter pattern: <code>FILTER_VALIDATE_INT</code> (a whole number), <code>FILTER_VALIDATE_FLOAT</code> (a decimal number), <code>FILTER_VALIDATE_URL</code> (a valid web address), <code>FILTER_VALIDATE_IP</code> (a valid IP address).</p>
+<p><strong>Functions used in this lab.</strong> Every tool in this lab is a function built into PHP, so you do not write it yourself, you only call it.</p>
+<table><thead><tr><th>Function</th><th>What it does</th><th>What it gives back</th><th>Used for</th></tr></thead><tbody><tr><td><code>trim(text)</code></td><td>Removes spaces from the start and end</td><td>The cleaned text</td><td>Name, email, and the other fields</td></tr><tr><td><code>preg_match(pattern, text)</code></td><td>Checks if the text fits a pattern</td><td><code>1</code> if yes, <code>0</code> if no</td><td>Name: letters and spaces only</td></tr><tr><td><code>filter_var(value, filter)</code></td><td>Checks a value with a ready-made rule</td><td>The value if valid, <code>false</code> if not</td><td>Email format</td></tr><tr><td><code>empty(value)</code></td><td>Checks if a value is empty or missing</td><td><code>true</code> or <code>false</code></td><td>Gender selected</td></tr><tr><td><code>ctype_digit(text)</code></td><td>Checks that every character is a digit</td><td><code>true</code> or <code>false</code></td><td>Zip: numbers only</td></tr><tr><td><code>htmlspecialchars(text)</code></td><td>Makes text safe to print in a page</td><td>The safe text</td><td>Printing user input back</td></tr></tbody></table>
+<p><strong>Plan for the page</strong></p>
+<ol><li><p>Create variables for each field&#39;s value and each field&#39;s error message, all starting empty.</p></li><li><p>If the page was submitted (POST), read each field, trim it, and run its checks. A failed check writes an error message.</p></li><li><p>Show the form again with the error message next to each field, and keep what the user typed.</p></li><li><p>If there are no errors at all, show a success message.</p></li></ol>
+<h4 id="code-registerphp">Code: register.php</h4>
+<p>The form and the PHP are in one file that sends the data back to itself (the same-file pattern from Topic 2). The file name is your choice, and <code>register.php</code> is used here. <em>(This is the version from my class notes. If my own lab code differs, I&#39;ll replace it with mine.)</em></p>
+<pre><code class="language-php">&lt;?php
+// 1. Variables for the values and the error messages (all start empty)
+$name = $email = $gender = $street = $city = $state = $zip = &quot;&quot;;
+$nameErr = $emailErr = $genderErr = $streetErr = $cityErr = $stateErr = $zipErr = &quot;&quot;;
+$success = false;
+
+// 2. Only validate after the form is submitted
+if ($_SERVER[&quot;REQUEST_METHOD&quot;] == &quot;POST&quot;) {
+
+    // Name: required, trimmed, letters and spaces only
+    $name = trim($_POST[&quot;name&quot;] ?? &quot;&quot;);
+    if ($name == &quot;&quot;) {
+        $nameErr = &quot;Name is required&quot;;
+    } elseif (!preg_match(&quot;/^[a-zA-Z ]*$/&quot;, $name)) {
+        $nameErr = &quot;Only letters and white space allowed&quot;;
+    }
+
+    // Email: required, trimmed, valid format
+    $email = trim($_POST[&quot;email&quot;] ?? &quot;&quot;);
+    if ($email == &quot;&quot;) {
+        $emailErr = &quot;Email is required&quot;;
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $emailErr = &quot;Invalid email format&quot;;
+    }
+
+    // Gender: one radio button must be selected
+    if (empty($_POST[&quot;gender&quot;])) {
+        $genderErr = &quot;Gender is required&quot;;
+    } else {
+        $gender = $_POST[&quot;gender&quot;];
+    }
+
+    // Street, city, state: required
+    $street = trim($_POST[&quot;street&quot;] ?? &quot;&quot;);
+    if ($street == &quot;&quot;) {
+        $streetErr = &quot;Address is required&quot;;
+    }
+
+    $city = trim($_POST[&quot;city&quot;] ?? &quot;&quot;);
+    if ($city == &quot;&quot;) {
+        $cityErr = &quot;City is required&quot;;
+    }
+
+    $state = trim($_POST[&quot;state&quot;] ?? &quot;&quot;);
+    if ($state == &quot;&quot;) {
+        $stateErr = &quot;State is required&quot;;
+    }
+
+    // Zip: required, digits only
+    $zip = trim($_POST[&quot;zip&quot;] ?? &quot;&quot;);
+    if ($zip == &quot;&quot;) {
+        $zipErr = &quot;Zip is required&quot;;
+    } elseif (!ctype_digit($zip)) {
+        $zipErr = &quot;Only numbers allowed&quot;;
+    }
+
+    // 3. No errors anywhere means success
+    if ($nameErr == &quot;&quot; &amp;&amp; $emailErr == &quot;&quot; &amp;&amp; $genderErr == &quot;&quot; &amp;&amp; $streetErr == &quot;&quot;
+        &amp;&amp; $cityErr == &quot;&quot; &amp;&amp; $stateErr == &quot;&quot; &amp;&amp; $zipErr == &quot;&quot;) {
+        $success = true;
+    }
+}
+?&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;Register&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+&lt;?php if ($success) { ?&gt;
+    &lt;p style=&quot;color: green;&quot;&gt;Registration successful!&lt;/p&gt;
+    &lt;p&gt;Name: &lt;?php echo htmlspecialchars($name); ?&gt;&lt;/p&gt;
+    &lt;p&gt;E-Mail: &lt;?php echo htmlspecialchars($email); ?&gt;&lt;/p&gt;
+    &lt;p&gt;Gender: &lt;?php echo htmlspecialchars($gender); ?&gt;&lt;/p&gt;
+    &lt;p&gt;Address: &lt;?php echo htmlspecialchars(&quot;$street, $city, $state $zip&quot;); ?&gt;&lt;/p&gt;
+&lt;?php } else { ?&gt;
+
+&lt;form method=&quot;POST&quot; action=&quot;&lt;?php echo htmlspecialchars($_SERVER[&quot;PHP_SELF&quot;]); ?&gt;&quot;&gt;
+
+    Name: &lt;input type=&quot;text&quot; name=&quot;name&quot; value=&quot;&lt;?php echo htmlspecialchars($name); ?&gt;&quot;&gt;
+    &lt;span style=&quot;color: red;&quot;&gt;* &lt;?php echo $nameErr; ?&gt;&lt;/span&gt;
+    &lt;br&gt;&lt;br&gt;
+
+    E-Mail: &lt;input type=&quot;text&quot; name=&quot;email&quot; value=&quot;&lt;?php echo htmlspecialchars($email); ?&gt;&quot;&gt;
+    &lt;span style=&quot;color: red;&quot;&gt;* &lt;?php echo $emailErr; ?&gt;&lt;/span&gt;
+    &lt;br&gt;&lt;br&gt;
+
+    Gender:
+    &lt;input type=&quot;radio&quot; name=&quot;gender&quot; value=&quot;Female&quot; &lt;?php if ($gender == &quot;Female&quot;) echo &quot;checked&quot;; ?&gt;&gt;Female
+    &lt;input type=&quot;radio&quot; name=&quot;gender&quot; value=&quot;Male&quot; &lt;?php if ($gender == &quot;Male&quot;) echo &quot;checked&quot;; ?&gt;&gt;Male
+    &lt;input type=&quot;radio&quot; name=&quot;gender&quot; value=&quot;Other&quot; &lt;?php if ($gender == &quot;Other&quot;) echo &quot;checked&quot;; ?&gt;&gt;Other
+    &lt;span style=&quot;color: red;&quot;&gt;* &lt;?php echo $genderErr; ?&gt;&lt;/span&gt;
+    &lt;br&gt;&lt;br&gt;
+
+    Street Address: &lt;input type=&quot;text&quot; name=&quot;street&quot; value=&quot;&lt;?php echo htmlspecialchars($street); ?&gt;&quot;&gt;
+    &lt;span style=&quot;color: red;&quot;&gt;* &lt;?php echo $streetErr; ?&gt;&lt;/span&gt;
+    &lt;br&gt;&lt;br&gt;
+
+    City: &lt;input type=&quot;text&quot; name=&quot;city&quot; value=&quot;&lt;?php echo htmlspecialchars($city); ?&gt;&quot;&gt;
+    &lt;span style=&quot;color: red;&quot;&gt;* &lt;?php echo $cityErr; ?&gt;&lt;/span&gt;
+    &lt;br&gt;&lt;br&gt;
+
+    State: &lt;input type=&quot;text&quot; name=&quot;state&quot; value=&quot;&lt;?php echo htmlspecialchars($state); ?&gt;&quot;&gt;
+    &lt;span style=&quot;color: red;&quot;&gt;* &lt;?php echo $stateErr; ?&gt;&lt;/span&gt;
+    &lt;br&gt;&lt;br&gt;
+
+    Zip: &lt;input type=&quot;text&quot; name=&quot;zip&quot; value=&quot;&lt;?php echo htmlspecialchars($zip); ?&gt;&quot;&gt;
+    &lt;span style=&quot;color: red;&quot;&gt;* &lt;?php echo $zipErr; ?&gt;&lt;/span&gt;
+    &lt;br&gt;&lt;br&gt;
+
+    &lt;input type=&quot;submit&quot; name=&quot;submit&quot; value=&quot;Submit&quot;&gt;
+&lt;/form&gt;
+&lt;?php } ?&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<h4 id="how-the-code-works">How the code works</h4>
+<ol><li><p><strong>Variables first.</strong> Every field gets a value variable and an error variable, all empty. The page needs them even on the first load, because the form prints them. Chained <code>$a = $b = &quot;&quot;;</code> sets several variables to the same value.</p></li><li><p><strong>Validation runs only after submit.</strong> The <code>REQUEST_METHOD == &quot;POST&quot;</code> check means that on the first load the form shows with no errors.</p></li><li><p><strong><code>trim($_POST[&quot;name&quot;] ?? &quot;&quot;)</code>.</strong> <code>$_POST[&quot;name&quot;]</code> reads the typed value. <code>?? &quot;&quot;</code> means &quot;if that key is missing, use an empty string&quot; and prevents a warning for fields that were not sent. <code>trim(...)</code> removes spaces at the start and end (requirement 3).</p></li><li><p><strong><code>if / elseif</code> for each field.</strong> The first check is &quot;is it empty?&quot; (required). Only if it is not empty does PHP run the second check (letters only, valid email, digits only). Each failed check writes an error message into that field&#39;s error variable. Only one message per field is shown, and the most basic problem (empty) comes first.</p></li><li><p><strong>Gender is different.</strong> Text boxes are always sent, even when empty. A radio group with nothing selected is <strong>not sent at all</strong>, so <code>empty($_POST[&quot;gender&quot;])</code> is true when the user picked nothing.</p></li><li><p><strong>Success means no errors.</strong> The big <code>if</code> checks that every error variable is still empty (<code>&amp;&amp;</code> needs all of them).</p></li><li><p><strong>Keeping what the user typed.</strong> <code>value=&quot;&lt;?php echo htmlspecialchars($name); ?&gt;&quot;</code> puts the typed text back into the box after an error, so the user does not retype everything. For radio buttons, <code>checked</code> is printed on the matching option.</p></li><li><p><strong><code>htmlspecialchars()</code>.</strong> Turns characters like <code>&lt;</code> and <code>&gt;</code> into harmless text before printing user input back into the page. This stops a user from inserting HTML or JavaScript into your page (an XSS attack).</p></li><li><p><strong>The <code>&lt;?php if ($success) { ?&gt; ... &lt;?php } else { ?&gt; ... &lt;?php } ?&gt;</code> structure.</strong> PHP can open and close around HTML. If the registration succeeded the page shows the success message, otherwise it shows the form.</p></li></ol>
+<p><strong>Why there is no <code>required</code> attribute in the HTML:</strong> the lab asks for PHP validation, and a browser <code>required</code> would stop the form before PHP ever checks it. Adding it is an optional extra, and the PHP checks are still needed.</p>
+<p><strong>Part-by-part reasoning</strong></p>
+<ul><li><p><strong>Part 1, variables at the top.</strong> The form prints these variables on the very first page load, before anything was submitted. A variable that does not exist causes an &quot;undefined variable&quot; warning. Each field needs two variables: <code>$name</code> (what the user typed, cleaned with <code>trim()</code>) and <code>$nameErr</code> (the error message, empty if there is no problem). They cannot share one variable, because after a failed check you need both the typed text and the message. <code>$name</code> is not the form field: <code>name=&quot;name&quot;</code> and <code>$_POST[&quot;name&quot;]</code> are the data from the browser, and <code>$name</code> is your own variable that stores a cleaned copy.</p></li><li><p><strong>What if <code>$success = false;</code> is left out?</strong> The page still works, but PHP shows an <code>Undefined variable $success</code> warning, because <code>$success</code> is only set to <code>true</code> when everything passed. Starting every variable with a known value is a good habit.</p></li><li><p><strong>Part 2, the POST check.</strong> Without it, the user would see &quot;required&quot; errors before typing anything.</p></li><li><p><strong>Part 3, name.</strong> <code>trim()</code> first, because a name made only of spaces would otherwise count as &quot;filled in&quot;. The required check comes before the pattern, because the pattern&#39;s <code>*</code> accepts an empty text. <code>elseif</code> shows only one message per field.</p></li><li><p><strong>Part 4, email.</strong> <code>filter_var</code> is more reliable than writing your own pattern. Trim first so a leading space does not make a good address invalid.</p></li><li><p><strong>Part 5, gender.</strong> No <code>trim()</code> or <code>== &quot;&quot;</code>, because an unselected radio group is not sent at all and <code>empty()</code> handles a missing key without a warning. The <code>else</code> saves the value so the page can re-select the chosen option after an error elsewhere.</p></li><li><p><strong>Part 6, street, city, state.</strong> The lab asks for only a required check on these three. <code>trim()</code> still matters, so a box filled only with spaces does not count as an answer.</p></li><li><p><strong>Part 7, zip.</strong> <code>ctype_digit</code> and not <code>is_numeric</code>: <code>is_numeric</code> also accepts things like <code>1.5</code>, <code>-3</code>, and <code>1e5</code>, while <code>ctype_digit</code> accepts only the characters 0 to 9. The zip stays text, because a zip like <code>02134</code> would lose its leading zero if it were converted to a number.</p></li><li><p><strong>Part 8, the success check.</strong> One failed field means the whole form is not valid, so <code>&amp;&amp;</code> needs all of the error variables to be empty. The <code>$success</code> flag lets the HTML below decide what to show without repeating the checks.</p></li><li><p><strong>Parts 9 to 12, the HTML.</strong> Only one of the two branches (success or form) is sent to the browser. <code>method=&quot;POST&quot;</code> keeps form data out of the URL, and the <code>action</code> is the same file. The red <code>&lt;span&gt;</code> with <code>*</code> marks the field as required and shows its error message in the same place, like the lab sample. All three radio buttons share <code>name=&quot;gender&quot;</code>, which makes them a group where only one can be selected, and <code>checked</code> re-selects the chosen option. The final <code>&lt;?php } ?&gt;</code> closes the <code>else</code> opened in Part 9, and a missing <code>}</code> makes PHP show a parse error.</p></li></ul>
+<p><strong>The big picture:</strong> parts 1 to 8 collect the data, clean it with <code>trim()</code>, check each rule, and record errors. Parts 9 to 12 show a success message when there are no errors, or the form again with the messages and the user&#39;s text. <strong>The rule that links both halves:</strong> every <code>name</code> in the HTML must match the key used in <code>$_POST</code>.</p>
+<p><strong>What to expect when testing</strong> <em>(I ran this exact code on PHP 8.4 by simulating each POST to confirm the results below)</em></p>
+<table><thead><tr><th>You enter</th><th>Result</th></tr></thead><tbody><tr><td>Everything blank, then Submit</td><td>An error message next to every field: &quot;Name is required&quot;, &quot;Email is required&quot;, &quot;Gender is required&quot;, &quot;Address is required&quot;, &quot;City is required&quot;, &quot;State is required&quot;, &quot;Zip is required&quot;</td></tr><tr><td>Name <code>Ana2</code></td><td>&quot;Only letters and white space allowed&quot;</td></tr><tr><td><span style="white-space:pre-wrap">Name <code> Ana Lopez </code> (spaces around)</span></td><td>Accepted. The spaces at the ends are removed.</td></tr><tr><td>Email <code>ana@</code></td><td>&quot;Invalid email format&quot;</td></tr><tr><td>No gender selected</td><td>&quot;Gender is required&quot;</td></tr><tr><td>Zip <code>12ab5</code></td><td>&quot;Only numbers allowed&quot;</td></tr><tr><td>Zip <code>10001</code></td><td>Accepted</td></tr><tr><td>All fields valid</td><td>Green &quot;Registration successful!&quot; with the entered data (for example: Ana Lopez, ana@mail.com, Female, 123 Main St, Queens, NY 11101)</td></tr></tbody></table>
+<p><strong>Checklist against the assignment</strong></p>
+<ul><li data-checked="false"><p><input type="checkbox" disabled> Name, email, gender, street, city, state, and zip are all required (requirement 1)</p></li><li data-checked="false"><p><input type="checkbox" disabled> Name only accepts letters and spaces (requirement 2)</p></li><li data-checked="false"><p><input type="checkbox" disabled> Spaces before the name and email are removed (requirement 3)</p></li><li data-checked="false"><p><input type="checkbox" disabled> Email must be valid (requirement 4)</p></li><li data-checked="false"><p><input type="checkbox" disabled> Gender must be selected (requirement 5)</p></li><li data-checked="false"><p><input type="checkbox" disabled> Zip only accepts numbers (requirement 6)</p></li><li data-checked="false"><p><input type="checkbox" disabled> Page works through <code>http://localhost/...</code>, not <code>file://</code></p></li></ul>
+<p><strong>Notes</strong></p>
+<ul><li><p>Zip codes with a dash (like <code>10001-1234</code>) fail <code>ctype_digit</code>. That matches the lab rule of numbers only.</p></li><li><p>Names like <code>O&#39;Brien</code> or <code>Jean-Luc</code> fail the letters-and-spaces rule. That is also what the lab asks for.</p></li><li><p>Check the sample for the expected look: the lab sample shows the field messages to the right of each box, and the code above prints each message in the same place.</p></li><li><p>Remember to follow the professor&#39;s instructions for file names and submission.</p></li></ul>
+<h3 id="end-of-week-4-day-2-summary">End of Week 4, Day 2 — Summary</h3>
+<p><strong>Covered today</strong></p>
+<ul><li><p><strong>Login form (HTML + PHP):</strong> <code>Login.php</code> shows the form, <code>login_process.php</code> reads <code>$_POST</code> and checks the credentials. The test login was changed from <code>John</code> to <code>doncarlis</code> / <code>123</code>.</p></li><li><p><strong>Form handling (PHP Tutorial Part 7):</strong> superglobals (<code>$GLOBALS</code>, <code>$_SERVER</code>, <code>$_REQUEST</code>, <code>$_POST</code>, <code>$_GET</code>), the same-file form pattern (the page runs twice: GET to show, POST to process), query strings, and <code>empty()</code>.</p></li><li><p><strong>GET vs POST:</strong> GET puts data in the URL (visible, small, bookmarkable, searches). POST puts it in the request body (hidden, large, for logins and forms that change data). &quot;GET asks for something to look at, POST sends something to be processed.&quot;</p></li><li><p><strong>Redirects:</strong> <code>header(&#39;Location: ...&#39;); exit;</code> must run before any output.</p></li><li><p><strong>Why there is no database yet:</strong> the login is hardcoded for practice, and MySQL will replace the checking step later (prepared statements and <code>password_verify()</code>).</p></li><li><p><strong>Lab #3, Q1:</strong> a Register page validated with <code>trim()</code>, <code>preg_match()</code>, <code>filter_var()</code>, <code>empty()</code>, and <code>ctype_digit()</code>, with <code>htmlspecialchars()</code> for safe output.</p></li></ul>
+<p><strong>Mistakes and traps to remember</strong></p>
+<ul><li><p>A form <code>name</code> that does not match the key in <code>$_POST</code> / <code>$_GET</code> gives &quot;Undefined array key&quot; or nothing at all.</p></li><li><p>Opening the page with <code>file://</code> instead of <code>http://localhost</code>, so PHP never runs.</p></li><li><p>Forgetting to save the file (a dot on the VS Code tab) so Apache serves the old version.</p></li><li><p><code>=</code> vs <code>==</code> inside an <code>if</code>: <code>if ($a = 5)</code> is always true.</p></li><li><p><code>header()</code> after any output gives &quot;headers already sent&quot;, and forgetting <code>exit</code> lets the script keep running.</p></li><li><p><code>trim($name);</code> on its own line does nothing: save the result with <code>$name = trim($name);</code>.</p></li><li><p>Never send passwords with GET.</p></li></ul>
+<p><strong>To do before next class</strong></p>
+<ul><li><p>Finish and test Lab #3 (Register page) in my own folder and send the browser screenshots so I can add them to the notes.</p></li><li><p>Practice exercises: the two POST forms, the GET link, the GET form, and the redirect to <code>welcome.php</code>.</p></li><li><p>Project 1, Deliverable 1: Project Proposal Report, due <strong>Thursday, 10/29/2026</strong>.</p></li></ul>
+<hr>

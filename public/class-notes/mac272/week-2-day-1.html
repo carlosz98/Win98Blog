@@ -1,0 +1,92 @@
+<h2 id="week-2-day-1-our-first-php-program">Week 2, Day 1 — 🎉 Our First PHP Program</h2>
+<p>Everything from opening Apache to writing our first working script, start to finish:</p>
+<pre><code class="language-php">&lt;?php
+echo &quot;Hello Student MAC272&quot;;
+?&gt;</code></pre>
+<p><em>Clean formatting: newline right after the opening <code>&lt;?php</code>, newline after the <code>echo</code> statement, and the closing <code>?&gt;</code> on its own line.</em></p>
+<p><strong>How to run it:</strong></p>
+<ol><li><p>Open the <strong>XAMPP Control Panel</strong> and click <strong>Start</strong> next to Apache.</p></li><li><p>Create a new text document in the code editor (using VS Code).</p></li><li><p>Write the code: <code>&lt;?php echo &quot;Hello Student of MAC272&quot;; ?&gt;</code></p></li><li><p><strong>Save as</strong> <code>index.php</code>.</p></li><li><p>Save it inside the XAMPP folder, in <strong>htdocs</strong>.</p></li><li><p>Create a project folder (e.g. <code>MAC272</code>) inside <code>htdocs</code> and save/drag the file there.</p></li><li><p>With Apache running (started in XAMPP), go to the browser and enter <code>localhost/MAC272/</code> — since <code>index.php</code> is the default file, it loads automatically and shows the PHP output.</p></li></ol>
+<h3 id="default-entry-file">Default Entry File</h3>
+<p>By default, <code>index.php</code> is the page a web server loads first when you visit a folder — similar to how <code>main</code> is the entry point in Java or C++. In PHP, that entry point is <code>index</code>.</p>
+<h3 id="starting-apache-on-mac-xampp-vm">Starting Apache on Mac (XAMPP-VM)</h3>
+<p>On Mac, XAMPP&#39;s Welcome screen doesn&#39;t have a single Start button like Windows — Apache is started from the <strong>Manage Servers</strong> tab instead:</p>
+<p><img src="__BASE__class-notes/img/e9f0cdacec7e084434525eadfb3724fd.png" loading="lazy" alt="XAMPP Welcome screen on Mac"></p>
+<ol><li><p>Click <strong>Manage Servers</strong> at the top of the window.</p></li><li><p>Find <strong>Apache Web Server</strong> in the list and click <strong>Start</strong>.</p></li><li><p>On Mac, the web root (<code>htdocs</code>) is at <code>/Applications/XAMPP/xamppfiles/htdocs</code> — or use <strong>Open Application Folder</strong> from the Welcome tab to get there.</p></li><li><p>After clicking Start, Apache Web Server shows green with status &quot;Running&quot;:</p><p><img src="__BASE__class-notes/img/1a0c56f3b5e536854f465865e4b5fc6b.png" loading="lazy" alt="Apache running in Manage Servers"></p></li></ol>
+<h3 id="variables">Variables</h3>
+<p>In PHP, a variable starts with <code>$</code> followed by a name, and is assigned with <code>=</code>. Variables inside a <strong>double-quoted</strong> string are automatically interpolated (their value gets inserted right into the string):</p>
+<pre><code class="language-php">&lt;?php
+echo &quot;Hello Students of Mac272&quot;;
+$name = &quot;Carlos&quot;;
+echo &quot;Hello my name is $name&quot;;
+?&gt;</code></pre>
+<p><strong>To put the second line on its own line:</strong> in HTML output, a plain <code>\n</code> won&#39;t visually break the line — browsers collapse whitespace. Use an actual HTML line break, <code>&lt;br&gt;</code>:</p>
+<pre><code class="language-php">&lt;?php
+echo &quot;Hello Students of Mac272&lt;br&gt;&quot;;
+$name = &quot;Carlos&quot;;
+echo &quot;Hello my name is $name&quot;;
+?&gt;</code></pre>
+<p><em>(Alternatively, wrap each echo in <code>&lt;p&gt;...&lt;/p&gt;</code> tags for separate paragraphs.)</em></p>
+<h3 id="single-quotes-vs-double-quotes-concatenation">Single Quotes vs. Double Quotes (Concatenation)</h3>
+<ul><li><p><strong>Double quotes (<code>&quot;...&quot;</code>)</strong> — PHP interpolates variables automatically, e.g. <code>&quot;Hello my name is $name&quot;</code> inserts the value of <code>$name</code> directly.</p></li><li><p><strong>Single quotes (<code>&#39;...&#39;</code>)</strong> — treated literally, no interpolation. <code>$name</code> inside single quotes prints as the literal text <code>$name</code>, not its value.</p></li></ul>
+<p>To include a variable&#39;s value in a single-quoted string, break out and <strong>concatenate</strong> with the <code>.</code> operator:</p>
+<pre><code class="language-php">&lt;?php
+$name = &quot;Carlos&quot;;
+echo &#39;Hello &#39; . $name . &#39; How are you today?&#39;;
+?&gt;</code></pre>
+<p><em>(Watch spacing: <code>.$name.</code> with no space inside the quotes prints everything mashed together, e.g. <code>HelloCarlosHow are you today?</code>. Add spaces inside the quotes, as above, to separate the words.)</em></p>
+<h3 id="comments">Comments</h3>
+<p>Comments are ignored when the code runs — useful for notes to yourself or your team. PHP supports two styles:</p>
+<ul><li><p><strong>Single-line:</strong> <code>// comment text</code></p></li><li><p><strong>Multi-line:</strong> <code>/* ... */</code>, can span several lines</p></li></ul>
+<pre><code class="language-php">// This is a single line comment
+
+/* This is
+multi
+line
+comment
+*/</code></pre>
+<h3 id="conditional-statements-if-else">Conditional Statements (if / else)</h3>
+<p>An <code>if</code> statement runs a block of code only when a condition is <strong>true</strong>; <code>else</code> runs when it&#39;s <strong>false</strong>.</p>
+<pre><code class="language-php">$number = 18;
+if ($number &gt; 10) {
+    echo &quot;The number is greater than 10&lt;br&gt;&quot;;
+} else {
+    echo &quot;The number is less than 10&quot;;
+}</code></pre>
+<ul><li><p>The condition goes inside parentheses <code>( )</code>; the code to run goes inside curly braces <code>{ }</code>.</p></li><li><p>Common comparison operators: <code>&gt;</code>, <code>&lt;</code>, <code>&gt;=</code>, <code>&lt;=</code>, <code>==</code>, <code>!=</code>.</p></li></ul>
+<h3 id="code-so-far">📌 Code So Far</h3>
+<pre><code class="language-php">&lt;?php
+echo &quot;Hello Students of Mac272&lt;br&gt;&quot;;
+
+$name = &quot;Carlos&quot;;
+echo &quot;Hello my name is $name&lt;br&gt;&quot;;
+
+//This is single line comment
+
+/*This is
+Multi
+Line
+Comment
+ */
+
+echo &#39;Hello&#39; .$name. &#39;How are you today?&#39;;
+
+echo &quot;&lt;br&gt;&quot;;
+echo &quot;------------------------------&lt;br&gt;&quot;;
+echo &quot;&lt;br&gt;&quot;;
+
+//First IF statement
+
+$number = 18;
+if ($number &gt; 10) {
+    echo &quot;The number is greater than 10&lt;br&gt;&quot;;
+}
+else {
+    echo &quot;The number is less than 10&quot;;
+}
+?&gt;</code></pre>
+<p><strong>Output in the browser:</strong></p>
+<p><img src="__BASE__class-notes/img/eb9995ccd384042fc49d139b08d0bc72.png" loading="lazy" alt="Browser output of code so far"></p>
+<blockquote><p><strong>✅ Progress so far:</strong> we&#39;ve opened Apache in XAMPP, created <code>index.php</code> in <code>htdocs/MAC272</code>, and written/run a script that covers <code>echo</code>, PHP tags, saving/running a file, variables (<code>$name</code>), string interpolation in double quotes, the <code>&lt;br&gt;</code> line break, string concatenation with <code>.</code> in single quotes, single-line (<code>//</code>) and multi-line (<code>/* */</code>) comments, and our first <code>if / else</code> conditional statement.</p></blockquote>
+<p><strong>Full setup — VS Code, XAMPP, and the browser together:</strong></p>
+<p><img src="__BASE__class-notes/img/706f2eb3334f2999d413baf53a336b71.png" loading="lazy" alt="Full development setup: VS Code with index.php, XAMPP Manage Servers, and the browser output"></p>
+<hr>
