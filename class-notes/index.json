@@ -572,6 +572,38 @@
      ]
     }
    ]
+  },
+  {
+   "id": "mac101",
+   "title": "MAC 101 - INTRODUCTION TO COMPUTER SCIENCE",
+   "folders": [
+    {
+     "title": "Overview",
+     "pages": [
+      {
+       "slug": "notes",
+       "title": "Notes",
+       "topics": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "mac172",
+   "title": "MAC 172 - WEB DEVELOPMENT I",
+   "folders": [
+    {
+     "title": "Overview",
+     "pages": [
+      {
+       "slug": "notes",
+       "title": "Notes",
+       "topics": []
+      }
+     ]
+    }
+   ]
   }
  ]
 }
