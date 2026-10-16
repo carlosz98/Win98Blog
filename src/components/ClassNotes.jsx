@@ -52,8 +52,15 @@ export default function ClassNotes({ show, setShow }) {
   useEffect(() => {
     if (status !== 'ready' || !bodyRef.current) return;
     const el = current.anchor ? bodyRef.current.querySelector(`[id="${current.anchor}"]`) : null;
-    if (el) bodyRef.current.scrollTop = el.offsetTop - bodyRef.current.offsetTop - 8;
-    else bodyRef.current.scrollTop = 0;
+    const top = el ? el.offsetTop - bodyRef.current.offsetTop - 8 : 0;
+    const calm = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    // Brand-new page: jump. Topic on the same page: glide there and flash the heading.
+    bodyRef.current.scrollTo({ top, behavior: el && !calm ? 'smooth' : 'auto' });
+    if (el) {
+      el.classList.remove('cn-flash');
+      void el.offsetWidth;
+      el.classList.add('cn-flash');
+    }
   }, [status, html, current.anchor]);
 
   if (!show) return null;
@@ -135,10 +142,10 @@ export default function ClassNotes({ show, setShow }) {
           </nav>
 
           <div className="cn-content" ref={bodyRef}>
-            {currentPage && <p className="cn-crumb">{currentClass.title} › {currentPage.title}</p>}
+            {currentPage && <p className="cn-crumb">{currentClass.title} › {currentPage.title}<span className="cn-cursor">_</span></p>}
             {status === 'error' && <p className="cn-hint">Couldn’t load this page. Try again in a moment.</p>}
-            {status === 'loading' && index && <p className="cn-hint">Loading…</p>}
-            {status === 'ready' && <article className="cn-article" dangerouslySetInnerHTML={{ __html: html }} />}
+            {status === 'loading' && index && <p className="cn-hint cn-loading">Loading<span>.</span><span>.</span><span>.</span></p>}
+            {status === 'ready' && <article className="cn-article" key={`${current.classId}/${current.slug}`} dangerouslySetInnerHTML={{ __html: html }} />}
           </div>
         </div>
 

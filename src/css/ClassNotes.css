@@ -161,3 +161,60 @@
   .cn-main { flex-direction: column; }
   .cn-tree { width: auto; max-height: 38%; }
 }
+
+/* ── Small animations (stepped, like old Windows) ── */
+.cn-window { animation: cn_open .22s steps(5, end); transform-origin: 50% 40%; }
+@keyframes cn_open { from { opacity: 0; transform: scale(.94); } to { opacity: 1; transform: scale(1); } }
+
+/* Tree rows slide in when a folder opens */
+.cn-l1, .cn-l2, .cn-l3 { animation: cn_row .18s steps(4, end) both; }
+@keyframes cn_row { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: none; } }
+.cn-row { transition: background-color .08s linear; }
+.cn-row img { transition: transform .12s steps(3, end); }
+.cn-row:hover img { transform: translateY(-1px) scale(1.12); }
+.cn-row.active { animation: cn_active .35s steps(3, end); }
+@keyframes cn_active { 0% { background: #1084d0; } 100% { background: #000080; } }
+
+/* Page change: the article slides up and its blocks appear one after another */
+.cn-article { animation: cn_page .25s steps(5, end); }
+@keyframes cn_page { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.cn-article > * { animation: cn_block .3s steps(5, end) both; }
+.cn-article > *:nth-child(1) { animation-delay: .02s; }
+.cn-article > *:nth-child(2) { animation-delay: .06s; }
+.cn-article > *:nth-child(3) { animation-delay: .10s; }
+.cn-article > *:nth-child(4) { animation-delay: .14s; }
+.cn-article > *:nth-child(5) { animation-delay: .18s; }
+.cn-article > *:nth-child(6) { animation-delay: .22s; }
+.cn-article > *:nth-child(n+7) { animation-delay: .26s; }
+@keyframes cn_block { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+/* Code blocks: a green "scan" sweeps across once when they come into view */
+.cn-article pre { position: relative; }
+.cn-article pre::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(0,255,102,.18), transparent);
+  transform: translateX(-100%);
+  animation: cn_scan .9s steps(12, end) .35s 1 both;
+}
+@keyframes cn_scan { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); opacity: 0; } }
+
+/* Screenshots develop like a slow dial-up image */
+.cn-article img { animation: cn_img .6s steps(6, end) both; }
+@keyframes cn_img { from { opacity: 0; filter: blur(4px) contrast(.6); } to { opacity: 1; filter: none; } }
+
+/* Heading flashes when you jump to it from the tree */
+.cn-flash { animation: cn_flash 1.2s steps(6, end); }
+@keyframes cn_flash { 0%, 50% { background: #ffff66; } 100% { background: transparent; } }
+
+/* Breadcrumb cursor and loading dots */
+.cn-cursor { margin-left: 2px; animation: cn_blink 1s steps(1, end) infinite; }
+@keyframes cn_blink { 50% { opacity: 0; } }
+.cn-loading span { animation: cn_dot 1.2s steps(1, end) infinite; }
+.cn-loading span:nth-child(2) { animation-delay: .2s; }
+.cn-loading span:nth-child(3) { animation-delay: .4s; }
+@keyframes cn_dot { 0%, 100% { opacity: .15; } 40% { opacity: 1; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .cn-window, .cn-l1, .cn-l2, .cn-l3, .cn-row.active, .cn-article, .cn-article > *, .cn-article pre::after,
+  .cn-article img, .cn-flash, .cn-cursor, .cn-loading span, .cn-row img { animation: none !important; transition: none !important; }
+}
