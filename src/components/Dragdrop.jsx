@@ -5,6 +5,7 @@ import binEmp from '../assets/bin2.png'
 import bin from '../assets/bin.png'
 import { IoIosSearch } from "react-icons/io";
 import { motion, AnimatePresence } from 'framer-motion';
+import { DESKTOP_CELLS, DESKTOP_ROWS } from './function/desktopLayout';
 
 
 // Desktop icons that get an attention effect, so visitors find Carlos's work.
@@ -53,6 +54,16 @@ function Dragdrop() {
     iconFocusIcon,
     setStartActive
   } = useContext(UseContext);
+
+  // Fixed grid cells need enough height for every row; on shorter windows icons just flow as before.
+  const [viewportH, setViewportH] = useState(window.innerHeight);
+  useEffect(() => {
+    const onResize = () => setViewportH(window.innerHeight);
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+  const rowH = (parseInt(iconContainerSize(iconScreenSize).height) || 70) + 16;
+  const fixedLayout = viewportH * 0.96 >= DESKTOP_ROWS * rowH + 24;
 
   // Create an array of refs for each icon
   const iconRefs = useRef([]);
@@ -173,7 +184,9 @@ function Dragdrop() {
             <div
               className={FEATURED_BADGES[icon.name] ? `icon icon_featured ${FEATURED_EFFECTS.map(e => `fx_${e}`).join(' ')}` : 'icon'}
               data-tip={icon.description}
-              style={iconContainerSize(iconScreenSize)}
+              style={fixedLayout && DESKTOP_CELLS[icon.name]
+                ? { ...iconContainerSize(iconScreenSize), gridColumn: DESKTOP_CELLS[icon.name].col, gridRow: DESKTOP_CELLS[icon.name].row }
+                : iconContainerSize(iconScreenSize)}
               ref={(el) => iconRefs.current[icon.name] = el} 
               onContextMenu={() => {
                 setRightClickIcon(true);
@@ -270,7 +283,7 @@ function Dragdrop() {
         </motion.div>
       </AnimatePresence> */}
 
-      <div className='drag_drop'
+      <div className={fixedLayout ? 'drag_drop drag_drop_fixed' : 'drag_drop'}
         key={refresh}
       >
         {desktopIcon.filter(icon => icon.folderId === 'Desktop' && icon.name !== 'RecycleBin').map(renderIcon)}

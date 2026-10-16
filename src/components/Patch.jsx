@@ -44,7 +44,7 @@ function Patch() {
         disabled={PatchExpand.expand}
         bounds={{top: 0}}
         defaultPosition={{ 
-          x: window.innerWidth <= 500 ? 40 : 80,
+          x: window.innerWidth <= 500 ? 40 : window.innerWidth > 800 ? window.innerWidth - 460 : 80,
           y: window.innerWidth <= 500 ? 100 : 90,
         }}
         onStop={(event, data) => handleDragStop(event, data)}
