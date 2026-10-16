@@ -58,6 +58,7 @@ import Screensaver from './components/Screensaver';
 import BlueScreen from './components/BlueScreen';
 import VisitorCounter from './components/VisitorCounter';
 import Guestbook from './components/Guestbook';
+import GuestbookPrompt from './components/GuestbookPrompt';
 import PaintGallery from './components/PaintGallery';
 import VisitorMap from './components/VisitorMap';
 import JokeFile from './components/JokeFile';
@@ -987,6 +988,7 @@ function handleShowInfolderMobile(name, type) {
         <Solitaire show={solitaireShow} setShow={setSolitaireShow} />
         <DevFeed show={devFeedShow} setShow={setDevFeedShow} />
         <Guestbook show={guestbookShow} setShow={setGuestbookShow} />
+        <GuestbookPrompt guestbookOpen={guestbookShow} openGuestbook={() => handleShow('Guestbook')} />
         <PaintGallery show={galleryShow} setShow={setGalleryShow} />
         <Scrapbook show={scrapbookShow} setShow={setScrapbookShow}/>
         <CoolSites show={coolSitesShow} setShow={setCoolSitesShow}/>

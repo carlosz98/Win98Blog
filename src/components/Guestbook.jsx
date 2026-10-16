@@ -3,6 +3,7 @@ import UseContext from '../Context';
 import Draggable from 'react-draggable';
 import guestbookIcon from '../assets/guestbook.png';
 import { communityStore, NAME_MAX, MESSAGE_MAX } from './function/communityStore';
+import { markSigned } from './function/guestbookNudge';
 import '../css/DevFeed.css';
 import '../css/Guestbook.css';
 
@@ -31,6 +32,7 @@ function Guestbook({ show, setShow }) {
     try {
       await communityStore.signGuestbook(name, message);
       setMessage('');
+      markSigned();
       setStatus('Thanks for signing! ✍️');
     } catch (err) {
       setStatus(err.message?.startsWith('Please') ? err.message : 'Could not sign right now. Try again later.');

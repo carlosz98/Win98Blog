@@ -17,6 +17,9 @@ import { isMuted, setMuted, playClick, playMeow } from './function/sounds'
 import CatWindow from './CatWindow'
 import CatIntro from './CatIntro'
 import PixelMochi from './PixelMochi'
+import guestbookTrayIcon from '../assets/guestbook.png'
+import { useGuestbookSigned } from './function/guestbookNudge'
+import '../css/GuestbookPrompt.css'
 
 // Taskbar cat look: 'pixel' (pixel-art Mochi + text), 'photo' (cat from the banner + text), 'catOnly' (just the cat)
 const TRAY_CAT = 'pixel'
@@ -43,6 +46,7 @@ export default function Footer() {
     const [calValue, calOnChange] = useState(new Date());
     const [width, setWidth] = useState(0);
     const [muted, setMutedState] = useState(isMuted());
+    const guestbookSigned = useGuestbookSigned();
     const [catOpen, setCatOpen] = useState(false);
     const [catIntro, setCatIntro] = useState(0);
     const catIntroTimers = useRef([]);
@@ -538,6 +542,12 @@ export default function Footer() {
                         {TRAY_CAT === 'pixel' ? <PixelMochi size={18} /> : <img src={catBannerCat} alt="" />}
                         {TRAY_CAT !== 'catOnly' && <span>No time spent with<br/>a cat is wasted.</span>}
                     </div>
+                    {!guestbookSigned && (
+                        <div className="gp-tray" title="Sign the guestbook!"
+                            onClick={(e) => { e.stopPropagation(); handleShow('Guestbook') }}>
+                            <img src={guestbookTrayIcon} alt="" /><span>Sign the Guestbook!</span>
+                        </div>
+                    )}
                     <div className="icon_time_container">
                         <img src={news} alt="news"
                                 onClick={(e) => {
