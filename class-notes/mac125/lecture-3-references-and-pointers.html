@@ -1,0 +1,30 @@
+<h2 id="lecture-3-references-and-pointers">Lecture 3: References and Pointers</h2>
+<p>A reference is a permanent second name for a variable; a pointer is a variable that holds another variable&#39;s memory address.</p>
+<h3 id="lecture-3-references-and-pointers-references">References</h3>
+<ul><li><p>Declared with <code>&amp;</code> between the type and the name: <code>int&amp; ref = x;</code></p></li><li><p>Must be initialized when declared, and cannot be re-bound to a different variable later.</p></li><li><p>Mostly used for function parameters: no copy is made, and the function can change the caller&#39;s variable.</p></li></ul>
+<h3 id="lecture-3-references-and-pointers-pointers">Pointers</h3>
+<ul><li><p>Declared with <code>*</code>: <code>int* ptr;</code></p></li><li><p><code>&amp;x</code> (address-of) gives the address of <code>x</code>; <code>*ptr</code> (dereference / indirection) reads or changes the value at that address.</p></li><li><p>Used for dynamic memory and for working with variables and arrays directly.</p></li></ul>
+<table><thead><tr><th></th><th>Reference</th><th>Pointer</th></tr></thead><tbody><tr><td>Declare</td><td><code>int&amp; r = x;</code></td><td><code>int* p = &amp;x;</code></td></tr><tr><td>Must initialize?</td><td>Yes</td><td>No (but should, e.g. <code>nullptr</code>)</td></tr><tr><td>Can change target?</td><td>No</td><td>Yes</td></tr><tr><td>Can be null?</td><td>No</td><td>Yes</td></tr><tr><td>Access the value</td><td><code>r</code></td><td><code>*p</code></td></tr></tbody></table>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+using namespace std;
+
+void swapRef(int&amp; a, int&amp; b) {   // pass by reference
+    int t = a; a = b; b = t;
+}
+
+int main() {
+    int x = 5, y = 9;
+    int&amp; r = x;        // r is another name for x
+    r = 7;             // x is now 7
+
+    int* p = &amp;y;       // p holds y&#39;s address
+    *p = 20;           // y is now 20
+    cout &lt;&lt; &amp;x &lt;&lt; &quot;\n&quot;;  // prints x&#39;s memory address (e.g. 0x7ffd...)
+
+    swapRef(x, y);     // x = 20, y = 7
+    cout &lt;&lt; x &lt;&lt; &quot; &quot; &lt;&lt; y &lt;&lt; &quot;\n&quot;;
+    return 0;
+}</code></pre>
+<h3 id="lecture-3-references-and-pointers-common-mistakes">Common mistakes</h3>
+<ul><li><p>Mixing up the two meanings of <code>&amp;</code>: in a declaration it makes a reference, in an expression it takes an address.</p></li><li><p>Mixing up the two meanings of <code>*</code>: in a declaration it makes a pointer, in an expression it dereferences.</p></li><li><p>Declaring <code>int&amp; r;</code> with no initializer (compile error).</p></li><li><p>Dereferencing an uninitialized or null pointer (crash / undefined behavior).</p></li></ul>
+<p><strong>Likely test points:</strong> reference vs pointer table, what <code>&amp;</code> and <code>*</code> do in each position, predicting output after a function modifies values through a reference or pointer.</p>

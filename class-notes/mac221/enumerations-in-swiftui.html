@@ -1,0 +1,59 @@
+<h2 id="enumerations-in-swiftui">Enumerations in SwiftUI</h2>
+<p>An enum is a user-defined type for a fixed group of related values. It makes code more readable, easier to maintain and type-safe, because the compiler only allows the listed cases.</p>
+<p>The slides give three uses:</p>
+<ol><li><p><strong>View states</strong>: the different states a screen can be in.</p></li><li><p><strong>Picker options</strong>: a well-defined set of choices, like rainbow colors or product sizes.</p></li><li><p><strong>Modeling data types</strong>: user roles, product types, and so on, which prevents type mismatches.</p></li></ol>
+<h3 id="enum-for-view-states-with-switch">Enum for view states, with switch</h3>
+<pre><code class="language-swift">enum ViewState {
+    case initial
+    case appearing
+    case disappearing
+    case active
+}
+
+struct ContentView: View {
+    @State private var viewState: ViewState = .initial   // short form: .initial
+
+    var body: some View {
+        VStack {
+            Button(&quot;Change View State&quot;) {
+                switch viewState {                       // cycle to the next state
+                case .initial:      viewState = .appearing
+                case .appearing:    viewState = .active
+                case .active:       viewState = .disappearing
+                case .disappearing: viewState = .initial
+                }
+            }
+
+            switch viewState {                           // show different content per state
+            case .initial:      Text(&quot;View State: Initial&quot;).foregroundColor(.gray)
+            case .appearing:    Text(&quot;View State: Appearing&quot;).foregroundColor(.green)
+            case .active:       Text(&quot;View State: Active&quot;).foregroundColor(.blue)
+            case .disappearing: Text(&quot;View State: Disappearing&quot;).foregroundColor(.red)
+            }
+        }
+    }
+}</code></pre>
+<p>No <code>default</code> is needed because the switch covers every case. That is one of the main benefits of enums.</p>
+<p>A two-state version uses the ternary operator: <code>Button(viewState == .initial ? &quot;Appear&quot; : &quot;Disappear&quot;) { viewState = viewState == .initial ? .active : .initial }</code>.</p>
+<h3 id="enum-for-a-picker">Enum for a Picker</h3>
+<pre><code class="language-swift">enum RainbowColor: String, CaseIterable, Identifiable {
+    case red, orange, yellow, green, blue, indigo, violet
+    var id: RainbowColor { self }
+}
+
+struct ContentView: View {
+    @State private var selectedColor: RainbowColor = .red
+
+    var body: some View {
+        VStack {
+            Picker(&quot;Rainbow Color&quot;, selection: $selectedColor) {
+                ForEach(RainbowColor.allCases) { color in
+                    Text(color.rawValue.capitalized).tag(color)
+                }
+            }
+            .pickerStyle(SegmentedPickerStyle())
+            Text(&quot;You selected: \(selectedColor.rawValue.capitalized)&quot;)
+        }
+    }
+}</code></pre>
+<table><thead><tr><th>Piece</th><th>Why it&#39;s there</th></tr></thead><tbody><tr><td><code>: String</code></td><td>Gives each case a <strong>raw value</strong>, its name as text (<code>.red.rawValue == &quot;red&quot;</code>)</td></tr><tr><td><code>CaseIterable</code></td><td>Adds <code>allCases</code>, an array of every case, so <code>ForEach</code> can loop over them</td></tr><tr><td><code>Identifiable</code> + <code>var id</code></td><td>Lets <code>ForEach</code> tell the cases apart without <code>id: \.self</code></td></tr><tr><td><code>.tag(color)</code></td><td>Tag type matches the <code>@State</code> type (<code>RainbowColor</code>)</td></tr><tr><td><code>.capitalized</code></td><td>Turns &quot;red&quot; into &quot;Red&quot;</td></tr></tbody></table>

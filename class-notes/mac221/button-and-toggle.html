@@ -1,0 +1,70 @@
+<h2 id="button-and-toggle">Button and Toggle</h2>
+<p>A <code>Button</code> runs code when tapped; a <code>Toggle</code> flips a <code>Bool</code> on and off. Both usually work with <code>@State</code>, the property wrapper that stores a value inside a view and redraws the view when it changes.</p>
+<h3 id="state-and-bindings">@State and bindings</h3>
+<ul><li><p><code>@State private var isOn = false</code> stores view-owned data. Changing it redraws <code>body</code>.</p></li><li><p><code>$isOn</code> (with the dollar sign) is a <strong>binding</strong>: a two-way link that lets a control both read and write the value. Controls like <code>Toggle</code>, <code>TextField</code>, <code>Picker</code> and <code>DatePicker</code> need a binding.</p></li><li><p><code>isOn.toggle()</code> flips a Bool between <code>true</code> and <code>false</code>.</p></li></ul>
+<h3 id="button">Button</h3>
+<pre><code class="language-swift">Button(action: {
+    print(&quot;Hello World tapped!&quot;)
+}) {
+    Text(&quot;Hello World&quot;)              // the label: any view
+        .padding()
+        .background(Color.purple)
+        .foregroundColor(.white)
+        .font(.title)
+}
+
+Button(&quot;Show details&quot;) { showDetails.toggle() }   // short form with a text title
+
+Button {                                          // trailing-closure form
+    print(&quot;Image tapped!&quot;)
+} label: {
+    Image(&quot;ocean&quot;).resizable().scaledToFit()
+}</code></pre>
+<p>Styling tricks from the slides:</p>
+<table><thead><tr><th>Look</th><th>Code</th></tr></thead><tbody><tr><td>Square border</td><td><code>.border(Color.purple, width: 5)</code></td></tr><tr><td>Rounded corners</td><td><code>.cornerRadius(40)</code></td></tr><tr><td>Rounded border (border can&#39;t round, so overlay a shape)</td><td><code>.overlay(RoundedRectangle(cornerRadius: 40).stroke(Color.purple, lineWidth: 5))</code></td></tr><tr><td>Round icon button</td><td><code>Image(systemName: &quot;trash&quot;).padding().background(.red).clipShape(Circle())</code></td></tr><tr><td>Icon + text</td><td>put <code>Image</code> and <code>Text</code> in an <code>HStack</code> inside the label</td></tr><tr><td>Gradient</td><td><code>.background(LinearGradient(gradient: Gradient(colors: [.red, .blue]), startPoint: .leading, endPoint: .trailing))</code></td></tr><tr><td>Shadow</td><td><code>.shadow(radius: 5)</code></td></tr><tr><td>Bigger tap area</td><td><code>.contentShape(Rectangle())</code></td></tr></tbody></table>
+<p>Show and hide with state:</p>
+<pre><code class="language-swift">struct ContentView: View {
+    @State private var showDetails = false
+
+    var body: some View {
+        VStack(alignment: .leading) {
+            Button(&quot;Show details&quot;) { showDetails.toggle() }
+            if showDetails {                       // only drawn when true
+                Text(&quot;You should enjoy SwiftUI&quot;).font(.largeTitle)
+            }
+        }
+    }
+}</code></pre>
+<p>The slides also use the ternary operator to style by state: <code>.background(isTapped ? Color.blue : Color.gray)</code>. The flip-card example swaps between &quot;Front of Card&quot; and &quot;Back of Card&quot; with <code>if isFlipped { ... } else { ... }</code> and a button calling <code>isFlipped.toggle()</code>.</p>
+<h3 id="toggle">Toggle</h3>
+<pre><code class="language-swift">struct ContentView: View {
+    @State private var isOn: Bool = false
+
+    var body: some View {
+        Toggle(&quot;Enable Feature&quot;, isOn: $isOn)     // note the $
+            .padding()
+    }
+}</code></pre>
+<p>Custom label that changes with the value:</p>
+<pre><code class="language-swift">Toggle(isOn: $isOn) {
+    HStack {
+        Image(systemName: isOn ? &quot;sun.max.fill&quot; : &quot;moon.fill&quot;)
+            .foregroundColor(isOn ? .yellow : .gray)
+        Text(isOn ? &quot;Day Mode&quot; : &quot;Night Mode&quot;)
+    }
+}</code></pre>
+<p>A settings screen groups toggles in a <code>Form</code> with <code>Section</code> headers:</p>
+<pre><code class="language-swift">Form {
+    Section(header: Text(&quot;Notifications&quot;)) {
+        Toggle(&quot;Enable Notifications&quot;, isOn: $notificationsEnabled)
+        Toggle(&quot;Enable Location Services&quot;, isOn: $locationEnabled)
+    }
+    Section(header: Text(&quot;Privacy&quot;)) {
+        Toggle(&quot;Enable Dark Mode&quot;, isOn: $darkModeEnabled)
+    }
+    Section(header: Text(&quot;General&quot;)) {
+        Toggle(&quot;Example General Setting&quot;, isOn: .constant(false))   // fixed value, can&#39;t change
+    }
+}
+.navigationTitle(&quot;Settings&quot;)</code></pre>
+<p>To run code when a toggle changes, use <code>.onChange(of: isOn) { newValue in ... }</code>. (The &quot;Toggle With Action&quot; slide in the deck is blank, so this is the standard way, not copied from the slide.)</p>

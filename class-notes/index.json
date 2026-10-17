@@ -437,8 +437,177 @@
      "title": "Overview",
      "pages": [
       {
-       "slug": "notes",
-       "title": "Notes",
+       "slug": "overview",
+       "title": "About these notes",
+       "topics": []
+      }
+     ]
+    },
+    {
+     "title": "Lectures",
+     "pages": [
+      {
+       "slug": "lecture-1-introduction",
+       "title": "Lecture 1: Introduction",
+       "topics": []
+      },
+      {
+       "slug": "lecture-2-review-of-mac101",
+       "title": "Lecture 2: Review of MAC101",
+       "topics": [
+        {
+         "id": "lecture-2-review-of-mac101-key-concepts",
+         "title": "Key concepts"
+        },
+        {
+         "id": "lecture-2-review-of-mac101-common-mistakes",
+         "title": "Common mistakes"
+        }
+       ]
+      },
+      {
+       "slug": "lecture-3-references-and-pointers",
+       "title": "Lecture 3: References and Pointers",
+       "topics": [
+        {
+         "id": "lecture-3-references-and-pointers-references",
+         "title": "References"
+        },
+        {
+         "id": "lecture-3-references-and-pointers-pointers",
+         "title": "Pointers"
+        },
+        {
+         "id": "lecture-3-references-and-pointers-common-mistakes",
+         "title": "Common mistakes"
+        }
+       ]
+      },
+      {
+       "slug": "lecture-4-structures",
+       "title": "Lecture 4: Structures",
+       "topics": [
+        {
+         "id": "lecture-4-structures-key-concepts",
+         "title": "Key concepts"
+        },
+        {
+         "id": "lecture-4-structures-common-mistakes",
+         "title": "Common mistakes"
+        }
+       ]
+      },
+      {
+       "slug": "lecture-5a-classes",
+       "title": "Lecture 5a: Classes",
+       "topics": [
+        {
+         "id": "lecture-5a-classes-key-concepts",
+         "title": "Key concepts"
+        },
+        {
+         "id": "lecture-5a-classes-common-mistakes",
+         "title": "Common mistakes"
+        }
+       ]
+      },
+      {
+       "slug": "lecture-5b-constructors",
+       "title": "Lecture 5b: Constructors",
+       "topics": [
+        {
+         "id": "lecture-5b-constructors-key-concepts",
+         "title": "Key concepts"
+        },
+        {
+         "id": "lecture-5b-constructors-common-mistakes",
+         "title": "Common mistakes"
+        }
+       ]
+      },
+      {
+       "slug": "lecture-6-access-modifiers-and-encapsulation",
+       "title": "Lecture 6: Access Modifiers and Encapsulation",
+       "topics": [
+        {
+         "id": "lecture-6-access-modifiers-and-encapsulation-encapsulation",
+         "title": "Encapsulation"
+        },
+        {
+         "id": "lecture-6-access-modifiers-and-encapsulation-common-mistakes",
+         "title": "Common mistakes"
+        }
+       ]
+      },
+      {
+       "slug": "lecture-7-inheritance",
+       "title": "Lecture 7: Inheritance",
+       "topics": [
+        {
+         "id": "lecture-7-inheritance-the-five-types",
+         "title": "The five types"
+        },
+        {
+         "id": "lecture-7-inheritance-access-control-when-inheriting",
+         "title": "Access control when inheriting"
+        },
+        {
+         "id": "lecture-7-inheritance-common-mistakes",
+         "title": "Common mistakes"
+        }
+       ]
+      },
+      {
+       "slug": "lecture-8-polymorphism",
+       "title": "Lecture 8: Polymorphism",
+       "topics": [
+        {
+         "id": "lecture-8-polymorphism-runtime-polymorphism-the-animal-example-from-class",
+         "title": "Runtime polymorphism: the Animal example from class"
+        },
+        {
+         "id": "lecture-8-polymorphism-common-mistakes",
+         "title": "Common mistakes"
+        }
+       ]
+      },
+      {
+       "slug": "lecture-9-exception-handling",
+       "title": "Lecture 9: Exception Handling",
+       "topics": [
+        {
+         "id": "lecture-9-exception-handling-common-mistakes",
+         "title": "Common mistakes"
+        }
+       ]
+      },
+      {
+       "slug": "lecture-10-threading",
+       "title": "Lecture 10: Threading",
+       "topics": [
+        {
+         "id": "lecture-10-threading-five-ways-to-pass-arguments",
+         "title": "Five ways to pass arguments"
+        },
+        {
+         "id": "lecture-10-threading-common-mistakes",
+         "title": "Common mistakes"
+        }
+       ]
+      },
+      {
+       "slug": "lecture-11-file-handling",
+       "title": "Lecture 11: File Handling",
+       "topics": [
+        {
+         "id": "lecture-11-file-handling-common-mistakes",
+         "title": "Common mistakes"
+        }
+       ]
+      },
+      {
+       "slug": "final-review-checklist",
+       "title": "Final review checklist",
        "topics": []
       }
      ]
@@ -485,9 +654,158 @@
      "title": "Overview",
      "pages": [
       {
-       "slug": "notes",
-       "title": "Notes",
+       "slug": "overview",
+       "title": "About these notes",
        "topics": []
+      }
+     ]
+    },
+    {
+     "title": "Make a 2D Game",
+     "pages": [
+      {
+       "slug": "part-1-the-unity-interface-and-importing-assets",
+       "title": "Part 1: The Unity interface and importing assets",
+       "topics": [
+        {
+         "id": "the-four-main-panels",
+         "title": "The four main panels"
+        },
+        {
+         "id": "five-ways-to-add-assets-from-your-computer",
+         "title": "Five ways to add assets from your computer"
+        },
+        {
+         "id": "likely-test-points",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "part-2-building-the-bird-and-the-first-script",
+       "title": "Part 2: Building the bird and the first script",
+       "topics": [
+        {
+         "id": "components-and-what-each-one-adds",
+         "title": "Components and what each one adds"
+        },
+        {
+         "id": "four-ways-to-create-a-script",
+         "title": "Four ways to create a script"
+        },
+        {
+         "id": "the-birdscript",
+         "title": "The BirdScript"
+        },
+        {
+         "id": "moving-with-other-keys",
+         "title": "Moving with other keys"
+        },
+        {
+         "id": "likely-test-points-1",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "part-3-spawning-moving-and-destroying-pipes",
+       "title": "Part 3: Spawning, moving and destroying pipes",
+       "topics": [
+        {
+         "id": "moving-the-pipes",
+         "title": "Moving the pipes"
+        },
+        {
+         "id": "prefabs",
+         "title": "Prefabs"
+        },
+        {
+         "id": "the-pipe-spawner",
+         "title": "The Pipe Spawner"
+        },
+        {
+         "id": "two-versions-of-the-spawner",
+         "title": "Two versions of the spawner"
+        },
+        {
+         "id": "likely-test-points-2",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "part-4-score-ui-triggers-and-the-logic-manager",
+       "title": "Part 4: Score UI, triggers and the Logic Manager",
+       "topics": [
+        {
+         "id": "setting-up-the-ui",
+         "title": "Setting up the UI"
+        },
+        {
+         "id": "logicscript",
+         "title": "LogicScript"
+        },
+        {
+         "id": "colliders-vs-triggers",
+         "title": "Colliders vs triggers"
+        },
+        {
+         "id": "pipemiddlescript",
+         "title": "PipeMiddleScript"
+        },
+        {
+         "id": "likely-test-points-3",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "part-5-game-over-restart-and-building-the-game",
+       "title": "Part 5: Game over, restart and building the game",
+       "topics": [
+        {
+         "id": "building-the-game-over-screen",
+         "title": "Building the Game Over screen"
+        },
+        {
+         "id": "restart-and-gameover-in-logicscript",
+         "title": "Restart and GameOver in LogicScript"
+        },
+        {
+         "id": "hooking-up-the-button",
+         "title": "Hooking up the button"
+        },
+        {
+         "id": "birdscript-changes",
+         "title": "BirdScript changes"
+        },
+        {
+         "id": "building-the-game",
+         "title": "Building the game"
+        },
+        {
+         "id": "likely-test-points-4",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "quick-review",
+       "title": "Quick review",
+       "topics": [
+        {
+         "id": "glossary",
+         "title": "Glossary"
+        },
+        {
+         "id": "how-the-scripts-connect",
+         "title": "How the scripts connect"
+        },
+        {
+         "id": "self-test",
+         "title": "Self-test"
+        }
+       ]
       }
      ]
     }
@@ -501,9 +819,311 @@
      "title": "Overview",
      "pages": [
       {
-       "slug": "notes",
-       "title": "Notes",
+       "slug": "overview",
+       "title": "About these notes",
        "topics": []
+      }
+     ]
+    },
+    {
+     "title": "Chapters",
+     "pages": [
+      {
+       "slug": "chapter-1-introduction-to-linux",
+       "title": "Chapter 1: Introduction to Linux",
+       "topics": [
+        {
+         "id": "chapter-1-introduction-to-linux-key-concepts",
+         "title": "Key concepts"
+        },
+        {
+         "id": "chapter-1-introduction-to-linux-likely-test-points",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "chapter-2-linux-installation-and-usage",
+       "title": "Chapter 2: Linux Installation and Usage",
+       "topics": [
+        {
+         "id": "chapter-2-linux-installation-and-usage-key-concepts",
+         "title": "Key concepts"
+        },
+        {
+         "id": "chapter-2-linux-installation-and-usage-man-page-sections",
+         "title": "Man page sections"
+        },
+        {
+         "id": "chapter-2-linux-installation-and-usage-commands",
+         "title": "Commands"
+        },
+        {
+         "id": "chapter-2-linux-installation-and-usage-likely-test-points",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "chapter-3-exploring-linux-filesystems",
+       "title": "Chapter 3: Exploring Linux Filesystems",
+       "topics": [
+        {
+         "id": "chapter-3-exploring-linux-filesystems-key-concepts",
+         "title": "Key concepts"
+        },
+        {
+         "id": "chapter-3-exploring-linux-filesystems-wildcards",
+         "title": "Wildcards"
+        },
+        {
+         "id": "chapter-3-exploring-linux-filesystems-commands",
+         "title": "Commands"
+        },
+        {
+         "id": "chapter-3-exploring-linux-filesystems-vi-essentials",
+         "title": "vi essentials"
+        },
+        {
+         "id": "chapter-3-exploring-linux-filesystems-likely-test-points",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "chapter-4-linux-filesystem-management",
+       "title": "Chapter 4: Linux Filesystem Management",
+       "topics": [
+        {
+         "id": "chapter-4-linux-filesystem-management-key-concepts",
+         "title": "Key concepts"
+        },
+        {
+         "id": "chapter-4-linux-filesystem-management-numeric-permissions",
+         "title": "Numeric permissions"
+        },
+        {
+         "id": "chapter-4-linux-filesystem-management-umask-default-permissions",
+         "title": "umask (default permissions)"
+        },
+        {
+         "id": "chapter-4-linux-filesystem-management-special-permissions",
+         "title": "Special permissions"
+        },
+        {
+         "id": "chapter-4-linux-filesystem-management-commands",
+         "title": "Commands"
+        },
+        {
+         "id": "chapter-4-linux-filesystem-management-likely-test-points",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "chapter-7-working-with-the-bash-shell",
+       "title": "Chapter 7: Working with the BASH Shell",
+       "topics": [
+        {
+         "id": "chapter-7-working-with-the-bash-shell-key-concepts",
+         "title": "Key concepts"
+        },
+        {
+         "id": "chapter-7-working-with-the-bash-shell-commands",
+         "title": "Commands"
+        },
+        {
+         "id": "chapter-7-working-with-the-bash-shell-script-example",
+         "title": "Script example"
+        },
+        {
+         "id": "chapter-7-working-with-the-bash-shell-likely-test-points",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "chapter-9-managing-linux-processes",
+       "title": "Chapter 9: Managing Linux Processes",
+       "topics": [
+        {
+         "id": "chapter-9-managing-linux-processes-key-concepts",
+         "title": "Key concepts"
+        },
+        {
+         "id": "chapter-9-managing-linux-processes-commands",
+         "title": "Commands"
+        },
+        {
+         "id": "chapter-9-managing-linux-processes-scheduling-in-the-chapter-objectives-not-in-these-slides",
+         "title": "Scheduling (in the chapter objectives, not in these slides)"
+        },
+        {
+         "id": "chapter-9-managing-linux-processes-likely-test-points",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "chapter-10-users-and-groups",
+       "title": "Chapter 10: Users and Groups",
+       "topics": [
+        {
+         "id": "chapter-10-users-and-groups-key-concepts",
+         "title": "Key concepts"
+        },
+        {
+         "id": "chapter-10-users-and-groups-fields-of-an-etc-passwd-line",
+         "title": "Fields of an /etc/passwd line"
+        },
+        {
+         "id": "chapter-10-users-and-groups-commands",
+         "title": "Commands"
+        },
+        {
+         "id": "chapter-10-users-and-groups-likely-test-points",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "chapter-11-compression-system-backup-and-software-installation",
+       "title": "Chapter 11: Compression, System Backup and Software Installation",
+       "topics": [
+        {
+         "id": "chapter-11-compression-system-backup-and-software-installation-compression-utilities",
+         "title": "Compression utilities"
+        },
+        {
+         "id": "chapter-11-compression-system-backup-and-software-installation-backups",
+         "title": "Backups"
+        },
+        {
+         "id": "chapter-11-compression-system-backup-and-software-installation-tar-options",
+         "title": "tar options"
+        },
+        {
+         "id": "chapter-11-compression-system-backup-and-software-installation-software-installation",
+         "title": "Software installation"
+        },
+        {
+         "id": "chapter-11-compression-system-backup-and-software-installation-commands",
+         "title": "Commands"
+        },
+        {
+         "id": "chapter-11-compression-system-backup-and-software-installation-likely-test-points",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "disk-management",
+       "title": "Disk Management",
+       "topics": [
+        {
+         "id": "disk-management-key-concepts",
+         "title": "Key concepts"
+        },
+        {
+         "id": "disk-management-commands",
+         "title": "Commands"
+        },
+        {
+         "id": "disk-management-likely-test-points",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "systemd",
+       "title": "Systemd",
+       "topics": [
+        {
+         "id": "systemd-key-concepts",
+         "title": "Key concepts"
+        },
+        {
+         "id": "systemd-targets",
+         "title": "Targets"
+        },
+        {
+         "id": "systemd-commands",
+         "title": "Commands"
+        },
+        {
+         "id": "systemd-likely-test-points",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "linux-services",
+       "title": "Linux Services",
+       "topics": [
+        {
+         "id": "linux-services-key-concepts",
+         "title": "Key concepts"
+        },
+        {
+         "id": "linux-services-services-at-a-glance",
+         "title": "Services at a glance"
+        },
+        {
+         "id": "linux-services-samba",
+         "title": "Samba"
+        },
+        {
+         "id": "linux-services-nfs",
+         "title": "NFS"
+        },
+        {
+         "id": "linux-services-ftp",
+         "title": "FTP"
+        },
+        {
+         "id": "linux-services-ssh",
+         "title": "SSH"
+        },
+        {
+         "id": "linux-services-apache",
+         "title": "Apache"
+        },
+        {
+         "id": "linux-services-commands",
+         "title": "Commands"
+        },
+        {
+         "id": "linux-services-ftp-prompt-commands",
+         "title": "FTP prompt commands"
+        },
+        {
+         "id": "linux-services-likely-test-points",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "installing-a-fedora-vm-lab",
+       "title": "Installing a Fedora VM (lab)",
+       "topics": []
+      },
+      {
+       "slug": "quick-cheat-sheet",
+       "title": "Quick cheat sheet",
+       "topics": [
+        {
+         "id": "quick-cheat-sheet-key-files",
+         "title": "Key files"
+        },
+        {
+         "id": "quick-cheat-sheet-numbers-to-memorize",
+         "title": "Numbers to memorize"
+        },
+        {
+         "id": "quick-cheat-sheet-easily-mixed-up",
+         "title": "Easily mixed up"
+        }
+       ]
       }
      ]
     }
@@ -517,9 +1137,224 @@
      "title": "Overview",
      "pages": [
       {
-       "slug": "notes",
-       "title": "Notes",
+       "slug": "overview",
+       "title": "About these notes",
        "topics": []
+      }
+     ]
+    },
+    {
+     "title": "Chapters",
+     "pages": [
+      {
+       "slug": "chapter-1-introduction-to-systems-analysis-and-design",
+       "title": "Chapter 1: Introduction to Systems Analysis and Design",
+       "topics": [
+        {
+         "id": "chapter-1-introduction-to-systems-analysis-and-design-likely-test-points",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "chapter-2-analyzing-the-business-case",
+       "title": "Chapter 2: Analyzing the Business Case",
+       "topics": [
+        {
+         "id": "chapter-2-analyzing-the-business-case-the-preliminary-investigation-in-six-steps",
+         "title": "The preliminary investigation, in six steps:"
+        },
+        {
+         "id": "chapter-2-analyzing-the-business-case-likely-test-points",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "chapter-3-managing-systems-projects",
+       "title": "Chapter 3: Managing Systems Projects",
+       "topics": [
+        {
+         "id": "chapter-3-managing-systems-projects-the-project-framework-three-steps",
+         "title": "The project framework, three steps:"
+        },
+        {
+         "id": "chapter-3-managing-systems-projects-gantt-vs-pert-cpm",
+         "title": "Gantt vs. PERT/CPM:"
+        },
+        {
+         "id": "chapter-3-managing-systems-projects-likely-test-points",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "chapter-4-requirements-modeling",
+       "title": "Chapter 4: Requirements Modeling",
+       "topics": [
+        {
+         "id": "chapter-4-requirements-modeling-five-categories-of-system-requirements",
+         "title": "Five categories of system requirements:"
+        },
+        {
+         "id": "chapter-4-requirements-modeling-team-based-approaches",
+         "title": "Team-based approaches:"
+        },
+        {
+         "id": "chapter-4-requirements-modeling-modeling-tools",
+         "title": "Modeling tools:"
+        },
+        {
+         "id": "chapter-4-requirements-modeling-the-interview-seven-steps",
+         "title": "The interview, seven steps:"
+        },
+        {
+         "id": "chapter-4-requirements-modeling-likely-test-points",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "chapter-5-data-and-process-modeling",
+       "title": "Chapter 5: Data and Process Modeling",
+       "topics": [
+        {
+         "id": "chapter-5-data-and-process-modeling-leveling-the-dfd-pyramid",
+         "title": "Leveling, the DFD pyramid:"
+        },
+        {
+         "id": "chapter-5-data-and-process-modeling-likely-test-points",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "chapter-6-object-modeling",
+       "title": "Chapter 6: Object Modeling",
+       "topics": [
+        {
+         "id": "chapter-6-object-modeling-three-core-ideas",
+         "title": "Three core ideas:"
+        },
+        {
+         "id": "chapter-6-object-modeling-the-six-uml-diagrams-in-this-chapter",
+         "title": "The six UML diagrams in this chapter:"
+        },
+        {
+         "id": "chapter-6-object-modeling-likely-test-points",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "chapter-7-development-strategies",
+       "title": "Chapter 7: Development Strategies",
+       "topics": [
+        {
+         "id": "chapter-7-development-strategies-development-options",
+         "title": "Development options:"
+        },
+        {
+         "id": "chapter-7-development-strategies-software-acquisition-seven-steps",
+         "title": "Software acquisition, seven steps:"
+        },
+        {
+         "id": "chapter-7-development-strategies-likely-test-points",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "chapter-8-user-interface-design",
+       "title": "Chapter 8: User Interface Design",
+       "topics": [
+        {
+         "id": "chapter-8-user-interface-design-eight-guidelines-for-the-interface",
+         "title": "Eight guidelines for the interface:"
+        },
+        {
+         "id": "chapter-8-user-interface-design-three-report-types",
+         "title": "Three report types:"
+        },
+        {
+         "id": "chapter-8-user-interface-design-likely-test-points",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "chapter-9-data-design",
+       "title": "Chapter 9: Data Design",
+       "topics": [
+        {
+         "id": "chapter-9-data-design-data-vocabulary",
+         "title": "Data vocabulary:"
+        },
+        {
+         "id": "chapter-9-data-design-likely-test-points",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "chapter-10-system-architecture",
+       "title": "Chapter 10: System Architecture",
+       "topics": [
+        {
+         "id": "chapter-10-system-architecture-architectures-from-oldest-to-newest",
+         "title": "Architectures, from oldest to newest:"
+        },
+        {
+         "id": "chapter-10-system-architecture-fat-vs-thin-client",
+         "title": "Fat vs. thin client:"
+        },
+        {
+         "id": "chapter-10-system-architecture-likely-test-points",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "chapter-11-managing-systems-implementation",
+       "title": "Chapter 11: Managing Systems Implementation",
+       "topics": [
+        {
+         "id": "chapter-11-managing-systems-implementation-testing-from-small-to-large",
+         "title": "Testing, from small to large:"
+        },
+        {
+         "id": "chapter-11-managing-systems-implementation-likely-test-points",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "chapter-12-managing-systems-support-and-security",
+       "title": "Chapter 12: Managing Systems Support and Security",
+       "topics": [
+        {
+         "id": "chapter-12-managing-systems-support-and-security-six-security-levels",
+         "title": "Six security levels:"
+        },
+        {
+         "id": "chapter-12-managing-systems-support-and-security-backup-types",
+         "title": "Backup types:"
+        },
+        {
+         "id": "chapter-12-managing-systems-support-and-security-likely-test-points",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "final-review",
+       "title": "Final review",
+       "topics": [
+        {
+         "id": "final-review-pairs-that-are-easy-to-mix-up",
+         "title": "Pairs that are easy to mix up:"
+        }
+       ]
       }
      ]
     }
@@ -565,9 +1400,241 @@
      "title": "Overview",
      "pages": [
       {
-       "slug": "notes",
-       "title": "Notes",
+       "slug": "overview",
+       "title": "About these notes",
        "topics": []
+      }
+     ]
+    },
+    {
+     "title": "Lessons",
+     "pages": [
+      {
+       "slug": "swift-basics",
+       "title": "Swift Basics",
+       "topics": [
+        {
+         "id": "variables-and-constants",
+         "title": "Variables and constants"
+        },
+        {
+         "id": "if-else-if-else",
+         "title": "If, else if, else"
+        },
+        {
+         "id": "switch",
+         "title": "Switch"
+        },
+        {
+         "id": "loops",
+         "title": "Loops"
+        },
+        {
+         "id": "functions",
+         "title": "Functions"
+        },
+        {
+         "id": "classes-objects-and-inheritance",
+         "title": "Classes, objects and inheritance"
+        },
+        {
+         "id": "also-in-the-textbook-preview-swiftui-ios-14-essentials-ch-1-16",
+         "title": "Also in the textbook preview (SwiftUI iOS 14 Essentials, ch. 1-16)"
+        }
+       ]
+      },
+      {
+       "slug": "swiftui-fundamentals-and-stacks",
+       "title": "SwiftUI fundamentals and Stacks",
+       "topics": [
+        {
+         "id": "the-starter-file-from-the-app-development-overview",
+         "title": "The starter file (from the App Development Overview)"
+        },
+        {
+         "id": "the-three-stacks",
+         "title": "The three stacks"
+        },
+        {
+         "id": "practice-the-contact-card",
+         "title": "Practice: the Contact card"
+        }
+       ]
+      },
+      {
+       "slug": "images",
+       "title": "Images",
+       "topics": []
+      },
+      {
+       "slug": "button-and-toggle",
+       "title": "Button and Toggle",
+       "topics": [
+        {
+         "id": "state-and-bindings",
+         "title": "@State and bindings"
+        },
+        {
+         "id": "button",
+         "title": "Button"
+        },
+        {
+         "id": "toggle",
+         "title": "Toggle"
+        }
+       ]
+      },
+      {
+       "slug": "pickers-and-date-picker",
+       "title": "Pickers and Date Picker",
+       "topics": [
+        {
+         "id": "basic-picker",
+         "title": "Basic Picker"
+        },
+        {
+         "id": "pickers-from-a-loop-or-an-array",
+         "title": "Pickers from a loop or an array"
+        },
+        {
+         "id": "picker-on-another-screen-binding",
+         "title": "Picker on another screen (@Binding)"
+        },
+        {
+         "id": "datepicker",
+         "title": "DatePicker"
+        }
+       ]
+      },
+      {
+       "slug": "scrollview-list-and-section",
+       "title": "ScrollView, List and Section",
+       "topics": [
+        {
+         "id": "scrollview",
+         "title": "ScrollView"
+        },
+        {
+         "id": "section",
+         "title": "Section"
+        }
+       ]
+      },
+      {
+       "slug": "enumerations-in-swiftui",
+       "title": "Enumerations in SwiftUI",
+       "topics": [
+        {
+         "id": "enum-for-view-states-with-switch",
+         "title": "Enum for view states, with switch"
+        },
+        {
+         "id": "enum-for-a-picker",
+         "title": "Enum for a Picker"
+        }
+       ]
+      },
+      {
+       "slug": "navigationview-navigationlink-and-the-categorylist-view",
+       "title": "NavigationView, NavigationLink and the CategoryList View",
+       "topics": [
+        {
+         "id": "basics",
+         "title": "Basics"
+        },
+        {
+         "id": "passing-data-to-the-next-screen-coin-flip",
+         "title": "Passing data to the next screen (coin flip)"
+        },
+        {
+         "id": "categorylist-view",
+         "title": "CategoryList View"
+        },
+        {
+         "id": "navigationview-navigationlink-and-the-categorylist-view-4-use-a-model-struct-with-an-image",
+         "title": "4. Use a model struct with an image:"
+        },
+        {
+         "id": "dynamic-list-add-and-delete-rows",
+         "title": "Dynamic List: add and delete rows"
+        }
+       ]
+      },
+      {
+       "slug": "data-flow-observableobject-published-observedobject-environmentobject",
+       "title": "Data flow: ObservableObject, @Published, @ObservedObject, @EnvironmentObject",
+       "topics": [
+        {
+         "id": "example-1-observableobject-published-observedobject",
+         "title": "Example 1: ObservableObject + @Published + @ObservedObject"
+        },
+        {
+         "id": "example-2-methods-and-a-computed-property",
+         "title": "Example 2: methods and a computed property"
+        },
+        {
+         "id": "injecting-an-environmentobject",
+         "title": "Injecting an EnvironmentObject"
+        }
+       ]
+      },
+      {
+       "slug": "animation",
+       "title": "Animation",
+       "topics": [
+        {
+         "id": "basic-scale-a-button",
+         "title": "Basic: scale a button"
+        },
+        {
+         "id": "animation-types",
+         "title": "Animation types"
+        },
+        {
+         "id": "start-an-animation-when-a-view-appears-repeat-forever",
+         "title": "Start an animation when a view appears (repeat forever)"
+        },
+        {
+         "id": "several-animations-on-one-view",
+         "title": "Several animations on one view"
+        },
+        {
+         "id": "transitions-animate-views-being-added-and-removed",
+         "title": "Transitions: animate views being added and removed"
+        }
+       ]
+      },
+      {
+       "slug": "working-with-apis",
+       "title": "Working with APIs",
+       "topics": [
+        {
+         "id": "working-with-apis-1-model",
+         "title": "1. Model"
+        },
+        {
+         "id": "working-with-apis-2-service-class",
+         "title": "2. Service class"
+        },
+        {
+         "id": "working-with-apis-3-view",
+         "title": "3. View"
+        }
+       ]
+      },
+      {
+       "slug": "likely-test-points-and-self-quiz",
+       "title": "Likely test points and self-quiz",
+       "topics": [
+        {
+         "id": "know-cold",
+         "title": "Know cold"
+        },
+        {
+         "id": "self-quiz",
+         "title": "Self-quiz"
+        }
+       ]
       }
      ]
     }
@@ -597,9 +1664,133 @@
      "title": "Overview",
      "pages": [
       {
-       "slug": "notes",
-       "title": "Notes",
+       "slug": "overview",
+       "title": "About these notes",
        "topics": []
+      }
+     ]
+    },
+    {
+     "title": "Final project: Recipes site",
+     "pages": [
+      {
+       "slug": "html-concepts-used-in-the-project",
+       "title": "HTML concepts used in the project",
+       "topics": [
+        {
+         "id": "1-the-page-skeleton",
+         "title": "1. The page skeleton"
+        },
+        {
+         "id": "2-semantic-layout-elements-indexhtml",
+         "title": "2. Semantic layout elements (index.html)"
+        },
+        {
+         "id": "3-headings",
+         "title": "3. Headings"
+        },
+        {
+         "id": "4-lists",
+         "title": "4. Lists"
+        },
+        {
+         "id": "5-links-and-paths",
+         "title": "5. Links and paths"
+        },
+        {
+         "id": "6-images",
+         "title": "6. Images"
+        },
+        {
+         "id": "7-text-elements-and-entities",
+         "title": "7. Text elements and entities"
+        },
+        {
+         "id": "8-attributes-class-alt-href-lang",
+         "title": "8. Attributes: class, alt, href, lang"
+        }
+       ]
+      },
+      {
+       "slug": "css-concepts-used-in-the-project",
+       "title": "CSS concepts used in the project",
+       "topics": [
+        {
+         "id": "1-three-ways-to-add-css",
+         "title": "1. Three ways to add CSS"
+        },
+        {
+         "id": "2-rule-anatomy",
+         "title": "2. Rule anatomy"
+        },
+        {
+         "id": "3-selectors-you-used",
+         "title": "3. Selectors you used"
+        },
+        {
+         "id": "4-the-css-reset-and-box-sizing",
+         "title": "4. The CSS reset and box-sizing"
+        },
+        {
+         "id": "5-the-box-model",
+         "title": "5. The box model"
+        },
+        {
+         "id": "6-colors-and-units",
+         "title": "6. Colors and units"
+        },
+        {
+         "id": "7-text-properties",
+         "title": "7. Text properties"
+        },
+        {
+         "id": "8-display-block-inline-inline-block",
+         "title": "8. display: block, inline, inline-block"
+        },
+        {
+         "id": "9-responsive-images",
+         "title": "9. Responsive images"
+        },
+        {
+         "id": "10-flexbox-the-nav-bar",
+         "title": "10. Flexbox (the nav bar)"
+        },
+        {
+         "id": "11-css-grid-the-home-page-content",
+         "title": "11. CSS Grid (the home page content)"
+        },
+        {
+         "id": "12-transitions-and-hover",
+         "title": "12. Transitions and hover"
+        },
+        {
+         "id": "13-the-cascade-inheritance-and-specificity",
+         "title": "13. The cascade, inheritance and specificity"
+        }
+       ]
+      },
+      {
+       "slug": "fixes-that-would-improve-the-project",
+       "title": "Fixes that would improve the project",
+       "topics": []
+      },
+      {
+       "slug": "likely-test-points",
+       "title": "Likely test points",
+       "topics": [
+        {
+         "id": "likely-test-points-html",
+         "title": "HTML"
+        },
+        {
+         "id": "likely-test-points-css",
+         "title": "CSS"
+        },
+        {
+         "id": "quick-self-quiz-answers-below",
+         "title": "Quick self-quiz (answers below)"
+        }
+       ]
       }
      ]
     }

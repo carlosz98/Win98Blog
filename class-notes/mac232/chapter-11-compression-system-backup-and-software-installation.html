@@ -1,0 +1,39 @@
+<h2 id="chapter-11-compression-system-backup-and-software-installation">Chapter 11: Compression, System Backup and Software Installation</h2>
+<p>Shrink files with compress, gzip or bzip2; back them up with tar, cpio or dump; and install software from source (make) or with a package manager (rpm/dnf on Red Hat, dpkg/apt-get on Debian).</p>
+<h3 id="chapter-11-compression-system-backup-and-software-installation-compression-utilities">Compression utilities</h3>
+<table><thead><tr><th>Utility</th><th>Algorithm</th><th>Avg ratio</th><th>Extension</th><th>View</th><th>Decompress</th></tr></thead><tbody><tr><td>compress</td><td>LZW (Adaptive Lempel-Ziv)</td><td>40-50%</td><td>.Z</td><td>zcat, zmore, zless</td><td>uncompress</td></tr><tr><td>gzip</td><td>LZ77 (Lempel-Ziv)</td><td>60-70%</td><td>.gz</td><td>zcat, zmore</td><td>gunzip</td></tr><tr><td>bzip2</td><td>Burrows-Wheeler + Huffman</td><td>50-75%</td><td>.bz2</td><td>bzcat</td><td>bunzip2</td></tr></tbody></table>
+<ul><li><p><strong>Compression ratio</strong> = the percent the file shrank.</p></li><li><p>gzip&#39;s edge: you pick the level, <code>-1</code> (fastest) to <code>-9</code> (best).</p></li><li><p>bzip2 can&#39;t compress a whole directory and needs <code>bzcat</code>, not zcat.</p></li></ul>
+<h3 id="chapter-11-compression-system-backup-and-software-installation-backups">Backups</h3>
+<ul><li><p><strong>Archive</strong> = a file or device holding copies of files. Keep archives at <strong>another location</strong>.</p></li><li><p>Back up <strong>home directories</strong> and important <strong>config files</strong> (and service data).</p></li><li><p><strong>tar</strong> is the most common. It does <strong>not</strong> compress by itself; add <code>-z</code> (gzip), <code>-j</code> (bzip2) or <code>-Z</code> (compress). A compressed tar = <strong>tarball</strong>.</p></li><li><p><strong>cpio</strong> also backs up device files and long names; uses <strong>absolute paths</strong> by default.</p></li><li><p><strong>dump / restore</strong> back up whole <strong>ext2/3/4</strong> filesystems. Level <strong>0 = full</strong>, <strong>1-9 = incremental</strong> (changes since the last lower level). History is in <strong>/etc/dumpdates</strong>.</p></li><li><p><strong>Full backup</strong> = everything. <strong>Incremental</strong> = only what changed since the last backup.</p></li><li><p>For CD/DVD use <strong>burning software</strong> (e.g. GnomeBaker), not tar.</p></li></ul>
+<h3 id="chapter-11-compression-system-backup-and-software-installation-tar-options">tar options</h3>
+<table><thead><tr><th>Option</th><th>Meaning</th></tr></thead><tbody><tr><td><code>-c</code></td><td>create</td></tr><tr><td><code>-t</code></td><td>table of contents (list)</td></tr><tr><td><code>-x</code></td><td>extract</td></tr><tr><td><code>-r</code></td><td>append to an existing archive</td></tr><tr><td><code>-v</code></td><td>verbose</td></tr><tr><td><code>-f</code></td><td>the archive file or device</td></tr><tr><td><code>-z</code> / <code>-j</code> / <code>-Z</code></td><td>gzip / bzip2 / compress</td></tr></tbody></table>
+<h3 id="chapter-11-compression-system-backup-and-software-installation-software-installation">Software installation</h3>
+<ul><li><p>Software comes as <strong>precompiled binaries</strong> or <strong>source code</strong> you compile.</p></li><li><p><strong>From source:</strong> <code>./configure</code>, then <strong><code>make</code></strong> (reads the <strong>Makefile</strong> and compiles), then <strong><code>make install</code></strong> (copies programs into place). Source is usually a tarball.</p></li><li><p><strong>Package manager</strong> = installs, queries and removes packages in a standard format.</p></li><li><p><strong>RPM</strong> (Red Hat, Fedora): files end in <strong>.rpm</strong>, name shows the architecture. A <strong>dependency</strong> error means another package must be installed first.</p></li><li><p><strong>dnf</strong> (newer yum) pulls packages from <strong>repositories</strong> and installs dependencies for you. <strong>Package group</strong> = related packages installed together.</p></li><li><p><strong>DPM</strong> (Debian, Ubuntu): files end in <strong>.deb</strong>, managed by <code>dpkg</code>, database in <strong>/var/lib/dpkg</strong>. <code>apt-get</code> downloads from repositories; <code>aptitude</code> works like apt-get.</p></li></ul>
+<h3 id="chapter-11-compression-system-backup-and-software-installation-commands">Commands</h3>
+<pre><code>gzip -v -9 file         # compress, best level (makes file.gz)
+gunzip file.gz          # decompress
+zcat file.gz            # view without decompressing
+bzip2 file ; bzcat file.bz2 ; bunzip2 file.bz2
+compress -v file ; uncompress file.Z
+tar -cvf home.tar /home         # create archive
+tar -czvf home.tar.gz /home     # create gzip tarball
+tar -tvf home.tar               # list contents
+tar -xvf home.tar               # extract
+tar -rvf /dev/st0 newfile       # append to archive on tape
+find /etc | cpio -ocvB &gt; /root/etc.cpio   # cpio backup
+cpio -ivdB &lt; /root/etc.cpio               # cpio restore
+dump -0uf /dev/st0 /home        # full (level 0) backup
+restore -rf /dev/st0            # restore it
+rpm -ivh pkg.rpm        # install
+rpm -q bash             # is it installed? full name
+rpm -qi bash            # package info
+rpm -qf /bin/ls         # which package owns this file
+rpm -e pkg              # remove
+dnf install bluefish ; dnf update bluefish ; dnf search editor
+dnf grouplist           # list package groups
+dpkg -i pkg.deb ; dpkg -l      # install .deb / list installed
+apt-get install pkg ; apt-get remove pkg ; apt-get purge pkg
+apt-get update ; apt-get upgrade
+apt-cache search editor</code></pre>
+<h3 id="chapter-11-compression-system-backup-and-software-installation-likely-test-points">Likely test points</h3>
+<ul><li><p>Match each compression tool to its extension, ratio and view/decompress command.</p></li><li><p>tar <code>-c -t -x -v -f -z -j</code> and that tar alone doesn&#39;t compress.</p></li><li><p>dump level 0 vs 1-9; full vs incremental; /etc/dumpdates.</p></li><li><p>make vs make install; what the Makefile is.</p></li><li><p>rpm <code>-i -q -qi -qf -e</code>; dnf installs dependencies, rpm doesn&#39;t.</p></li><li><p>.rpm vs .deb; dpkg vs apt-get; update vs upgrade.</p></li></ul>

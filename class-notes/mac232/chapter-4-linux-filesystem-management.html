@@ -1,0 +1,43 @@
+<h2 id="chapter-4-linux-filesystem-management">Chapter 4: Linux Filesystem Management</h2>
+<p>This is the heaviest test chapter: managing files, finding them, links, ownership and permissions (regular, numeric, umask, special, ACLs, attributes).</p>
+<h3 id="chapter-4-linux-filesystem-management-key-concepts">Key concepts</h3>
+<ul><li><p><strong>FHS (Filesystem Hierarchy Standard):</strong> the standard set of directories (<code>/etc</code>, <code>/bin</code>, <code>/home</code>, <code>/var</code>...) so software and admins can find files on any distro.</p></li><li><p><code>cp</code> and <code>mv</code> ask before overwriting in Fedora because BASH has <strong>aliases</strong> (<code>cp -i</code>, <code>mv -i</code>). <code>-f</code> forces. <code>rmdir</code> only removes <strong>empty</strong> directories.</p></li><li><p><strong>Finding files:</strong> <code>locate</code> searches a prebuilt database (fast, refresh with <code>updatedb</code>); <code>find</code> searches the live tree (slower, more options); <code>which</code> searches the <strong>PATH</strong> variable (also <code>type</code>, <code>whereis</code>).</p></li><li><p><strong>Filesystem structure:</strong> <strong>superblock</strong> (info about the filesystem: inode count, block size), <strong>inode table</strong> (one inode per file: size, block locations, modified date, permissions, owner), <strong>data blocks</strong> (the content).</p></li><li><p><strong>Hard link:</strong> two names, <strong>same inode</strong>, must be on the <strong>same filesystem</strong>. Deleting one just lowers the link count.</p></li><li><p><strong>Symbolic link:</strong> its own inode; it only stores the <strong>path</strong> to the target. Can cross filesystems. Breaks if the target is deleted.</p></li><li><p><strong>Ownership:</strong> the creator&#39;s user and primary group own a new file. <code>chown</code> / <code>chgrp</code>, <code>-R</code> for recursive.</p></li><li><p><strong>Mode</strong> = permissions stored in the inode, in three sets: <strong>user (owner), group, other</strong>. Permissions are <strong>not additive</strong>: Linux uses the first set that matches, in the order user, group, other.</p></li><li><p><strong>Directory permissions:</strong> r = list contents, w = add/remove files, x = enter the directory (r and w need x to be useful).</p></li></ul>
+<h3 id="chapter-4-linux-filesystem-management-numeric-permissions">Numeric permissions</h3>
+<table><thead><tr><th>Permission</th><th>Value</th></tr></thead><tbody><tr><td>r (read)</td><td>4</td></tr><tr><td>w (write)</td><td>2</td></tr><tr><td>x (execute)</td><td>1</td></tr></tbody></table>
+<p>Add them per set: <code>rwxr-x---</code> = 7 5 0 = <strong>750</strong>. <code>rw-r--r--</code> = <strong>644</strong>. <code>rwxrwxrwx</code> = <strong>777</strong>.</p>
+<h3 id="chapter-4-linux-filesystem-management-umask-default-permissions">umask (default permissions)</h3>
+<p>New files start at <strong>666</strong> (rw-rw-rw-) and new directories at <strong>777</strong>. The umask is subtracted from those.</p>
+<table><thead><tr><th>umask</th><th>New file</th><th>New directory</th></tr></thead><tbody><tr><td>022</td><td>644 rw-r--r--</td><td>755 rwxr-xr-x</td></tr><tr><td>002</td><td>664 rw-rw-r--</td><td>775 rwxrwxr-x</td></tr><tr><td>007</td><td>660 rw-rw----</td><td>770 rwxrwx---</td></tr></tbody></table>
+<h3 id="chapter-4-linux-filesystem-management-special-permissions">Special permissions</h3>
+<table><thead><tr><th>Permission</th><th>Number</th><th>Shows as</th><th>What it does</th></tr></thead><tbody><tr><td>SUID</td><td>4000</td><td><code>s</code> in user x spot</td><td>Runs as the file&#39;s <strong>owner</strong> (e.g. <code>passwd</code>). Binaries only, not scripts; nothing on directories.</td></tr><tr><td>SGID</td><td>2000</td><td><code>s</code> in group x spot</td><td>File: runs with the file&#39;s group. Directory: new files get the <strong>directory&#39;s group</strong>.</td></tr><tr><td>Sticky bit</td><td>1000</td><td><code>t</code> in other x spot</td><td>Directories only: users can delete <strong>only their own</strong> files (e.g. <code>/tmp</code>).</td></tr></tbody></table>
+<p>A <strong>capital</strong> S or T means the special bit is set but execute is not.</p>
+<h3 id="chapter-4-linux-filesystem-management-commands">Commands</h3>
+<pre><code>mkdir projects            # make a directory
+mv old.txt new.txt        # rename (or move)
+cp -r dir1 dir2           # copy a directory recursively
+rm -f file ; rm -r dir    # force remove ; remove directory tree
+alias                     # list shell aliases
+updatedb ; locate .bashrc # refresh database, then search it
+locate -i &#39;*.txt&#39;         # case-insensitive
+find /etc -name &quot;*.conf&quot;  # quote wildcards for find
+find / -user carlos       # files owned by a user
+find /var -size +1M       # files bigger than 1 MB
+which ls                  # where is the ls program
+ln file1 hardlink         # hard link
+ln -s /etc/hosts mylink   # symbolic link
+ls -li                    # show inode numbers
+whoami ; groups           # who am I, my groups
+touch empty.txt           # create empty file
+chown carlos:staff file   # change owner and group
+chgrp -R staff dir        # change group recursively
+chmod u+x,g-w script.sh   # symbolic mode (u g o a, + - =, r w x)
+chmod 755 script.sh       # numeric mode
+chmod 4755 prog           # add SUID
+chmod 1777 /shared        # add sticky bit
+umask ; umask 007         # show / set umask
+setfacl -m u:bob:r file   # give bob read in the ACL
+setfacl -b file           # remove all extra ACL entries
+getfacl file              # list ACL
+chattr +i file ; lsattr file   # make immutable, list attributes</code></pre>
+<h3 id="chapter-4-linux-filesystem-management-likely-test-points">Likely test points</h3>
+<ul><li><p>Convert between <code>rwx</code> letters and numbers (and 4-digit modes with special bits).</p></li><li><p>umask math: 666/777 minus the umask.</p></li><li><p>Hard vs symbolic links (inode, filesystems, what happens when the original is deleted).</p></li><li><p>What SUID, SGID and sticky bit each do, and capital S/T.</p></li><li><p>locate vs find vs which.</p></li><li><p>Directory r/w/x meanings; permissions are not additive.</p></li></ul>

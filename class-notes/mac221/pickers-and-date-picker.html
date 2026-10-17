@@ -1,0 +1,85 @@
+<h2 id="pickers-and-date-picker">Pickers and Date Picker</h2>
+<p>A <code>Picker</code> lets the user choose one value from a set. It needs a <code>@State</code> variable for the selection, passed with <code>$</code>, and each option needs a <code>.tag()</code> whose value has the <strong>same type</strong> as that variable.</p>
+<h3 id="basic-picker">Basic Picker</h3>
+<pre><code class="language-swift">struct ContentView: View {
+    @State private var option = 1                 // 1 = starts on MAC220
+
+    var body: some View {
+        VStack {
+            Picker(&quot;Course Picker&quot;, selection: $option) {
+                Text(&quot;MAC220&quot;).tag(1)            // tag is the value saved into option
+                Text(&quot;MAC221&quot;).tag(2)
+                Text(&quot;MAC250&quot;).tag(3)
+            }
+            .pickerStyle(WheelPickerStyle())
+            Divider()
+            Text(&quot;You selected option number \(option)&quot;)
+        }
+    }
+}</code></pre>
+<table><thead><tr><th>Style</th><th>Code</th><th>Looks like</th></tr></thead><tbody><tr><td>Menu (default in many places)</td><td><code>.pickerStyle(MenuPickerStyle())</code> or <code>.menu</code></td><td>A dropdown menu, saves space</td></tr><tr><td>Wheel</td><td><code>.pickerStyle(WheelPickerStyle())</code> or <code>.wheel</code></td><td>A spinning wheel</td></tr><tr><td>Segmented</td><td><code>.pickerStyle(SegmentedPickerStyle())</code> or <code>.segmented</code></td><td>A bar of buttons across the screen</td></tr><tr><td>Inline</td><td><code>.pickerStyle(.inline)</code></td><td>All options listed in place</td></tr><tr><td>Navigation link</td><td><code>.pickerStyle(.navigationLink)</code> inside a NavigationView/Form</td><td>Tapping opens a new screen with the list</td></tr></tbody></table>
+<h3 id="pickers-from-a-loop-or-an-array">Pickers from a loop or an array</h3>
+<pre><code class="language-swift">@State var option: String = &quot;1&quot;
+Picker(selection: $option, label: Text(&quot;Picker&quot;)) {
+    ForEach(1..&lt;100) { number in
+        Text(&quot;\(number)&quot;).tag(&quot;\(number)&quot;)    // tag is a String because option is a String
+    }
+}
+
+@State var selected: String = &quot;MAC101&quot;
+let courses: [String] = [&quot;MAC101&quot;, &quot;MAC108&quot;, &quot;MAC196&quot;, &quot;MAC221&quot;, &quot;MAC250&quot;]
+Picker(selection: $selected, label: Text(&quot;Course options&quot;)) {
+    ForEach(courses, id: \.self) { course in      // id: \.self because Strings aren&#39;t Identifiable
+        Text(course).tag(course)
+    }
+}</code></pre>
+<h3 id="picker-on-another-screen-binding">Picker on another screen (<code>@Binding</code>)</h3>
+<p>The parent owns the <code>@State</code>; the child screen receives it as a <code>@Binding</code>, so a choice made on the second screen updates the first.</p>
+<pre><code class="language-swift">struct ContentView1: View {
+    @State private var course = 1
+    var body: some View {
+        NavigationView {
+            NavigationLink(destination: CourseListView(course: $course)) {
+                Text(&quot;Select Course&quot;)
+            }
+        }
+    }
+}
+
+struct CourseListView: View {
+    @Binding var course: Int                    // not the owner, just a link
+    var body: some View {
+        Picker(&quot;Courses List&quot;, selection: $course) {
+            Text(&quot;MAC220&quot;).tag(0)
+            Text(&quot;MAC221&quot;).tag(1)
+        }
+        .pickerStyle(WheelPickerStyle())
+        .navigationBarTitle(&quot;Select Course&quot;)
+    }
+}</code></pre>
+<p>Options can also be grouped with <code>Section(header: Text(&quot;Mathematics&quot;)) { ... }</code> inside the Picker.</p>
+<h3 id="datepicker">DatePicker</h3>
+<p>A date picker lets the user pick a date (or time) from a calendar-style control. It binds to a <code>Date</code>.</p>
+<pre><code class="language-swift">struct ContentView5: View {
+    @State private var selectedDate = Date()        // Date() = right now
+
+    var body: some View {
+        VStack {
+            Text(&quot;Selected Date: \(selectedDate, formatter: dateFormatter)&quot;)
+            DatePicker(&quot;Select a Date&quot;,
+                       selection: $selectedDate,
+                       displayedComponents: .date)    // .date, .hourAndMinute, or both
+                .datePickerStyle(WheelDatePickerStyle())
+                .labelsHidden()                       // hide the &quot;Select a Date&quot; label
+        }
+    }
+
+    private var dateFormatter: DateFormatter {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        return formatter
+    }
+}</code></pre>
+<table><thead><tr><th>DatePicker style</th><th>Looks like</th></tr></thead><tbody><tr><td><code>WheelDatePickerStyle()</code></td><td>Spinning wheels for month, day, year</td></tr><tr><td><code>GraphicalDatePickerStyle()</code></td><td>A full month calendar</td></tr><tr><td><code>CompactDatePickerStyle()</code></td><td>A small date button that pops up a calendar</td></tr></tbody></table>
+<table><thead><tr><th><code>dateStyle</code></th><th>Example output</th></tr></thead><tbody><tr><td><code>.short</code></td><td>1/1/22</td></tr><tr><td><code>.medium</code></td><td>Jan 1, 2022</td></tr><tr><td><code>.long</code></td><td>January 1, 2022</td></tr><tr><td><code>.full</code></td><td>Saturday, January 1, 2022</td></tr></tbody></table>
+<p><code>ColorPicker(&quot;Pick a color&quot;, selection: $color)</code> works the same way with a <code>Color</code> state variable.</p>

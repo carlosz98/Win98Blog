@@ -1,0 +1,40 @@
+<h2 id="lecture-5b-constructors">Lecture 5b: Constructors</h2>
+<p>A constructor is a special member function with the same name as the class and no return type (not even <code>void</code>); it runs automatically when an object is created and sets up its starting values.</p>
+<h3 id="lecture-5b-constructors-key-concepts">Key concepts</h3>
+<ul><li><p><strong>Default constructor</strong>: takes no parameters (<code>MyClass()</code>).</p></li><li><p><strong>Parameterized constructor</strong>: takes values to customize the new object (<code>Car(string x, string y, int z)</code>).</p></li><li><p>A class can have several constructors (constructor overloading), like <code>Course()</code> and <code>Course(string, string, int)</code>.</p></li><li><p>Constructors can be declared inside the class and defined outside with <code>Car::Car(...)</code>.</p></li><li><p><strong>Member initializer list</strong>: <code>: courseCode(c), title(t), credits(n) {}</code> initializes members before the body runs.</p></li></ul>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+using namespace std;
+
+class Course {
+public:
+    string courseCode, title;
+    int credits;
+
+    Course() : courseCode(&quot;&quot;), title(&quot;&quot;), credits(0) {}            // default
+    Course(string c, string t, int n)                              // parameterized
+        : courseCode(c), title(t), credits(n) {}
+
+    void display() const {
+        cout &lt;&lt; courseCode &lt;&lt; &quot;: &quot; &lt;&lt; title &lt;&lt; &quot; - &quot; &lt;&lt; credits &lt;&lt; &quot; Credits\n&quot;;
+    }
+};
+
+class Car {
+public:
+    string brand; int year;
+    Car(string b, int y);         // declaration
+};
+Car::Car(string b, int y) {       // definition outside the class
+    brand = b; year = y;
+}
+
+int main() {
+    Course c(&quot;MAC125&quot;, &quot;Advanced C++&quot;, 4);
+    c.display();                  // MAC125: Advanced C++ - 4 Credits
+    Car car1(&quot;BMW&quot;, 1999);
+    return 0;
+}</code></pre>
+<p>The slide&#39;s <code>CourseManager</code> combines both ideas: its constructor <code>CourseManager() : numCourses(0) {}</code> starts the count at 0, and <code>addCourse</code> stores <code>Course</code> objects in a fixed array of 10.</p>
+<h3 id="lecture-5b-constructors-common-mistakes">Common mistakes</h3>
+<ul><li><p>Giving a constructor a return type (<code>void Car()</code> is just a normal method, not a constructor).</p></li><li><p>Spelling the constructor name differently from the class.</p></li><li><p>Writing <code>Course c();</code> to make an object with the default constructor. That declares a function; write <code>Course c;</code></p></li><li><p>Defining only a parameterized constructor and then trying <code>Course c;</code> (no default constructor exists anymore).</p></li></ul>
+<p><strong>Likely test points:</strong> the three facts on the definition slide (same name, no return type, called automatically), default vs parameterized, defining a constructor outside the class, initializer list syntax.</p>

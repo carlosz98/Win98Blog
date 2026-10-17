@@ -1,0 +1,40 @@
+<h2 id="part-2-building-the-bird-and-the-first-script">Part 2: Building the bird and the first script</h2>
+<p>Part 2 turns an empty object into a bird that falls with gravity and flaps when you press a key.</p>
+<h3 id="components-and-what-each-one-adds">Components and what each one adds</h3>
+<table><thead><tr><th>Component</th><th>How to add it</th><th>What it does</th><th>Settings to know</th></tr></thead><tbody><tr><td>Empty GameObject</td><td>Hierarchy right-click &gt; Create Empty (or GameObject menu)</td><td>Invisible container; groups objects; acts as a parent</td><td>None</td></tr><tr><td>Sprite Renderer</td><td>Inspector &gt; Add Component &gt; Sprite Renderer, then drag an image into the Sprite field</td><td>Makes the object visible as a 2D image</td><td>Color (tint), Flip X/Y, Sorting Layer (draw order)</td></tr><tr><td>Circle Collider 2D</td><td>Add Component &gt; Circle Collider 2D</td><td>Circular collision boundary (green outline in Scene)</td><td>Good for balls, coins, the bird</td></tr><tr><td>Rigidbody 2D</td><td>Add Component &gt; Rigidbody 2D</td><td>Physics: gravity and forces move the object</td><td>Gravity Scale, Mass, Constraints (freeze rotation or position)</td></tr></tbody></table>
+<p>Together: the Empty GameObject is the base, the Sprite Renderer makes it visible, the collider gives it a physical edge, and the Rigidbody 2D makes it move.</p>
+<h3 id="four-ways-to-create-a-script">Four ways to create a script</h3>
+<ol><li><p><strong>Project panel:</strong> right-click a folder &gt; Create &gt; C# Script, name it (BirdScript), drag it onto the GameObject, double-click to open in Visual Studio or VS Code.</p></li><li><p><strong>Inspector:</strong> select the object &gt; Add Component &gt; New Script &gt; name it &gt; Create and Add. It is attached automatically; gear icon &gt; Edit Script opens it.</p></li><li><p><strong>From the Hierarchy:</strong> create or right-click an object, then Add Component &gt; New Script as above.</p></li><li><p><strong>Unity menu:</strong> Assets &gt; Create &gt; C# Script, then drag it onto the object.</p></li></ol>
+<h3 id="the-birdscript">The BirdScript</h3>
+<pre><code class="language-csharp">using UnityEngine;
+
+public class BirdScript : MonoBehaviour
+{
+    public Rigidbody2D myRigidbody;
+    public float flapStrength;
+
+    void Start()
+    {
+        // runs once, before the first frame
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space) == true)
+        {
+            myRigidbody.velocity = Vector2.up * flapStrength;
+        }
+    }
+}</code></pre>
+<ul><li><p><strong>using UnityEngine</strong> gives access to Unity features like physics, rendering and input.</p></li><li><p><strong>MonoBehaviour</strong> is the base class that lets a script attach to a GameObject and receive Start() and Update().</p></li><li><p><strong>public variables</strong> show up in the Inspector. You drag the bird&#39;s Rigidbody 2D into the myRigidbody slot there.</p></li><li><p><strong>Start()</strong> runs once when the object is created or enabled. <strong>Update()</strong> runs every frame and holds most game logic.</p></li><li><p><strong>Input.GetKeyDown(KeyCode.Space)</strong> is true only on the frame the key goes down.</p></li><li><p><strong>Vector2.up</strong> is (0, 1). Multiplying by a number sets the speed.</p></li><li><p>The first version used a hardcoded 10. Swapping it for <strong>flapStrength</strong> lets you tune the jump in the Inspector without editing code. Changes made in Play Mode show immediately but are not saved when you stop.</p></li></ul>
+<p>Note: in Unity 6 the property is called <code>linearVelocity</code>; older versions (and the slides) use <code>velocity</code>.</p>
+<h3 id="moving-with-other-keys">Moving with other keys</h3>
+<pre><code class="language-csharp">public float moveSpeed;
+
+if (Input.GetKeyDown(KeyCode.W)) myRigidbody.velocity = Vector2.up * flapStrength;
+if (Input.GetKeyDown(KeyCode.S)) myRigidbody.velocity = Vector2.down * moveSpeed;
+if (Input.GetKey(KeyCode.D)) myRigidbody.velocity = new Vector2(moveSpeed, myRigidbody.velocity.y);
+if (Input.GetKey(KeyCode.A)) myRigidbody.velocity = new Vector2(-moveSpeed, myRigidbody.velocity.y);</code></pre>
+<p>A and D keep the current vertical speed (<code>myRigidbody.velocity.y</code>) so the bird still falls while moving sideways.</p>
+<h3 id="likely-test-points-1">Likely test points</h3>
+<ul><li><p>Which component makes an object visible (Sprite Renderer), which gives it a collision edge (collider), which gives it gravity (Rigidbody 2D).</p></li><li><p>What MonoBehaviour is for, and the difference between Start() (once) and Update() (every frame).</p></li><li><p>Why make a variable public (it appears in the Inspector and can be tuned without recompiling).</p></li><li><p><strong>GetKeyDown vs GetKey:</strong> GetKeyDown fires once per press (good for a flap); GetKey is true every frame the key is held (good for steady movement).</p></li><li><p>What Vector2.up equals: (0, 1).</p></li></ul>

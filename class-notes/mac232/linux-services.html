@@ -1,0 +1,35 @@
+<h2 id="linux-services">Linux Services</h2>
+<p>A service (daemon) runs in the background listening for requests; install its package with dnf, then control it with systemctl. The big ones are Samba, NFS, FTP, SSH and Apache.</p>
+<h3 id="linux-services-key-concepts">Key concepts</h3>
+<ul><li><p><strong>Service = daemon</strong>, usually named with a trailing <strong>d</strong>: httpd, sshd, ftpd, nfsd.</p></li><li><p><strong>dnf</strong> is Fedora&#39;s package manager since <strong>Fedora 22</strong> (replaced yum). Each service comes from a package (sshd comes from <strong>openssh-server</strong>); install the package first.</p></li><li><p><strong>systemctl actions:</strong> start, stop, restart, <strong>enable</strong> (start at boot), <strong>disable</strong> (don&#39;t start at boot), status.</p></li></ul>
+<h3 id="linux-services-services-at-a-glance">Services at a glance</h3>
+<table><thead><tr><th>Service</th><th>Daemon</th><th>Port</th><th>Config file</th><th>What it does</th></tr></thead><tbody><tr><td>Samba</td><td>smbd + nmbd</td><td>137-139, 445</td><td>/etc/samba/smb.conf</td><td>Shares files with <strong>Windows</strong> (SMB protocol, NetBIOS names)</td></tr><tr><td>NFS</td><td>nfsd</td><td>2049</td><td>/etc/exports</td><td>Shares directories between UNIX, Linux and macOS</td></tr><tr><td>FTP</td><td>vsftpd</td><td><strong>20, 21</strong></td><td>/etc/vsftpd/vsftpd.conf</td><td>Transfers files; supports anonymous login</td></tr><tr><td>SSH</td><td>sshd</td><td><strong>22</strong></td><td>/etc/ssh/sshd_config</td><td>Secure remote shell and file transfer</td></tr><tr><td>Apache web</td><td>httpd</td><td><strong>80</strong> (http), <strong>443</strong> (https)</td><td>httpd.conf</td><td>Serves websites from <strong>/var/www/html</strong>, default page <strong>index.html</strong></td></tr></tbody></table>
+<p>(Ports for FTP, SSH and web are from the slides; Samba and NFS ports are the standard ones, added for reference.)</p>
+<h3 id="linux-services-samba">Samba</h3>
+<ul><li><p><strong>NetBIOS name daemon (nmbd)</strong> advertises the server&#39;s name to Windows. <code>nmblookup</code> tests name resolution.</p></li><li><p>Each Windows user needs a local Linux user; <code>smbpasswd</code> sets their Samba password.</p></li><li><p><code>testparm</code> checks smb.conf syntax (the slide spells it &quot;testparam&quot;). Restart smb and nmb after editing.</p></li><li><p>From Windows: type <code>\\servername</code> in Run. From Linux: <code>smbclient</code>.</p></li></ul>
+<h3 id="linux-services-nfs">NFS</h3>
+<ul><li><p>Server: install package, make the directory, add it to <strong>/etc/exports</strong>, run <strong><code>exportfs -a</code></strong>, restart NFS.</p></li><li><p>Client: <code>showmount -e server</code> lists shares, then mount it with type nfs; <code>umount</code> to disconnect.</p></li></ul>
+<h3 id="linux-services-ftp">FTP</h3>
+<ul><li><p><strong>vsftpd</strong> = Very Secure FTP daemon. Browser: <code>ftp://user:password@server</code>. Command line: <code>ftp server</code>.</p></li></ul>
+<h3 id="linux-services-ssh">SSH</h3>
+<ul><li><p>SSH = Secure Shell (slide says &quot;Secure Socket Shell&quot;). Port 22.</p></li><li><p>The slide lists &quot;enable&quot; twice; the second step should be <strong>start</strong>.</p></li></ul>
+<h3 id="linux-services-apache">Apache</h3>
+<ul><li><p>Started as httpd. Each line in httpd.conf is a <strong>directive</strong>. Each request is a <strong>hit</strong>; a separate Apache daemon serves it, and the first daemon runs as root to start the rest.</p></li></ul>
+<h3 id="linux-services-commands">Commands</h3>
+<pre><code>dnf install openssh-server     # install a package
+dnf list installed             # list installed packages
+dnf update                     # update Fedora
+systemctl start sshd.service   # start now
+systemctl enable sshd.service  # start at every boot
+systemctl status sshd          # is it running?
+systemctl stop / restart / disable sshd
+systemctl | grep sshd          # find one service in the list
+ssh linux@192.168.1.10         # connect over SSH; exit or logout to leave
+smbpasswd -a bob ; testparm ; smbclient //server/share -U bob
+echo &quot;/data *(rw)&quot; &gt;&gt; /etc/exports ; exportfs -a
+showmount -e server ; mount -t nfs server:/data /mnt/data
+ftp server</code></pre>
+<h3 id="linux-services-ftp-prompt-commands">FTP prompt commands</h3>
+<table><thead><tr><th>Command</th><th>Action</th></tr></thead><tbody><tr><td><code>cd dir</code></td><td>change remote directory</td></tr><tr><td><code>lcd dir</code></td><td>change <strong>local</strong> download directory</td></tr><tr><td><code>get file</code> / <code>mget files</code></td><td>download one / many</td></tr><tr><td><code>put file</code> / <code>mput files</code></td><td>upload one / many</td></tr><tr><td><code>bye</code>, <code>quit</code>, <code>exit</code></td><td>end session</td></tr></tbody></table>
+<h3 id="linux-services-likely-test-points">Likely test points</h3>
+<ul><li><p>Port numbers: FTP 20/21, SSH 22, HTTP 80, HTTPS 443.</p></li><li><p>Config files: smb.conf, /etc/exports, vsftpd.conf, sshd_config, httpd.conf.</p></li><li><p>enable vs start (boot vs now).</p></li><li><p>Apache document root /var/www/html and index.html.</p></li><li><p>Samba is for Windows, NFS for UNIX/Linux/Mac; <code>exportfs -a</code>, <code>showmount</code>.</p></li><li><p>get vs put, lcd vs cd.</p></li></ul>

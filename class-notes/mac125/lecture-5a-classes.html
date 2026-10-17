@@ -1,0 +1,34 @@
+<h2 id="lecture-5a-classes">Lecture 5a: Classes</h2>
+<p>A class is a user-defined type that bundles data (attributes) and functions (methods) into one blueprint; an object is one thing built from that blueprint.</p>
+<h3 id="lecture-5a-classes-key-concepts">Key concepts</h3>
+<ul><li><p><strong>OOP vs procedural</strong>: procedural code writes functions that act on data; OOP creates objects that hold both data and the functions that act on it.</p></li><li><p>OOP advantages from the slides: clear structure, keeps code DRY (&quot;Don&#39;t Repeat Yourself&quot;), easier to maintain/modify/debug, reusable with less code.</p></li><li><p>Real-life example: a car is an object; weight and color are attributes; drive and brake are methods. Attributes and methods together are &quot;class members&quot;.</p></li><li><p>Create objects with <code>ClassName obj;</code> and access members with the dot syntax <code>obj.member</code>.</p></li><li><p>Methods can be defined <strong>inside</strong> the class, or <strong>outside</strong> using the scope resolution operator <code>::</code>.</p></li></ul>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+using namespace std;
+
+class Car {
+public:
+    string brand;
+    int year;
+
+    void honk() {                 // defined inside the class
+        cout &lt;&lt; brand &lt;&lt; &quot; says beep!\n&quot;;
+    }
+    int age(int currentYear);     // declared only
+};
+
+int Car::age(int currentYear) {   // defined outside with ::
+    return currentYear - year;
+}
+
+int main() {
+    Car c1;                       // multiple objects from one class
+    c1.brand = &quot;BMW&quot;; c1.year = 1999;
+    Car c2;
+    c2.brand = &quot;Ford&quot;; c2.year = 1969;
+    c1.honk();
+    cout &lt;&lt; c2.age(2026) &lt;&lt; &quot;\n&quot;;   // 57
+    return 0;
+}</code></pre>
+<h3 id="lecture-5a-classes-common-mistakes">Common mistakes</h3>
+<ul><li><p>Forgetting <code>public:</code>; class members are private by default, so <code>c1.brand</code> won&#39;t compile.</p></li><li><p>Writing <code>int age(int y) { ... }</code> outside the class without <code>Car::</code> (that makes a separate free function).</p></li><li><p>Missing the <code>;</code> after the class&#39;s closing brace.</p></li></ul>
+<p><strong>Likely test points:</strong> class vs object, attribute vs method, defining a method outside the class with <code>::</code>, the four OOP advantages.</p>

@@ -1,0 +1,129 @@
+<h2 id="navigationview-navigationlink-and-the-categorylist-view">NavigationView, NavigationLink and the CategoryList View</h2>
+<p><code>NavigationView</code> adds a navigation bar and a back button; <code>NavigationLink</code> is a tappable view that pushes a new screen. Put the title modifier on the content <strong>inside</strong> the NavigationView, not on the NavigationView itself.</p>
+<h3 id="basics">Basics</h3>
+<pre><code class="language-swift">NavigationView {
+    NavigationLink(destination: Text(&quot;Second View&quot;)) {   // where to go
+        Text(&quot;Hello MAC221&quot;)                               // what you tap (can be an Image)
+    }
+    .navigationBarTitle(&quot;SwiftUI Navigation&quot;)             // displayMode: .automatic, .large or .inline
+}</code></pre>
+<p><code>.navigationTitle(&quot;...&quot;)</code> is the newer name for the same thing. An image can be the link label too: <code>Image(&quot;ocean&quot;).renderingMode(.original).resizable().scaledToFit().clipShape(Circle())</code>.</p>
+<h3 id="passing-data-to-the-next-screen-coin-flip">Passing data to the next screen (coin flip)</h3>
+<pre><code class="language-swift">struct ResultView: View {
+    var choice: String                         // filled in by whoever opens this view
+    var body: some View { Text(&quot;You chose \(choice)&quot;) }
+}
+
+struct ContentView: View {
+    var body: some View {
+        NavigationView {
+            VStack(spacing: 30) {
+                Text(&quot;You&#39;re going to flip a coin. Heads or tails?&quot;)
+                NavigationLink(destination: ResultView(choice: &quot;Heads&quot;)) { Text(&quot;Choose Heads&quot;) }
+                NavigationLink(destination: ResultView(choice: &quot;Tails&quot;)) { Text(&quot;Choose Tails&quot;) }
+            }
+            .navigationTitle(&quot;Navigation&quot;)
+        }
+    }
+}</code></pre>
+<p>Navigating from a button (programmatic): a <code>@State var linkIsActive = false</code>, a Button that sets it to <code>true</code>, and <code>NavigationLink(destination: SecondView(), isActive: $linkIsActive) { EmptyView() }</code>.</p>
+<h3 id="categorylist-view">CategoryList View</h3>
+<p>The CategoryList lecture builds up in four steps.</p>
+<p><strong>1. A List of strings.</strong> <code>id: \.self</code> is needed because a String isn&#39;t <code>Identifiable</code>.</p>
+<pre><code class="language-swift">struct CategoryListView: View {
+    let categories = [&quot;Category 1&quot;, &quot;Category 2&quot;, &quot;Category 3&quot;]
+    var body: some View {
+        List(categories, id: \.self) { category in
+            Text(category)
+        }
+    }
+}</code></pre>
+<p><strong>2. Make it the app&#39;s first screen</strong> in the <code>@main</code> App file:</p>
+<pre><code class="language-swift">@main
+struct CategoryApp: App {
+    var body: some Scene {
+        WindowGroup { CategoryListView() }
+    }
+}</code></pre>
+<p><strong>3. Wrap it in a NavigationView</strong> and make each row a NavigationLink to a detail view.</p>
+<h3 id="navigationview-navigationlink-and-the-categorylist-view-4-use-a-model-struct-with-an-image">4. Use a model struct with an image:</h3>
+<pre><code class="language-swift">struct Category: Identifiable {
+    let id = UUID()                 // unique id, so List doesn&#39;t need id: \.self
+    let name: String
+    let description: String
+    let image: String               // asset name
+}
+
+struct CategoryListView: View {
+    let categories = [
+        Category(name: &quot;Category 1&quot;, description: &quot;Description 1&quot;, image: &quot;category1&quot;),
+        Category(name: &quot;Category 2&quot;, description: &quot;Description 2&quot;, image: &quot;category2&quot;),
+    ]
+
+    var body: some View {
+        NavigationView {
+            List(categories) { category in
+                NavigationLink(destination: Text(&quot;Detail View for \(category.name)&quot;)) {
+                    HStack {
+                        Image(category.image).resizable().frame(width: 30, height: 30)
+                        Text(category.name)
+                    }
+                }
+            }
+            .navigationBarTitle(&quot;Categories&quot;)
+        }
+    }
+}</code></pre>
+<h3 id="dynamic-list-add-and-delete-rows">Dynamic List: add and delete rows</h3>
+<p>The last List example keeps the data in an <code>ObservableObject</code> store (see the next section) so rows can be added and removed.</p>
+<pre><code class="language-swift">struct Person: Identifiable {
+    let id = UUID()
+    let name: String
+}
+
+class PeopleStore: ObservableObject {
+    @Published var people = [Person(name: &quot;John&quot;), Person(name: &quot;Alice&quot;), Person(name: &quot;Bob&quot;)]
+
+    func addPerson(_ person: Person) { people.append(person) }
+    func removePerson(_ person: Person) {
+        if let index = people.firstIndex(where: { $0.id == person.id }) {
+            people.remove(at: index)
+        }
+    }
+}
+
+struct ContentView: View {
+    @ObservedObject var peopleStore = PeopleStore()
+    @State private var newPersonName = &quot;&quot;
+
+    var body: some View {
+        NavigationView {
+            List {
+                Section(header: Text(&quot;Add Person&quot;)) {
+                    HStack {
+                        TextField(&quot;Name&quot;, text: $newPersonName)
+                        Button(&quot;Add&quot;, action: addPerson)
+                    }
+                }
+                Section(header: Text(&quot;People&quot;)) {
+                    ForEach(peopleStore.people) { person in
+                        Text(person.name)
+                    }
+                    .onDelete(perform: removePeople)       // swipe to delete
+                }
+            }
+            .listStyle(GroupedListStyle())
+            .navigationBarTitle(&quot;Dynamic List&quot;)
+        }
+    }
+
+    func addPerson() {
+        peopleStore.addPerson(Person(name: newPersonName))
+        newPersonName = &quot;&quot;                                 // clear the text field
+    }
+
+    func removePeople(at offsets: IndexSet) {
+        for index in offsets { peopleStore.removePerson(peopleStore.people[index]) }
+    }
+}</code></pre>
+<ul><li><p><code>.onDelete</code> only works on <code>ForEach</code>, not directly on <code>List(items)</code>.</p></li><li><p>List styles: <code>PlainListStyle()</code>, <code>GroupedListStyle()</code>, <code>InsetGroupedListStyle()</code>.</p></li></ul>

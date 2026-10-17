@@ -1,0 +1,45 @@
+<h2 id="lecture-7-inheritance">Lecture 7: Inheritance</h2>
+<p>Inheritance lets a derived (child) class reuse the attributes and methods of a base (parent) class, forming a hierarchy of shared logic.</p>
+<h3 id="lecture-7-inheritance-the-five-types">The five types</h3>
+<table><thead><tr><th>Type</th><th>Shape</th><th>Example</th></tr></thead><tbody><tr><td>Single</td><td>One base → one derived</td><td><code>Dog : Animal</code></td></tr><tr><td>Multiple</td><td>Several bases → one derived</td><td><code>FlyingCar : Car, Plane</code></td></tr><tr><td>Multilevel</td><td>A chain: derived becomes a base</td><td><code>Animal → Dog → Puppy</code></td></tr><tr><td>Hierarchical</td><td>One base → several derived</td><td><code>Animal → Dog</code>, <code>Animal → Cat</code></td></tr><tr><td>Hybrid</td><td>A mix of two or more of the above</td><td>Multilevel + multiple together</td></tr></tbody></table>
+<h3 id="lecture-7-inheritance-access-control-when-inheriting">Access control when inheriting</h3>
+<table><thead><tr><th>Inheritance mode</th><th>Base <code>public</code> becomes</th><th>Base <code>protected</code> becomes</th><th>Base <code>private</code></th></tr></thead><tbody><tr><td><code>public</code></td><td>public</td><td>protected</td><td>Not accessible</td></tr><tr><td><code>protected</code></td><td>protected</td><td>protected</td><td>Not accessible</td></tr><tr><td><code>private</code></td><td>private</td><td>private</td><td>Not accessible</td></tr></tbody></table>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+using namespace std;
+
+class Animal {                         // base class
+protected:
+    string name;
+public:
+    Animal(string n) : name(n) {}
+    void eat() { cout &lt;&lt; name &lt;&lt; &quot; is eating\n&quot;; }
+};
+
+class Dog : public Animal {            // single inheritance
+public:
+    Dog(string n) : Animal(n) {}       // call the base constructor
+    void bark() { cout &lt;&lt; name &lt;&lt; &quot; says woof\n&quot;; }  // can use protected name
+};
+
+class Puppy : public Dog {             // multilevel: Animal -&gt; Dog -&gt; Puppy
+public:
+    Puppy(string n) : Dog(n) {}
+    void weep() { cout &lt;&lt; name &lt;&lt; &quot; is weeping\n&quot;; }
+};
+
+class Swimmer { public: void swim() { cout &lt;&lt; &quot;Swimming\n&quot;; } };
+class Lab : public Dog, public Swimmer {   // multiple inheritance
+public:
+    Lab(string n) : Dog(n) {}
+};
+
+int main() {
+    Puppy p(&quot;Rex&quot;);
+    p.eat(); p.bark(); p.weep();       // gets all three levels
+    Lab l(&quot;Max&quot;);
+    l.bark(); l.swim();
+    return 0;
+}</code></pre>
+<h3 id="lecture-7-inheritance-common-mistakes">Common mistakes</h3>
+<ul><li><p>Leaving out <code>public</code> in <code>class Dog : Animal</code>. For a class the default is private inheritance, so <code>eat()</code> becomes private in <code>Dog</code>.</p></li><li><p>Trying to use a base class&#39;s <code>private</code> member in the derived class.</p></li><li><p>Not calling the base constructor when the base has no default constructor.</p></li><li><p>Mixing up multiple (many parents, one child) with hierarchical (one parent, many children).</p></li></ul>
+<p><strong>Likely test points:</strong> name and sketch the five types, the access-control table, syntax <code>class Derived : public Base</code>, constructor order (base constructor runs first, then derived).</p>

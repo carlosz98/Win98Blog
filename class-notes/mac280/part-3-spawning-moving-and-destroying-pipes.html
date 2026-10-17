@@ -1,0 +1,57 @@
+<h2 id="part-3-spawning-moving-and-destroying-pipes">Part 3: Spawning, moving and destroying pipes</h2>
+<p>Part 3 makes an endless level: pipes slide left, a spawner creates new ones on a timer at random heights, and old ones are deleted once off screen.</p>
+<h3 id="moving-the-pipes">Moving the pipes</h3>
+<p>This script goes on the pipe (call it something like PipeMoveScript).</p>
+<pre><code class="language-csharp">public float moveSpeed = 5;
+public float deadZone = -45;
+
+void Update()
+{
+    transform.position = transform.position + (Vector3.left * moveSpeed) * Time.deltaTime;
+
+    if (transform.position.x &lt; deadZone)
+    {
+        Destroy(gameObject);
+    }
+}</code></pre>
+<ul><li><p><strong>transform.position</strong> is the object&#39;s current position. <strong>Vector3.left</strong> is (-1, 0, 0).</p></li><li><p><strong>Time.deltaTime</strong> is the time since the last frame. Multiplying by it makes movement frame-rate independent, so the pipe moves at the same real speed on a fast or slow computer.</p></li><li><p><strong>deadZone:</strong> once a pipe passes x = -45 it is destroyed. This prevents a pile-up of unused objects, keeps performance smooth and keeps the scene clean.</p></li></ul>
+<h3 id="prefabs">Prefabs</h3>
+<ol><li><p>Select the parent pipe GameObject in the Hierarchy.</p></li><li><p>Drag it into the Project panel. This creates a <strong>prefab</strong>, a blueprint that stores the object, its children, components and settings.</p></li><li><p>Delete the original from the Hierarchy; the prefab lives in the Project panel.</p></li></ol>
+<p>Editing the prefab updates every copy, which keeps things consistent as the game grows.</p>
+<h3 id="the-pipe-spawner">The Pipe Spawner</h3>
+<ol><li><p>Create a new GameObject named <strong>Pipe Spawner</strong> and place it just right of the camera.</p></li><li><p>Create a script (PipeSpawnScript) and attach it.</p></li><li><p>Drag the pipe prefab from the Project panel into the script&#39;s <strong>pipe</strong> slot in the Inspector.</p></li></ol>
+<pre><code class="language-csharp">public GameObject pipe;
+public float spawnRate = 2;
+private float timer = 0;
+public float heightOffset = 10;
+
+void Start()
+{
+    spawnPipe(); // first pipe right away
+}
+
+void Update()
+{
+    if (timer &lt; spawnRate)
+    {
+        timer = timer + Time.deltaTime;
+    }
+    else
+    {
+        spawnPipe();
+        timer = 0;
+    }
+}
+
+void spawnPipe()
+{
+    float lowestPoint = transform.position.y - heightOffset;
+    float highestPoint = transform.position.y + heightOffset;
+    Instantiate(pipe, new Vector3(transform.position.x, Random.Range(lowestPoint, highestPoint), 0), transform.rotation);
+}</code></pre>
+<ul><li><p><strong>spawnRate</strong> is seconds between pipes. <strong>timer</strong> is private, so it does not appear in the Inspector.</p></li><li><p><strong>Instantiate(prefab, position, rotation)</strong> creates a copy of the prefab. The slides&#39; alternative version uses <strong>Quaternion.identity</strong> (no rotation) instead of transform.rotation.</p></li><li><p><strong>Random.Range(low, high)</strong> picks a random float between the two values, so each pipe gets a different Y while X stays at the spawner. Z is 0 because the game is 2D.</p></li></ul>
+<h3 id="two-versions-of-the-spawner">Two versions of the spawner</h3>
+<p>The slides compare putting Instantiate directly inside Update() with moving it into its own <strong>spawnPipe()</strong> function. The separate function is the better choice: it is <strong>modular</strong> (callable from Start() too), <strong>readable</strong> (Update() only handles the timer) and <strong>maintainable</strong> (change spawning in one place). The inline version is simpler and fine for tiny projects.</p>
+<p>Heads up: one slide says the first script has the commented-out spawn call in Start(), but in the code shown it is the alternative (second) script that has it. Also, C# is case-sensitive, so SpawnPipe() and spawnPipe() are different names; pick one and use it everywhere.</p>
+<h3 id="likely-test-points-2">Likely test points</h3>
+<ul><li><p>Why multiply by Time.deltaTime (frame-rate independent movement and timing).</p></li><li><p>What a prefab is and how to make one (drag from Hierarchy to Project).</p></li><li><p>The three arguments of Instantiate: object, position, rotation.</p></li><li><p>How the timer works: add deltaTime until it reaches spawnRate, spawn, reset to 0.</p></li><li><p>How the random height range is computed (spawner Y minus and plus heightOffset).</p></li><li><p>Why destroy off-screen objects (memory and performance).</p></li><li><p>Why a separate function is better design (modularity, readability, maintainability).</p></li></ul>

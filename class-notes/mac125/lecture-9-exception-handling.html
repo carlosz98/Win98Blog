@@ -1,0 +1,48 @@
+<h2 id="lecture-9-exception-handling">Lecture 9: Exception Handling</h2>
+<p>Exception handling uses <code>try</code>, <code>throw</code> and <code>catch</code> so a program can deal with runtime errors and keep running or fail gracefully instead of crashing.</p>
+<ul><li><p><code>try</code>: wraps code that might fail.</p></li><li><p><code>throw</code>: signals an error (any type: <code>int</code>, string, or an exception object).</p></li><li><p><code>catch</code>: handles it. <code>try</code> and <code>catch</code> come in pairs.</p></li><li><p>Why: prevents crashes, handles errors at runtime, keeps error code separate from normal logic.</p></li></ul>
+<p><strong>Standard exceptions</strong> (<code>#include &lt;stdexcept&gt;</code>, all derived from <code>std::exception</code>)</p>
+<table><thead><tr><th>Exception</th><th>Thrown when</th></tr></thead><tbody><tr><td><code>std::runtime_error</code></td><td>An error happens during execution (invalid operation, unexpected condition)</td></tr><tr><td><code>std::out_of_range</code></td><td>Accessing past the end of a container, e.g. <code>vector::at()</code></td></tr><tr><td><code>std::invalid_argument</code></td><td>A function gets an argument that isn&#39;t valid</td></tr><tr><td><code>std::bad_alloc</code></td><td><code>new</code> can&#39;t get enough memory (e.g. <code>new int[1000000000]</code>, about 4 GB)</td></tr></tbody></table>
+<p>A <code>vector</code> is a dynamic array: it resizes itself as you add or remove elements and manages its own memory, unlike a raw array.</p>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;stdexcept&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+class MyException : public exception {          // user-defined exception
+    string errorMessage;
+public:
+    MyException(string msg) : errorMessage(msg) {}
+    const char* what() const noexcept override {  // override what()
+        return errorMessage.c_str();
+    }
+};
+
+void checkValue(int v) {
+    if (v &lt; 0) throw MyException(&quot;Negative value not allowed&quot;);
+}
+
+int divide(int a, int b) {
+    if (b == 0) throw runtime_error(&quot;Division by zero!&quot;);
+    return a / b;
+}
+
+int main() {
+    try {
+        vector&lt;int&gt; v = {1, 2, 3};
+        checkValue(-5);
+        cout &lt;&lt; v.at(10);          // would throw out_of_range
+        divide(10, 0);
+    }
+    catch (const MyException&amp; e)  { cout &lt;&lt; &quot;Custom: &quot; &lt;&lt; e.what() &lt;&lt; &quot;\n&quot;; }
+    catch (const out_of_range&amp; e) { cout &lt;&lt; &quot;Range: &quot; &lt;&lt; e.what() &lt;&lt; &quot;\n&quot;; }
+    catch (const exception&amp; e)    { cout &lt;&lt; &quot;Other: &quot; &lt;&lt; e.what() &lt;&lt; &quot;\n&quot;; }
+    catch (...)                   { cout &lt;&lt; &quot;Unknown error\n&quot;; }
+    return 0;
+}
+// Output: Custom: Negative value not allowed</code></pre>
+<p>The first <code>throw</code> jumps straight to the matching <code>catch</code>; the remaining lines in <code>try</code> never run.</p>
+<p><strong>Making a user-defined exception (3 steps):</strong> inherit from <code>std::exception</code>, override <code>what()</code> to return the message, <code>throw</code> an instance when the error happens. Why: specificity, readability, flexibility (extra data like error codes), reusability.</p>
+<h3 id="lecture-9-exception-handling-common-mistakes">Common mistakes</h3>
+<ul><li><p>Putting <code>catch (const exception&amp; e)</code> before more specific catches. It matches everything derived from it, so the specific ones never run. Order catches from most specific to most general.</p></li><li><p>Catching by value instead of <code>const&amp;</code> (copies and can slice the exception).</p></li><li><p>Using <code>v[10]</code> and expecting an exception; only <code>v.at(10)</code> checks bounds and throws.</p></li><li><p>Forgetting <code>delete[]</code> after a successful <code>new[]</code>.</p></li></ul>
+<p><strong>Likely test points:</strong> the three keywords, the four standard exceptions and when each is thrown, the three steps for a custom exception, ordering multiple catch blocks, predicting output after a throw.</p>
