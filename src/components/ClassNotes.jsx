@@ -13,7 +13,7 @@ const pageCache = {};
 async function loadPage(classId, slug) {
   const key = `${classId}/${slug}`;
   if (!pageCache[key]) {
-    const res = await fetch(`${BASE}class-notes/${key}.html`);
+    const res = await fetch(`${BASE}class-notes/${key}.html`, { cache: 'no-cache' });
     if (!res.ok) throw new Error(res.status);
     pageCache[key] = (await res.text()).replaceAll('__BASE__', BASE);
   }
@@ -32,7 +32,7 @@ export default function ClassNotes({ show, setShow }) {
 
   useEffect(() => {
     if (!show || index) return;
-    fetch(`${BASE}class-notes/index.json`)
+    fetch(`${BASE}class-notes/index.json`, { cache: 'no-cache' })
       .then(r => r.json())
       .then(setIndex)
       .catch(() => setStatus('error'));
