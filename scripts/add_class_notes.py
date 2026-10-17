@@ -1,21 +1,23 @@
 #!/usr/bin/env python3
 """Add (or replace) one class in the Class Notes viewer from an HTML export of its study guide.
 
-usage: add_class_notes.py CLASS_ID GUIDE.html FOLDER_TITLE [OVERVIEW_H2_ID]
+usage: add_class_notes.py CLASS_ID GUIDE.html FOLDER_TITLE [OVERVIEW_H2_ID] [blob/<id>=IMAGE ...]
   CLASS_ID       an existing class in public/class-notes/index.json, e.g. mac232
   GUIDE.html     HTML export of the study guide doc (H1 title, H2 per chapter, H3 per topic)
   FOLDER_TITLE   tree folder that holds one page per H2, e.g. "Chapters"
-  OVERVIEW_H2_ID optional H2 that is folded into the class's Overview page (e.g. how-this-guide-works)
+  OVERVIEW_H2_ID optional H2 that is folded into the class's Overview page (e.g. how-this-guide-works); "-" for none
+  blob/<id>=IMAGE  maps an image in the export to a local file, copied to public/class-notes/img/
 
 The text before the first H2 (minus the H1 and byline) becomes the Overview page.
 Bold-only paragraphs such as <p><strong>Key concepts</strong></p> become H3 topics.
 Run it again with a newer export to update a class; other classes are left alone.
 """
-import json, re, sys, html
+import json, re, shutil, sys, html
 from pathlib import Path
 
 cid, src, folder_title = sys.argv[1:4]
-overview_id = sys.argv[4] if len(sys.argv) > 4 else None
+overview_id = sys.argv[4] if len(sys.argv) > 4 and sys.argv[4] != '-' else None
+images = dict(a.split('=', 1) for a in sys.argv[5:])
 root = Path(__file__).resolve().parent.parent
 out = root / 'public' / 'class-notes'
 index_path = out / 'index.json'
@@ -27,6 +29,13 @@ text = Path(src).read_text(encoding='utf-8')
 text = re.sub(r'<h1[^>]*>.*?</h1>\s*', '', text, count=1, flags=re.S)
 text = re.sub(r'<p><time.*?</p>\s*', '', text, count=1, flags=re.S)
 assert 'data-atom="mention"' not in text
+
+def img(m):
+    path = Path(images[m.group(1)])
+    shutil.copy(path, out / 'img' / path.name)
+    return f'src="__BASE__class-notes/img/{path.name}" loading="lazy"'
+text = re.sub(r'src="(blob/[^"]+)"', img, text)
+assert 'src="blob/' not in text
 
 def plain(s):
     return re.sub(r'<[^>]+>', '', html.unescape(s)).strip()

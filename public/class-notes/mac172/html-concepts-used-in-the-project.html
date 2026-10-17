@@ -1,0 +1,39 @@
+<h2 id="html-concepts-used-in-the-project">HTML concepts used in the project</h2>
+<h3 id="1-the-page-skeleton">1. The page skeleton</h3>
+<p>Every page starts the same way. <code>&lt;!DOCTYPE html&gt;</code> tells the browser this is HTML5. <code>&lt;html lang=&quot;en&quot;&gt;</code> wraps everything and declares the language. <code>&lt;head&gt;</code> holds information about the page; <code>&lt;body&gt;</code> holds what you see.</p>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+    &lt;title&gt;Recipes Page&lt;/title&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;styles.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    ...
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<ul><li><p><code>&lt;meta charset=&quot;UTF-8&quot;&gt;</code> makes characters like the copyright sign display correctly.</p></li><li><p><code>&lt;meta name=&quot;viewport&quot; ...&gt;</code> makes phones use the real screen width instead of zooming out.</p></li><li><p><code>&lt;title&gt;</code> is the text on the browser tab and in bookmarks; it is not shown on the page.</p></li><li><p><code>&lt;link rel=&quot;stylesheet&quot; href=&quot;...&quot;&gt;</code> connects an external CSS file.</p></li></ul>
+<h3 id="2-semantic-layout-elements-indexhtml">2. Semantic layout elements (index.html)</h3>
+<p>Semantic tags describe what a part of the page is, not how it looks. Screen readers and search engines use them.</p>
+<table><thead><tr><th>Tag</th><th>Meaning</th><th>In your home page</th></tr></thead><tbody><tr><td><code>&lt;header&gt;</code></td><td>Intro or banner area</td><td>The gray bar with the h1 &quot;Recipes&quot;</td></tr><tr><td><code>&lt;nav&gt;</code></td><td>Main navigation links</td><td>The Oatmeal / Pancakes / Dinner / Snacks / Contact bar</td></tr><tr><td><code>&lt;main&gt;</code></td><td>The main content, once per page</td><td>The 5 content boxes</td></tr><tr><td><code>&lt;section&gt;</code></td><td>A themed group of content, usually with a heading</td><td><code>related-recipes</code>, <code>recipe-description</code>, etc.</td></tr><tr><td><code>&lt;footer&gt;</code></td><td>Closing info (copyright, contact)</td><td>&quot;© 2024 Recipes Page&quot;</td></tr><tr><td><code>&lt;div&gt;</code></td><td>Generic box with no meaning</td><td><code>.container</code> on the recipe pages</td></tr></tbody></table>
+<p>Rule of thumb: use a semantic tag when one fits, and <code>&lt;div&gt;</code> only when you just need a box to style.</p>
+<h3 id="3-headings">3. Headings</h3>
+<p>Headings go from <code>&lt;h1&gt;</code> (most important) to <code>&lt;h6&gt;</code>. The home page has one <code>&lt;h1&gt;</code> and an <code>&lt;h2&gt;</code> per section. The recipe pages start at <code>&lt;h2&gt;</code> and use <code>&lt;h3&gt;</code> for &quot;Ingredients&quot; and &quot;Directions&quot;. Best practice is one <code>&lt;h1&gt;</code> per page and no skipped levels.</p>
+<h3 id="4-lists">4. Lists</h3>
+<pre><code class="language-html">&lt;ul&gt;
+    &lt;li&gt;1 cup rolled oats&lt;/li&gt;
+    &lt;li&gt;1.5 cups milk&lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+<ul><li><p><code>&lt;ul&gt;</code> = unordered (bullets), for items where order does not matter, like ingredients.</p></li><li><p><code>&lt;ol&gt;</code> = ordered (numbers), for steps. The home page types &quot;1.&quot;, &quot;2.&quot;, &quot;3.&quot; by hand with <code>&lt;br&gt;</code>; an <code>&lt;ol&gt;</code> does this for you.</p></li><li><p><code>&lt;li&gt;</code> = one list item, and it must sit directly inside a <code>&lt;ul&gt;</code> or <code>&lt;ol&gt;</code>.</p></li><li><p>The nav bar is also a <code>&lt;ul&gt;</code>: a menu is a list of links, and CSS turns it sideways.</p></li></ul>
+<h3 id="5-links-and-paths">5. Links and paths</h3>
+<pre><code class="language-html">&lt;a href=&quot;oatmeal.html&quot;&gt;Oatmeal&lt;/a&gt;
+&lt;a href=&quot;index.html&quot;&gt;Back to Home&lt;/a&gt;</code></pre>
+<p><code>&lt;a&gt;</code> makes a hyperlink and <code>href</code> is where it goes. These are <strong>relative paths</strong>: they are resolved from the current file&#39;s folder. An <strong>absolute URL</strong> includes the protocol and domain, like <code>https://example.com/page.html</code>. A link can also open an email (<code>href=&quot;mailto:...&quot;</code>) or a phone call (<code>href=&quot;tel:...&quot;</code>).</p>
+<h3 id="6-images">6. Images</h3>
+<pre><code class="language-html">&lt;img src=&quot;images/avocado.jpg&quot; alt=&quot;Related Recipe 1&quot;&gt;</code></pre>
+<ul><li><p><code>&lt;img&gt;</code> is a <strong>void (empty) element</strong>: it has no closing tag.</p></li><li><p><code>src</code> is the file path; <code>images/</code> means &quot;the images folder next to this page&quot;.</p></li><li><p><code>alt</code> is the text read by screen readers and shown if the image fails to load. It should describe the picture (&quot;Avocado and cucumber salad&quot;), not just number it.</p></li></ul>
+<h3 id="7-text-elements-and-entities">7. Text elements and entities</h3>
+<ul><li><p><code>&lt;p&gt;</code> is a paragraph; the browser adds space around it.</p></li><li><p><code>&lt;br&gt;</code> forces a line break inside text. It is also a void element. Use it for line breaks inside one thing (an address), not to build lists.</p></li><li><p><code>&amp;copy;</code> is an <strong>HTML entity</strong> that displays ©. Others: <code>&amp;amp;</code> (&amp;), <code>&amp;lt;</code> (&lt;), <code>&amp;gt;</code> (&gt;), <code>&amp;nbsp;</code> (non-breaking space).</p></li></ul>
+<h3 id="8-attributes-class-alt-href-lang">8. Attributes: class, alt, href, lang</h3>
+<p>Attributes go inside the opening tag as <code>name=&quot;value&quot;</code>. <code>class=&quot;container&quot;</code> gives an element a name that CSS can target with <code>.container</code>. A class can be reused on many elements; an <code>id</code> must be unique on the page.</p>

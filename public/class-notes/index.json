@@ -1217,9 +1217,133 @@
      "title": "Overview",
      "pages": [
       {
-       "slug": "notes",
-       "title": "Notes",
+       "slug": "overview",
+       "title": "About these notes",
        "topics": []
+      }
+     ]
+    },
+    {
+     "title": "Final project: Recipes site",
+     "pages": [
+      {
+       "slug": "html-concepts-used-in-the-project",
+       "title": "HTML concepts used in the project",
+       "topics": [
+        {
+         "id": "1-the-page-skeleton",
+         "title": "1. The page skeleton"
+        },
+        {
+         "id": "2-semantic-layout-elements-indexhtml",
+         "title": "2. Semantic layout elements (index.html)"
+        },
+        {
+         "id": "3-headings",
+         "title": "3. Headings"
+        },
+        {
+         "id": "4-lists",
+         "title": "4. Lists"
+        },
+        {
+         "id": "5-links-and-paths",
+         "title": "5. Links and paths"
+        },
+        {
+         "id": "6-images",
+         "title": "6. Images"
+        },
+        {
+         "id": "7-text-elements-and-entities",
+         "title": "7. Text elements and entities"
+        },
+        {
+         "id": "8-attributes-class-alt-href-lang",
+         "title": "8. Attributes: class, alt, href, lang"
+        }
+       ]
+      },
+      {
+       "slug": "css-concepts-used-in-the-project",
+       "title": "CSS concepts used in the project",
+       "topics": [
+        {
+         "id": "1-three-ways-to-add-css",
+         "title": "1. Three ways to add CSS"
+        },
+        {
+         "id": "2-rule-anatomy",
+         "title": "2. Rule anatomy"
+        },
+        {
+         "id": "3-selectors-you-used",
+         "title": "3. Selectors you used"
+        },
+        {
+         "id": "4-the-css-reset-and-box-sizing",
+         "title": "4. The CSS reset and box-sizing"
+        },
+        {
+         "id": "5-the-box-model",
+         "title": "5. The box model"
+        },
+        {
+         "id": "6-colors-and-units",
+         "title": "6. Colors and units"
+        },
+        {
+         "id": "7-text-properties",
+         "title": "7. Text properties"
+        },
+        {
+         "id": "8-display-block-inline-inline-block",
+         "title": "8. display: block, inline, inline-block"
+        },
+        {
+         "id": "9-responsive-images",
+         "title": "9. Responsive images"
+        },
+        {
+         "id": "10-flexbox-the-nav-bar",
+         "title": "10. Flexbox (the nav bar)"
+        },
+        {
+         "id": "11-css-grid-the-home-page-content",
+         "title": "11. CSS Grid (the home page content)"
+        },
+        {
+         "id": "12-transitions-and-hover",
+         "title": "12. Transitions and hover"
+        },
+        {
+         "id": "13-the-cascade-inheritance-and-specificity",
+         "title": "13. The cascade, inheritance and specificity"
+        }
+       ]
+      },
+      {
+       "slug": "fixes-that-would-improve-the-project",
+       "title": "Fixes that would improve the project",
+       "topics": []
+      },
+      {
+       "slug": "likely-test-points",
+       "title": "Likely test points",
+       "topics": [
+        {
+         "id": "likely-test-points-html",
+         "title": "HTML"
+        },
+        {
+         "id": "likely-test-points-css",
+         "title": "CSS"
+        },
+        {
+         "id": "quick-self-quiz-answers-below",
+         "title": "Quick self-quiz (answers below)"
+        }
+       ]
       }
      ]
     }
