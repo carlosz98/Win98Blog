@@ -1,0 +1,18 @@
+<h2 id="disk-management">Disk Management</h2>
+<p>Filesystems must be mounted to a directory before use, checked with fsck when unmounted, and watched with df (space per filesystem) and du (space per directory).</p>
+<h3 id="disk-management-key-concepts">Key concepts</h3>
+<ul><li><p><strong>Root filesystem</strong> is mounted on <code>/</code> at boot and holds most OS files.</p></li><li><p><code>mount</code> attaches a device to a <strong>mount point</strong> directory; with no arguments it lists what&#39;s mounted. <code>umount</code> (no &quot;n&quot;) detaches it.</p></li><li><p><strong>/etc/fstab</strong> lists filesystems to mount automatically at boot.</p></li><li><p><strong>Filesystem corruption</strong> usually comes from an improper shutdown. <strong>Syncing</strong> = writing data from RAM to disk. <strong>Bad blocks</strong> = unusable areas of the disk.</p></li><li><p><code>fsck</code> checks a filesystem for errors. The filesystem <strong>must be unmounted</strong> first; <code>-f</code> forces a full check.</p></li><li><p>Monitor mounted filesystems for <strong>errors, disk space and inode usage</strong>. Clear out old log files to free space.</p></li><li><p><strong>df</strong> = disk <strong>free</strong>: space used and available per mounted filesystem (partition). Give it a file and it shows only the filesystem that file lives on.</p></li><li><p><strong>du</strong> = directory <strong>usage</strong>: size of a directory and its contents (KB by default).</p></li></ul>
+<h3 id="disk-management-commands">Commands</h3>
+<pre><code>mount                         # list mounted filesystems
+mount /dev/sdb1 /mnt/usb      # mount a device
+umount /mnt/usb               # unmount it
+cat /etc/fstab                # boot-time mounts
+fsck -f /dev/sdb1             # full check (unmount first!)
+df -h                         # free space on all filesystems, readable
+df -h /home/john/house2       # just the filesystem holding that file
+df -i                         # inode usage
+du -h /home/john/projects     # size of each subdirectory
+du -ah /home/john/projects    # every file and directory
+du -sh /home/john/projects    # one total</code></pre>
+<h3 id="disk-management-likely-test-points">Likely test points</h3>
+<ul><li><p>df vs du (filesystem free space vs directory size).</p></li><li><p><code>-h</code> human readable, <code>-s</code> summary, <code>-a</code> all files.</p></li><li><p>fsck needs the filesystem unmounted.</p></li><li><p>/etc/fstab mounts at boot; the command is <code>umount</code>.</p></li></ul>

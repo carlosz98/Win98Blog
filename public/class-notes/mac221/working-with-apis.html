@@ -1,0 +1,43 @@
+<h2 id="working-with-apis">Working with APIs</h2>
+<p>An API (Application Programming Interface) lets your app talk to an outside service, which usually sends back JSON. The class pattern is always the same four pieces: a Codable model, a service class that fetches, <code>@Published</code> to hold the result, and a view that calls fetch in <code>.onAppear</code>.</p>
+<table><thead><tr><th>Piece</th><th>What it does</th></tr></thead><tbody><tr><td><code>URLSession</code></td><td>Swift&#39;s API for making HTTP requests</td></tr><tr><td><code>JSONDecoder</code></td><td>Turns JSON data into Swift types</td></tr><tr><td><code>Codable</code></td><td>Protocol that makes a type encodable and decodable</td></tr><tr><td><code>ObservableObject</code> + <code>@Published</code></td><td>Update the UI when the data arrives</td></tr></tbody></table>
+<h3 id="working-with-apis-1-model">1. Model</h3>
+<pre><code class="language-swift">struct Product: Identifiable, Codable {
+    let id: Int
+    let name: String
+    let price: Int
+    let imageUrl: String
+}</code></pre>
+<h3 id="working-with-apis-2-service-class">2. Service class</h3>
+<pre><code class="language-swift">class ProductService: ObservableObject {
+    @Published var products: [Product] = []
+
+    func fetchProducts() {
+        guard let url = URL(string: &quot;https://example.com/products.json&quot;) else { return }
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            if let data = data {
+                if let result = try? JSONDecoder().decode([Product].self, from: data) {
+                    DispatchQueue.main.async {
+                        self.products = result   // UI updates must happen on the main thread
+                    }
+                }
+            }
+        }.resume()   // without resume() the request never starts
+    }
+}</code></pre>
+<h3 id="working-with-apis-3-view">3. View</h3>
+<pre><code class="language-swift">struct ContentView: View {
+    @ObservedObject var service = ProductService()
+
+    var body: some View {
+        List(service.products) { product in
+            VStack(alignment: .leading) {
+                Text(product.name).bold()
+                Text(&quot;$\(product.price)&quot;)
+            }
+        }
+        .onAppear { service.fetchProducts() }
+    }
+}</code></pre>
+<p>Remember these details:</p>
+<ul><li><p>The model needs <code>Identifiable</code> so <code>List</code> can tell rows apart, and <code>Codable</code> so <code>JSONDecoder</code> can build it. The property names must match the JSON keys.</p></li><li><p><code>[Product].self</code> means &quot;decode an array of Product&quot;.</p></li><li><p><code>dataTask</code> runs in the background, so the result is assigned inside <code>DispatchQueue.main.async</code>.</p></li><li><p><code>.resume()</code> is what actually starts the request.</p></li><li><p>Next steps the lecture mentions: <code>AsyncImage</code> for loading images from a URL, loading and error states (<code>isLoading</code>, <code>error</code>), and search or filter on the list.</p></li><li><p>Assignment: build an app that fetches a list (books, recipes, any public API) and shows it in a <code>List</code>.</p></li></ul>

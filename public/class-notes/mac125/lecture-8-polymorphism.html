@@ -1,0 +1,45 @@
+<h2 id="lecture-8-polymorphism">Lecture 8: Polymorphism</h2>
+<p>Polymorphism (&quot;many forms&quot;) lets one interface perform different actions depending on the object; C++ does it at compile time (overloading) or at run time (virtual functions).</p>
+<table><thead><tr><th></th><th>Compile-time (static binding)</th><th>Runtime (dynamic binding / late binding)</th></tr></thead><tbody><tr><td>How</td><td>Function overloading, operator overloading</td><td>Virtual functions + inheritance + overriding</td></tr><tr><td>Decided</td><td>When the code compiles</td><td>While the program runs, by the object&#39;s real type</td></tr><tr><td>Needs</td><td>Different parameter number or types</td><td>Base class pointer or reference to a derived object</td></tr></tbody></table>
+<p>Benefits from the slides: flexibility and maintainability, reusability, and interchangeability (related objects can be treated as their common base type).</p>
+<p><strong>Operator overloading: <code>Number operator+(const Number&amp; other)</code></strong></p>
+<ul><li><p><code>Number</code>: the return type; <code>num1 + num2</code> produces a new <code>Number</code>.</p></li><li><p><code>operator+</code>: the special function name for <code>+</code>.</p></li><li><p><code>const</code>: <code>other</code> is read-only inside the function.</p></li><li><p><code>Number&amp;</code>: pass by reference so no copy is made.</p></li><li><p><code>other</code>: the right-hand operand. In <code>num1 + num2</code>, <code>num1</code> is <code>this</code> and <code>num2</code> is <code>other</code>.</p></li></ul>
+<pre><code class="language-cpp">class Number {
+    int value;
+public:
+    Number(int v) : value(v) {}
+    Number operator+(const Number&amp; other) {
+        return Number(value + other.value);
+    }
+    void display() { cout &lt;&lt; &quot;Value: &quot; &lt;&lt; value &lt;&lt; &quot;\n&quot;; }
+};
+// Number result = Number(10) + Number(20);  result.display();  // Value: 30</code></pre>
+<h3 id="lecture-8-polymorphism-runtime-polymorphism-the-animal-example-from-class">Runtime polymorphism: the Animal example from class</h3>
+<pre><code class="language-cpp">class Animal {
+public:
+    virtual void sound() { cout &lt;&lt; &quot;Animal makes a sound\n&quot;; }
+    void type()          { cout &lt;&lt; &quot;General Animal\n&quot;; }   // NOT virtual
+};
+class Dog : public Animal {
+public:
+    void sound() override { cout &lt;&lt; &quot;Dog barks\n&quot;; }
+    void type()           { cout &lt;&lt; &quot;Domestic Dog\n&quot;; }
+};
+class Cat : public Animal {
+public:
+    void sound() override { cout &lt;&lt; &quot;Cat meows\n&quot;; }
+};
+
+int main() {
+    Dog dog; Cat cat;
+    Animal* animalPtr = &amp;dog;
+    animalPtr-&gt;sound();   // Dog barks       (virtual: uses the real object)
+    animalPtr-&gt;type();    // General Animal  (not virtual: uses the pointer type)
+    animalPtr = &amp;cat;
+    animalPtr-&gt;sound();   // Cat meows
+    animalPtr-&gt;type();    // General Animal
+    return 0;
+}</code></pre>
+<h3 id="lecture-8-polymorphism-common-mistakes">Common mistakes</h3>
+<ul><li><p>Forgetting <code>virtual</code> in the base class. The call then uses the pointer&#39;s type, so you get the base version.</p></li><li><p>Calling through an object by value (<code>Animal a = dog; a.sound();</code>). The object is sliced to an <code>Animal</code>, so no polymorphism; use a pointer or reference.</p></li><li><p>Overloading by return type only (not allowed).</p></li><li><p><code>override</code> is optional, but it makes the compiler check that you really are overriding a virtual function.</p></li></ul>
+<p><strong>Likely test points:</strong> compile-time vs runtime table, explain each part of <code>Number operator+(const Number&amp; other)</code>, predict output of the Dog/Cat code (virtual vs non-virtual), the three key components of runtime polymorphism (virtual function, overriding, base pointer/reference).</p>

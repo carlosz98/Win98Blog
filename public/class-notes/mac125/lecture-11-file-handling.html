@@ -1,0 +1,44 @@
+<h2 id="lecture-11-file-handling">Lecture 11: File Handling</h2>
+<p>Include <code>&lt;fstream&gt;</code> and use <code>ofstream</code> to write, <code>ifstream</code> to read and <code>fstream</code> for both; always check the file opened, then close it when done.</p>
+<table><thead><tr><th>Task</th><th>Open with</th><th>Behavior</th></tr></thead><tbody><tr><td>Write (create/overwrite)</td><td><code>ofstream outFile(&quot;MAC280.txt&quot;);</code></td><td>Creates the file if missing, <strong>erases</strong> it if it exists</td></tr><tr><td>Append</td><td><code>ofstream outFile(&quot;MAC280.txt&quot;, ios::app);</code></td><td>Adds to the end, keeps old content</td></tr><tr><td>Read</td><td><code>ifstream inFile(&quot;MAC280.txt&quot;);</code></td><td>Fails if the file doesn&#39;t exist</td></tr><tr><td>Check exists</td><td><code>ifstream f(name); return f.good();</code></td><td><code>true</code> if the file exists and is accessible</td></tr></tbody></table>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;fstream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+bool fileExists(const string&amp; filename) {
+    ifstream file(filename);
+    return file.good();
+}
+
+int main() {
+    // 1. Write
+    ofstream outFile(&quot;MAC280.txt&quot;);
+    if (outFile.is_open()) {
+        outFile &lt;&lt; &quot;Hello, MAC280 Students!&quot; &lt;&lt; endl;
+        outFile.close();
+    } else {
+        cerr &lt;&lt; &quot;Unable to open file for writing.&quot; &lt;&lt; endl;
+    }
+
+    // 2. Append
+    ofstream app(&quot;MAC280.txt&quot;, ios::app);
+    if (app.is_open()) { app &lt;&lt; &quot;Final exam is on Monday.&quot; &lt;&lt; endl; app.close(); }
+
+    // 3. Read line by line
+    ifstream inFile(&quot;MAC280.txt&quot;);
+    if (inFile.is_open()) {
+        string line;
+        while (getline(inFile, line)) cout &lt;&lt; line &lt;&lt; endl;
+        inFile.close();
+    } else {
+        cerr &lt;&lt; &quot;Unable to open file for reading.&quot; &lt;&lt; endl;
+    }
+
+    cout &lt;&lt; (fileExists(&quot;MAC280.txt&quot;) ? &quot;File exists.&quot; : &quot;File does not exist.&quot;) &lt;&lt; endl;
+    return 0;
+}</code></pre>
+<ul><li><p><code>is_open()</code> checks the stream opened. Failures come from a missing file (reading) or permission/disk problems.</p></li><li><p><code>getline(inFile, line)</code> reads a whole line, spaces included; <code>inFile &gt;&gt; word</code> stops at spaces, like <code>cin</code>.</p></li><li><p><code>cerr</code> is the standard error stream, used for error messages.</p></li><li><p><code>close()</code> frees the file and makes sure writes are saved.</p></li></ul>
+<h3 id="lecture-11-file-handling-common-mistakes">Common mistakes</h3>
+<ul><li><p>Opening with plain <code>ofstream</code> when you meant to add data: it wipes the file. Use <code>ios::app</code>.</p></li><li><p>Skipping the <code>is_open()</code> check and reading from a stream that failed.</p></li><li><p>Using <code>&gt;&gt;</code> to read sentences and getting only the first word.</p></li><li><p>Writing <code>while (!inFile.eof())</code>, which can process the last line twice. Loop on <code>getline</code> instead.</p></li></ul>
+<p><strong>Likely test points:</strong> which class does what (<code>ifstream</code> / <code>ofstream</code> / <code>fstream</code>), overwrite vs <code>ios::app</code>, read a file line by line with <code>getline</code>, why to call <code>is_open()</code> and <code>close()</code>, the <code>fileExists</code> function using <code>good()</code>.</p>

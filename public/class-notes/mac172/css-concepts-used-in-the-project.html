@@ -1,0 +1,69 @@
+<h2 id="css-concepts-used-in-the-project">CSS concepts used in the project</h2>
+<h3 id="1-three-ways-to-add-css">1. Three ways to add CSS</h3>
+<p>Your project uses an <strong>external stylesheet</strong> on every page: <code>&lt;link rel=&quot;stylesheet&quot; href=&quot;oatmeal.css&quot;&gt;</code>. The other two ways are <strong>internal</strong> (a <code>&lt;style&gt;</code> block in the <code>&lt;head&gt;</code>) and <strong>inline</strong> (<code>&lt;p style=&quot;color:red&quot;&gt;</code>). External is best because one file can style many pages.</p>
+<h3 id="2-rule-anatomy">2. Rule anatomy</h3>
+<pre><code class="language-css">h3 {
+  font-size: 1.5rem;
+  color: #555;
+  margin: 15px 0 10px;
+}</code></pre>
+<p><code>h3</code> is the <strong>selector</strong>, each <code>property: value;</code> line is a <strong>declaration</strong>, and the whole thing is a <strong>rule</strong>. Every declaration ends with a semicolon. Comments look like <code>/* Page Container */</code>.</p>
+<h3 id="3-selectors-you-used">3. Selectors you used</h3>
+<table><thead><tr><th>Selector</th><th>Type</th><th>Example from your files</th><th>Selects</th></tr></thead><tbody><tr><td><code>*</code></td><td>Universal</td><td><code>* { margin: 0; padding: 0; }</code></td><td>Every element</td></tr><tr><td><code>p</code>, <code>img</code>, <code>footer</code></td><td>Element (type)</td><td><code>img { max-width: 100%; }</code></td><td>All elements of that tag</td></tr><tr><td><code>.container</code></td><td>Class</td><td><code>.container { max-width: 800px; }</code></td><td>Elements with <code>class=&quot;container&quot;</code></td></tr><tr><td><code>header h1</code></td><td>Descendant</td><td><code>header h1 { font-size: 2rem; }</code></td><td>h1 anywhere inside header</td></tr><tr><td><code>nav ul li a</code></td><td>Descendant chain</td><td>link styling in the nav bar</td><td>Links inside list items inside the nav</td></tr><tr><td><code>.main-image img</code></td><td>Class + descendant</td><td><code>width: 10%;</code></td><td>The image inside the main-image section</td></tr><tr><td><code>a:hover</code></td><td>Pseudo-class</td><td><code>background-color: #0056b3;</code></td><td>A link while the mouse is over it</td></tr><tr><td><code>.related-recipes, .recipe-description, ...</code></td><td>Grouping (comma)</td><td>shared box style</td><td>Each listed selector gets the same rule</td></tr></tbody></table>
+<h3 id="4-the-css-reset-and-box-sizing">4. The CSS reset and box-sizing</h3>
+<pre><code class="language-css">* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}</code></pre>
+<p>Browsers give elements default margins and padding; this <strong>reset</strong> removes them so every browser starts equal. <code>box-sizing: border-box</code> makes <code>width</code> include padding and border, so a 300px box stays 300px after you add padding. <code>Arial, sans-serif</code> is a <strong>font stack</strong>: if Arial is missing, any sans-serif font is used.</p>
+<p>Side effect you can see in the screenshot: the reset also removes the left padding of <code>&lt;ul&gt;</code>, so the bullets in &quot;Recipe Ingredients&quot; hang outside the box.</p>
+<h3 id="5-the-box-model">5. The box model</h3>
+<p>Every element is a box made of 4 layers, inside to outside: <strong>content</strong>, <strong>padding</strong>, <strong>border</strong>, <strong>margin</strong>.</p>
+<pre><code class="language-css">.container {
+  max-width: 800px;
+  margin: 0 auto;      /* 0 top/bottom, auto left/right = centered */
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}</code></pre>
+<ul><li><p>Shorthand order is clockwise from the top: <code>margin: 15px 0 10px</code> = top 15, left/right 0, bottom 10.</p></li><li><p><code>margin: 0 auto</code> centers a block that has a width or max-width.</p></li><li><p><code>max-width: 800px</code> lets the card shrink on small screens but never grow past 800px.</p></li><li><p><code>border-radius</code> rounds corners; <code>box-shadow: x y blur color</code> adds a shadow.</p></li><li><p><code>overflow: hidden</code> clips anything that sticks out of the box.</p></li></ul>
+<h3 id="6-colors-and-units">6. Colors and units</h3>
+<ul><li><p><strong>Hex</strong>: <code>#333</code> is short for <code>#333333</code> (dark gray); <code>#007BFF</code> is the blue button.</p></li><li><p><strong>rgba</strong>: <code>rgba(0, 0, 0, 0.2)</code> is black at 20% opacity, used for soft shadows.</p></li><li><p><strong>px</strong> is a fixed size. <strong>rem</strong> is relative to the root font size (usually 16px), so <code>2rem</code> = 32px. <strong>%</strong> is relative to the parent: <code>width: 10%</code> on the logo means 10% of its container&#39;s width.</p></li><li><p><code>line-height: 1.6</code> (no unit) means 1.6 times the font size.</p></li></ul>
+<h3 id="7-text-properties">7. Text properties</h3>
+<p><code>text-align</code> (center, left, justify), <code>text-transform: uppercase</code> (why &quot;Oatmeal Recipes&quot; shows as OATMEAL RECIPES), <code>text-decoration: none</code> (removes link underlines), <code>font-weight: bold</code>, <code>font-size</code>.</p>
+<h3 id="8-display-block-inline-inline-block">8. display: block, inline, inline-block</h3>
+<ul><li><p><strong>block</strong> takes the full width and starts on a new line (<code>&lt;div&gt;</code>, <code>&lt;p&gt;</code>, <code>&lt;h2&gt;</code>, <code>&lt;section&gt;</code>).</p></li><li><p><strong>inline</strong> sits inside a line of text and ignores width/height (<code>&lt;a&gt;</code>, <code>&lt;span&gt;</code>).</p></li><li><p><strong>inline-block</strong> sits in the line but accepts width, height, padding and margin.</p></li></ul>
+<p>You used inline-block twice: on <code>h2</code> so its bottom border is only as wide as the text, and on <code>a</code> so &quot;Back to Home&quot; becomes a padded button.</p>
+<h3 id="9-responsive-images">9. Responsive images</h3>
+<pre><code class="language-css">img {
+  max-width: 100%;
+  height: auto;
+}</code></pre>
+<p>The image can never be wider than its container, and <code>height: auto</code> keeps its proportions. This is the standard way to stop big photos from breaking a layout on phones.</p>
+<h3 id="10-flexbox-the-nav-bar">10. Flexbox (the nav bar)</h3>
+<pre><code class="language-css">nav ul {
+  display: flex;
+  list-style: none;
+  justify-content: center;
+}</code></pre>
+<p><code>display: flex</code> lays the <code>&lt;li&gt;</code> items out in a row instead of a vertical list. <code>justify-content: center</code> centers them on the main (horizontal) axis. <code>list-style: none</code> removes the bullets. Other values to know: <code>flex-start</code>, <code>flex-end</code>, <code>space-between</code>, <code>space-around</code>; <code>align-items</code> controls the cross (vertical) axis; <code>flex-direction: column</code> stacks items.</p>
+<h3 id="11-css-grid-the-home-page-content">11. CSS Grid (the home page content)</h3>
+<pre><code class="language-css">main {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  gap: 20px;
+}</code></pre>
+<p><code>fr</code> means a fraction of the free space: the middle column is twice as wide as each side column. The 5 sections fill the grid in order, left to right, then wrap to a new row. <code>gap</code> is the space between cells. Flexbox is one-dimensional (a row or a column); Grid is two-dimensional (rows and columns).</p>
+<h3 id="12-transitions-and-hover">12. Transitions and hover</h3>
+<pre><code class="language-css">nav ul li a {
+  transition: background-color 0.3s ease;
+}
+nav ul li a:hover {
+  background-color: #ddd;
+}</code></pre>
+<p>The <code>:hover</code> rule changes the color; <code>transition</code> makes the change fade over 0.3 seconds instead of jumping.</p>
+<h3 id="13-the-cascade-inheritance-and-specificity">13. The cascade, inheritance and specificity</h3>
+<ul><li><p><strong>Cascade</strong>: when two rules set the same property with equal weight, the later one wins.</p></li><li><p><strong>Specificity</strong> decides first: inline style &gt; <code>#id</code> &gt; <code>.class</code> / <code>:hover</code> &gt; element. So <code>.recipe-description img { width: 100% }</code> beats <code>img { ... }</code>.</p></li><li><p><strong>Inheritance</strong>: text properties like <code>color</code>, <code>font-family</code> and <code>line-height</code> set on <code>body</code> pass down to children. Box properties like <code>margin</code> and <code>border</code> do not.</p></li></ul>

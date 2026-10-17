@@ -1,0 +1,35 @@
+<h2 id="lecture-10-threading">Lecture 10: Threading</h2>
+<p>A thread is the smallest unit of execution in a process; threads in one process share memory but run independently, and C++11&#39;s <code>&lt;thread&gt;</code> header is the standard way to create them.</p>
+<ul><li><p><strong>Concurrency</strong>: tasks make progress in overlapping time, not necessarily at the same instant.</p></li><li><p><strong>Parallelism</strong>: tasks truly run at the same time, usually on multiple CPU cores.</p></li><li><p><code>std::thread t1(func, args...);</code> creates and starts a thread.</p></li><li><p><code>t1.join();</code> makes the caller wait for the thread to finish.</p></li><li><p><code>t1.detach();</code> lets it run on its own in the background; it can&#39;t be joined afterwards.</p></li></ul>
+<h3 id="lecture-10-threading-five-ways-to-pass-arguments">Five ways to pass arguments</h3>
+<table><thead><tr><th>Way</th><th>Syntax</th><th>Note</th></tr></thead><tbody><tr><td>By value</td><td><code>thread t(printNumber, 42);</code></td><td>Safe (own copy), slow for big data</td></tr><tr><td>By reference</td><td><code>thread t(modifyValue, std::ref(value));</code></td><td>Must use <code>std::ref</code>, or it copies</td></tr><tr><td>By move</td><td><code>thread t(processString, std::move(msg));</code></td><td>No deep copy; <code>msg</code> is empty afterwards</td></tr><tr><td>Lambda</td><td><code>thread t([x, y]() { ... });</code></td><td>Capture by value <code>[=]</code> or by reference <code>[&amp;]</code></td></tr><tr><td><code>std::bind</code></td><td><code>auto task = bind(multiply, 4, 5); thread t(task);</code></td><td>Pre-binds fixed arguments (<code>&lt;functional&gt;</code>)</td></tr></tbody></table>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;thread&gt;
+using namespace std;
+
+void modifyValue(int&amp; num) { num += 10; }
+
+int main() {
+    int value = 5;
+    thread t1(modifyValue, ref(value));   // pass by reference
+    t1.join();                            // wait before reading value
+    cout &lt;&lt; &quot;Modified Value: &quot; &lt;&lt; value &lt;&lt; &quot;\n&quot;;  // 15
+
+    int x = 10, y = 20;
+    thread t2([x, y]() { cout &lt;&lt; &quot;Sum: &quot; &lt;&lt; x + y &lt;&lt; &quot;\n&quot;; });
+    t2.join();
+    return 0;
+}</code></pre>
+<p><strong>Detach safely.</strong> A detached thread can outlive <code>main()</code>&#39;s local variables. Passing a local by <code>std::ref</code> to a detached thread is undefined behavior (crash or corrupted memory). Fixes from class: allocate with <code>new</code> and <code>delete</code> inside the thread, or better, use <code>std::shared_ptr</code> / <code>std::unique_ptr</code> so cleanup is automatic.</p>
+<pre><code class="language-cpp">void printMsg(string* m) {
+    this_thread::sleep_for(chrono::seconds(1));
+    cout &lt;&lt; &quot;Message: &quot; &lt;&lt; *m &lt;&lt; &quot;\n&quot;;
+    delete m;                              // the thread frees it
+}
+// in main:
+thread t(printMsg, new string(&quot;Hello, Thread!&quot;));
+t.detach();</code></pre>
+<p>Use <code>detach()</code> for independent background work (logging, monitoring, network). Use <code>join()</code> when you need the result or the thread touches shared data.</p>
+<h3 id="lecture-10-threading-common-mistakes">Common mistakes</h3>
+<ul><li><p>Never calling <code>join()</code> or <code>detach()</code>. A <code>std::thread</code> destroyed while still joinable calls <code>std::terminate</code> and the program aborts.</p></li><li><p>Passing a reference parameter without <code>std::ref</code>.</p></li><li><p>Using a variable after <code>std::move</code> sent it into a thread.</p></li><li><p>Detached threads using local variables by reference.</p></li></ul>
+<p><strong>Likely test points:</strong> thread definition, concurrency vs parallelism, <code>join</code> vs <code>detach</code>, the five argument-passing methods and when to use each, why detaching with a local reference is dangerous and how to fix it.</p>

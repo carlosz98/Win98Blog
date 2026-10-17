@@ -1,0 +1,48 @@
+<h2 id="part-5-game-over-restart-and-building-the-game">Part 5: Game over, restart and building the game</h2>
+<p>Part 5 ends the game when the bird hits a pipe, shows a Game Over screen with a Restart button, and exports a playable build.</p>
+<h3 id="building-the-game-over-screen">Building the Game Over screen</h3>
+<ol><li><p>On the Canvas, add an empty child GameObject named <strong>GameOverScreen</strong>.</p></li><li><p>Under it, add a <strong>Text</strong> that says &quot;Game Over&quot;.</p></li><li><p>Under it, add a <strong>Button</strong>, resize it, and change its child text to &quot;Restart&quot;.</p></li><li><p>Uncheck <strong>GameOverScreen</strong> in the Inspector so it starts hidden.</p></li></ol>
+<h3 id="restart-and-gameover-in-logicscript">Restart and GameOver in LogicScript</h3>
+<pre><code class="language-csharp">using UnityEngine.SceneManagement;
+
+public GameObject gameOverScreen;
+
+public void restartGame()
+{
+    SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+}
+
+public void gameOver()
+{
+    gameOverScreen.SetActive(true);
+}</code></pre>
+<ul><li><p><strong>SceneManager.LoadScene()</strong> loads a scene by name or build index. Passing <strong>GetActiveScene().name</strong> reloads the current scene, which restarts the game and resets the score.</p></li><li><p><strong>SetActive(true)</strong> turns a disabled GameObject back on, so the hidden screen appears.</p></li><li><p>Drag the GameOverScreen object into the <strong>gameOverScreen</strong> slot in the Inspector.</p></li><li><p>Both functions must be <strong>public</strong> so the button and other scripts can call them.</p></li></ul>
+<h3 id="hooking-up-the-button">Hooking up the button</h3>
+<ol><li><p>Select the Button and find the <strong>On Click ()</strong> list on its Button component.</p></li><li><p>Click + to add an event, drag the <strong>Logic Manager</strong> object into the slot.</p></li><li><p>From the dropdown pick LogicScript &gt; <strong>restartGame</strong>.</p></li></ol>
+<h3 id="birdscript-changes">BirdScript changes</h3>
+<pre><code class="language-csharp">public LogicScript logic;
+public bool birdIsAlive = true;
+
+void Start()
+{
+    logic = GameObject.FindGameObjectWithTag(&quot;Logic&quot;).GetComponent&lt;LogicScript&gt;();
+}
+
+void Update()
+{
+    if (Input.GetKeyDown(KeyCode.Space) &amp;&amp; birdIsAlive)
+    {
+        myRigidbody.velocity = Vector2.up * flapStrength;
+    }
+}
+
+private void OnCollisionEnter2D(Collision2D collision)
+{
+    logic.gameOver();
+    birdIsAlive = false;
+}</code></pre>
+<ul><li><p><strong>OnCollisionEnter2D</strong> runs when the bird&#39;s collider hits a solid collider (a pipe).</p></li><li><p><strong>birdIsAlive</strong> stops the player from flapping after a crash; the &amp;&amp; means both conditions must be true.</p></li><li><p>The slides spell these names both ways (GameOver / gameOver, RestartGame / restartGame). C# is case-sensitive, so the call must match the definition exactly.</p></li></ul>
+<h3 id="building-the-game">Building the game</h3>
+<p>File &gt; Build Settings (called Build Profiles in Unity 6) &gt; <strong>Add Open Scenes</strong> &gt; <strong>Build</strong>, then choose a folder for the output.</p>
+<h3 id="likely-test-points-4">Likely test points</h3>
+<ul><li><p>What SceneManager.LoadScene(SceneManager.GetActiveScene().name) does, and which namespace it needs (UnityEngine.SceneManagement).</p></li><li><p>How SetActive shows or hides an object, and why the screen starts unchecked.</p></li><li><p>How a UI Button calls code: On Click event, the object holding the script, then the public function.</p></li><li><p>Why birdIsAlive is needed and how &amp;&amp; works.</p></li><li><p>The steps to make a build.</p></li></ul>

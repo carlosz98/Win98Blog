@@ -1,0 +1,15 @@
+<h2 id="systemd">Systemd</h2>
+<p>Systemd is the first process the kernel starts (PID 1); it starts everything else and you control it with systemctl.</p>
+<h3 id="systemd-key-concepts">Key concepts</h3>
+<ul><li><p>Every OS component systemd manages is a <strong>unit</strong>. Daemons are <strong>service units</strong> (<code>sshd.service</code>); old-style runlevels are <strong>target units</strong> (targets).</p></li><li><p><code>systemctl</code> starts, stops and restarts daemons and sets them to start at boot. <code>systemd-analyze</code> shows info about units and boot time.</p></li><li><p>The default target is a <strong>symbolic link</strong>: <code>/etc/systemd/system/default.target</code>.</p></li></ul>
+<h3 id="systemd-targets">Targets</h3>
+<table><thead><tr><th>Target</th><th>Purpose</th></tr></thead><tbody><tr><td>poweroff.target</td><td>shut down</td></tr><tr><td>rescue.target</td><td>emergency / troubleshooting</td></tr><tr><td>multi-user.target</td><td>command line (CLI)</td></tr><tr><td>graphical.target</td><td>GUI (default when a GUI is installed)</td></tr><tr><td>reboot.target</td><td>reboot</td></tr></tbody></table>
+<h3 id="systemd-commands">Commands</h3>
+<pre><code>systemctl restart crond.service       # restart a daemon
+systemctl get-default                 # show default target
+systemctl set-default multi-user.target   # boot to CLI
+systemctl set-default graphical.target    # boot to GUI
+systemctl isolate rescue.target       # switch target now
+systemd-analyze                       # boot time info</code></pre>
+<h3 id="systemd-likely-test-points">Likely test points</h3>
+<ul><li><p>Systemd is the first process; unit, service unit, target unit.</p></li><li><p>Which target = CLI (multi-user) vs GUI (graphical).</p></li><li><p>get-default / set-default and the default.target symlink.</p></li></ul>

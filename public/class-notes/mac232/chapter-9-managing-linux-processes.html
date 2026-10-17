@@ -1,0 +1,32 @@
+<h2 id="chapter-9-managing-linux-processes">Chapter 9: Managing Linux Processes</h2>
+<p>A process is a program running in memory; you view processes with ps, pstree and top, stop them with kill signals, and change their priority with nice and renice.</p>
+<h3 id="chapter-9-managing-linux-processes-key-concepts">Key concepts</h3>
+<ul><li><p><strong>Program</strong> = executable file on disk. <strong>Process</strong> = that program running in memory and on the CPU.</p></li><li><p><strong>User process</strong> runs from a terminal; <strong>daemon</strong> is a system process with no terminal.</p></li><li><p><strong>PID</strong> = process ID. <strong>PPID</strong> = parent&#39;s PID. A <strong>parent</strong> starts <strong>child</strong> processes.</p></li><li><p><strong>systemd</strong> (PID 1) starts most daemons; login starts BASH, and BASH starts your commands. Every process traces back to systemd through PPIDs.</p></li><li><p><strong>Process states:</strong> R running, S sleeping, <strong>Z zombie</strong> (finished, but the parent hasn&#39;t released its PID; also called <strong>defunct</strong>). Kill the <strong>parent</strong> to clear a zombie.</p></li><li><p><strong>Nice value (NI):</strong> from <strong>-20</strong> (most likely high priority) to <strong>19</strong> (lowest priority). Default 0. Only root can lower a nice value.</p></li><li><p><strong>SZ</strong> = size of the process in memory (KB).</p></li><li><p><strong>Berkeley-style options</strong> have no dash: <code>a</code> (all terminals), <code>x</code> (no terminal).</p></li><li><p><strong>Rogue process</strong> = faulty process eating resources; find it in <code>top</code> and kill it.</p></li><li><p>Killing a <strong>parent</strong> also kills its children.</p></li><li><p><code>killall</code> kills by <strong>name</strong>; <code>pkill</code> kills by name or regexp and other criteria.</p></li></ul>
+<p><strong>Common kill signals</strong> (the signal table was an image in the slides; these are the standard ones from the textbook)</p>
+<table><thead><tr><th>Number</th><th>Name</th><th>Meaning</th></tr></thead><tbody><tr><td>1</td><td>SIGHUP</td><td>Hang up; many daemons reload their config</td></tr><tr><td>2</td><td>SIGINT</td><td>Interrupt, same as Ctrl+C</td></tr><tr><td>3</td><td>SIGQUIT</td><td>Quit, same as Ctrl+\</td></tr><tr><td>9</td><td>SIGKILL</td><td>Absolute kill; can&#39;t be caught or ignored</td></tr><tr><td>15</td><td>SIGTERM</td><td>Polite terminate; the <strong>default</strong> for kill</td></tr><tr><td>18</td><td>SIGCONT</td><td>Continue a stopped process</td></tr><tr><td>19</td><td>SIGSTOP</td><td>Stop (pause), like Ctrl+Z</td></tr></tbody></table>
+<h3 id="chapter-9-managing-linux-processes-commands">Commands</h3>
+<pre><code>ps                  # your processes in this terminal
+ps -ef              # every process, full info (UID, PID, PPID, start time)
+ps -el              # long format: shows state (S), nice (NI), size (SZ)
+ps ax               # Berkeley style: all processes
+pstree              # family tree of processes
+top                 # live view, highest CPU first (k = kill, r = renice, q = quit)
+kill 3674           # send SIGTERM (15) to PID 3674
+kill -9 3674        # force kill
+kill -l             # list all signals
+killall -9 firefox  # kill every process named firefox
+pkill -u bob sleep  # kill bob&#39;s sleep processes
+nice -n 10 ./big.sh # start with lower priority
+renice +5 3674      # change priority of a running process
+renice +5 -u bob    # root: change all of bob&#39;s processes
+sleep 100 &amp;         # run in the background
+jobs ; fg %1 ; bg %1  # list jobs, bring to front, resume in back</code></pre>
+<h3 id="chapter-9-managing-linux-processes-scheduling-in-the-chapter-objectives-not-in-these-slides">Scheduling (in the chapter objectives, not in these slides)</h3>
+<pre><code>at 10:30pm          # run commands once at a time (Ctrl+D to finish)
+atq ; atrm 3        # list / remove at jobs
+crontab -e          # edit your repeating jobs
+crontab -l          # list them
+# cron line: minute hour day-of-month month day-of-week command
+30 2 * * 1 /root/backup.sh   # every Monday at 2:30 AM</code></pre>
+<h3 id="chapter-9-managing-linux-processes-likely-test-points">Likely test points</h3>
+<ul><li><p>Program vs process; daemon vs user process; PID vs PPID.</p></li><li><p>What a zombie is and how to get rid of it.</p></li><li><p>Nice range -20 to 19 and which end is higher priority.</p></li><li><p><code>kill</code> defaults to 15; <code>-9</code> can&#39;t be ignored.</p></li><li><p>ps options <code>-e</code>, <code>-f</code>, <code>-l</code> and Berkeley <code>a</code>, <code>x</code>.</p></li><li><p>nice (at start) vs renice (already running).</p></li></ul>

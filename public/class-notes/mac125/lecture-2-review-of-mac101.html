@@ -1,0 +1,27 @@
+<h2 id="lecture-2-review-of-mac101">Lecture 2: Review of MAC101</h2>
+<p>This lecture reviews the basics everything else builds on: program structure, data types, control flow, arrays, functions and scope.</p>
+<h3 id="lecture-2-review-of-mac101-key-concepts">Key concepts</h3>
+<ul><li><p><code>#include &lt;iostream&gt;</code> gives you <code>cin</code> and <code>cout</code>. <code>using namespace std;</code> lets you write <code>cout</code> instead of <code>std::cout</code>.</p></li><li><p><code>int main()</code> is where every program starts. <code>&lt;&lt;</code> is the stream insertion operator.</p></li><li><p>Arrays store many values of one type: <code>int nums[5];</code>. Indexes run 0 to size - 1.</p></li><li><p>A function only runs when called. Parameters act as variables inside it. <code>return</code> sends a value back.</p></li><li><p><strong>Default parameters</strong> are used when the caller leaves an argument out.</p></li><li><p><strong>Function overloading</strong>: same name, different parameter list (number or types).</p></li><li><p><strong>Scope</strong>: a local variable lives only inside its function or block; a global variable (declared outside every function) is visible everywhere.</p></li></ul>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+using namespace std;
+
+int total = 0;                       // global scope
+
+void greet(string name = &quot;Student&quot;) { // default parameter
+    cout &lt;&lt; &quot;Hello &quot; &lt;&lt; name &lt;&lt; &quot;\n&quot;;
+}
+
+int add(int a, int b)       { return a + b; }  // overloading:
+double add(double a, double b) { return a + b; }  // same name, different types
+
+int main() {
+    int scores[3] = {90, 85, 77};
+    for (int i = 0; i &lt; 3; i++) total += scores[i];
+    greet();            // Hello Student
+    greet(&quot;Carlos&quot;);    // Hello Carlos
+    cout &lt;&lt; add(2, 3) &lt;&lt; &quot; &quot; &lt;&lt; add(2.5, 1.5) &lt;&lt; &quot;\n&quot;;
+    return 0;
+}</code></pre>
+<h3 id="lecture-2-review-of-mac101-common-mistakes">Common mistakes</h3>
+<ul><li><p>Reading <code>scores[3]</code> on a 3-element array (last valid index is 2).</p></li><li><p>Overloading only by return type; that does not compile, the parameters must differ.</p></li><li><p>Putting a default parameter before a non-default one (<code>void f(int a = 1, int b)</code> is an error).</p></li></ul>
+<p><strong>Likely test points:</strong> what each line of Hello World does, local vs global scope, rules for overloading, default parameters.</p>

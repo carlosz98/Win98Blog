@@ -91,7 +91,7 @@ export default function ClassNotes({ show, setShow }) {
         </div>
 
         <div className="cn-toolbar">
-          <button onClick={() => go(current.classId, 'overview')}>Home</button>
+          <button onClick={() => go(current.classId, currentClass?.folders[0].pages[0].slug ?? 'overview')}>Home</button>
           <button onClick={() => setOpen(Object.fromEntries((index?.classes ?? []).flatMap(c => [[c.id, true], ...c.folders.map(f => [`${c.id}/${f.title}`, true])])))}>Expand all</button>
           <button onClick={() => setOpen({})}>Collapse all</button>
         </div>
@@ -111,7 +111,7 @@ export default function ClassNotes({ show, setShow }) {
                   if (single) {
                     const p = f.pages[0];
                     return (
-                      <button key={fid} className={`cn-row cn-l1${current.slug === p.slug ? ' active' : ''}`} onClick={() => go(c.id, p.slug)}>
+                      <button key={fid} className={`cn-row cn-l1${current.classId === c.id && current.slug === p.slug ? ' active' : ''}`} onClick={() => go(c.id, p.slug)}>
                         <span className="cn-doc">?</span><span>{p.title}</span>
                       </button>
                     );
@@ -124,10 +124,10 @@ export default function ClassNotes({ show, setShow }) {
                       </button>
                       {open[fid] && f.pages.map(p => (
                         <div key={p.slug}>
-                          <button className={`cn-row cn-l2${current.slug === p.slug && !current.anchor ? ' active' : ''}`} onClick={() => go(c.id, p.slug)}>
+                          <button className={`cn-row cn-l2${current.classId === c.id && current.slug === p.slug && !current.anchor ? ' active' : ''}`} onClick={() => go(c.id, p.slug)}>
                             <span className="cn-doc">?</span><span>{p.title}</span>
                           </button>
-                          {current.slug === p.slug && p.topics.map(t => (
+                          {current.classId === c.id && current.slug === p.slug && p.topics.map(t => (
                             <button key={t.id} className={`cn-row cn-l3${current.anchor === t.id ? ' active' : ''}`} onClick={() => go(c.id, p.slug, t.id)}>
                               <span className="cn-dot">•</span><span>{t.title}</span>
                             </button>
