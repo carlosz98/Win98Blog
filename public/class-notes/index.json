@@ -1137,9 +1137,224 @@
      "title": "Overview",
      "pages": [
       {
-       "slug": "notes",
-       "title": "Notes",
+       "slug": "overview",
+       "title": "About these notes",
        "topics": []
+      }
+     ]
+    },
+    {
+     "title": "Chapters",
+     "pages": [
+      {
+       "slug": "chapter-1-introduction-to-systems-analysis-and-design",
+       "title": "Chapter 1: Introduction to Systems Analysis and Design",
+       "topics": [
+        {
+         "id": "chapter-1-introduction-to-systems-analysis-and-design-likely-test-points",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "chapter-2-analyzing-the-business-case",
+       "title": "Chapter 2: Analyzing the Business Case",
+       "topics": [
+        {
+         "id": "chapter-2-analyzing-the-business-case-the-preliminary-investigation-in-six-steps",
+         "title": "The preliminary investigation, in six steps:"
+        },
+        {
+         "id": "chapter-2-analyzing-the-business-case-likely-test-points",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "chapter-3-managing-systems-projects",
+       "title": "Chapter 3: Managing Systems Projects",
+       "topics": [
+        {
+         "id": "chapter-3-managing-systems-projects-the-project-framework-three-steps",
+         "title": "The project framework, three steps:"
+        },
+        {
+         "id": "chapter-3-managing-systems-projects-gantt-vs-pert-cpm",
+         "title": "Gantt vs. PERT/CPM:"
+        },
+        {
+         "id": "chapter-3-managing-systems-projects-likely-test-points",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "chapter-4-requirements-modeling",
+       "title": "Chapter 4: Requirements Modeling",
+       "topics": [
+        {
+         "id": "chapter-4-requirements-modeling-five-categories-of-system-requirements",
+         "title": "Five categories of system requirements:"
+        },
+        {
+         "id": "chapter-4-requirements-modeling-team-based-approaches",
+         "title": "Team-based approaches:"
+        },
+        {
+         "id": "chapter-4-requirements-modeling-modeling-tools",
+         "title": "Modeling tools:"
+        },
+        {
+         "id": "chapter-4-requirements-modeling-the-interview-seven-steps",
+         "title": "The interview, seven steps:"
+        },
+        {
+         "id": "chapter-4-requirements-modeling-likely-test-points",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "chapter-5-data-and-process-modeling",
+       "title": "Chapter 5: Data and Process Modeling",
+       "topics": [
+        {
+         "id": "chapter-5-data-and-process-modeling-leveling-the-dfd-pyramid",
+         "title": "Leveling, the DFD pyramid:"
+        },
+        {
+         "id": "chapter-5-data-and-process-modeling-likely-test-points",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "chapter-6-object-modeling",
+       "title": "Chapter 6: Object Modeling",
+       "topics": [
+        {
+         "id": "chapter-6-object-modeling-three-core-ideas",
+         "title": "Three core ideas:"
+        },
+        {
+         "id": "chapter-6-object-modeling-the-six-uml-diagrams-in-this-chapter",
+         "title": "The six UML diagrams in this chapter:"
+        },
+        {
+         "id": "chapter-6-object-modeling-likely-test-points",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "chapter-7-development-strategies",
+       "title": "Chapter 7: Development Strategies",
+       "topics": [
+        {
+         "id": "chapter-7-development-strategies-development-options",
+         "title": "Development options:"
+        },
+        {
+         "id": "chapter-7-development-strategies-software-acquisition-seven-steps",
+         "title": "Software acquisition, seven steps:"
+        },
+        {
+         "id": "chapter-7-development-strategies-likely-test-points",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "chapter-8-user-interface-design",
+       "title": "Chapter 8: User Interface Design",
+       "topics": [
+        {
+         "id": "chapter-8-user-interface-design-eight-guidelines-for-the-interface",
+         "title": "Eight guidelines for the interface:"
+        },
+        {
+         "id": "chapter-8-user-interface-design-three-report-types",
+         "title": "Three report types:"
+        },
+        {
+         "id": "chapter-8-user-interface-design-likely-test-points",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "chapter-9-data-design",
+       "title": "Chapter 9: Data Design",
+       "topics": [
+        {
+         "id": "chapter-9-data-design-data-vocabulary",
+         "title": "Data vocabulary:"
+        },
+        {
+         "id": "chapter-9-data-design-likely-test-points",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "chapter-10-system-architecture",
+       "title": "Chapter 10: System Architecture",
+       "topics": [
+        {
+         "id": "chapter-10-system-architecture-architectures-from-oldest-to-newest",
+         "title": "Architectures, from oldest to newest:"
+        },
+        {
+         "id": "chapter-10-system-architecture-fat-vs-thin-client",
+         "title": "Fat vs. thin client:"
+        },
+        {
+         "id": "chapter-10-system-architecture-likely-test-points",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "chapter-11-managing-systems-implementation",
+       "title": "Chapter 11: Managing Systems Implementation",
+       "topics": [
+        {
+         "id": "chapter-11-managing-systems-implementation-testing-from-small-to-large",
+         "title": "Testing, from small to large:"
+        },
+        {
+         "id": "chapter-11-managing-systems-implementation-likely-test-points",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "chapter-12-managing-systems-support-and-security",
+       "title": "Chapter 12: Managing Systems Support and Security",
+       "topics": [
+        {
+         "id": "chapter-12-managing-systems-support-and-security-six-security-levels",
+         "title": "Six security levels:"
+        },
+        {
+         "id": "chapter-12-managing-systems-support-and-security-backup-types",
+         "title": "Backup types:"
+        },
+        {
+         "id": "chapter-12-managing-systems-support-and-security-likely-test-points",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "final-review",
+       "title": "Final review",
+       "topics": [
+        {
+         "id": "final-review-pairs-that-are-easy-to-mix-up",
+         "title": "Pairs that are easy to mix up:"
+        }
+       ]
       }
      ]
     }
