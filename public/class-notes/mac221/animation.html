@@ -1,0 +1,69 @@
+<h2 id="animation">Animation</h2>
+<p>SwiftUI animates by changing a <code>@State</code> value; the animation smoothly moves the view from the old value to the new one. There are two ways to ask for it: <strong>implicit</strong> (<code>.animation(...)</code> on the view) and <strong>explicit</strong> (<code>withAnimation { ... }</code> around the state change).</p>
+<h3 id="basic-scale-a-button">Basic: scale a button</h3>
+<pre><code class="language-swift">struct ContentView: View {
+    @State private var scale = 1.0
+
+    var body: some View {
+        Button(&quot;Press here&quot;) {
+            scale += 1
+        }
+        .scaleEffect(scale)                                   // 1.0 = normal, 2.0 = double, 0.5 = half
+        .animation(.linear(duration: 1), value: scale)        // animate whenever scale changes
+    }
+}</code></pre>
+<ul><li><p><code>value: scale</code> is the trigger: the animation only runs when that value changes. The older form without <code>value:</code> (<code>.animation(.linear(duration: 1))</code>) is deprecated but still shows up in the slides.</p></li><li><p>Every press grows the button by 1.0, smoothly, over 1 second.</p></li></ul>
+<h3 id="animation-types">Animation types</h3>
+<table><thead><tr><th>Animation</th><th>Feels like</th></tr></thead><tbody><tr><td><code>.linear(duration: 1)</code></td><td>Constant speed</td></tr><tr><td><code>.easeIn</code></td><td>Starts slow, speeds up</td></tr><tr><td><code>.easeOut</code></td><td>Starts fast, slows down</td></tr><tr><td><code>.easeInOut(duration: 1)</code></td><td>Slow, fast, slow</td></tr><tr><td><code>.spring()</code></td><td>Overshoots and bounces back</td></tr><tr><td><code>.interpolatingSpring(mass: 1, stiffness: 1, damping: 0.5, initialVelocity: 10)</code></td><td>A custom spring</td></tr><tr><td><code>.default</code></td><td>The system default</td></tr></tbody></table>
+<p>Rotate and thicken a border at the same time:</p>
+<pre><code class="language-swift">@State private var angle = 0.0
+@State private var borderThickness = 1.0
+
+Button(&quot;Press here&quot;) {
+    angle += 45
+    borderThickness += 1
+}
+.padding()
+.border(.red, width: borderThickness)
+.rotationEffect(.degrees(angle))
+.animation(.easeIn, value: angle)</code></pre>
+<h3 id="start-an-animation-when-a-view-appears-repeat-forever">Start an animation when a view appears (repeat forever)</h3>
+<pre><code class="language-swift">@State var scale = 1.0
+
+Circle()
+    .frame(width: 200, height: 200)
+    .scaleEffect(scale)
+    .onAppear {
+        let baseAnimation = Animation.easeInOut(duration: 1)
+        let repeated = baseAnimation.repeatForever(autoreverses: true)
+        withAnimation(repeated) {
+            scale = 0.5          // pulses between 1.0 and 0.5 forever
+        }
+    }</code></pre>
+<h3 id="several-animations-on-one-view">Several animations on one view</h3>
+<p>An <code>.animation</code> modifier only covers the modifiers <strong>above</strong> it. Use <code>nil</code> to switch animation off for one part.</p>
+<pre><code class="language-swift">Button(&quot;Press Me&quot;) { isEnabled.toggle() }
+    .foregroundStyle(.white)
+    .frame(width: 200, height: 200)
+    .background(isEnabled ? .green : .red)
+    .animation(nil, value: isEnabled)          // color changes instantly
+    .clipShape(RoundedRectangle(cornerRadius: isEnabled ? 100 : 0))
+    .animation(.default, value: isEnabled)     // shape change is animated</code></pre>
+<h3 id="transitions-animate-views-being-added-and-removed">Transitions: animate views being added and removed</h3>
+<p>A transition controls how a view enters and leaves when an <code>if</code> shows or hides it. It needs an animation to go with it, usually <code>withAnimation</code>.</p>
+<pre><code class="language-swift">@State private var showDetails = false
+
+VStack {
+    Button(&quot;Press to show Courses&quot;) {
+        withAnimation(.easeInOut(duration: 0.5)) {      // explicit animation
+            showDetails.toggle()
+        }
+    }
+    if showDetails {
+        Text(&quot;MAC 221&quot;).transition(.move(edge: .bottom))   // slides up from the bottom
+        Text(&quot;MAC 280&quot;).transition(.slide)                 // in from leading, out to trailing
+        Text(&quot;MAC 250&quot;).transition(.scale)                 // grows from small
+        Text(&quot;Hello&quot;).transition(.opacity)                 // fades in and out
+    }
+}</code></pre>
+<p>The same idea works with a Toggle bound to <code>showingWelcome</code>: wrap the shown Text in <code>.transition(.opacity)</code>.</p>

@@ -1400,9 +1400,241 @@
      "title": "Overview",
      "pages": [
       {
-       "slug": "notes",
-       "title": "Notes",
+       "slug": "overview",
+       "title": "About these notes",
        "topics": []
+      }
+     ]
+    },
+    {
+     "title": "Lessons",
+     "pages": [
+      {
+       "slug": "swift-basics",
+       "title": "Swift Basics",
+       "topics": [
+        {
+         "id": "variables-and-constants",
+         "title": "Variables and constants"
+        },
+        {
+         "id": "if-else-if-else",
+         "title": "If, else if, else"
+        },
+        {
+         "id": "switch",
+         "title": "Switch"
+        },
+        {
+         "id": "loops",
+         "title": "Loops"
+        },
+        {
+         "id": "functions",
+         "title": "Functions"
+        },
+        {
+         "id": "classes-objects-and-inheritance",
+         "title": "Classes, objects and inheritance"
+        },
+        {
+         "id": "also-in-the-textbook-preview-swiftui-ios-14-essentials-ch-1-16",
+         "title": "Also in the textbook preview (SwiftUI iOS 14 Essentials, ch. 1-16)"
+        }
+       ]
+      },
+      {
+       "slug": "swiftui-fundamentals-and-stacks",
+       "title": "SwiftUI fundamentals and Stacks",
+       "topics": [
+        {
+         "id": "the-starter-file-from-the-app-development-overview",
+         "title": "The starter file (from the App Development Overview)"
+        },
+        {
+         "id": "the-three-stacks",
+         "title": "The three stacks"
+        },
+        {
+         "id": "practice-the-contact-card",
+         "title": "Practice: the Contact card"
+        }
+       ]
+      },
+      {
+       "slug": "images",
+       "title": "Images",
+       "topics": []
+      },
+      {
+       "slug": "button-and-toggle",
+       "title": "Button and Toggle",
+       "topics": [
+        {
+         "id": "state-and-bindings",
+         "title": "@State and bindings"
+        },
+        {
+         "id": "button",
+         "title": "Button"
+        },
+        {
+         "id": "toggle",
+         "title": "Toggle"
+        }
+       ]
+      },
+      {
+       "slug": "pickers-and-date-picker",
+       "title": "Pickers and Date Picker",
+       "topics": [
+        {
+         "id": "basic-picker",
+         "title": "Basic Picker"
+        },
+        {
+         "id": "pickers-from-a-loop-or-an-array",
+         "title": "Pickers from a loop or an array"
+        },
+        {
+         "id": "picker-on-another-screen-binding",
+         "title": "Picker on another screen (@Binding)"
+        },
+        {
+         "id": "datepicker",
+         "title": "DatePicker"
+        }
+       ]
+      },
+      {
+       "slug": "scrollview-list-and-section",
+       "title": "ScrollView, List and Section",
+       "topics": [
+        {
+         "id": "scrollview",
+         "title": "ScrollView"
+        },
+        {
+         "id": "section",
+         "title": "Section"
+        }
+       ]
+      },
+      {
+       "slug": "enumerations-in-swiftui",
+       "title": "Enumerations in SwiftUI",
+       "topics": [
+        {
+         "id": "enum-for-view-states-with-switch",
+         "title": "Enum for view states, with switch"
+        },
+        {
+         "id": "enum-for-a-picker",
+         "title": "Enum for a Picker"
+        }
+       ]
+      },
+      {
+       "slug": "navigationview-navigationlink-and-the-categorylist-view",
+       "title": "NavigationView, NavigationLink and the CategoryList View",
+       "topics": [
+        {
+         "id": "basics",
+         "title": "Basics"
+        },
+        {
+         "id": "passing-data-to-the-next-screen-coin-flip",
+         "title": "Passing data to the next screen (coin flip)"
+        },
+        {
+         "id": "categorylist-view",
+         "title": "CategoryList View"
+        },
+        {
+         "id": "navigationview-navigationlink-and-the-categorylist-view-4-use-a-model-struct-with-an-image",
+         "title": "4. Use a model struct with an image:"
+        },
+        {
+         "id": "dynamic-list-add-and-delete-rows",
+         "title": "Dynamic List: add and delete rows"
+        }
+       ]
+      },
+      {
+       "slug": "data-flow-observableobject-published-observedobject-environmentobject",
+       "title": "Data flow: ObservableObject, @Published, @ObservedObject, @EnvironmentObject",
+       "topics": [
+        {
+         "id": "example-1-observableobject-published-observedobject",
+         "title": "Example 1: ObservableObject + @Published + @ObservedObject"
+        },
+        {
+         "id": "example-2-methods-and-a-computed-property",
+         "title": "Example 2: methods and a computed property"
+        },
+        {
+         "id": "injecting-an-environmentobject",
+         "title": "Injecting an EnvironmentObject"
+        }
+       ]
+      },
+      {
+       "slug": "animation",
+       "title": "Animation",
+       "topics": [
+        {
+         "id": "basic-scale-a-button",
+         "title": "Basic: scale a button"
+        },
+        {
+         "id": "animation-types",
+         "title": "Animation types"
+        },
+        {
+         "id": "start-an-animation-when-a-view-appears-repeat-forever",
+         "title": "Start an animation when a view appears (repeat forever)"
+        },
+        {
+         "id": "several-animations-on-one-view",
+         "title": "Several animations on one view"
+        },
+        {
+         "id": "transitions-animate-views-being-added-and-removed",
+         "title": "Transitions: animate views being added and removed"
+        }
+       ]
+      },
+      {
+       "slug": "working-with-apis",
+       "title": "Working with APIs",
+       "topics": [
+        {
+         "id": "working-with-apis-1-model",
+         "title": "1. Model"
+        },
+        {
+         "id": "working-with-apis-2-service-class",
+         "title": "2. Service class"
+        },
+        {
+         "id": "working-with-apis-3-view",
+         "title": "3. View"
+        }
+       ]
+      },
+      {
+       "slug": "likely-test-points-and-self-quiz",
+       "title": "Likely test points and self-quiz",
+       "topics": [
+        {
+         "id": "know-cold",
+         "title": "Know cold"
+        },
+        {
+         "id": "self-quiz",
+         "title": "Self-quiz"
+        }
+       ]
       }
      ]
     }

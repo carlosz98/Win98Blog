@@ -1,0 +1,59 @@
+<h2 id="data-flow-observableobject-published-observedobject-environmentobject">Data flow: ObservableObject, @Published, @ObservedObject, @EnvironmentObject</h2>
+<p>An <code>ObservableObject</code> is a class that tells SwiftUI when its data changes, so every view watching it redraws. It comes from the <strong>Combine</strong> framework, Apple&#39;s toolkit for asynchronous, event-driven code. Think of it as a messenger between your data and the screen.</p>
+<table><thead><tr><th>Wrapper</th><th>Used on</th><th>Who owns the data</th><th>Use it when</th></tr></thead><tbody><tr><td><code>@State</code></td><td>A simple value (<code>Bool</code>, <code>Int</code>, <code>String</code>) in a view</td><td>The view itself</td><td>Data only this view needs</td></tr><tr><td><code>@Binding</code></td><td>A property in a child view</td><td>The parent&#39;s <code>@State</code></td><td>A child needs to read and change the parent&#39;s value</td></tr><tr><td><code>@Published</code></td><td>A property inside an <code>ObservableObject</code> class</td><td>The class</td><td>That property should trigger redraws when it changes</td></tr><tr><td><code>@ObservedObject</code></td><td>An <code>ObservableObject</code> in a view</td><td>Whoever created it</td><td>The view watches an object passed in or created there</td></tr><tr><td><code>@StateObject</code></td><td>An <code>ObservableObject</code> the view creates</td><td>The view (kept across redraws)</td><td>The view creates and owns the object (newer and safer than <code>@ObservedObject</code> for this)</td></tr><tr><td><code>@EnvironmentObject</code></td><td>An <code>ObservableObject</code> shared app-wide</td><td>Injected once near the top</td><td>Many views need the same object without passing it down by hand</td></tr></tbody></table>
+<h3 id="example-1-observableobject-published-observedobject">Example 1: ObservableObject + @Published + @ObservedObject</h3>
+<pre><code class="language-swift">class UserData: ObservableObject {                // must be a class
+    @Published var username: String = &quot;Guest&quot;     // changes notify the views
+}
+
+struct ContentView: View {
+    @ObservedObject var userData = UserData()
+
+    var body: some View {
+        VStack {
+            Text(&quot;Welcome, \(userData.username)!&quot;)
+            TextField(&quot;Enter your name&quot;, text: $userData.username)   // $ = binding to the property
+                .padding()
+        }
+    }
+}</code></pre>
+<p>Typing &quot;MAC221&quot; in the field changes <code>username</code>, which updates the Text to &quot;Welcome, MAC221!&quot; right away.</p>
+<h3 id="example-2-methods-and-a-computed-property">Example 2: methods and a computed property</h3>
+<pre><code class="language-swift">class UserData: ObservableObject {
+    @Published var username: String = &quot;Guest&quot;
+    @Published var age: Int = 25
+
+    var canVote: Bool { age &gt;= 18 }    // computed property, recalculated each time
+
+    func increaseAge() { age += 1 }
+    func decreaseAge() { age -= 1 }
+}
+
+struct ContentView: View {
+    @EnvironmentObject var userData: UserData     // no &quot;= UserData()&quot;: it&#39;s handed in
+
+    var body: some View {
+        VStack {
+            Text(&quot;Welcome, \(userData.username)!&quot;)
+            Text(&quot;Age: \(userData.age)&quot;)
+            Text(&quot;Can Vote: \(userData.canVote ? &quot;Yes&quot; : &quot;No&quot;)&quot;)
+            HStack {
+                Button(&quot;Increase Age&quot;) { userData.increaseAge() }
+                Button(&quot;Decrease Age&quot;) { userData.decreaseAge() }
+            }
+        }
+    }
+}</code></pre>
+<h3 id="injecting-an-environmentobject">Injecting an EnvironmentObject</h3>
+<p>Create it once in the <code>@main</code> App struct and attach it with <code>.environmentObject(...)</code>. Every view below can then read it with <code>@EnvironmentObject</code>.</p>
+<pre><code class="language-swift">@main
+struct Nov28_1App: App {
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+                .environmentObject(UserData())    // inject here
+        }
+    }
+}</code></pre>
+<p>Older projects (Xcode 11) did the same thing in <code>SceneDelegate.swift</code> with <code>UIHostingController(rootView: ContentView().environmentObject(UserData()))</code>.</p>
+<p><strong>Common mistake:</strong> if a view uses <code>@EnvironmentObject</code> but nothing injected it, the app crashes at runtime. Previews need it too: <code>ContentView().environmentObject(UserData())</code>.</p>

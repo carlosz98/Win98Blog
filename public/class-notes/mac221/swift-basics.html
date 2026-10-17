@@ -1,0 +1,135 @@
+<h2 id="swift-basics">Swift Basics</h2>
+<p>Swift code is variables, conditions, loops, functions and classes. The class practiced all of it in an Xcode Playground (File &gt; New &gt; Playground), which runs code line by line and shows results on the right.</p>
+<h3 id="variables-and-constants">Variables and constants</h3>
+<ul><li><p><code>var</code> makes a variable (can change). <code>let</code> makes a constant (assigned exactly once).</p></li><li><p>Reassigning a <code>let</code> is a compile error: &quot;Cannot assign to value: &#39;lastname&#39; is a &#39;let&#39; constant&quot;.</p></li><li><p>Name things in camelCase (<code>firstName</code>, <code>stockPrice</code>).</p></li><li><p>Swift infers the type from the first value. Write the type after a colon when there&#39;s no value or you want a different type.</p></li><li><p>Values are never converted for you. Convert explicitly, for example <code>String(width)</code>.</p></li></ul>
+<pre><code class="language-swift">var myVariable = 42
+myVariable = 50          // fine
+let myConstant = 42      // can&#39;t change later
+
+let implicitDouble = 70.0
+let explicitDouble: Double = 70
+var firstName: String = &quot;Tom&quot;
+
+let label = &quot;The width is &quot;
+let width = 94
+let widthLabel = label + String(width)   // must convert Int to String</code></pre>
+<table><thead><tr><th>Type</th><th>Holds</th></tr></thead><tbody><tr><td><code>String</code></td><td>Text</td></tr><tr><td><code>Int</code></td><td>Whole numbers, positive or negative</td></tr><tr><td><code>Float</code></td><td>Decimal numbers</td></tr><tr><td><code>Double</code></td><td>Larger, more precise decimals (the default for <code>0.3</code>)</td></tr><tr><td><code>Bool</code></td><td><code>true</code> or <code>false</code></td></tr></tbody></table>
+<p>String interpolation puts a value inside text: <code>&quot;My favorite is \(name)&quot;</code>.</p>
+<h3 id="if-else-if-else">If, else if, else</h3>
+<p>Swift checks conditions top to bottom and runs only the first one that&#39;s true. <code>else</code> runs when none are.</p>
+<pre><code class="language-swift">let a = 25
+let b = 10
+
+if a &lt;= 10 || b &gt; 5 {        // || means OR, &amp;&amp; means AND, != means not equal
+    print(&quot;branch 1&quot;)
+} else if a &lt; 15 {
+    print(&quot;branch 2&quot;)
+} else if a &gt; 30 {
+    print(&quot;branch 3&quot;)
+} else {
+    print(&quot;catch all&quot;)
+}
+// prints &quot;branch 1&quot;</code></pre>
+<h3 id="switch">Switch</h3>
+<p><code>switch</code> compares one value against several cases and runs the first match. It must be exhaustive, so you usually need <code>default</code>. Every case needs at least one statement, there&#39;s no fall-through, and one case can list several values or a range.</p>
+<pre><code class="language-swift">let someCharacter: Character = &quot;a&quot;
+switch someCharacter {
+case &quot;a&quot;, &quot;A&quot;:               // compound case
+    print(&quot;The letter A&quot;)
+default:
+    print(&quot;Not the letter A&quot;)
+}
+
+let approximateCount = 62
+switch approximateCount {
+case 0:         print(&quot;no&quot;)
+case 1..&lt;5:     print(&quot;a few&quot;)      // ..&lt; excludes the top number
+case 12..&lt;100:  print(&quot;dozens of&quot;)
+default:        print(&quot;many&quot;)
+}</code></pre>
+<h3 id="loops">Loops</h3>
+<pre><code class="language-swift">for counter in 1...5 {        // ... includes 5, so it runs 5 times
+    print(counter)
+}
+
+var sum = 0
+for counter in 1...5 { sum += counter }
+print(sum)                     // 15
+
+var count = 5
+while count &gt; 0 {              // checks first; may run 0 times
+    print(&quot;Hello&quot;)
+    count -= 1                 // forget this and it loops forever
+}
+
+var n = -5
+repeat {                       // runs once before checking
+    print(&quot;HELLO&quot;)
+    n -= 1
+} while n &gt; 0                  // prints HELLO once</code></pre>
+<h3 id="functions">Functions</h3>
+<p>A function is a named block of code you run by calling its name. Variables made inside a function exist only inside it (scope).</p>
+<pre><code class="language-swift">func addTwoNumbers() -&gt; Int {          // -&gt; Int is the return type
+    let a = 1, b = 2
+    return a + b
+}
+let sum = addTwoNumbers()
+
+func favoriteAlbum(name: String) {     // parameter
+    print(&quot;My favorite is \(name)&quot;)
+}
+favoriteAlbum(name: &quot;Fearless&quot;)
+
+func countLetters(in string: String) { // &quot;in&quot; is the argument label, &quot;string&quot; the parameter name
+    print(&quot;\(string) has \(string.count) letters&quot;)
+}
+countLetters(in: &quot;Hello&quot;)
+
+func shout(_ text: String) { print(text) }   // _ means no label when calling
+shout(&quot;Hi&quot;)
+
+func printAlbumRelease(name: String, year: Int) {
+    print(&quot;\(name) was released in \(year)&quot;)
+}
+printAlbumRelease(name: &quot;Fearless&quot;, year: 2008)</code></pre>
+<h3 id="classes-objects-and-inheritance">Classes, objects and inheritance</h3>
+<p>A class is a blueprint. An object is one actual instance made from it. Properties are its variables and methods are its functions.</p>
+<pre><code class="language-swift">class Employee {
+    var name = &quot;&quot;
+    var salary = 0
+    var role = &quot;&quot;
+
+    func doWork() {
+        print(&quot;Hi my name is \(name) and I&#39;m doing work&quot;)
+        salary += 1
+    }
+}
+
+var c = Employee()       // create an object
+c.name = &quot;Tom&quot;
+c.doWork()
+
+class Manager: Employee {           // Manager inherits everything from Employee
+    var teamSize = 0                // and adds its own property
+
+    override func doWork() {        // replace the parent&#39;s version
+        super.doWork()              // still run the parent&#39;s version first
+        print(&quot;I&#39;m managing people&quot;)
+        salary += 2
+    }
+}</code></pre>
+<ul><li><p><code>Employee</code> is the superclass (parent); <code>Manager</code> is the subclass (child).</p></li><li><p><code>override</code> is required to replace an inherited method; <code>super</code> calls the parent&#39;s version.</p></li></ul>
+<h3 id="also-in-the-textbook-preview-swiftui-ios-14-essentials-ch-1-16">Also in the textbook preview (SwiftUI iOS 14 Essentials, ch. 1-16)</h3>
+<p>The book preview covers the same Swift basics plus a few things the slides skip that often show up on tests.</p>
+<p><strong>Optionals</strong> hold either a value or <code>nil</code> (nothing). Mark one with <code>?</code> after the type.</p>
+<pre><code class="language-swift">var index: Int?                       // starts as nil
+index = 2
+
+if let i = index {                    // optional binding: safe unwrap
+    print(treeArray[i])
+}
+print(index!)                         // forced unwrap: crashes if nil
+let safe = index ?? 0                 // nil-coalescing: use 0 if nil</code></pre>
+<p><strong>Structs vs classes:</strong> a <code>struct</code> is a <strong>value type</strong> (assigning it makes a copy), and a <code>class</code> is a <strong>reference type</strong> (assigning shares the same object). Only classes have inheritance. SwiftUI views are structs; <code>ObservableObject</code> must be a class.</p>
+<p><strong>Arrays and dictionaries:</strong> <code>var trees = [&quot;Pine&quot;, &quot;Oak&quot;]</code>, <code>trees.append(&quot;Yew&quot;)</code>, <code>trees.count</code>; <code>var ages = [&quot;Tom&quot;: 25]</code>, <code>ages[&quot;Tom&quot;]</code> returns an optional.</p>
+<p><strong>Closures</strong> are unnamed functions you can pass around, like the <code>{ ... }</code> after <code>Button(&quot;Tap&quot;)</code> or <code>.onAppear { ... }</code>.</p>

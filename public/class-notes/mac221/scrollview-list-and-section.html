@@ -1,0 +1,62 @@
+<h2 id="scrollview-list-and-section">ScrollView, List and Section</h2>
+<p><code>ScrollView</code> scrolls any content that&#39;s bigger than the screen; <code>List</code> is a ready-made scrolling table of rows; <code>Section</code> groups rows under a header inside a <code>List</code> or <code>Form</code>.</p>
+<h3 id="scrollview">ScrollView</h3>
+<p>It scrolls vertically by default. Pass <code>.horizontal</code>, or <code>[.horizontal, .vertical]</code> for both.</p>
+<pre><code class="language-swift">ScrollView {                                     // vertical
+    VStack(spacing: 20) {
+        ForEach(1...20, id: \.self) { index in
+            Text(&quot;Item \(index)&quot;)
+                .frame(width: 300, height: 50)
+                .background(Color.blue)
+                .foregroundColor(.white)
+                .cornerRadius(10)
+        }
+    }
+    .padding()
+}
+
+ScrollView(.horizontal) {                        // horizontal needs an HStack inside
+    HStack(spacing: 20) { /* ForEach ... */ }
+}
+
+ScrollView([.horizontal, .vertical]) {           // a grid you can pan both ways
+    VStack {
+        ForEach(1...10, id: \.self) { row in
+            HStack {
+                ForEach(1...10, id: \.self) { column in
+                    Text(&quot;R\(row)C\(column)&quot;)
+                }
+            }
+        }
+    }
+}</code></pre>
+<table><thead><tr><th>Customization</th><th>Code</th></tr></thead><tbody><tr><td>Hide the scroll bar</td><td><code>ScrollView(showsIndicators: false)</code> (default is <code>true</code>)</td></tr><tr><td>Size of the scroll area</td><td><code>.frame(width: 350, height: 400)</code> on the ScrollView</td></tr><tr><td>Space around / between items</td><td><code>.padding()</code>, <code>VStack(spacing:)</code></td></tr></tbody></table>
+<h3 id="section">Section</h3>
+<pre><code class="language-swift">List {
+    Section(header: Text(&quot;Section 1&quot;)) {
+        Text(&quot;Item 1&quot;)
+        Text(&quot;Item 2&quot;)
+    }
+    Section(header: Text(&quot;Section 2&quot;)) {
+        Text(&quot;Item 3&quot;)
+        Text(&quot;Item 4&quot;)
+    }
+}</code></pre>
+<p>The contact form example uses <code>Form</code> with two sections: text fields in one, buttons in the other.</p>
+<pre><code class="language-swift">@State private var name = &quot;&quot;
+@State private var email = &quot;&quot;
+@State private var phoneNumber = &quot;&quot;
+
+Form {
+    Section(header: Text(&quot;Personal Information&quot;)) {
+        TextField(&quot;Name&quot;, text: $name)              // &quot;Name&quot; is the placeholder
+        TextField(&quot;Email&quot;, text: $email)
+        TextField(&quot;Phone Number&quot;, text: $phoneNumber)
+    }
+    Section(header: Text(&quot;Actions&quot;)) {
+        Button(&quot;Save Contact&quot;) { /* save */ }
+        Button(&quot;Delete Contact&quot;) { /* delete */ }
+    }
+}</code></pre>
+<p>Section headers can be styled like any Text (<code>.background(Color.blue).foregroundColor(.white)</code>), and rows can get <code>.padding()</code>, <code>.cornerRadius(10)</code> and <code>.shadow(radius: 5)</code>.</p>
+<p><strong>ScrollView vs List:</strong> List gives you rows, separators, swipe and selection for free and only builds rows on screen. ScrollView is plain, so you lay out everything yourself, but it can scroll sideways.</p>

@@ -1,0 +1,27 @@
+<h2 id="images">Images</h2>
+<p>To use your own picture, drag it into <code>Assets.xcassets</code> in Xcode, then load it by its asset name with <code>Image(&quot;ocean&quot;)</code>. SF Symbols (Apple&#39;s built-in icons) load with <code>Image(systemName: &quot;trash&quot;)</code>.</p>
+<p>A plain <code>Image(&quot;ocean&quot;)</code> shows at its original size, so a large photo runs past the screen and only part of it is visible. Add <code>.resizable()</code> first, then choose how it scales.</p>
+<pre><code class="language-swift">Image(&quot;ocean&quot;)
+    .resizable()          // must come first, or the scaling modifiers do nothing
+    .scaledToFit()        // whole image visible, may leave empty space
+
+Image(&quot;puppies&quot;)
+    .resizable()
+    .scaledToFill()       // fills the space, may crop the edges
+    .frame(width: 300, height: 300, alignment: .leading)
+    .clipped()            // cut off whatever falls outside the frame
+
+Image(&quot;logo&quot;)
+    .resizable(resizingMode: .tile)   // repeat the image like wallpaper</code></pre>
+<table><thead><tr><th>Modifier</th><th>What it does</th></tr></thead><tbody><tr><td><code>.resizable()</code></td><td>Lets the image be scaled up or down</td></tr><tr><td><code>.scaledToFit()</code> / <code>.aspectRatio(contentMode: .fit)</code></td><td>Fit inside the space, keep proportions, no cropping</td></tr><tr><td><code>.scaledToFill()</code> / <code>.aspectRatio(contentMode: .fill)</code></td><td>Fill the space, keep proportions, may crop</td></tr><tr><td><code>.frame(width:height:alignment:)</code></td><td>Set the size</td></tr><tr><td><code>.clipped()</code></td><td>Hide anything outside the frame</td></tr><tr><td><code>.clipShape(Circle())</code></td><td>Cut the image into a shape</td></tr></tbody></table>
+<p><strong>SF Symbols</strong> behave like text, so you size them with <code>.font</code> and color them with <code>.foregroundStyle</code> or <code>.foregroundColor</code>:</p>
+<pre><code class="language-swift">Image(systemName: &quot;cloud.sun.rain.fill&quot;)
+    .font(.largeTitle)
+    .foregroundStyle(.red)
+
+Image(systemName: &quot;cloud.sun.rain.fill&quot;)
+    .renderingMode(.original)   // use the symbol&#39;s own multicolor
+    .font(.largeTitle)
+    .padding()
+    .background(.black)
+    .clipShape(Circle())</code></pre>
