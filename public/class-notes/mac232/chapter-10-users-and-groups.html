@@ -1,0 +1,25 @@
+<h2 id="chapter-10-users-and-groups">Chapter 10: Users and Groups</h2>
+<p>User accounts live in /etc/passwd, passwords and expiry in /etc/shadow, and groups in /etc/group; you manage them with useradd, usermod, userdel, passwd, chage and the group commands.</p>
+<h3 id="chapter-10-users-and-groups-key-concepts">Key concepts</h3>
+<ul><li><p><strong>Authentication</strong> = checking the username and password against the account database.</p></li><li><p><strong>/etc/passwd:</strong> account info. Its password field just shows <strong>x</strong>.</p></li><li><p><strong>/etc/shadow:</strong> the <strong>encrypted password</strong> plus expiry fields. <code>pwconv</code> turns shadow on; <code>pwunconv</code> goes back to passwd only.</p></li><li><p><strong>UID</strong> = unique user ID; <strong>GID</strong> = the user&#39;s <strong>primary group</strong> ID. The primary group owns every file the user creates.</p></li><li><p><strong>GECOS</strong> = text description (full name); often blank.</p></li><li><p>Order in /etc/passwd: <strong>root</strong> first, then daemon accounts, then regular users.</p></li><li><p><strong>Lastchange</strong> = days since <strong>January 1, 1970</strong> that the password was last changed.</p></li><li><p><strong>Expiry fields in /etc/shadow:</strong> <strong>min</strong> (days before you may change it), <strong>max</strong> (days you may keep it), <strong>warn</strong> (days of warning before it expires), <strong>disable</strong> (days you can still log in after it expires).</p></li><li><p><strong>/etc/group</strong> lists groups and members; a user can be in many groups.</p></li><li><p>New user defaults come from <strong>/etc/login.defs</strong> (mail location, password expiry, min length, UID/GID ranges) and <strong>/etc/default/useradd</strong> (primary group, home location, shell, skeleton directory).</p></li><li><p><strong>Skeleton directory</strong> <code>/etc/skel</code>: environment files copied into every new home directory.</p></li><li><p>An account needs a password before it can log in. Root can change anyone&#39;s password.</p></li><li><p><strong>Lock an account:</strong> <code>usermod -L</code>, <code>passwd -l</code>, or <code>chsh</code> to an invalid shell.</p></li><li><p>After <code>userdel</code>, the user&#39;s files show the old <strong>UID number</strong> as owner; the next user given that UID owns them.</p></li></ul>
+<h3 id="chapter-10-users-and-groups-fields-of-an-etc-passwd-line">Fields of an /etc/passwd line</h3>
+<p><code>carlos:x:1000:1000:Carlos Z:/home/carlos:/bin/bash</code></p>
+<table><thead><tr><th>Field</th><th>Example</th></tr></thead><tbody><tr><td>Username</td><td>carlos</td></tr><tr><td>Password</td><td>x (real one is in /etc/shadow)</td></tr><tr><td>UID</td><td>1000</td></tr><tr><td>GID</td><td>1000</td></tr><tr><td>GECOS</td><td>Carlos Z</td></tr><tr><td>Home directory</td><td>/home/carlos</td></tr><tr><td>Shell</td><td>/bin/bash</td></tr></tbody></table>
+<h3 id="chapter-10-users-and-groups-commands">Commands</h3>
+<pre><code>useradd -m -s /bin/bash -c &quot;Bob Smith&quot; bob   # create user with home, shell, comment
+passwd bob                 # set bob&#39;s password (no argument = your own)
+usermod -aG wheel bob      # add bob to the wheel group
+usermod -L bob ; passwd -l bob   # lock the account
+usermod -U bob ; passwd -u bob   # unlock it
+chage -M 90 -W 7 bob       # max 90 days, warn 7 days before
+chage -l bob               # show expiry info
+chsh -s /sbin/nologin bob  # give an invalid shell
+chfn bob                   # change GECOS info
+userdel -r bob             # delete user and home directory
+groupadd sales             # create group
+groupmod -n market sales   # rename group
+groupdel market            # delete group
+groups bob ; id bob        # list bob&#39;s groups / UID and GIDs
+newgrp sales               # temporarily switch primary group</code></pre>
+<h3 id="chapter-10-users-and-groups-likely-test-points">Likely test points</h3>
+<ul><li><p>What lives in /etc/passwd vs /etc/shadow vs /etc/group.</p></li><li><p>The 7 fields of /etc/passwd; why the password shows x.</p></li><li><p>min / max / warn / disable expiry fields; dates count from Jan 1, 1970.</p></li><li><p>/etc/login.defs vs /etc/default/useradd vs /etc/skel.</p></li><li><p>Three ways to lock an account.</p></li><li><p>Files left behind after userdel show a UID number.</p></li></ul>

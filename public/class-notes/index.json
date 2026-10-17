@@ -437,8 +437,177 @@
      "title": "Overview",
      "pages": [
       {
-       "slug": "notes",
-       "title": "Notes",
+       "slug": "overview",
+       "title": "About these notes",
+       "topics": []
+      }
+     ]
+    },
+    {
+     "title": "Lectures",
+     "pages": [
+      {
+       "slug": "lecture-1-introduction",
+       "title": "Lecture 1: Introduction",
+       "topics": []
+      },
+      {
+       "slug": "lecture-2-review-of-mac101",
+       "title": "Lecture 2: Review of MAC101",
+       "topics": [
+        {
+         "id": "lecture-2-review-of-mac101-key-concepts",
+         "title": "Key concepts"
+        },
+        {
+         "id": "lecture-2-review-of-mac101-common-mistakes",
+         "title": "Common mistakes"
+        }
+       ]
+      },
+      {
+       "slug": "lecture-3-references-and-pointers",
+       "title": "Lecture 3: References and Pointers",
+       "topics": [
+        {
+         "id": "lecture-3-references-and-pointers-references",
+         "title": "References"
+        },
+        {
+         "id": "lecture-3-references-and-pointers-pointers",
+         "title": "Pointers"
+        },
+        {
+         "id": "lecture-3-references-and-pointers-common-mistakes",
+         "title": "Common mistakes"
+        }
+       ]
+      },
+      {
+       "slug": "lecture-4-structures",
+       "title": "Lecture 4: Structures",
+       "topics": [
+        {
+         "id": "lecture-4-structures-key-concepts",
+         "title": "Key concepts"
+        },
+        {
+         "id": "lecture-4-structures-common-mistakes",
+         "title": "Common mistakes"
+        }
+       ]
+      },
+      {
+       "slug": "lecture-5a-classes",
+       "title": "Lecture 5a: Classes",
+       "topics": [
+        {
+         "id": "lecture-5a-classes-key-concepts",
+         "title": "Key concepts"
+        },
+        {
+         "id": "lecture-5a-classes-common-mistakes",
+         "title": "Common mistakes"
+        }
+       ]
+      },
+      {
+       "slug": "lecture-5b-constructors",
+       "title": "Lecture 5b: Constructors",
+       "topics": [
+        {
+         "id": "lecture-5b-constructors-key-concepts",
+         "title": "Key concepts"
+        },
+        {
+         "id": "lecture-5b-constructors-common-mistakes",
+         "title": "Common mistakes"
+        }
+       ]
+      },
+      {
+       "slug": "lecture-6-access-modifiers-and-encapsulation",
+       "title": "Lecture 6: Access Modifiers and Encapsulation",
+       "topics": [
+        {
+         "id": "lecture-6-access-modifiers-and-encapsulation-encapsulation",
+         "title": "Encapsulation"
+        },
+        {
+         "id": "lecture-6-access-modifiers-and-encapsulation-common-mistakes",
+         "title": "Common mistakes"
+        }
+       ]
+      },
+      {
+       "slug": "lecture-7-inheritance",
+       "title": "Lecture 7: Inheritance",
+       "topics": [
+        {
+         "id": "lecture-7-inheritance-the-five-types",
+         "title": "The five types"
+        },
+        {
+         "id": "lecture-7-inheritance-access-control-when-inheriting",
+         "title": "Access control when inheriting"
+        },
+        {
+         "id": "lecture-7-inheritance-common-mistakes",
+         "title": "Common mistakes"
+        }
+       ]
+      },
+      {
+       "slug": "lecture-8-polymorphism",
+       "title": "Lecture 8: Polymorphism",
+       "topics": [
+        {
+         "id": "lecture-8-polymorphism-runtime-polymorphism-the-animal-example-from-class",
+         "title": "Runtime polymorphism: the Animal example from class"
+        },
+        {
+         "id": "lecture-8-polymorphism-common-mistakes",
+         "title": "Common mistakes"
+        }
+       ]
+      },
+      {
+       "slug": "lecture-9-exception-handling",
+       "title": "Lecture 9: Exception Handling",
+       "topics": [
+        {
+         "id": "lecture-9-exception-handling-common-mistakes",
+         "title": "Common mistakes"
+        }
+       ]
+      },
+      {
+       "slug": "lecture-10-threading",
+       "title": "Lecture 10: Threading",
+       "topics": [
+        {
+         "id": "lecture-10-threading-five-ways-to-pass-arguments",
+         "title": "Five ways to pass arguments"
+        },
+        {
+         "id": "lecture-10-threading-common-mistakes",
+         "title": "Common mistakes"
+        }
+       ]
+      },
+      {
+       "slug": "lecture-11-file-handling",
+       "title": "Lecture 11: File Handling",
+       "topics": [
+        {
+         "id": "lecture-11-file-handling-common-mistakes",
+         "title": "Common mistakes"
+        }
+       ]
+      },
+      {
+       "slug": "final-review-checklist",
+       "title": "Final review checklist",
        "topics": []
       }
      ]
@@ -485,9 +654,158 @@
      "title": "Overview",
      "pages": [
       {
-       "slug": "notes",
-       "title": "Notes",
+       "slug": "overview",
+       "title": "About these notes",
        "topics": []
+      }
+     ]
+    },
+    {
+     "title": "Make a 2D Game",
+     "pages": [
+      {
+       "slug": "part-1-the-unity-interface-and-importing-assets",
+       "title": "Part 1: The Unity interface and importing assets",
+       "topics": [
+        {
+         "id": "the-four-main-panels",
+         "title": "The four main panels"
+        },
+        {
+         "id": "five-ways-to-add-assets-from-your-computer",
+         "title": "Five ways to add assets from your computer"
+        },
+        {
+         "id": "likely-test-points",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "part-2-building-the-bird-and-the-first-script",
+       "title": "Part 2: Building the bird and the first script",
+       "topics": [
+        {
+         "id": "components-and-what-each-one-adds",
+         "title": "Components and what each one adds"
+        },
+        {
+         "id": "four-ways-to-create-a-script",
+         "title": "Four ways to create a script"
+        },
+        {
+         "id": "the-birdscript",
+         "title": "The BirdScript"
+        },
+        {
+         "id": "moving-with-other-keys",
+         "title": "Moving with other keys"
+        },
+        {
+         "id": "likely-test-points-1",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "part-3-spawning-moving-and-destroying-pipes",
+       "title": "Part 3: Spawning, moving and destroying pipes",
+       "topics": [
+        {
+         "id": "moving-the-pipes",
+         "title": "Moving the pipes"
+        },
+        {
+         "id": "prefabs",
+         "title": "Prefabs"
+        },
+        {
+         "id": "the-pipe-spawner",
+         "title": "The Pipe Spawner"
+        },
+        {
+         "id": "two-versions-of-the-spawner",
+         "title": "Two versions of the spawner"
+        },
+        {
+         "id": "likely-test-points-2",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "part-4-score-ui-triggers-and-the-logic-manager",
+       "title": "Part 4: Score UI, triggers and the Logic Manager",
+       "topics": [
+        {
+         "id": "setting-up-the-ui",
+         "title": "Setting up the UI"
+        },
+        {
+         "id": "logicscript",
+         "title": "LogicScript"
+        },
+        {
+         "id": "colliders-vs-triggers",
+         "title": "Colliders vs triggers"
+        },
+        {
+         "id": "pipemiddlescript",
+         "title": "PipeMiddleScript"
+        },
+        {
+         "id": "likely-test-points-3",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "part-5-game-over-restart-and-building-the-game",
+       "title": "Part 5: Game over, restart and building the game",
+       "topics": [
+        {
+         "id": "building-the-game-over-screen",
+         "title": "Building the Game Over screen"
+        },
+        {
+         "id": "restart-and-gameover-in-logicscript",
+         "title": "Restart and GameOver in LogicScript"
+        },
+        {
+         "id": "hooking-up-the-button",
+         "title": "Hooking up the button"
+        },
+        {
+         "id": "birdscript-changes",
+         "title": "BirdScript changes"
+        },
+        {
+         "id": "building-the-game",
+         "title": "Building the game"
+        },
+        {
+         "id": "likely-test-points-4",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "quick-review",
+       "title": "Quick review",
+       "topics": [
+        {
+         "id": "glossary",
+         "title": "Glossary"
+        },
+        {
+         "id": "how-the-scripts-connect",
+         "title": "How the scripts connect"
+        },
+        {
+         "id": "self-test",
+         "title": "Self-test"
+        }
+       ]
       }
      ]
     }
@@ -501,9 +819,311 @@
      "title": "Overview",
      "pages": [
       {
-       "slug": "notes",
-       "title": "Notes",
+       "slug": "overview",
+       "title": "About these notes",
        "topics": []
+      }
+     ]
+    },
+    {
+     "title": "Chapters",
+     "pages": [
+      {
+       "slug": "chapter-1-introduction-to-linux",
+       "title": "Chapter 1: Introduction to Linux",
+       "topics": [
+        {
+         "id": "chapter-1-introduction-to-linux-key-concepts",
+         "title": "Key concepts"
+        },
+        {
+         "id": "chapter-1-introduction-to-linux-likely-test-points",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "chapter-2-linux-installation-and-usage",
+       "title": "Chapter 2: Linux Installation and Usage",
+       "topics": [
+        {
+         "id": "chapter-2-linux-installation-and-usage-key-concepts",
+         "title": "Key concepts"
+        },
+        {
+         "id": "chapter-2-linux-installation-and-usage-man-page-sections",
+         "title": "Man page sections"
+        },
+        {
+         "id": "chapter-2-linux-installation-and-usage-commands",
+         "title": "Commands"
+        },
+        {
+         "id": "chapter-2-linux-installation-and-usage-likely-test-points",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "chapter-3-exploring-linux-filesystems",
+       "title": "Chapter 3: Exploring Linux Filesystems",
+       "topics": [
+        {
+         "id": "chapter-3-exploring-linux-filesystems-key-concepts",
+         "title": "Key concepts"
+        },
+        {
+         "id": "chapter-3-exploring-linux-filesystems-wildcards",
+         "title": "Wildcards"
+        },
+        {
+         "id": "chapter-3-exploring-linux-filesystems-commands",
+         "title": "Commands"
+        },
+        {
+         "id": "chapter-3-exploring-linux-filesystems-vi-essentials",
+         "title": "vi essentials"
+        },
+        {
+         "id": "chapter-3-exploring-linux-filesystems-likely-test-points",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "chapter-4-linux-filesystem-management",
+       "title": "Chapter 4: Linux Filesystem Management",
+       "topics": [
+        {
+         "id": "chapter-4-linux-filesystem-management-key-concepts",
+         "title": "Key concepts"
+        },
+        {
+         "id": "chapter-4-linux-filesystem-management-numeric-permissions",
+         "title": "Numeric permissions"
+        },
+        {
+         "id": "chapter-4-linux-filesystem-management-umask-default-permissions",
+         "title": "umask (default permissions)"
+        },
+        {
+         "id": "chapter-4-linux-filesystem-management-special-permissions",
+         "title": "Special permissions"
+        },
+        {
+         "id": "chapter-4-linux-filesystem-management-commands",
+         "title": "Commands"
+        },
+        {
+         "id": "chapter-4-linux-filesystem-management-likely-test-points",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "chapter-7-working-with-the-bash-shell",
+       "title": "Chapter 7: Working with the BASH Shell",
+       "topics": [
+        {
+         "id": "chapter-7-working-with-the-bash-shell-key-concepts",
+         "title": "Key concepts"
+        },
+        {
+         "id": "chapter-7-working-with-the-bash-shell-commands",
+         "title": "Commands"
+        },
+        {
+         "id": "chapter-7-working-with-the-bash-shell-script-example",
+         "title": "Script example"
+        },
+        {
+         "id": "chapter-7-working-with-the-bash-shell-likely-test-points",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "chapter-9-managing-linux-processes",
+       "title": "Chapter 9: Managing Linux Processes",
+       "topics": [
+        {
+         "id": "chapter-9-managing-linux-processes-key-concepts",
+         "title": "Key concepts"
+        },
+        {
+         "id": "chapter-9-managing-linux-processes-commands",
+         "title": "Commands"
+        },
+        {
+         "id": "chapter-9-managing-linux-processes-scheduling-in-the-chapter-objectives-not-in-these-slides",
+         "title": "Scheduling (in the chapter objectives, not in these slides)"
+        },
+        {
+         "id": "chapter-9-managing-linux-processes-likely-test-points",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "chapter-10-users-and-groups",
+       "title": "Chapter 10: Users and Groups",
+       "topics": [
+        {
+         "id": "chapter-10-users-and-groups-key-concepts",
+         "title": "Key concepts"
+        },
+        {
+         "id": "chapter-10-users-and-groups-fields-of-an-etc-passwd-line",
+         "title": "Fields of an /etc/passwd line"
+        },
+        {
+         "id": "chapter-10-users-and-groups-commands",
+         "title": "Commands"
+        },
+        {
+         "id": "chapter-10-users-and-groups-likely-test-points",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "chapter-11-compression-system-backup-and-software-installation",
+       "title": "Chapter 11: Compression, System Backup and Software Installation",
+       "topics": [
+        {
+         "id": "chapter-11-compression-system-backup-and-software-installation-compression-utilities",
+         "title": "Compression utilities"
+        },
+        {
+         "id": "chapter-11-compression-system-backup-and-software-installation-backups",
+         "title": "Backups"
+        },
+        {
+         "id": "chapter-11-compression-system-backup-and-software-installation-tar-options",
+         "title": "tar options"
+        },
+        {
+         "id": "chapter-11-compression-system-backup-and-software-installation-software-installation",
+         "title": "Software installation"
+        },
+        {
+         "id": "chapter-11-compression-system-backup-and-software-installation-commands",
+         "title": "Commands"
+        },
+        {
+         "id": "chapter-11-compression-system-backup-and-software-installation-likely-test-points",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "disk-management",
+       "title": "Disk Management",
+       "topics": [
+        {
+         "id": "disk-management-key-concepts",
+         "title": "Key concepts"
+        },
+        {
+         "id": "disk-management-commands",
+         "title": "Commands"
+        },
+        {
+         "id": "disk-management-likely-test-points",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "systemd",
+       "title": "Systemd",
+       "topics": [
+        {
+         "id": "systemd-key-concepts",
+         "title": "Key concepts"
+        },
+        {
+         "id": "systemd-targets",
+         "title": "Targets"
+        },
+        {
+         "id": "systemd-commands",
+         "title": "Commands"
+        },
+        {
+         "id": "systemd-likely-test-points",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "linux-services",
+       "title": "Linux Services",
+       "topics": [
+        {
+         "id": "linux-services-key-concepts",
+         "title": "Key concepts"
+        },
+        {
+         "id": "linux-services-services-at-a-glance",
+         "title": "Services at a glance"
+        },
+        {
+         "id": "linux-services-samba",
+         "title": "Samba"
+        },
+        {
+         "id": "linux-services-nfs",
+         "title": "NFS"
+        },
+        {
+         "id": "linux-services-ftp",
+         "title": "FTP"
+        },
+        {
+         "id": "linux-services-ssh",
+         "title": "SSH"
+        },
+        {
+         "id": "linux-services-apache",
+         "title": "Apache"
+        },
+        {
+         "id": "linux-services-commands",
+         "title": "Commands"
+        },
+        {
+         "id": "linux-services-ftp-prompt-commands",
+         "title": "FTP prompt commands"
+        },
+        {
+         "id": "linux-services-likely-test-points",
+         "title": "Likely test points"
+        }
+       ]
+      },
+      {
+       "slug": "installing-a-fedora-vm-lab",
+       "title": "Installing a Fedora VM (lab)",
+       "topics": []
+      },
+      {
+       "slug": "quick-cheat-sheet",
+       "title": "Quick cheat sheet",
+       "topics": [
+        {
+         "id": "quick-cheat-sheet-key-files",
+         "title": "Key files"
+        },
+        {
+         "id": "quick-cheat-sheet-numbers-to-memorize",
+         "title": "Numbers to memorize"
+        },
+        {
+         "id": "quick-cheat-sheet-easily-mixed-up",
+         "title": "Easily mixed up"
+        }
+       ]
       }
      ]
     }

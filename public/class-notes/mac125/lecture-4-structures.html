@@ -1,0 +1,37 @@
+<h2 id="lecture-4-structures">Lecture 4: Structures</h2>
+<p>A struct groups related variables (members) of different types under one name; unlike an array, the members can be <code>int</code>, <code>string</code>, <code>bool</code> and so on.</p>
+<h3 id="lecture-4-structures-key-concepts">Key concepts</h3>
+<ul><li><p>Anonymous struct: <code>struct { int myNum; string myString; } myStructure;</code> creates one variable directly.</p></li><li><p>One struct, several variables: <code>struct { ... } myCar1, myCar2;</code></p></li><li><p><strong>Named struct</strong> acts as a new data type you can reuse: <code>struct Car { ... };</code> then <code>Car c1;</code></p></li><li><p>Access members with the dot operator <code>c1.brand</code>. Through a pointer use the arrow: <code>ptr-&gt;brand</code>.</p></li><li><p>Arrays of structs: <code>Book library[5] = { {&quot;1984&quot;, &quot;George Orwell&quot;, 1949}, ... };</code></p></li><li><p>Nested structs: a <code>Department</code> holds a <code>Course courses[10]</code> array plus a <code>courseCount</code>.</p></li><li><p>Structs can be passed to functions by value (a copy), by reference (<code>&amp;</code>) or by pointer (<code>*</code>).</p></li></ul>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+struct BankAccount {
+    int accountNumber;
+    string ownerName;
+    double balance;
+};
+
+void deposit(BankAccount* acc, double amount) {    // pointer: use -&gt;
+    if (amount &gt; 0) acc-&gt;balance += amount;
+}
+
+void withdraw(BankAccount&amp; acc, double amount) {   // reference: use .
+    if (amount &gt; 0 &amp;&amp; amount &lt;= acc.balance) acc.balance -= amount;
+    else cout &lt;&lt; &quot;Invalid or insufficient funds.\n&quot;;
+}
+
+void display(const BankAccount&amp; acc) {             // read-only reference
+    cout &lt;&lt; acc.ownerName &lt;&lt; &quot;: $&quot; &lt;&lt; acc.balance &lt;&lt; &quot;\n&quot;;
+}
+
+int main() {
+    BankAccount a = {1001, &quot;John Doe&quot;, 500.0};
+    deposit(&amp;a, 200.0);     // pass the address
+    withdraw(a, 150.0);
+    display(a);             // John Doe: $550
+    return 0;
+}</code></pre>
+<h3 id="lecture-4-structures-common-mistakes">Common mistakes</h3>
+<ul><li><p>Forgetting the semicolon after the closing brace: <code>struct Car { ... };</code></p></li><li><p>Passing a struct by value and expecting the original to change. The slide&#39;s <code>modifyPhone(Contact c, ...)</code> works only because it returns the copy and you assign it back.</p></li><li><p>Using <code>.</code> on a pointer instead of <code>-&gt;</code> (or <code>(*ptr).member</code>).</p></li></ul>
+<p><strong>Likely test points:</strong> declare a named struct and an array of them, loop and print members, the BankAccount example (pointer vs reference parameter), struct vs class (members of a struct are public by default, a class&#39;s are private).</p>

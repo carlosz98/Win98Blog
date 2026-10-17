@@ -1,0 +1,48 @@
+<h2 id="chapter-7-working-with-the-bash-shell">Chapter 7: Working with the BASH Shell</h2>
+<p>BASH lets you redirect and pipe command input and output, store values in variables, and chain commands into scripts with if, for and while.</p>
+<h3 id="chapter-7-working-with-the-bash-shell-key-concepts">Key concepts</h3>
+<ul><li><p><strong>File descriptors:</strong> <strong>0 = stdin</strong> (input), <strong>1 = stdout</strong> (normal output), <strong>2 = stderr</strong> (errors).</p></li><li><p><code>&gt;</code> overwrites a file, <code>&gt;&gt;</code> appends, <code>&lt;</code> feeds a file in as stdin. <code>2&gt;</code> redirects errors only.</p></li><li><p><strong>Pipe <code>|</code></strong> sends one command&#39;s stdout into the next command&#39;s stdin. <strong>Filter commands</strong> read stdin and write stdout (sort, grep, sed, awk, tr...). Input redirection goes at the <strong>start</strong> of a pipe, output redirection at the <strong>end</strong>.</p></li><li><p><code>tee</code> writes to a file <strong>and</strong> to the screen. <code>sed</code> finds and replaces or deletes lines. <code>awk</code> treats each line as a record and each word as a field (<code>$1</code>, <code>$2</code>...). <code>tr</code> swaps characters.</p></li><li><p><strong>Variable types:</strong> environment (system ones like PATH, HOME), user-defined, special.</p></li><li><p><strong>PATH</strong> lists the folders searched for commands, so you can type <code>ls</code> instead of <code>/usr/bin/ls</code>. Don&#39;t change HOME or PWD.</p></li><li><p><strong>Variable names:</strong> letters, numbers, underscore; can&#39;t start with a number; usually CAPITALS.</p></li><li><p>A <strong>subshell</strong> doesn&#39;t see your variables unless you <code>export</code> them. <code>set</code> lists all variables, <code>env</code> lists exported ones.</p></li><li><p>Variables vanish when the shell exits; put them in <strong>environment files</strong>: <code>/etc/profile</code>, <code>/etc/bashrc</code> (everyone), <code>~/.bashrc</code>, <code>~/.bash_profile</code>, <code>~/.bash_login</code>, <code>~/.profile</code> (one user).</p></li><li><p><strong>Shell script</strong> = text file of commands. First line is the <strong>shebang / hashpling</strong>: <code>#!/bin/bash</code>. Run it with <code>bash script.sh</code> (needs read) or <code>./script.sh</code> (needs read <strong>and</strong> execute).</p></li><li><p><code>echo -e</code> enables <strong>escape sequences</strong>: <code>\n</code> new line, <code>\t</code> tab, <code>\a</code> beep, <code>\c</code> no newline, <code>\\</code> backslash.</p></li><li><p><code>if ... then ... elif ... else ... fi</code> (fi = if backwards). Test operators: <code>-o</code> OR, <code>-a</code> AND, <code>!</code> NOT.</p></li><li><p><code>cmd1 &amp;&amp; cmd2</code> runs cmd2 only if cmd1 <strong>succeeded</strong>; <code>cmd1 || cmd2</code> runs cmd2 only if cmd1 <strong>failed</strong>.</p></li><li><p><code>for</code> loops over a list; <code>while</code> repeats as long as a test is true (usually with a counter).</p></li></ul>
+<h3 id="chapter-7-working-with-the-bash-shell-commands">Commands</h3>
+<pre><code>ls /etc /fake &gt; out.txt 2&gt; err.txt   # stdout and stderr to separate files
+ls /etc /fake &gt; all.txt 2&gt;&amp;1         # both into one file
+date &gt;&gt; log.txt                      # append
+tr a-z A-Z &lt; file.txt &gt; upper.txt    # stdin in, stdout out (different names!)
+ls -l /etc | grep conf | less        # pipes
+cat file | sort | tee sorted.txt     # save and show
+sed &#39;s/cat/dog/g&#39; file.txt           # replace every cat with dog
+sed &#39;/^#/d&#39; file.txt                 # delete comment lines
+awk &#39;{print $1, $3}&#39; file.txt        # print fields 1 and 3
+echo $PATH ; echo $HOME              # read variables
+MYVAR=&quot;hello&quot; ; export MYVAR         # create and export
+set ; env ; history                  # list variables, exported vars, past commands
+alias ll=&#39;ls -l&#39;                     # shortcut
+read NAME                            # put user input into NAME</code></pre>
+<h3 id="chapter-7-working-with-the-bash-shell-script-example">Script example</h3>
+<pre><code>#!/bin/bash
+echo -e &quot;What is your name? \c&quot;
+read NAME
+if [ &quot;$NAME&quot; = &quot;Carlos&quot; ]
+then
+    echo &quot;Welcome back&quot;
+elif [ -z &quot;$NAME&quot; ]
+then
+    echo &quot;You typed nothing&quot;
+else
+    echo &quot;Hello $NAME&quot;
+fi
+
+for FILE in /etc/hosts /etc/passwd
+do
+    echo &quot;Found $FILE&quot;
+done
+
+COUNTER=1
+while [ $COUNTER -le 3 ]
+do
+    echo &quot;Count $COUNTER&quot;
+    COUNTER=$((COUNTER + 1))
+done
+
+mkdir /tmp/test &amp;&amp; echo &quot;made it&quot; || echo &quot;failed&quot;</code></pre>
+<h3 id="chapter-7-working-with-the-bash-shell-likely-test-points">Likely test points</h3>
+<ul><li><p>Descriptor numbers 0, 1, 2 and <code>&gt;</code> vs <code>&gt;&gt;</code> vs <code>&lt;</code> vs <code>2&gt;</code>.</p></li><li><p>Where redirection can go in a pipe; what tee does.</p></li><li><p><code>export</code> and why subshells can&#39;t see unexported variables.</p></li><li><p>Which environment files are system-wide vs per user.</p></li><li><p>Shebang line; read vs read+execute to run a script.</p></li><li><p><code>&amp;&amp;</code> vs <code>||</code>; <code>fi</code> ends if; <code>-o</code>, <code>-a</code>, <code>!</code>.</p></li></ul>

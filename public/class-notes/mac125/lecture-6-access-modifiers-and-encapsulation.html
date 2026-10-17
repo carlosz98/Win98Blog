@@ -1,0 +1,32 @@
+<h2 id="lecture-6-access-modifiers-and-encapsulation">Lecture 6: Access Modifiers and Encapsulation</h2>
+<p>Access modifiers (<code>public</code>, <code>private</code>, <code>protected</code>) decide who can touch a class member, and they are the tool C++ uses to achieve encapsulation.</p>
+<table><thead><tr><th>Modifier</th><th>Same class</th><th>Derived class</th><th>Outside code</th><th>Typical use</th></tr></thead><tbody><tr><td><code>public</code></td><td>Yes</td><td>Yes</td><td>Yes</td><td>The class&#39;s interface: constructors, getters, setters, other methods</td></tr><tr><td><code>protected</code></td><td>Yes</td><td>Yes</td><td>No</td><td>Data subclasses need but the public shouldn&#39;t see</td></tr><tr><td><code>private</code></td><td>Yes</td><td>No</td><td>No</td><td>Sensitive data; the default in a class</td></tr></tbody></table>
+<h3 id="lecture-6-access-modifiers-and-encapsulation-encapsulation">Encapsulation</h3>
+<ul><li><p>Definition: wrapping data and the methods that work on it into one unit (the class) and hiding the internal state.</p></li><li><p>Purpose: protect the object&#39;s integrity by preventing unauthorized access and misuse.</p></li><li><p>Benefits: data hiding, a simplified interface, and easier maintenance (the inside can change without breaking code that uses the class).</p></li><li><p>How: make attributes <code>private</code>, then provide public <strong>get</strong> and <strong>set</strong> methods. The setter can validate input.</p></li></ul>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+using namespace std;
+
+class Employee {
+private:
+    int salary;                     // hidden from outside code
+protected:
+    string department;              // visible to subclasses
+public:
+    void setSalary(int s) {         // setter with validation
+        if (s &gt;= 0) salary = s;
+    }
+    int getSalary() const {         // getter
+        return salary;
+    }
+};
+
+int main() {
+    Employee e;
+    e.setSalary(50000);
+    cout &lt;&lt; e.getSalary() &lt;&lt; &quot;\n&quot;;   // 50000
+    // e.salary = 10;               // ERROR: salary is private
+    return 0;
+}</code></pre>
+<h3 id="lecture-6-access-modifiers-and-encapsulation-common-mistakes">Common mistakes</h3>
+<ul><li><p>Thinking a derived class can read a base class&#39;s <code>private</code> members. It can&#39;t; that is what <code>protected</code> is for.</p></li><li><p>Forgetting that class members are <code>private</code> by default (struct members are <code>public</code> by default).</p></li><li><p>Writing setters that just assign without checking, which gives up the main benefit of encapsulation.</p></li></ul>
+<p><strong>Likely test points:</strong> fill in the access table, define encapsulation and its purpose, write a class with a private attribute plus a getter and setter.</p>

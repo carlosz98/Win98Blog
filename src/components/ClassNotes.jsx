@@ -91,7 +91,7 @@ export default function ClassNotes({ show, setShow }) {
         </div>
 
         <div className="cn-toolbar">
-          <button onClick={() => go(current.classId, 'overview')}>Home</button>
+          <button onClick={() => go(current.classId, currentClass?.folders[0].pages[0].slug ?? 'overview')}>Home</button>
           <button onClick={() => setOpen(Object.fromEntries((index?.classes ?? []).flatMap(c => [[c.id, true], ...c.folders.map(f => [`${c.id}/${f.title}`, true])])))}>Expand all</button>
           <button onClick={() => setOpen({})}>Collapse all</button>
         </div>

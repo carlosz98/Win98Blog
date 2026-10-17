@@ -1,0 +1,28 @@
+<h2 id="chapter-3-exploring-linux-filesystems">Chapter 3: Exploring Linux Filesystems</h2>
+<p>Linux stores everything in one tree that starts at <code>/</code>; you move through it with paths, list it with <code>ls</code>, read files with cat/less, search them with grep and edit them with vi.</p>
+<h3 id="chapter-3-exploring-linux-filesystems-key-concepts">Key concepts</h3>
+<ul><li><p><strong>Root directory</strong> is <code>/</code>, the top of the tree. (The slide says &quot;/root&quot;, but <code>/root</code> is the root <em>user&#39;s</em> home folder. Know the difference.)</p></li><li><p><strong>Absolute path</strong> starts at <code>/</code> (<code>/etc/passwd</code>). <strong>Relative path</strong> starts from where you are (<code>docs/notes.txt</code>).</p></li><li><p><code>~</code> = your home directory, <code>..</code> = parent directory, <code>.</code> = current directory. <strong>Tab</strong> completes names.</p></li><li><p><strong>File types:</strong> text, binary data, linked, special device, named pipe, socket.</p></li><li><p><strong>Filenames:</strong> up to 255 characters; most Linux files have no extension. Names starting with <code>.</code> are <strong>hidden</strong>.</p></li><li><p><strong><code>ls -l</code> columns:</strong> type, permissions, hard link count, owner, group owner, size, modification time, name.</p></li><li><p><strong>Wildcards</strong> (interpreted by the shell, match <em>filenames</em>) vs <strong>regular expressions</strong> (interpreted by a text tool, match <em>text inside files</em>).</p></li><li><p><strong>grep</strong> = common regexp, <strong>egrep</strong> (<code>grep -E</code>) = extended regexp, <strong>fgrep</strong> (<code>grep -F</code>) = no regexp, fastest.</p></li><li><p><strong>vi / vim</strong> is <strong>bi-modal</strong>: <strong>command mode</strong> (delete, copy, save, quit) and <strong>insert mode</strong> (typing text). <strong>Esc</strong> goes back to command mode; settings go at the <code>:</code> prompt.</p></li><li><p>Other editors: <strong>Emacs</strong>, <strong>nano</strong> (Ctrl key shortcuts), <strong>gedit</strong> (GUI).</p></li></ul>
+<h3 id="chapter-3-exploring-linux-filesystems-wildcards">Wildcards</h3>
+<table><thead><tr><th>Wildcard</th><th>Matches</th></tr></thead><tbody><tr><td><code>*</code></td><td>0 or more characters</td></tr><tr><td><code>?</code></td><td>exactly 1 character</td></tr><tr><td><code>[aegh]</code></td><td>1 character that is a, e, g or h</td></tr><tr><td><code>[a-e]</code></td><td>1 character from a to e</td></tr><tr><td><code>[!a-e]</code></td><td>1 character NOT from a to e</td></tr></tbody></table>
+<h3 id="chapter-3-exploring-linux-filesystems-commands">Commands</h3>
+<pre><code>pwd                 # print working directory
+cd /etc             # absolute path
+cd ..               # up one level
+cd ~                # go home
+ls -F               # add / * @ to show file type
+ls -l               # long listing
+ls -a               # include hidden files
+file /bin/ls        # what type of file is it
+cat -n file         # show file with line numbers
+tac file            # show file in reverse (newest log lines first)
+head -5 file        # first lines (default 10)
+tail -5 file        # last lines (default 10)
+less file           # page through, arrow keys work
+strings /bin/ls     # text inside a binary
+od -x file          # dump file in hex (od alone = octal)
+grep -i error /var/log/messages   # case-insensitive search
+grep -v &#39;^#&#39; file   # lines that do NOT start with #</code></pre>
+<h3 id="chapter-3-exploring-linux-filesystems-vi-essentials">vi essentials</h3>
+<table><thead><tr><th>Keys</th><th>Action</th></tr></thead><tbody><tr><td><code>i</code> / <code>a</code></td><td>insert before / after cursor</td></tr><tr><td><code>Esc</code></td><td>back to command mode</td></tr><tr><td><code>dd</code></td><td>delete line</td></tr><tr><td><code>yy</code> / <code>p</code></td><td>copy line / paste</td></tr><tr><td><code>u</code></td><td>undo</td></tr><tr><td><code>:w</code></td><td>save</td></tr><tr><td><code>:q</code> / <code>:q!</code></td><td>quit / quit without saving</td></tr><tr><td><code>:wq</code></td><td>save and quit</td></tr><tr><td><code>/text</code></td><td>search forward</td></tr></tbody></table>
+<h3 id="chapter-3-exploring-linux-filesystems-likely-test-points">Likely test points</h3>
+<ul><li><p>Absolute vs relative paths; what <code>~</code> and <code>..</code> mean.</p></li><li><p>The order of the <code>ls -l</code> columns.</p></li><li><p>Wildcards vs regular expressions (who interprets them, what they match).</p></li><li><p>head/tail default to 10 lines; tac reverses; od is octal, <code>-x</code> is hex.</p></li><li><p>grep vs egrep vs fgrep; <code>-i</code> for case-insensitive.</p></li><li><p>vi&#39;s two modes and how to save and quit.</p></li></ul>

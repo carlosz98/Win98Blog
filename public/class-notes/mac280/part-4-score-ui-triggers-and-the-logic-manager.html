@@ -1,0 +1,45 @@
+<h2 id="part-4-score-ui-triggers-and-the-logic-manager">Part 4: Score UI, triggers and the Logic Manager</h2>
+<p>Part 4 adds a score on screen that goes up by 1 each time the bird flies through the gap between pipes.</p>
+<h3 id="setting-up-the-ui">Setting up the UI</h3>
+<ol><li><p>GameObject &gt; UI &gt; Text (may be under Legacy). This creates a <strong>Canvas</strong> with the Text inside. UI elements are GameObjects too.</p></li><li><p>Zoom far out in the Scene view to find the Canvas.</p></li><li><p>Select the Canvas, find <strong>Canvas Scaler</strong>, set UI Scale Mode to <strong>Scale with Screen Size</strong> and pick a Reference Resolution (for example 1080p). This keeps the UI the same on every screen size.</p></li><li><p>UI elements use a <strong>Rect Transform</strong>, not a normal Transform. Change <strong>Width and Height</strong> (for example 300 by 300), never Scale, to avoid stretching.</p></li><li><p>Raise the Font Size, set the text to &quot;0&quot; and check it in the Game view.</p></li><li><p>Create an empty GameObject named <strong>Logic Manager</strong>, tag it <strong>Logic</strong>, and add a script called <strong>LogicScript</strong>. It holds game-wide info like the score.</p></li></ol>
+<h3 id="logicscript">LogicScript</h3>
+<pre><code class="language-csharp">using UnityEngine;
+using UnityEngine.UI;
+
+public class LogicScript : MonoBehaviour
+{
+    public int playerScore;
+    public Text scoreText;
+
+    [ContextMenu(&quot;Increase Score&quot;)]
+    public void addScore(int scoreToAdd)
+    {
+        playerScore = playerScore + scoreToAdd;
+        scoreText.text = playerScore.ToString();
+    }
+}</code></pre>
+<ul><li><p><strong>using UnityEngine.UI</strong> is required to use the Text type.</p></li><li><p><strong>scoreText</strong> is filled by dragging the Text object into the slot in the Inspector.</p></li><li><p><strong>ToString()</strong> converts the int to a string, because a Text shows strings.</p></li><li><p><strong>[ContextMenu(&quot;Increase Score&quot;)]</strong> lets you right-click the component in the Inspector and run the function to test it without playing. (It only works on methods with no parameters, so for testing use a small wrapper with no arguments, or give scoreToAdd a default value.)</p></li></ul>
+<h3 id="colliders-vs-triggers">Colliders vs triggers</h3>
+<table><thead><tr><th></th><th>Collider</th><th>Trigger (Is Trigger checked)</th></tr></thead><tbody><tr><td>Blocks objects</td><td>Yes, physical collision</td><td>No, objects pass through</td></tr><tr><td>Used here for</td><td>Bird hitting a pipe</td><td>Detecting the bird in the gap</td></tr><tr><td>Event function</td><td>OnCollisionEnter2D(Collision2D)</td><td>OnTriggerEnter2D(Collider2D)</td></tr></tbody></table>
+<p>Steps: open the pipe prefab, add a child GameObject named <strong>Middle</strong> in the gap, add a <strong>Box Collider 2D</strong>, and check <strong>Is Trigger</strong>.</p>
+<h3 id="pipemiddlescript">PipeMiddleScript</h3>
+<pre><code class="language-csharp">public class PipeMiddleScript : MonoBehaviour
+{
+    public LogicScript logic;
+
+    void Start()
+    {
+        logic = GameObject.FindGameObjectWithTag(&quot;Logic&quot;).GetComponent&lt;LogicScript&gt;();
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.layer == 3)
+        {
+            logic.addScore(1);
+        }
+    }
+}</code></pre>
+<ul><li><p>Pipes are spawned at runtime, so you cannot drag the Logic Manager into a prefab&#39;s slot. Instead the script <strong>finds it by tag</strong> in Start(): FindGameObjectWithTag(&quot;Logic&quot;) then GetComponent&lt;LogicScript&gt;().</p></li><li><p><strong>Layer check:</strong> put the bird on layer 3 so only the bird scores, not other objects.</p></li><li><p>addScore can take other values (for example 5 for a bonus).</p></li></ul>
+<h3 id="likely-test-points-3">Likely test points</h3>
+<ul><li><p>Why Scale with Screen Size, and why change Width and Height instead of Scale on UI.</p></li><li><p>Which namespace the Text type needs (UnityEngine.UI).</p></li><li><p>Trigger vs collider, and OnTriggerEnter2D vs OnCollisionEnter2D.</p></li><li><p>How one script gets a reference to another at runtime (tag + GetComponent).</p></li><li><p>What the layer check prevents.</p></li></ul>
