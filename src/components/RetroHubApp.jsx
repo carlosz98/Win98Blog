@@ -10,6 +10,11 @@ import '../css/RetroHubApp.css';
 // The phone only boots when someone clicks Start, so the free monthly demo minutes aren't wasted.
 const APPETIZE_EMBED = 'https://appetize.io/embed/b_fcm2w5tbohqfojup5hx5wiwju4';
 const EMBED_PARAMS = 'scale=auto&centered=both&deviceColor=black&autoplay=true&toast=top&grantPermissions=true';
+// Public Appetize page for the app. Works on the free plan.
+const APPETIZE_PAGE = 'https://appetize.io/app/b_fcm2w5tbohqfojup5hx5wiwju4';
+// Embedding the phone inside this window needs a paid Appetize plan.
+// Flip to true after upgrading and the phone runs right here instead of in a new tab.
+const EMBEDS_ENABLED = false;
 
 // Optional shared demo login. Leave both empty and the window tells visitors to sign up inside the app.
 const DEMO_LOGIN = { email: '', password: '' };
@@ -37,6 +42,12 @@ export default function RetroHubApp({ show, setShow }) {
   function close() {
     setRunning(false);
     setShow(false);
+  }
+
+  // Without embeds, the demo runs on Appetize's own page in a new tab.
+  function start() {
+    if (EMBEDS_ENABLED) setRunning(true);
+    else window.open(APPETIZE_PAGE, '_blank', 'noopener,noreferrer');
   }
 
   function copy(text, which) {
@@ -91,8 +102,12 @@ export default function RetroHubApp({ show, setShow }) {
      | __ | |_| | _ \
      |_||_|\___/|___/`}</pre>
                   <p className="rh-boot-line">&gt; ANDROID BUILD LOADED<span className="rh-cursor">█</span></p>
-                  <button className="rh-start" onClick={() => setRunning(true)}>▶ START DEMO</button>
-                  <p className="rh-boot-note">Boots a real Android phone in your browser.<br />First load can take ~20 seconds.</p>
+                  <button className="rh-start" onClick={start}>▶ START DEMO</button>
+                  <p className="rh-boot-note">
+                    {EMBEDS_ENABLED
+                      ? <>Boots a real Android phone in your browser.<br />First load can take ~20 seconds.</>
+                      : <>Opens a real Android phone in a new tab.<br />Press the play button there; first load can take ~20 seconds.</>}
+                  </p>
                 </div>
               )}
             </div>
