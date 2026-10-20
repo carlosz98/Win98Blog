@@ -1,3 +1,4 @@
+import { HIDDEN_APPS } from './function/desktopLayout';
 import { useContext, useState, useRef, useEffect, useCallback } from "react";
 import "../css/AppIcons.css";
 import UseContext from "../Context";
@@ -27,7 +28,7 @@ const EDGE_ZONE        = 80;
 const EDGE_DELAY       = 650;
 const STORAGE_KEY      = "appicons_order";
 
-const bannedApp = ['Hard Disk (C:)', 'Hard Disk (D:)'];
+const bannedApp = ['Hard Disk (C:)', 'Hard Disk (D:)', ...HIDDEN_APPS];
 
 // ── persist helpers ────────────────────────────────────────────────────────────
 function loadOrder(defaultIcons) {
