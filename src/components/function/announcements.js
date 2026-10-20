@@ -130,6 +130,53 @@ const ANNOUNCEMENTS = [
     collection: 'scrapbook',
     data: { kind: 'image', src: `${SITE}progress/retrohub/retrohub-intro-sting.gif`, tag: 'retrohub', caption: 'New RetroHub launch intro, all made of ASCII characters. Part 1: the campfire.' },
   },
+  // RetroHub update, Oct 20 2026: the Albums page redesign.
+  {
+    key: 'retrohub-albums-devfeed',
+    collection: 'devfeed_posts',
+    data: {
+      title: 'RetroHub: the Albums page, redesigned',
+      body: 'The Albums page used to look like a different app, with neon glows and gradients. Now it matches the rest of RetroHub: white cards with ink borders, hard offset shadows and the green palette. Every album is a record sleeve with the vinyl peeking out the side, and the record spins while it plays. I also cleaned it up so the music comes first: Album of the Day, the weekly chart, the listening room, the jukebox and the rest of the extras now sit behind one MORE TO EXPLORE button, right before the Internet Archive section. Bonus: save soundtracks to a PS2-style memory card.',
+      tags: ['#Android', '#Kotlin', '#JetpackCompose', '#UIDesign', '#Music'],
+      media: `${SITE}progress/retrohub/retrohub-albums-duo.gif`,
+      mediaFit: 'full',
+      project: 'RetroHub',
+      likes: 0,
+      likedBy: [],
+      comments: [],
+    },
+  },
+  // Scrapbook shows newest first, so these are created last-to-first.
+  {
+    key: 'retrohub-albums-scrap-5',
+    collection: 'scrapbook',
+    data: { kind: 'image', src: `${SITE}progress/retrohub/albums-memory-card.jpg`, tag: 'retrohub', caption: 'Albums, step 5: save a soundtrack to your Memory Card (PS2). 7.5 MB free, just like the real one.' },
+  },
+  {
+    key: 'retrohub-albums-scrap-4',
+    collection: 'scrapbook',
+    data: { kind: 'image', src: `${SITE}progress/retrohub/albums-archive.jpg`, tag: 'retrohub', caption: 'Step 4: the extras fold into MORE TO EXPLORE, then the Internet Archive section with even more OSTs.' },
+  },
+  {
+    key: 'retrohub-albums-scrap-3',
+    collection: 'scrapbook',
+    data: { kind: 'image', src: `${SITE}progress/retrohub/albums-covers.jpg`, tag: 'retrohub', caption: 'Step 3: every album is a sleeve with the record peeking out. Zelda, Undertale, FF7, LEGO Harry Potter…' },
+  },
+  {
+    key: 'retrohub-albums-scrap-2',
+    collection: 'scrapbook',
+    data: { kind: 'image', src: `${SITE}progress/retrohub/albums-crate.jpg`, tag: 'retrohub', caption: 'Step 2: the Now Playing bar stays on top while you dig through the crate. Filter by era or vibe.' },
+  },
+  {
+    key: 'retrohub-albums-scrap-1',
+    collection: 'scrapbook',
+    data: { kind: 'image', src: `${SITE}progress/retrohub/albums-player.jpg`, tag: 'retrohub', caption: 'Step 1: open an album and the sleeve slides out with its tracklist and reviews.' },
+  },
+  {
+    key: 'retrohub-albums-scrap-video',
+    collection: 'scrapbook',
+    data: { kind: 'video', src: `${SITE}progress/retrohub/retrohub-albums.mp4`, tag: 'retrohub', caption: 'RetroHub Albums page redesign: same green scrapbook style as the rest of the app, music first.' },
+  },
 ];
 
 let running = false;
