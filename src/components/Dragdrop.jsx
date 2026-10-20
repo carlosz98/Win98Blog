@@ -5,7 +5,7 @@ import binEmp from '../assets/bin2.png'
 import bin from '../assets/bin.png'
 import { IoIosSearch } from "react-icons/io";
 import { motion, AnimatePresence } from 'framer-motion';
-import { DESKTOP_CELLS, DESKTOP_ROWS } from './function/desktopLayout';
+import { DESKTOP_CELLS, DESKTOP_ROWS, HIDDEN_APPS } from './function/desktopLayout';
 
 
 // Desktop icons that get an attention effect, so visitors find Carlos's work.
@@ -286,7 +286,7 @@ function Dragdrop() {
       <div className={fixedLayout ? 'drag_drop drag_drop_fixed' : 'drag_drop'}
         key={refresh}
       >
-        {desktopIcon.filter(icon => icon.folderId === 'Desktop' && icon.name !== 'RecycleBin').map(renderIcon)}
+        {desktopIcon.filter(icon => icon.folderId === 'Desktop' && icon.name !== 'RecycleBin' && !HIDDEN_APPS.includes(icon.name)).map(renderIcon)}
       </div>
       {/* The Recycle Bin sits in the lower-right corner, like a real desktop. */}
       <div className='drag_drop_bin'>

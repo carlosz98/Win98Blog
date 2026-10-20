@@ -6,11 +6,14 @@ export const DESKTOP_COLUMNS = [
   ['Project', 'Resume', 'About', 'Mail', 'Portfolio', 'Blog', 'DevFeed'],
   // 2. Sign it, read it, explore it
   ['Guestbook', 'Class Notes', 'Scrapbook', 'Magazine', 'Cool Sites', 'Visitor Map', 'Paint Gallery'],
-  // 3. Music and games
-  ['Media Player', 'Winamp', 'MSN', 'Solitaire', 'MineSweeper', 'Doom', 'Pinball'],
-  // 4. Extras
-  ['Space Invaders', 'TheOldNet', 'Clasicos', 'Ko-fi', 'Store', 'My Specs', 'MyComputer'],
+  // 3. Music and extras
+  ['Media Player', 'Winamp', 'MSN', 'TheOldNet', 'Ko-fi', 'My Specs', 'MyComputer'],
 ];
+
+// Apps hidden from the desktop for now (Oct 2026: simplifying the desktop).
+// Their code and saved positions are kept; empty this list and add their names back
+// to DESKTOP_COLUMNS to bring them back.
+export const HIDDEN_APPS = ['Solitaire', 'MineSweeper', 'Doom', 'Pinball', 'Space Invaders', 'Clasicos', 'Store'];
 
 export const DESKTOP_ROWS = Math.max(...DESKTOP_COLUMNS.map(c => c.length));
 
