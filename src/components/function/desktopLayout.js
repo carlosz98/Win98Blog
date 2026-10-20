@@ -10,8 +10,6 @@ export const DESKTOP_COLUMNS = [
   ['Media Player', 'Winamp', 'MSN', 'Solitaire', 'MineSweeper', 'Doom', 'Pinball'],
   // 4. Extras
   ['Space Invaders', 'TheOldNet', 'Clasicos', 'Ko-fi', 'Store', 'My Specs', 'MyComputer'],
-  // 5. Live app demo
-  ['RetroHub Demo'],
 ];
 
 export const DESKTOP_ROWS = Math.max(...DESKTOP_COLUMNS.map(c => c.length));

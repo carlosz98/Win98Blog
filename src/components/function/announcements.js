@@ -83,6 +83,53 @@ const ANNOUNCEMENTS = [
       comments: [],
     },
   })),
+  // RetroHub update, Oct 20 2026: new launch intro (album page post goes after it).
+  {
+    key: 'retrohub-intro-devfeed',
+    collection: 'devfeed_posts',
+    data: {
+      title: 'RetroHub: a new all-ASCII launch intro',
+      body: 'RetroHub has a new intro, and every frame is made of text characters. First a little campfire in an isometric forest clearing, lit only by the fire, with my credit "by doncarlis" decoding underneath. Then a quick boot screen, and the RETRO HUB logo glitches in, hits with a shockwave and sparks, and lands on a white scrapbook card: WELCOME, PLAYER, PRESS START. It all runs on one Compose Canvas, drawing a grid of monospace characters every frame. Tap to skip.',
+      tags: ['#Android', '#Kotlin', '#JetpackCompose', '#ASCII', '#Animation'],
+      media: `${SITE}progress/retrohub/retrohub-intro-duo.gif`,
+      mediaFit: 'full',
+      project: 'RetroHub',
+      likes: 0,
+      likedBy: [],
+      comments: [],
+    },
+  },
+  // Scrapbook shows newest first, so these are created last-to-first.
+  {
+    key: 'retrohub-intro-scrap-4',
+    collection: 'scrapbook',
+    data: { kind: 'image', src: `${SITE}progress/retrohub/intro-title.jpg`, tag: 'retrohub', caption: 'RetroHub intro, step 4: the logo lands on a scrapbook card. WELCOME, PLAYER. Press start!' },
+  },
+  {
+    key: 'retrohub-intro-scrap-3',
+    collection: 'scrapbook',
+    data: { kind: 'image', src: `${SITE}progress/retrohub/intro-impact.jpg`, tag: 'retrohub', caption: 'Step 3: RETRO HUB decodes out of random symbols and hits with a shockwave.' },
+  },
+  {
+    key: 'retrohub-intro-scrap-2',
+    collection: 'scrapbook',
+    data: { kind: 'image', src: `${SITE}progress/retrohub/intro-credit.jpg`, tag: 'retrohub', caption: 'Step 2: "by doncarlis" types itself out under the fire.' },
+  },
+  {
+    key: 'retrohub-intro-scrap-1',
+    collection: 'scrapbook',
+    data: { kind: 'image', src: `${SITE}progress/retrohub/intro-campfire.jpg`, tag: 'retrohub', caption: 'Step 1: a campfire in a tiny forest clearing. Only what the fire lights up is visible.' },
+  },
+  {
+    key: 'retrohub-intro-scrap-title-gif',
+    collection: 'scrapbook',
+    data: { kind: 'image', src: `${SITE}progress/retrohub/retrohub-intro-title.gif`, tag: 'retrohub', caption: 'Part 2 of the RetroHub intro: boot screen, glitchy logo, impact, PRESS START.' },
+  },
+  {
+    key: 'retrohub-intro-scrap-sting-gif',
+    collection: 'scrapbook',
+    data: { kind: 'image', src: `${SITE}progress/retrohub/retrohub-intro-sting.gif`, tag: 'retrohub', caption: 'New RetroHub launch intro, all made of ASCII characters. Part 1: the campfire.' },
+  },
 ];
 
 let running = false;
