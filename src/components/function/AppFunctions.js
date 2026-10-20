@@ -54,6 +54,7 @@ import pinball from '../../assets/pinball.png'
 import scrapbook from '../../assets/scrapbook.png'
 import coolsites from '../../assets/coolsites.png'
 import classnotes from '../../assets/classnotes.png'
+import retrohub from '../../assets/retrohub.png'
 import magazine from '../../assets/magazine.png'
 import mediaplayer from '../../assets/mediaplayer.png'
 import myspecs from '../../assets/myspecs.png'
@@ -188,6 +189,8 @@ export function imageMapping (name, type) {
       return coolsites;
     case 'ClassNotes':
       return classnotes;
+    case 'RetroHubDemo':
+      return retrohub;
     case 'Magazine':
       return magazine;
     case 'MediaPlayer':

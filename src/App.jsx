@@ -40,6 +40,7 @@ import Tooltip from './components/Tooltip';
 import Scrapbook from './components/Scrapbook';
 import CoolSites from './components/CoolSites';
 import ClassNotes from './components/ClassNotes';
+import RetroHubApp from './components/RetroHubApp';
 import Magazine from './components/Magazine';
 import MediaPlayer from './components/MediaPlayer';
 import SystemSpecs from './components/SystemSpecs';
@@ -217,6 +218,7 @@ function App() {
   const [scrapbookShow, setScrapbookShow] = useState(false);
   const [coolSitesShow, setCoolSitesShow] = useState(false);
   const [classNotesShow, setClassNotesShow] = useState(false);
+  const [retroHubShow, setRetroHubShow] = useState(false);
   const [magazineShow, setMagazineShow] = useState(false);
   const [mediaPlayerShow, setMediaPlayerShow] = useState(false);
   const [specsShow, setSpecsShow] = useState(false);
@@ -993,6 +995,7 @@ function handleShowInfolderMobile(name, type) {
         <Scrapbook show={scrapbookShow} setShow={setScrapbookShow}/>
         <CoolSites show={coolSitesShow} setShow={setCoolSitesShow}/>
         <ClassNotes show={classNotesShow} setShow={setClassNotesShow}/>
+        <RetroHubApp show={retroHubShow} setShow={setRetroHubShow}/>
         <Magazine show={magazineShow} setShow={setMagazineShow}/>
         <MediaPlayer show={mediaPlayerShow} setShow={setMediaPlayerShow}/>
         <SystemSpecs show={specsShow} setShow={setSpecsShow}/>
@@ -1481,6 +1484,7 @@ if(webGameName(lowerCaseName)) {
     else if (lowerCaseName === 'scrapbook') setScrapbookShow(true);
     else if (lowerCaseName === 'coolsites') setCoolSitesShow(true);
     else if (lowerCaseName === 'classnotes') setClassNotesShow(true);
+    else if (lowerCaseName === 'retrohubdemo') setRetroHubShow(true);
     else if (lowerCaseName === 'magazine') setMagazineShow(true);
     else if (lowerCaseName === 'mediaplayer') setMediaPlayerShow(true);
     else if (lowerCaseName === 'myspecs') setSpecsShow(true);
