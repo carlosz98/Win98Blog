@@ -62,6 +62,8 @@ layout = [
               ('week-3-day-2', 'Day 2 — Numbers, strings, casting, arrays', find('week-3-day-2') + ['1-arrays'])]),
   ('Week 4', [('week-4-day-1', 'Day 1 — Strict types, functions, scope, Lab #2', find('week-4-day-1')),
               ('week-4-day-2', 'Day 2 — Forms, GET vs POST, Lab #3', find('week-4-day-2'))]),
+  ('Week 5', [('week-5-day-1', 'Day 1 — Form validation, Assignment 1', find('week-5-day-1')),
+              ('week-5-day-2', 'Day 2 — Sessions and cookies', find('week-5-day-2'))]),
   ('Project 1', [('project-1', 'Deliverable 1 — Project proposal', find('project-1'))]),
 ]
 used = set()
@@ -92,6 +94,15 @@ for k, (title, body) in other.items():
     (out / cid / 'notes.html').write_text(body, encoding='utf-8')
     classes.append({'id': cid, 'title': f'{code} - {name}',
                     'folders': [{'title': 'Overview', 'pages': [{'slug': 'notes', 'title': 'Notes', 'topics': h3s(body)}]}]})
+# Other classes no longer in the doc keep their saved pages (scripts/other-classes/).
+saved = root / 'scripts' / 'other-classes'
+have = {c['id'] for c in classes}
+for c in json.loads((saved / 'index.json').read_text(encoding='utf-8')):
+    if c['id'] in have:
+        continue
+    (out / c['id']).mkdir(exist_ok=True)
+    shutil.copy(saved / f"{c['id']}.html", out / c['id'] / 'notes.html')
+    classes.append(c)
 index = {'classes': classes}
 (out / 'index.json').write_text(json.dumps(index, indent=1, ensure_ascii=False), encoding='utf-8')
 print('pages:', sum(len(f['pages']) for f in folders), 'images:', len(list((out / 'img').iterdir())))

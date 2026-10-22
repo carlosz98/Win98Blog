@@ -405,6 +405,63 @@
      ]
     },
     {
+     "title": "Week 5",
+     "pages": [
+      {
+       "slug": "week-5-day-1",
+       "title": "Day 1 — Form validation, Assignment 1",
+       "topics": [
+        {
+         "id": "topic-1-form-validation-php-tutorial-part-8",
+         "title": "Topic 1: Form Validation (PHP Tutorial Part 8)"
+        },
+        {
+         "id": "topic-2-homework-mac-272-assignment-1-login-with-arrays",
+         "title": "Topic 2: Homework — MAC 272 Assignment 1 (Login with arrays)"
+        },
+        {
+         "id": "end-of-week-5-day-1-summary",
+         "title": "End of Week 5, Day 1 — Summary"
+        }
+       ]
+      },
+      {
+       "slug": "week-5-day-2",
+       "title": "Day 2 — Sessions and cookies",
+       "topics": [
+        {
+         "id": "topic-1-sessions",
+         "title": "Topic 1: Sessions"
+        },
+        {
+         "id": "topic-2-sessions-in-php",
+         "title": "Topic 2: Sessions in PHP"
+        },
+        {
+         "id": "topic-3-cookies",
+         "title": "Topic 3: Cookies"
+        },
+        {
+         "id": "topic-4-cookies-vs-sessions",
+         "title": "Topic 4: Cookies vs. Sessions"
+        },
+        {
+         "id": "topic-5-ways-to-pass-data-between-pages",
+         "title": "Topic 5: Ways to pass data between pages"
+        },
+        {
+         "id": "topic-6-connecting-this-to-assignment-1",
+         "title": "Topic 6: Connecting this to Assignment 1"
+        },
+        {
+         "id": "end-of-week-5-day-2-summary",
+         "title": "End of Week 5, Day 2 — Summary"
+        }
+       ]
+      }
+     ]
+    },
+    {
      "title": "Project 1",
      "pages": [
       {
