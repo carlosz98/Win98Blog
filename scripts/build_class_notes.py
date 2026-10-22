@@ -12,10 +12,12 @@ src, imap_path, asset_dir = sys.argv[1:4]
 root = Path(__file__).resolve().parent.parent
 out = root / 'public' / 'class-notes'
 cls = 'mac272'
-if out.exists():
-    shutil.rmtree(out)
+# Only MAC 272 is rebuilt. Other classes (added with add_class_notes.py) are left alone.
+old_index = json.loads((out / 'index.json').read_text(encoding='utf-8')) if (out / 'index.json').exists() else {'classes': []}
+if (out / cls).exists():
+    shutil.rmtree(out / cls)
 (out / cls).mkdir(parents=True)
-(out / 'img').mkdir()
+(out / 'img').mkdir(exist_ok=True)
 
 text = Path(src).read_text(encoding='utf-8')
 imap = json.loads(Path(imap_path).read_text())
@@ -94,15 +96,9 @@ for k, (title, body) in other.items():
     (out / cid / 'notes.html').write_text(body, encoding='utf-8')
     classes.append({'id': cid, 'title': f'{code} - {name}',
                     'folders': [{'title': 'Overview', 'pages': [{'slug': 'notes', 'title': 'Notes', 'topics': h3s(body)}]}]})
-# Other classes no longer in the doc keep their saved pages (scripts/other-classes/).
-saved = root / 'scripts' / 'other-classes'
+# Classes already on the blog but not in this doc keep their existing pages and entry.
 have = {c['id'] for c in classes}
-for c in json.loads((saved / 'index.json').read_text(encoding='utf-8')):
-    if c['id'] in have:
-        continue
-    (out / c['id']).mkdir(exist_ok=True)
-    shutil.copy(saved / f"{c['id']}.html", out / c['id'] / 'notes.html')
-    classes.append(c)
+classes += [c for c in old_index['classes'] if c['id'] not in have]
 index = {'classes': classes}
 (out / 'index.json').write_text(json.dumps(index, indent=1, ensure_ascii=False), encoding='utf-8')
 print('pages:', sum(len(f['pages']) for f in folders), 'images:', len(list((out / 'img').iterdir())))
