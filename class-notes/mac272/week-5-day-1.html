@@ -1,0 +1,550 @@
+<h2 id="week-5-day-1-tuesday-10202026-form-validation-and-assignment-1">Week 5, Day 1 — Tuesday 10/20/2026: Form Validation and Assignment 1</h2>
+<p>Two topics today: the handout &quot;PHP Tutorial Part 8: Form Validation&quot;, and the first homework, MAC 272 Assignment 1 (a login with arrays). The validation functions here are the same ones Lab #3 (Week 4, Day 2) uses.</p>
+<h3 id="topic-1-form-validation-php-tutorial-part-8">Topic 1: Form Validation (PHP Tutorial Part 8)</h3>
+<h4 id="what-form-validation-is">What form validation is</h4>
+<p>Form validation means making sure user input follows specific rules before it is processed.</p>
+<table><thead><tr><th>Reason</th><th>Meaning</th></tr></thead><tbody><tr><td>Prevent errors</td><td>Make sure required data is provided and in the right format.</td></tr><tr><td>Security</td><td>Protect the application from harmful input, such as SQL injection or injected scripts.</td></tr><tr><td>Data integrity</td><td>Make sure only valid data is stored or processed.</td></tr></tbody></table>
+<p>In simple words: never trust what the user types. Check it first.</p>
+<h4 id="types-of-validation">Types of validation</h4>
+<table><thead><tr><th></th><th>Client-side</th><th>Server-side</th></tr></thead><tbody><tr><td>Where it runs</td><td>In the user&#39;s browser</td><td>On the server, in PHP</td></tr><tr><td>Tools</td><td>JavaScript or HTML5 attributes (<code>required</code>, <code>pattern</code>, input types)</td><td>PHP functions</td></tr><tr><td>Speed</td><td>Instant feedback, before anything is sent</td><td>After the form is submitted</td></tr><tr><td>Can it be bypassed?</td><td>Yes, the user can turn it off or skip it</td><td>No, it always runs</td></tr><tr><td>Role</td><td>A convenience for the user</td><td>The real protection</td></tr></tbody></table>
+<p><strong>Key rule:</strong> client-side validation must never be the only layer. Always validate on the server too.</p>
+<h4 id="client-side-validation-html5">Client-side validation (HTML5)</h4>
+<p>HTML5 input types have built-in validation. An <code>&lt;input type=&quot;email&quot;&gt;</code> looks like a text box, but the browser only accepts text in email format, and the check happens before the data is sent. The same goes for <code>url</code>, <code>number</code>, and other types. If the data is in the wrong format, the browser shows a message when you click Submit and does not send the form.</p>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;body&gt;
+  &lt;h1&gt;Input Validation&lt;/h1&gt;
+  &lt;form&gt;
+    &lt;p&gt;&lt;label for=&quot;name&quot;&gt;Enter your name&lt;/label&gt;
+    &lt;input type=&quot;text&quot; id=&quot;name&quot; name=&quot;name&quot;&gt;&lt;/p&gt;
+
+    &lt;p&gt;&lt;label for=&quot;age&quot;&gt;Enter age&lt;/label&gt;
+    &lt;input type=&quot;number&quot; id=&quot;age&quot; name=&quot;age&quot;&gt;&lt;/p&gt;
+
+    &lt;p&gt;&lt;label for=&quot;email&quot;&gt;Enter your email:&lt;/label&gt;
+    &lt;input type=&quot;email&quot; id=&quot;email&quot; name=&quot;email&quot;&gt;&lt;/p&gt;
+
+    &lt;p&gt;&lt;label for=&quot;URL&quot;&gt;Enter your website&lt;/label&gt;
+    &lt;input type=&quot;url&quot; id=&quot;URL&quot; name=&quot;url&quot;&gt;&lt;/p&gt;
+
+    &lt;input type=&quot;submit&quot;&gt;
+  &lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p><strong>Output:</strong> the heading Input Validation, four boxes (name, age, email, website), and a Submit button.</p>
+<table><thead><tr><th>You type</th><th>Result</th></tr></thead><tbody><tr><td>Age: <code>abc</code></td><td>The number box does not accept letters.</td></tr><tr><td>Age: <code>25</code></td><td>Accepted. The arrows raise or lower the number.</td></tr><tr><td>Email: <code>ana</code></td><td>The browser blocks the submit with a message like &quot;Please include an &#39;@&#39; in the email address.&quot;</td></tr><tr><td>Email: <code>ana@mail.com</code></td><td>Accepted</td></tr><tr><td>Website: <code>mail.com</code></td><td>Blocked. The browser asks for a URL (it needs a start like <code>https://</code>).</td></tr><tr><td>Website: <code>https://mail.com</code></td><td>Accepted</td></tr></tbody></table>
+<p>The wording of the messages depends on the browser. The form has no <code>action</code> or <code>method</code>, so once everything passes, the page reloads itself and the typed data shows in the address bar (GET is the default).</p>
+<table><thead><tr><th>Input type</th><th>What the browser does</th></tr></thead><tbody><tr><td><code>type=&quot;number&quot;</code></td><td>Up and down arrows on the right. Only numbers, and the value can be raised or lowered.</td></tr><tr><td><code>type=&quot;email&quot;</code></td><td>An error if the text is not in email format.</td></tr><tr><td><code>type=&quot;url&quot;</code></td><td>An error if the text is not a valid web address.</td></tr></tbody></table>
+<blockquote><p><strong>Typos in the handout:</strong> it writes <code>&lt;Label for &quot;name&quot;&gt;</code> (missing the <code>=</code>) and closes the website label with <code>&lt;label&gt;</code> instead of <code>&lt;/label&gt;</code>. The code above is corrected.</p></blockquote>
+<p><strong>Why client-side is not enough:</strong> anyone can turn off JavaScript, edit the page in the browser tools, or send data straight to your PHP file without using your form. The server cannot trust that the browser checked anything.</p>
+<h4 id="server-side-validation-php">Server-side validation (PHP)</h4>
+<p>Server-side validation runs in PHP, after the browser&#39;s checks or when there are none. The handout covers, in order: required fields, numbers, email and URL, and names.</p>
+<h5 id="required-fields-empty">Required fields: <code>empty()</code></h5>
+<p><code>empty()</code> returns <code>true</code> if the variable does not exist, holds a value PHP considers empty, or is equal to <code>false</code>.</p>
+<table><thead><tr><th>Value</th><th>Meaning</th></tr></thead><tbody><tr><td><code>&quot;&quot;</code></td><td>An empty string</td></tr><tr><td><code>0</code></td><td>Zero</td></tr><tr><td><code>NULL</code></td><td>No value</td></tr><tr><td><code>false</code></td><td>The boolean false</td></tr><tr><td><code>array()</code></td><td>An empty array</td></tr><tr><td>A variable declared but not initialized</td><td>Nothing stored in it</td></tr></tbody></table>
+<pre><code class="language-php">$name = &quot;&quot;;
+if (empty($name)) {
+    echo &quot;The variable is empty.&quot;;   // This will be executed.
+}</code></pre>
+<p><strong>Output:</strong></p>
+<pre><code>The variable is empty.</code></pre>
+<ul><li><p><strong>Why it works for forms:</strong> a blank text box is sent as an empty string, which <code>empty()</code> catches. A radio group with nothing selected is not sent at all, and <code>empty()</code> catches that too, without a warning.</p></li><li><p><strong>Watch out:</strong> <code>0</code> counts as empty, so a field where the user types <code>0</code> would be treated as blank.</p></li></ul>
+<table><thead><tr><th></th><th><code>empty($x)</code></th><th><code>isset($x)</code></th></tr></thead><tbody><tr><td>Question it answers</td><td>&quot;Is it blank, zero, or missing?&quot;</td><td>&quot;Does it exist and have a value (not NULL)?&quot;</td></tr><tr><td>Good for</td><td>Checking a required field</td><td>Checking that a variable or key exists, like the submit button</td></tr></tbody></table>
+<h5 id="numbers-isnumeric">Numbers: <code>is_numeric()</code></h5>
+<p><code>is_numeric()</code> returns <code>true</code> if the value is a number or a numeric string, and <code>false</code> if not.</p>
+<pre><code class="language-php">$int = 10;
+if (is_numeric($int)) {
+    echo &quot;$int is numeric.&quot;;   // Output: 10 is numeric.
+}</code></pre>
+<p><strong>Output:</strong></p>
+<pre><code>10 is numeric.</code></pre>
+<table><thead><tr><th>Value</th><th><code>is_numeric()</code></th></tr></thead><tbody><tr><td><code>10</code>, <code>-5</code></td><td>true (integers)</td></tr><tr><td><code>3.14</code>, <code>-0.01</code></td><td>true (decimals)</td></tr><tr><td><code>&quot;42&quot;</code>, <code>&quot;3.14159&quot;</code>, <code>&quot;0&quot;</code></td><td>true (numeric strings)</td></tr><tr><td><code>&quot;1e3&quot;</code></td><td>true (scientific notation)</td></tr><tr><td><code>&quot;abc&quot;</code>, <code>&quot;12ab&quot;</code>, <code>&quot;&quot;</code></td><td>false</td></tr></tbody></table>
+<p><strong>For the lab&#39;s zip code:</strong> <code>is_numeric()</code> is what this class teaches, but it also accepts decimals, negatives, and <code>1e3</code>. <code>ctype_digit()</code> is stricter and only accepts the digits 0 to 9. Either way the idea is the same: check, and save an error message when the check fails.</p>
+<h5 id="email-and-url">Email and URL</h5>
+<p>Two ways: regular expressions (RegEx) with <code>preg_match()</code>, or <code>filter_var()</code>. The second is simpler and more reliable.</p>
+<p><strong>Method 1: regular expressions with <code>preg_match()</code></strong></p>
+<p>A regular expression is a pattern that matches character combinations in text (emails, phone numbers, passwords, URLs). <code>preg_match(pattern, text)</code> returns <code>1</code> if the text fits the pattern and <code>0</code> if not.</p>
+<pre><code class="language-php">&lt;?php
+$email = &quot;user@example.com&quot;;
+// Regular expression for validating email
+$emailRegex = &quot;/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/&quot;;
+
+if (preg_match($emailRegex, $email)) {
+    echo &quot;Valid Email (RegEx)&quot;;
+} else {
+    echo &quot;Invalid Email (RegEx)&quot;;
+}
+?&gt;</code></pre>
+<p><strong>Output:</strong></p>
+<pre><code>Valid Email (RegEx)</code></pre>
+<table><thead><tr><th><code>$email</code></th><th>Output</th></tr></thead><tbody><tr><td><code>user@example.com</code></td><td>Valid Email (RegEx)</td></tr><tr><td><code>user@example</code></td><td>Invalid Email (RegEx) (no dot and ending)</td></tr><tr><td><code>user.example.com</code></td><td>Invalid Email (RegEx) (no <code>@</code>)</td></tr><tr><td><code>user@example.c</code></td><td>Invalid Email (RegEx) (the ending needs at least 2 letters)</td></tr></tbody></table>
+<p>How the email pattern reads:</p>
+<table><thead><tr><th>Piece</th><th>Meaning</th></tr></thead><tbody><tr><td><code>^</code></td><td>Start of the text</td></tr><tr><td><code>[a-zA-Z0-9._%+-]+</code></td><td>One or more letters, digits, or <code>. _ % + -</code> (the part before the <code>@</code>)</td></tr><tr><td><code>@</code></td><td>A literal <code>@</code></td></tr><tr><td><code>[a-zA-Z0-9.-]+</code></td><td>One or more letters, digits, dots, or hyphens (the domain, like <code>example</code>)</td></tr><tr><td><code>\.</code></td><td>A literal dot. The backslash is needed because a plain <code>.</code> means &quot;any character&quot;.</td></tr><tr><td><code>[a-zA-Z]{2,}</code></td><td>At least two letters (like <code>com</code> or <code>org</code>)</td></tr><tr><td><code>$</code></td><td>End of the text</td></tr></tbody></table>
+<p>URL with RegEx:</p>
+<pre><code class="language-php">&lt;?php
+$url = &quot;https://www.example.com&quot;;
+// Regular expression for validating URL
+$urlRegex = &quot;/\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&amp;@#\/%?=~_|!:,.;]*[-a-z0-9+&amp;@#\/%=~_|]/i&quot;;
+
+if (preg_match($urlRegex, $url)) {
+    echo &quot;Valid URL (RegEx)&quot;;
+} else {
+    echo &quot;Invalid URL (RegEx)&quot;;
+}
+?&gt;</code></pre>
+<p><strong>Output:</strong></p>
+<pre><code>Valid URL (RegEx)</code></pre>
+<ul><li><p>Roughly: the address must start with <code>http://</code>, <code>https://</code>, <code>ftp://</code>, or <code>www.</code>, followed by allowed characters. <code>s?</code> makes the <code>s</code> optional, and the <code>i</code> at the end makes it case-insensitive.</p></li><li><p><code>|</code> means OR. In the handout file it shows up as a tall bar character (│), which is a conversion error. In real code it must be the normal <code>|</code>.</p></li><li><p>The takeaway: this pattern is long and easy to get wrong, which is why Method 2 is preferred.</p></li></ul>
+<p><strong>Method 2: <code>filter_var()</code></strong></p>
+<p><code>filter_var()</code> uses ready-made filters like <code>FILTER_VALIDATE_EMAIL</code> and <code>FILTER_VALIDATE_URL</code>.</p>
+<pre><code class="language-php">&lt;?php
+$email = &quot;user@example.com&quot;;
+if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    echo &quot;Valid Email (filter_var)&quot;;
+} else {
+    echo &quot;Invalid Email (filter_var)&quot;;
+}
+?&gt;</code></pre>
+<p><strong>Output:</strong></p>
+<pre><code>Valid Email (filter_var)</code></pre>
+<p>With <code>$email = &quot;user@&quot;</code> the output is <code>Invalid Email (filter_var)</code>.</p>
+<pre><code class="language-php">&lt;?php
+$url = &quot;https://www.example.com&quot;;
+if (filter_var($url, FILTER_VALIDATE_URL)) {
+    echo &quot;Valid URL (filter_var)&quot;;
+} else {
+    echo &quot;Invalid URL (filter_var)&quot;;
+}
+?&gt;</code></pre>
+<p><strong>Output:</strong></p>
+<pre><code>Valid URL (filter_var)</code></pre>
+<p>With <code>$url = &quot;example.com&quot;</code> (no <code>https://</code>) the output is <code>Invalid URL (filter_var)</code>.</p>
+<table><thead><tr><th></th><th>RegEx (<code>preg_match</code>)</th><th><code>filter_var</code></th></tr></thead><tbody><tr><td>Effort</td><td>You write and test the pattern</td><td>One line with a ready-made filter</td></tr><tr><td>Risk of mistakes</td><td>High, patterns are easy to get wrong</td><td>Low</td></tr><tr><td>Flexibility</td><td>Any rule you can describe</td><td>Only the built-in filters</td></tr><tr><td>Recommended for email and URL</td><td>No</td><td>Yes</td></tr></tbody></table>
+<p>More on <code>filter_var()</code> is in Week 4, Day 2.</p>
+<h5 id="names">Names</h5>
+<p>A name usually has letters, spaces, hyphens, and sometimes apostrophes. The handout&#39;s pattern allows letters (a-z, A-Z), spaces between first and last names, hyphens (Jean-Paul), and apostrophes (O&#39;Connor).</p>
+<pre><code class="language-php">&lt;?php
+function validateName($name) {
+    $pattern = &quot;/^[a-zA-Z&#39;-]+( [a-zA-Z&#39;-]+)*$/&quot;;
+    if (preg_match($pattern, $name)) {
+        return &quot;Valid Name&quot;;
+    } else {
+        return &quot;Invalid Name&quot;;
+    }
+}
+
+// Test the function
+echo validateName(&quot;John O&#39;Connor&quot;);   // Valid
+echo validateName(&quot;Mary-Anne&quot;);       // Valid
+echo validateName(&quot;123Name&quot;);         // Invalid
+?&gt;</code></pre>
+<p><strong>Output:</strong></p>
+<pre><code>Valid NameValid NameInvalid Name</code></pre>
+<p>The three results run together because the <code>echo</code> statements add no line break or space. In order: John O&#39;Connor is valid, Mary-Anne is valid, and 123Name is invalid (it starts with digits).</p>
+<p><strong>Your own function.</strong> Besides the built-in functions, you can write your own:</p>
+<pre><code class="language-php">function functionName($parameter) {
+    // code that does the job
+    return $result;   // the answer handed back
+}</code></pre>
+<ul><li><p><code>function</code> starts the definition, and <code>validateName</code> is the name you choose.</p></li><li><p><code>$name</code> in the parentheses is the parameter, the value given to it when you call it.</p></li><li><p><code>return</code> hands the answer back to where the function was called, so <code>echo validateName(&quot;Mary-Anne&quot;);</code> prints <code>Valid Name</code>.</p></li><li><p>Writing the check once in a function lets you reuse it for any name.</p></li></ul>
+<p>How the name pattern reads: <code>/^[a-zA-Z&#39;-]+( [a-zA-Z&#39;-]+)*$/</code></p>
+<table><thead><tr><th>Piece</th><th>Meaning</th></tr></thead><tbody><tr><td><code>^</code> and <code>$</code></td><td>The pattern must cover the whole text.</td></tr><tr><td><code>[a-zA-Z&#39;-]+</code></td><td>One word: one or more letters, apostrophes, or hyphens. The <code>-</code> at the end of the brackets is a literal hyphen.</td></tr><tr><td><code>( [a-zA-Z&#39;-]+)*</code></td><td>Zero or more extra words, each one space followed by a word.</td></tr></tbody></table>
+<p>Because every extra word needs exactly one space before it, the pattern rejects names that start or end with a space, or have two spaces in a row.</p>
+<p>Adding a length rule:</p>
+<pre><code class="language-php">&lt;?php
+function validateName($name) {
+    $trimmedName = trim($name);   // Remove leading/trailing spaces
+    if (strlen($trimmedName) &lt; 2 || strlen($trimmedName) &gt; 50) {
+        return &quot;Invalid Name: Length not within range&quot;;
+    }
+    return preg_match(&quot;/^[a-zA-Z&#39;-]+( [a-zA-Z&#39;-]+)*$/&quot;, $trimmedName) ? &quot;Valid Name&quot; : &quot;Invalid Name&quot;;
+}
+
+// Test the function
+echo validateName(&quot;A&quot;);               // Invalid (too short)
+echo validateName(&quot;Johnathan Smith&quot;); // Valid
+?&gt;</code></pre>
+<p><strong>Output:</strong></p>
+<pre><code>Invalid Name: Length not within rangeValid Name</code></pre>
+<ul><li><p><code>&quot;A&quot;</code> has 1 character (less than 2), so the function returns the length message and stops.</p></li><li><p><code>&quot;Johnathan Smith&quot;</code> has 15 characters (between 2 and 50) and matches the pattern, so it returns <code>Valid Name</code>.</p></li><li><p><code>strlen(text)</code> counts the characters in the text.</p></li><li><p><code>||</code> means OR: rejected if shorter than 2 or longer than 50. (In the handout file <code>||</code> shows up as two tall bars, a conversion error.)</p></li><li><p><code>condition ? &quot;A&quot; : &quot;B&quot;</code> is the <strong>ternary operator</strong>, a short <code>if</code>/<code>else</code>.</p></li><li><p><code>trim()</code> runs first, so spaces at the ends are not counted.</p></li></ul>
+<blockquote><p><strong>Compare with Lab #3:</strong> the lab says letters and white space only, so use <code>/^[a-zA-Z ]*$/</code> there. The handout&#39;s pattern also allows hyphens and apostrophes. Follow the lab&#39;s instructions for the lab.</p></blockquote>
+<h4 id="other-functions-to-clean-form-data">Other functions to clean form data</h4>
+<h5 id="htmlspecialchars"><code>htmlspecialchars()</code></h5>
+<p>Converts special characters into HTML entities (safe codes the browser shows as plain text).</p>
+<table><thead><tr><th>Character</th><th>Becomes</th></tr></thead><tbody><tr><td><code>&lt;</code></td><td><code>&amp;lt;</code></td></tr><tr><td><code>&gt;</code></td><td><code>&amp;gt;</code></td></tr><tr><td><code>&amp;</code></td><td><code>&amp;amp;</code></td></tr><tr><td><code>&quot;</code></td><td><code>&amp;quot;</code></td></tr></tbody></table>
+<p><strong>Why it matters:</strong> it prevents <strong>Cross-site Scripting (XSS)</strong>, where someone tries to insert HTML or JavaScript into a form or URL. After conversion, the code is treated as plain text and the browser does not run it.</p>
+<pre><code class="language-php">$user_input = &quot;&lt;script&gt;alert(&#39;Hacked!&#39;);&lt;/script&gt;&quot;;
+$safe_input = htmlspecialchars($user_input);
+echo $safe_input;</code></pre>
+<p><strong>Output on the page:</strong></p>
+<pre><code>&lt;script&gt;alert(&#39;Hacked!&#39;);&lt;/script&gt;</code></pre>
+<p>The text appears exactly as typed and no pop-up shows up. In the page source it is stored as <code>&amp;lt;script&amp;gt;alert(&amp;#039;Hacked!&amp;#039;);&amp;lt;/script&amp;gt;</code> (PHP 8.1 and newer also convert the single quotes; the handout shows the older result with plain <code>&#39;</code>).</p>
+<h5 id="trim"><code>trim()</code></h5>
+<p>Strips extra spaces, tabs, and new lines from the start and end of the input.</p>
+<pre><code class="language-php">&lt;?php
+$input = &quot;  Hello World!  &quot;;
+$trimmed = trim($input);
+echo $trimmed;   // Output: &quot;Hello World!&quot;
+?&gt;</code></pre>
+<p><strong>Output:</strong></p>
+<pre><code>Hello World!</code></pre>
+<p>The quotes in the comment only show where the text starts and ends.</p>
+<h5 id="stripslashes"><code>stripslashes()</code></h5>
+<p>Removes backslashes (<code>\</code>) from the input.</p>
+<pre><code class="language-php">&lt;?php
+$input = &quot;Hello\\ World\\!&quot;;
+$output = stripslashes($input);
+echo $output;   // Output: &quot;Hello World!&quot;
+?&gt;</code></pre>
+<p><strong>Output:</strong></p>
+<pre><code>Hello World!</code></pre>
+<p><code>\\</code> is how PHP writes one backslash inside double quotes, so the text is <code>Hello\ World\!</code>. Older PHP versions added backslashes to form data automatically, which is why this function is part of the usual cleaning routine. Modern PHP rarely needs it, but it does no harm.</p>
+<table><thead><tr><th>Function</th><th>What it does</th><th>Why use it</th></tr></thead><tbody><tr><td><code>trim()</code></td><td>Removes spaces, tabs, and new lines from both ends</td><td>Clean input, and make blank-only input count as empty</td></tr><tr><td><code>stripslashes()</code></td><td>Removes backslashes</td><td>Clean up escaped input</td></tr><tr><td><code>htmlspecialchars()</code></td><td>Turns <code>&lt;</code>, <code>&gt;</code>, <code>&amp;</code>, <code>&quot;</code> into safe codes</td><td>Stop XSS attacks</td></tr></tbody></table>
+<h4 id="keep-the-values-in-the-form">Keep the values in the form</h4>
+<p>To keep what the user typed after submitting, echo the value into each field&#39;s <code>value</code> attribute:</p>
+<pre><code class="language-php">&lt;input type=&quot;text&quot; id=&quot;name&quot; name=&quot;name&quot; value=&quot;&lt;?php echo $name; ?&gt;&quot;&gt;</code></pre>
+<ul><li><p><strong>Why:</strong> if one field has an error, the user should not have to retype all the others.</p></li><li><p>Textareas have no <code>value</code> attribute. The text goes between the tags: <code>&lt;textarea name=&quot;comment&quot;&gt;&lt;?php echo $comment; ?&gt;&lt;/textarea&gt;</code>.</p></li><li><p>Radio buttons use <code>checked</code>: <code>&lt;?php if ($gender == &quot;female&quot;) echo &quot;checked&quot;; ?&gt;</code>.</p></li><li><p>Safer: <code>value=&quot;&lt;?php echo htmlspecialchars($name); ?&gt;&quot;</code>, so a quote typed by the user cannot break out of the attribute.</p></li></ul>
+<h4 id="displaying-error-messages">Displaying error messages</h4>
+<p>Check the data when the form is submitted. If a field breaks a rule, save an error message and print it next to the field.</p>
+<pre><code class="language-php">&lt;?php
+// Initialize variables and error message
+$nameError = $name = &quot;&quot;;
+
+// Check if form is submitted
+if ($_SERVER[&quot;REQUEST_METHOD&quot;] == &quot;POST&quot;) {
+    // Validate Name
+    if (empty($_POST[&quot;name&quot;])) {
+        $nameError = &quot;Name is required&quot;;
+    } else {
+        $name = htmlspecialchars(trim($_POST[&quot;name&quot;]));   // Sanitize input
+    }
+}
+?&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;title&gt;Simple Name Validation&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h2&gt;Enter Your Name&lt;/h2&gt;
+    &lt;form method=&quot;POST&quot; action=&quot;&lt;?php echo htmlspecialchars($_SERVER[&quot;PHP_SELF&quot;]);?&gt;&quot;&gt;
+        &lt;!-- Name Field --&gt;
+        &lt;label for=&quot;name&quot;&gt;Name:&lt;/label&gt;
+        &lt;input type=&quot;text&quot; id=&quot;name&quot; name=&quot;name&quot; value=&quot;&lt;?php echo $name; ?&gt;&quot;&gt;
+        &lt;span class=&quot;error&quot;&gt;&lt;?php echo $nameError; ?&gt;&lt;/span&gt;&lt;br&gt;&lt;br&gt;
+        &lt;input type=&quot;submit&quot; value=&quot;Submit&quot;&gt;
+    &lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p><strong>Output:</strong> the heading Enter Your Name, a Name box, and a Submit button.</p>
+<table><thead><tr><th>You do</th><th>Result</th></tr></thead><tbody><tr><td>Open the page</td><td>Empty Name box, no message.</td></tr><tr><td>Submit with the box blank</td><td><code>Name is required</code> appears next to the box.</td></tr><tr><td><span style="white-space:pre-wrap">Type <code> Ana </code> (spaces around) and Submit</span></td><td>No message. The box shows <code>Ana</code>, because <code>trim()</code> removed the spaces.</td></tr><tr><td>Type <code>&lt;b&gt;Ana&lt;/b&gt;</code> and Submit</td><td>No message. The box shows <code>&lt;b&gt;Ana&lt;/b&gt;</code> as plain text, because <code>htmlspecialchars()</code> made it safe.</td></tr></tbody></table>
+<p>This example has no CSS for the <code>error</code> class, so the message is black. The complete example below adds <code>.error {color: #FF0000;}</code> to make it red.</p>
+<p>How it works:</p>
+<ol><li><p><code>$nameError = $name = &quot;&quot;;</code> sets both variables to empty (chained assignment).</p></li><li><p><code>REQUEST_METHOD == &quot;POST&quot;</code> makes the check run only after a submit.</p></li><li><p><code>empty($_POST[&quot;name&quot;])</code> is the required check. If blank, the error message is saved.</p></li><li><p><code>htmlspecialchars(trim($_POST[&quot;name&quot;]))</code> is two functions in one line. The inner one runs first: <code>trim()</code> removes the spaces, then <code>htmlspecialchars()</code> makes the result safe. This is called <strong>sanitizing</strong>.</p></li><li><p><code>&lt;span class=&quot;error&quot;&gt;</code> prints the message right after the box.</p></li><li><p><code>action=&quot;&lt;?php echo htmlspecialchars($_SERVER[&quot;PHP_SELF&quot;]);?&gt;&quot;</code> sends the form back to the same file, with the file name made safe.</p></li></ol>
+<h4 id="complete-form-example">Complete form example</h4>
+<p>The handout&#39;s full example brings it all together: required fields (name, email, gender), optional fields (website, comment), and a cleaning function. The <code>|</code> conversion errors are fixed here.</p>
+<pre><code class="language-php">&lt;!DOCTYPE HTML&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;style&gt;
+.error {color: #FF0000;}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+&lt;?php
+// define variables and set to empty values
+$nameErr = $emailErr = $genderErr = $websiteErr = &quot;&quot;;
+$name = $email = $gender = $comment = $website = &quot;&quot;;
+
+if (isset($_POST[&#39;submit&#39;])) {
+    if (empty($_POST[&quot;name&quot;])) {   // This checks if the $_POST variable is empty
+        $nameErr = &quot;Name is required&quot;;
+    } else {
+        $name = test_input($_POST[&quot;name&quot;]);
+        // check if name only contains letters and whitespace
+        if (!preg_match(&quot;/^[a-zA-Z-&#39; ]*$/&quot;, $name)) {
+            $nameErr = &quot;Only letters and white space allowed&quot;;
+        }
+    }
+
+    if (empty($_POST[&quot;email&quot;])) {
+        $emailErr = &quot;Email is required&quot;;
+    } else {
+        $email = test_input($_POST[&quot;email&quot;]);
+        // check if e-mail address is well-formed
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $emailErr = &quot;Invalid email format&quot;;
+        }
+    }
+
+    if (empty($_POST[&quot;website&quot;])) {
+        $website = &quot;&quot;;
+    } else {
+        $website = test_input($_POST[&quot;website&quot;]);
+        // check if URL address syntax is valid (this regular expression also allows dashes in the URL)
+        if (!preg_match(&quot;/\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&amp;@#\/%?=~_|!:,.;]*[-a-z0-9+&amp;@#\/%=~_|]/i&quot;, $website)) {
+            $websiteErr = &quot;Invalid URL&quot;;
+        }
+    }
+
+    if (empty($_POST[&quot;comment&quot;])) {
+        $comment = &quot;&quot;;
+    } else {
+        $comment = test_input($_POST[&quot;comment&quot;]);
+    }
+
+    if (empty($_POST[&quot;gender&quot;])) {
+        $genderErr = &quot;Gender is required&quot;;
+    } else {
+        $gender = test_input($_POST[&quot;gender&quot;]);
+    }
+}
+
+function test_input($data) {
+    $data = trim($data);          // Remove extra space
+    $data = stripslashes($data);  // Remove backslashes (\) from the user input data
+    return $data;
+}
+?&gt;
+
+&lt;h2&gt;PHP Form Validation Example&lt;/h2&gt;
+&lt;p&gt;&lt;span class=&quot;error&quot;&gt;* required field&lt;/span&gt;&lt;/p&gt;
+
+&lt;form method=&quot;post&quot; action=&quot;&quot;&gt;
+    Name: &lt;input type=&quot;text&quot; name=&quot;name&quot; value=&quot;&lt;?php echo $name;?&gt;&quot;&gt;
+    &lt;span class=&quot;error&quot;&gt;* &lt;?php echo $nameErr;?&gt;&lt;/span&gt;
+    &lt;br&gt;&lt;br&gt;
+
+    E-mail: &lt;input type=&quot;text&quot; name=&quot;email&quot; value=&quot;&lt;?php echo $email;?&gt;&quot;&gt;
+    &lt;span class=&quot;error&quot;&gt;* &lt;?php echo $emailErr;?&gt;&lt;/span&gt;
+    &lt;br&gt;&lt;br&gt;
+
+    Website: &lt;input type=&quot;text&quot; name=&quot;website&quot; value=&quot;&lt;?php echo $website;?&gt;&quot;&gt;
+    &lt;span class=&quot;error&quot;&gt;&lt;?php echo $websiteErr;?&gt;&lt;/span&gt;
+    &lt;br&gt;&lt;br&gt;
+
+    Comment: &lt;textarea name=&quot;comment&quot; rows=&quot;5&quot; cols=&quot;40&quot;&gt;&lt;?php echo $comment;?&gt;&lt;/textarea&gt;
+    &lt;br&gt;&lt;br&gt;
+
+    Gender:
+    &lt;input type=&quot;radio&quot; name=&quot;gender&quot; &lt;?php if (isset($gender) &amp;&amp; $gender==&quot;female&quot;) echo &quot;checked&quot;;?&gt; value=&quot;female&quot;&gt;Female
+    &lt;input type=&quot;radio&quot; name=&quot;gender&quot; &lt;?php if (isset($gender) &amp;&amp; $gender==&quot;male&quot;) echo &quot;checked&quot;;?&gt; value=&quot;male&quot;&gt;Male
+    &lt;span class=&quot;error&quot;&gt;* &lt;?php echo $genderErr;?&gt;&lt;/span&gt;
+    &lt;br&gt;&lt;br&gt;
+
+    &lt;input type=&quot;submit&quot; name=&quot;submit&quot; value=&quot;Submit&quot;&gt;
+&lt;/form&gt;
+
+&lt;?php
+echo &quot;&lt;h2&gt;Your Input:&lt;/h2&gt;&quot;;
+echo $name;
+echo &quot;&lt;br&gt;&quot;;
+echo $email;
+echo &quot;&lt;br&gt;&quot;;
+echo $website;
+echo &quot;&lt;br&gt;&quot;;
+echo $comment;
+echo &quot;&lt;br&gt;&quot;;
+echo $gender;
+?&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p><strong>Output:</strong> the heading PHP Form Validation Example, a red <code>* required field</code> line, the form, and a Your Input: heading at the bottom.</p>
+<table><thead><tr><th>You do</th><th>Result on the page</th></tr></thead><tbody><tr><td>Open the page</td><td>Empty fields. Red <code>*</code> marks next to Name, E-mail, and Gender. Your Input: at the bottom with nothing under it.</td></tr><tr><td>Submit everything blank</td><td><code>* Name is required</code>, <code>* Email is required</code>, <code>* Gender is required</code>. No message for Website (optional).</td></tr><tr><td>Name <code>Ana2</code></td><td><code>* Only letters and white space allowed</code></td></tr><tr><td>Name <code>Mary-Anne</code></td><td>Accepted, because this version allows hyphens and apostrophes.</td></tr><tr><td>Email <code>ana@</code></td><td><code>* Invalid email format</code></td></tr><tr><td>Website <code>hello</code></td><td><code>Invalid URL</code> (no star, the website is optional)</td></tr><tr><td>Website <code>www.mail.com</code></td><td>Accepted</td></tr><tr><td>Name <code>Ana Lopez</code>, email <code>ana@mail.com</code>, website <code>www.mail.com</code>, comment <code>Hi</code>, gender Female</td><td>No errors, and the values stay in the form.</td></tr></tbody></table>
+<p>What &quot;Your Input&quot; prints after the valid submit in the last row:</p>
+<pre><code>Your Input:
+
+Ana Lopez
+ana@mail.com
+www.mail.com
+Hi
+female</code></pre>
+<p>Each value is on its own line because of <code>echo &quot;&lt;br&gt;&quot;</code>. The gender prints as <code>female</code> in lowercase, because that is the radio button&#39;s <code>value</code>.</p>
+<p>How the complete example works:</p>
+<table><thead><tr><th>Part</th><th>What it does</th></tr></thead><tbody><tr><td><code>.error {color: #FF0000;}</code></td><td>CSS that makes anything with <code>class=&quot;error&quot;</code> red.</td></tr><tr><td>Variables at the top</td><td>Every error and value variable starts empty, so the form can print them on the first load.</td></tr><tr><td><code>isset($_POST[&#39;submit&#39;])</code></td><td>Runs the validation only when Submit was clicked. Works because the button has <code>name=&quot;submit&quot;</code>. (Earlier examples used <code>REQUEST_METHOD</code>, which does the same job.)</td></tr><tr><td>Required fields</td><td>Name, email, and gender use <code>empty()</code> and save an error if blank.</td></tr><tr><td>Optional fields</td><td>Website and comment are not required. The website is only checked if something was typed.</td></tr><tr><td><code>test_input($data)</code></td><td>Your own cleaning function: <code>trim()</code> and <code>stripslashes()</code>. Called for every field, so the cleaning is written once.</td></tr><tr><td><code>preg_match(&quot;/^[a-zA-Z-&#39; ]*$/&quot;, $name)</code></td><td>Allows letters, hyphens, apostrophes, and spaces.</td></tr><tr><td><code>filter_var($email, FILTER_VALIDATE_EMAIL)</code></td><td>Checks the email format.</td></tr><tr><td><code>isset($gender) &amp;&amp; $gender==&quot;female&quot;</code></td><td>Re-selects the radio button after the reload.</td></tr><tr><td><code>action=&quot;&quot;</code></td><td>An empty action sends the form back to the same file.</td></tr><tr><td>&quot;Your Input&quot; at the bottom</td><td>Prints what was entered. It is outside the <code>if</code>, so it also appears (empty) before any submit.</td></tr></tbody></table>
+<blockquote><p><strong>Security note:</strong> the handout&#39;s <code>test_input()</code> only uses <code>trim()</code> and <code>stripslashes()</code>, not <code>htmlspecialchars()</code>, even though the handout says that function is important. A safer <code>test_input()</code> adds <code>$data = htmlspecialchars($data);</code> before the <code>return</code>, or wraps each printed value in <code>htmlspecialchars()</code>.</p></blockquote>
+<h4 id="how-this-class-connects-to-lab-3">How this class connects to Lab #3</h4>
+<table><thead><tr><th>Lab #3 requirement</th><th>Tool from this class</th></tr></thead><tbody><tr><td>All fields required</td><td><code>empty()</code> after <code>trim()</code></td></tr><tr><td>Name: letters and white space only</td><td><code>preg_match()</code> with <code>/^[a-zA-Z ]*$/</code></td></tr><tr><td>Remove spaces before name and email</td><td><code>trim()</code> (inside <code>test_input()</code> in the handout)</td></tr><tr><td>Valid email</td><td><code>filter_var($email, FILTER_VALIDATE_EMAIL)</code></td></tr><tr><td>Gender selected</td><td><code>empty($_POST[&quot;gender&quot;])</code></td></tr><tr><td>Zip: numbers only</td><td><code>is_numeric()</code>, or the stricter <code>ctype_digit()</code></td></tr><tr><td>Keep values in the form</td><td><code>value=&quot;&lt;?php echo ... ?&gt;&quot;</code> and <code>checked</code></td></tr><tr><td>Show error messages</td><td>An error variable per field, printed in a <code>&lt;span class=&quot;error&quot;&gt;</code></td></tr></tbody></table>
+<h4 id="quick-review-for-topic-1">Quick review for Topic 1</h4>
+<ul><li><p>Validation checks input before processing it: prevent errors, protect security, keep data valid.</p></li><li><p>Client-side (HTML5 or JavaScript) is fast but can be bypassed. Server-side (PHP) always runs. Use both, never client-side alone.</p></li><li><p><code>empty()</code> checks required fields, <code>is_numeric()</code> numbers, <code>filter_var()</code> email and URL, <code>preg_match()</code> any pattern, such as a name.</p></li><li><p><code>trim()</code> removes spaces, <code>stripslashes()</code> removes backslashes, <code>htmlspecialchars()</code> blocks XSS.</p></li><li><p>Your own functions (<code>function name($parameter) { ... return ...; }</code>) let you write a check once and reuse it, like <code>validateName()</code> and <code>test_input()</code>.</p></li><li><p>Keep the values in the form with <code>value=&quot;...&quot;</code>, and show errors next to each field.</p></li></ul>
+<h4 id="handout-notes-and-corrections">Handout notes and corrections</h4>
+<ul><li><p><code>&lt;Label for &quot;name&quot;&gt;</code> is missing the <code>=</code>, and one <code>&lt;label&gt;</code> should be <code>&lt;/label&gt;</code>.</p></li><li><p>The tall bar characters in the URL pattern and the length check are conversion errors. They must be <code>|</code> and <code>||</code>.</p></li><li><p>The complete example does not use <code>htmlspecialchars()</code> when printing, which leaves it open to XSS (see the security note).</p></li><li><p>The handout says <code>preg_match()</code> returns true or false. More exactly, it returns <code>1</code> for a match and <code>0</code> for no match.</p></li></ul>
+<h3 id="topic-2-homework-mac-272-assignment-1-login-with-arrays">Topic 2: Homework — MAC 272 Assignment 1 (Login with arrays)</h3>
+<p><strong>Worth:</strong> 10 points. <strong>Upload:</strong> a Word document with the code and screenshots of running the files and the results.</p>
+<h4 id="the-assignment">The assignment</h4>
+<p>Create three PHP pages:</p>
+<ol><li><p><strong>Login page:</strong> two text boxes (username and password) and one submit button. Clicking submit calls <code>process_login.php</code>.</p></li><li><p><strong><code>process_login.php</code>:</strong> linked to the login page through the form&#39;s <code>action</code>. It must:</p><ul><li><p>Read the username and password entered on the login page.</p></li><li><p>Create one or more arrays holding usernames and their related passwords.</p></li><li><p>Loop through the array(s) to check if they contain the username and password entered.</p></li><li><p>If they do: send the user to the welcome page.</p></li><li><p>If they do not: print &quot;username and password incorrect&quot; and send the user back to the login page.</p></li></ul></li><li><p><strong>Welcome page:</strong> only a welcome message.</p></li></ol>
+<h4 id="plan">Plan</h4>
+<table><thead><tr><th>File</th><th>Job</th></tr></thead><tbody><tr><td><code>login.php</code></td><td>Shows the form. Sends the data by POST to <code>process_login.php</code>.</td></tr><tr><td><code>process_login.php</code></td><td>Reads the data, loops through the arrays, then redirects to <code>welcome.php</code> or shows the error and returns to <code>login.php</code>.</td></tr><tr><td><code>welcome.php</code></td><td>Shows the welcome message.</td></tr></tbody></table>
+<p>Put all three in the same folder inside Apache&#39;s web root (for example <code>HW1/</code>) and open <code>http://localhost/HW1/login.php</code>.</p>
+<p>How it flows:</p>
+<ol><li><p>The user opens <code>login.php</code> and fills in the form.</p></li><li><p>The browser sends the data (POST) to <code>process_login.php</code>.</p></li><li><p>PHP loops through the arrays looking for a matching username and password.</p></li><li><p>Match: the browser is redirected to <code>welcome.php</code>.</p></li><li><p>No match: the page shows <code>username and password incorrect</code>, waits 3 seconds, and goes back to <code>login.php</code>.</p></li></ol>
+<h4 id="the-8-assignment-steps-and-where-each-one-is-in-the-code">The 8 assignment steps and where each one is in the code</h4>
+<p>Each step has a numbered comment where it starts (like <code>//3 reads username and pass...</code>), so every requirement can be pointed to.</p>
+<table><thead><tr><th>Step</th><th>What the assignment asks</th><th>File</th></tr></thead><tbody><tr><td>1</td><td>Login page with two text boxes and one submit button. Clicking submit calls <code>process_login.php</code>.</td><td><code>login.php</code></td></tr><tr><td>2</td><td>Create <code>process_login.php</code> and link it through the form&#39;s <code>action</code>.</td><td><code>process_login.php</code> (and the <code>action</code> in <code>login.php</code>)</td></tr><tr><td>3</td><td>Read the username and password entered.</td><td><code>process_login.php</code></td></tr><tr><td>4</td><td>Create one or more arrays of usernames and related passwords.</td><td><code>process_login.php</code></td></tr><tr><td>5</td><td>Loop through the array(s) to check for the username and password.</td><td><code>process_login.php</code></td></tr><tr><td>6</td><td>If found, direct the user to the welcome page.</td><td><code>process_login.php</code></td></tr><tr><td>7</td><td>If not, print <code>username and password incorrect</code> and direct the user to the login page.</td><td><code>process_login.php</code></td></tr><tr><td>8</td><td>The welcome page only has a welcome message.</td><td><code>welcome.php</code></td></tr></tbody></table>
+<h4 id="file-1-loginphp">File 1: <code>login.php</code></h4>
+<pre><code class="language-php">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;Login&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h2&gt;Login&lt;/h2&gt;
+
+&lt;!--1 login page with 2 text boxes and 1 submit button, action calls process_login.php when submit is clicked --&gt;
+&lt;form action=&quot;process_login.php&quot; method=&quot;POST&quot;&gt;
+    &lt;label for=&quot;username&quot;&gt;Username:&lt;/label&gt;
+    &lt;input type=&quot;text&quot; id=&quot;username&quot; name=&quot;username&quot;&gt;
+    &lt;br&gt;&lt;br&gt;
+
+    &lt;label for=&quot;password&quot;&gt;Password:&lt;/label&gt;
+    &lt;input type=&quot;password&quot; id=&quot;password&quot; name=&quot;password&quot;&gt;
+    &lt;br&gt;&lt;br&gt;
+
+    &lt;input type=&quot;submit&quot; value=&quot;Login&quot;&gt;
+&lt;/form&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p><strong>Output:</strong> the heading Login, a Username box, a Password box (typed characters show as dots), and a Login button.</p>
+<table><thead><tr><th>Code</th><th>What it does</th></tr></thead><tbody><tr><td><code>&lt;form action=&quot;process_login.php&quot; method=&quot;POST&quot;&gt;</code></td><td>The link between the pages. <code>action</code> names the file that receives the data. POST keeps the password out of the URL.</td></tr><tr><td><code>&lt;input type=&quot;text&quot; id=&quot;username&quot; name=&quot;username&quot;&gt;</code></td><td>The username box. <code>name=&quot;username&quot;</code> is the key PHP uses in <code>$_POST[&quot;username&quot;]</code>.</td></tr><tr><td><code>&lt;input type=&quot;password&quot; ... name=&quot;password&quot;&gt;</code></td><td>The password box. Shows dots instead of letters. This only changes what is displayed; the real text is still sent.</td></tr><tr><td><code>&lt;label for=&quot;username&quot;&gt;</code></td><td>The text beside the box. <code>for</code> matches the input&#39;s <code>id</code>.</td></tr><tr><td><code>&lt;input type=&quot;submit&quot; value=&quot;Login&quot;&gt;</code></td><td>The button that sends the form. <code>value</code> is its text.</td></tr><tr><td><code>&lt;br&gt;&lt;br&gt;</code></td><td>Line breaks for spacing.</td></tr></tbody></table>
+<p>The file only has HTML, but it ends in <code>.php</code> because the assignment asks for PHP pages. It works the same either way.</p>
+<h4 id="file-2-processloginphp">File 2: <code>process_login.php</code></h4>
+<pre><code class="language-php">&lt;?php
+//2 process_login.php is the redirect page from login page
+// If no username or password entered redirect to login page until user enters all information required,
+if ($_SERVER[&quot;REQUEST_METHOD&quot;] != &quot;POST&quot;) {
+    header(&quot;Location: login.php&quot;);
+    exit;
+}
+
+//3 reads username and pass from login page storing into variables, if no user/pass, empty string is stored
+$username = trim($_POST[&quot;username&quot;] ?? &quot;&quot;);
+$password = $_POST[&quot;password&quot;] ?? &quot;&quot;;
+
+//4 arrays with usernames and related passwords, the same position in both arrays belongs to the same user
+$usernames = [&quot;doncarlis&quot;, &quot;maria&quot;, &quot;john&quot;, &quot;carlos&quot;];
+$passwords = [&quot;123&quot;, &quot;abc456&quot;, &quot;pass789&quot;, &quot;carlos1&quot;];
+
+//5 for() to check if username and pass are in arrays,
+$found = false;
+for ($i = 0; $i &lt; count($usernames); $i++) {
+    if ($username === $usernames[$i] &amp;&amp; $password === $passwords[$i]) {
+        $found = true;
+        break;   //exit loop when match found
+    }
+}
+
+if ($found) {
+    //6 if array has username and password, redirects to welcome
+    header(&quot;Location: welcome.php&quot;);
+    exit;
+
+} else {
+    //7 The arrays do not contain the username and password entered, so redirects to login after 3 seconds display error
+    header(&quot;Refresh: 3; url=login.php&quot;);   // go to login.php after 3 seconds (must come before any output)
+    echo &quot;&lt;p style=&#39;color: red;&#39;&gt;username and password incorrect&lt;/p&gt;&quot;;
+    echo &quot;&lt;p&gt;Returning to the login page...&lt;/p&gt;&quot;;
+    echo &quot;&lt;a href=&#39;login.php&#39;&gt;Click here if you are not redirected&lt;/a&gt;&quot;;
+}
+?&gt;</code></pre>
+<p><strong>Output:</strong></p>
+<table><thead><tr><th>You type</th><th>Result</th></tr></thead><tbody><tr><td><code>carlos</code> / <code>carlos1</code></td><td>Straight to <code>welcome.php</code>.</td></tr><tr><td><code>doncarlis</code> / <code>123</code></td><td>Straight to <code>welcome.php</code>.</td></tr><tr><td><code>maria</code> / <code>abc456</code></td><td>Straight to <code>welcome.php</code>.</td></tr><tr><td><code>carlos</code> / <code>123</code></td><td>Red <code>username and password incorrect</code>, then back to <code>login.php</code> after 3 seconds. (Right username, wrong password.)</td></tr><tr><td><code>Carlos</code> / <code>carlos1</code></td><td>The same red message, because the comparison is case sensitive.</td></tr><tr><td>Anything else</td><td>The same red message.</td></tr></tbody></table>
+<pre><code>username and password incorrect
+Returning to the login page...
+Click here if you are not redirected</code></pre>
+<p><strong>Step 2, the safety check at the top</strong></p>
+<ul><li><p><code>$_SERVER[&quot;REQUEST_METHOD&quot;] != &quot;POST&quot;</code> means &quot;the page was not reached by submitting the form&quot;. <code>!=</code> means &quot;is not equal to&quot;.</p></li><li><p>If someone types <code>process_login.php</code> straight into the address bar, they are sent back to <code>login.php</code> and the script stops with <code>exit</code>.</p></li></ul>
+<p><strong>Step 3, reading the input</strong></p>
+<ul><li><p><code>$_POST[&quot;username&quot;]</code> is the value of the box with <code>name=&quot;username&quot;</code>.</p></li><li><p><code>?? &quot;&quot;</code> uses an empty text if the key is missing, so PHP does not show a warning.</p></li><li><p><code>trim()</code> removes spaces at the start and end of the username. The password is not trimmed, because spaces can be part of a real password.</p></li></ul>
+<p><strong>Step 4, the arrays</strong></p>
+<p>An array is one variable that holds a list of values. Each value has a position number called an <strong>index</strong>, and counting starts at 0:</p>
+<table><thead><tr><th>Index</th><th><code>$usernames</code></th><th><code>$passwords</code></th></tr></thead><tbody><tr><td>0</td><td>doncarlis</td><td>123</td></tr><tr><td>1</td><td>maria</td><td>abc456</td></tr><tr><td>2</td><td>john</td><td>pass789</td></tr><tr><td>3</td><td>carlos</td><td>carlos1</td></tr></tbody></table>
+<p>Each row is one user: <code>$usernames[1]</code> is <code>maria</code> and <code>$passwords[1]</code> is her password. These are called <strong>parallel arrays</strong>: the same position in both lists belongs to the same person. The assignment allows one array or more; two is the simplest.</p>
+<p><strong>Step 5, the loop</strong></p>
+<pre><code class="language-php">for ($i = 0; $i &lt; count($usernames); $i++) {</code></pre>
+<table><thead><tr><th>Part</th><th>Meaning</th></tr></thead><tbody><tr><td><code>$i = 0</code></td><td>Start the counter at 0, the first position.</td></tr><tr><td><code>$i &lt; count($usernames)</code></td><td>Keep going while <code>$i</code> is smaller than the number of users. <code>count()</code> returns how many items the array has (4 here).</td></tr><tr><td><code>$i++</code></td><td>After each round, add 1 to <code>$i</code>.</td></tr></tbody></table>
+<ul><li><p>Inside the loop, <code>$usernames[$i]</code> and <code>$passwords[$i]</code> are the username and password at position <code>$i</code>, so the loop checks user 0, then 1, then 2, and so on.</p></li><li><p><code>&amp;&amp;</code> means AND: both must match <strong>at the same position</strong>. This stops <code>doncarlis</code> from logging in with <code>maria</code>&#39;s password.</p></li><li><p><code>===</code> compares value and type, and is stricter than <code>==</code>.</p></li><li><p><code>$found</code> starts as <code>false</code>. When a match is found it becomes <code>true</code>, and <code>break</code> stops the loop early.</p></li></ul>
+<p><strong>Steps 6 and 7, redirect or show the error</strong></p>
+<ul><li><p><code>header(&quot;Location: welcome.php&quot;);</code> tells the browser to go to <code>welcome.php</code>, and <code>exit;</code> stops the script right after.</p></li><li><p>If there is no match, the message must stay on screen long enough to read. A <code>Location</code> redirect would jump away instantly, so <code>header(&quot;Refresh: 3; url=login.php&quot;);</code> tells the browser &quot;wait 3 seconds, then go to <code>login.php</code>&quot;.</p></li><li><p>Both <code>header()</code> calls must come before any <code>echo</code>. Once anything is printed, headers can no longer be sent. That is why <code>Refresh</code> is written before the messages.</p></li><li><p>The link at the end is a backup in case the browser does not follow the refresh.</p></li></ul>
+<h4 id="another-way-to-hold-the-data-one-associative-array-with-foreach">Another way to hold the data: one associative array with <code>foreach</code></h4>
+<pre><code class="language-php">//4 one array with usernames and related passwords
+$users = [
+    &quot;doncarlis&quot; =&gt; &quot;123&quot;,
+    &quot;maria&quot;     =&gt; &quot;abc456&quot;,
+    &quot;john&quot;      =&gt; &quot;pass789&quot;,
+    &quot;carlos&quot;    =&gt; &quot;carlos1&quot;
+];
+
+//5 foreach to check if username and pass are in the array
+$found = false;
+foreach ($users as $user =&gt; $pass) {
+    if ($username === $user &amp;&amp; $password === $pass) {
+        $found = true;
+        break;   //exit loop when match found
+    }
+}</code></pre>
+<ul><li><p><code>&quot;doncarlis&quot; =&gt; &quot;123&quot;</code> means &quot;the key <code>doncarlis</code> has the value <code>123</code>&quot;.</p></li><li><p><code>foreach</code> goes through every pair, putting the key in <code>$user</code> and the value in <code>$pass</code>. There is no counter to manage.</p></li><li><p>The rest of the file stays the same. Use whichever version the professor prefers.</p></li></ul>
+<h4 id="file-3-welcomephp">File 3: <code>welcome.php</code></h4>
+<pre><code class="language-php">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;Welcome&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+&lt;!--8 welcome page, only has a welcome message --&gt;
+&lt;h1&gt;Welcome!&lt;/h1&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p><strong>Output:</strong></p>
+<pre><code>Welcome!</code></pre>
+<p>The assignment says the welcome page only has a welcome message, so this file is just HTML. <code>&lt;h1&gt;</code> is the largest heading.</p>
+<h4 id="testing-checklist-and-screenshots">Testing checklist and screenshots</h4>
+<p>Run everything through <code>http://localhost/...</code> (not by double-clicking the files), and take one screenshot per step.</p>
+<table><thead><tr><th>#</th><th>Step</th><th>What the screenshot should show</th></tr></thead><tbody><tr><td>1</td><td>Open <code>login.php</code></td><td>The empty login form. The address bar shows <code>localhost/HW1/login.php</code>.</td></tr><tr><td>2</td><td>Fill in a correct login</td><td>The form with the username typed and the password as dots.</td></tr><tr><td>3</td><td>Click Login</td><td><code>welcome.php</code> with the Welcome! heading.</td></tr><tr><td>4</td><td>Go back, fill in a wrong login (for example <code>carlos</code> / <code>999</code>)</td><td>The form with the wrong data typed.</td></tr><tr><td>5</td><td>Click Login</td><td>The red <code>username and password incorrect</code> message.</td></tr><tr><td>6</td><td>Wait 3 seconds</td><td>The login page again.</td></tr></tbody></table>
+<p><strong>Screenshot 1 (empty login page):</strong> <em>add picture here</em></p>
+<p><strong>Screenshot 2 (correct login typed, <code>doncarlis</code> with the password as dots):</strong></p>
+<p><img src="__BASE__class-notes/img/25d0a9827f19506f12650b47696ffbbe.png" loading="lazy" alt="Login page at localhost/HW1/login.php with username doncarlis and a 3-dot password"></p>
+<p><strong>Screenshot 3 (welcome page):</strong></p>
+<p><img src="__BASE__class-notes/img/f370c95a6788f7774ff4976ace9f8a29.png" loading="lazy" alt="welcome.php showing the Welcome! heading"></p>
+<p><strong>Screenshot 4 (wrong login typed):</strong> <em>add picture here</em></p>
+<p><strong>Screenshot 5 (error message):</strong></p>
+<p><img src="__BASE__class-notes/img/0fb8e51f954a97d6929c4be30f8093d5.png" loading="lazy" alt="process_login.php showing the red username and password incorrect message, Returning to the login page..., and the Click here link"></p>
+<p><strong>Screenshot 6 (back at the login page):</strong> <em>add picture here</em></p>
+<h4 id="requirements-checklist">Requirements checklist</h4>
+<ul><li data-checked="false"><p><input type="checkbox" disabled> Three PHP pages: login page, <code>process_login.php</code>, and a welcome page</p></li><li data-checked="false"><p><input type="checkbox" disabled> The login page has two text boxes and one submit button</p></li><li data-checked="false"><p><input type="checkbox" disabled> The form&#39;s <code>action</code> is <code>process_login.php</code></p></li><li data-checked="false"><p><input type="checkbox" disabled> <code>process_login.php</code> reads the username and password</p></li><li data-checked="false"><p><input type="checkbox" disabled> One or more arrays hold usernames and related passwords</p></li><li data-checked="false"><p><input type="checkbox" disabled> A loop checks the arrays for the entered username and password</p></li><li data-checked="false"><p><input type="checkbox" disabled> Match: the user is sent to the welcome page, which has only a welcome message</p></li><li data-checked="false"><p><input type="checkbox" disabled> No match: <code>username and password incorrect</code> is printed and the user is sent back to the login page</p></li><li data-checked="false"><p><input type="checkbox" disabled> Word document with the code and screenshots of running the files and the results</p></li></ul>
+<h4 id="things-to-know">Things to know</h4>
+<ul><li><p>File names must match exactly. The <code>action</code> says <code>process_login.php</code> and the redirects say <code>welcome.php</code> and <code>login.php</code>, so those files need those exact names, in the same folder.</p></li><li><p>The usernames and passwords are examples. Change them if you want, as long as the positions line up in both arrays.</p></li><li><p>Passwords in an array are for practice only. A real site stores them in a database as hashes (see &quot;Why there is no database yet&quot; in Week 4, Day 2).</p></li><li><p>Anyone can open <code>welcome.php</code> directly by typing its address, without logging in. Protecting it needs <strong>sessions</strong> (Week 5, Day 2).</p></li><li><p>The assignment text writes <code>process_login,php</code> with a comma once. The file name is <code>process_login.php</code>.</p></li></ul>
+<h4 id="troubleshooting-http-error-500-on-processloginphp">Troubleshooting: HTTP ERROR 500 on <code>process_login.php</code></h4>
+<p><strong>What happened:</strong> the page showed &quot;This page isn&#39;t working. localhost is currently unable to handle this request. HTTP ERROR 500.&quot;</p>
+<p><img src="__BASE__class-notes/img/e802780ed80e4ca3e3e9f75ede74c3c5.png" loading="lazy" alt="Chrome at localhost/HW1/process_login.php showing This page isn&#39;t working, HTTP ERROR 500"></p>
+<p><strong>The cause:</strong> Step 4 (the two arrays) was missing from <code>process_login.php</code>. The loop in Step 5 uses <code>count($usernames)</code>, but <code>$usernames</code> did not exist. In PHP 8, <code>count()</code> on something that is not an array is a fatal error, and Apache shows it as a 500 error.</p>
+<p><strong>The fix:</strong> put the arrays back, between Step 3 and Step 5:</p>
+<pre><code class="language-php">//4 arrays with usernames and related passwords, the same position in both arrays belongs to the same user
+$usernames = [&quot;doncarlis&quot;, &quot;maria&quot;, &quot;john&quot;, &quot;carlos&quot;];
+$passwords = [&quot;123&quot;, &quot;abc456&quot;, &quot;pass789&quot;, &quot;carlos1&quot;];</code></pre>
+<p>Things to remember:</p>
+<ul><li><p>A 500 error means PHP stopped in the middle of the file. <code>login.php</code> loaded, so Apache and PHP were fine; the problem was inside <code>process_login.php</code>.</p></li><li><p>A variable must exist before you use it. Step 4 creates the arrays, so it has to come before the loop that reads them.</p></li><li><p>The syntax check (<code>php -l</code>) would not catch this, because the code that is there is written correctly. The mistake is a missing part, and it only fails when the file runs.</p></li><li><p>The error log shows the real message. On XAMPP for Mac it is usually <code>/Applications/XAMPP/xamppfiles/logs/php_error_log</code>, with something like <code>Undefined variable $usernames</code> followed by a <code>count()</code> error.</p></li><li><p>A <code>//</code> at the start of a line makes PHP ignore that line. Be careful not to comment out real code by accident.</p></li></ul>
+<h4 id="why-it-is-written-this-way-assignment-1">Why it is written this way (Assignment 1)</h4>
+<p><strong><code>login.php</code>: why does <code>type=&quot;password&quot;</code> show dots?</strong></p>
+<ul><li><p><code>type</code> tells the browser what kind of box to draw. <code>type=&quot;text&quot;</code> shows what you type; <code>type=&quot;password&quot;</code> replaces every character with a dot.</p></li><li><p>The reason is privacy: someone next to you, a screen share, or a screenshot cannot read the password.</p></li><li><p>It only changes what is shown. The real characters are still sent to the server exactly as typed, which is why PHP can read them in <code>$_POST[&quot;password&quot;]</code>.</p></li><li><p>It is not encryption. The password still travels as plain text unless the site uses HTTPS.</p></li></ul>
+<table><thead><tr><th>Code</th><th>Why it is written this way</th></tr></thead><tbody><tr><td><code>&lt;form action=&quot;process_login.php&quot;&gt;</code></td><td>The browser needs to know where to send the data. Without <code>action</code>, it sends it back to the same page. The file name must match exactly.</td></tr><tr><td><code>method=&quot;POST&quot;</code></td><td>POST sends the data inside the request. GET would put <code>?username=...&amp;password=...</code> in the address bar for everyone to see.</td></tr><tr><td><code>name=&quot;username&quot;</code></td><td>The most important attribute for PHP. A box without a <code>name</code> is not sent at all, and <code>name</code> becomes the key in <code>$_POST[&quot;username&quot;]</code>.</td></tr><tr><td><code>id=&quot;username&quot;</code></td><td>Connects the box to its label. PHP does not use the <code>id</code>.</td></tr><tr><td><code>&lt;label for=&quot;username&quot;&gt;</code></td><td>The visible text. Clicking it puts the cursor in the box, which also helps screen readers.</td></tr><tr><td><code>type=&quot;submit&quot;</code></td><td>Makes the button that sends the form to the <code>action</code>.</td></tr><tr><td><code>value=&quot;Login&quot;</code></td><td>The text on the button.</td></tr><tr><td><code>&lt;br&gt;&lt;br&gt;</code></td><td>Boxes sit side by side by default. Line breaks put each on its own line with a gap.</td></tr><tr><td><code>&lt;h2&gt;Login&lt;/h2&gt;</code></td><td>A heading so the user knows what the page is for.</td></tr><tr><td><code>&lt;!DOCTYPE html&gt;</code></td><td>Tells the browser to read the page as modern HTML5.</td></tr></tbody></table>
+<p><strong><code>process_login.php</code></strong></p>
+<table><thead><tr><th>Code</th><th>Why it is written this way</th></tr></thead><tbody><tr><td><code>if ($_SERVER[&quot;REQUEST_METHOD&quot;] != &quot;POST&quot;)</code> at the top</td><td>Someone can type <code>process_login.php</code> into the address bar. Then no form data exists, so this sends them back to the login page.</td></tr><tr><td><code>$_POST[&quot;username&quot;] ?? &quot;&quot;</code></td><td>If the key is missing, PHP uses an empty text instead of a warning.</td></tr><tr><td><code>trim()</code> on the username only</td><td>An accidental space should not make a correct login fail. Passwords are not trimmed because spaces can be part of them.</td></tr><tr><td>Two arrays with the same positions</td><td>A simple way to link each username with its password.</td></tr><tr><td><code>for ($i = 0; $i &lt; count($usernames); $i++)</code></td><td>Visits each user once. <code>count()</code> is used instead of a fixed number so the loop still works if you add users.</td></tr><tr><td><code>$username === $usernames[$i] &amp;&amp; $password === $passwords[$i]</code></td><td>Both must match at the same position. Checked separately, <code>doncarlis</code> could log in with <code>maria</code>&#39;s password.</td></tr><tr><td><code>===</code> instead of <code>==</code></td><td><code>==</code> converts values before comparing, so text that looks like numbers can match when it should not: <code>&quot;1e3&quot; == &quot;1000&quot;</code> is true in PHP. <code>===</code> compares the exact text.</td></tr><tr><td><code>$found = false;</code> before the loop</td><td>The answer is &quot;no&quot; until the loop proves otherwise.</td></tr><tr><td>Decide after the loop, not inside it</td><td>The program cannot say &quot;not found&quot; until it has checked every user. Inside the loop, the error would print once per non-matching user.</td></tr><tr><td><code>break;</code></td><td>Once a match is found, there is no need to keep checking.</td></tr><tr><td><code>header(&quot;Location: welcome.php&quot;);</code></td><td>Sends the browser to the welcome page.</td></tr><tr><td><code>exit;</code> after a redirect</td><td><code>header()</code> only asks the browser to move. Without <code>exit</code>, PHP keeps running the rest of the file.</td></tr><tr><td><code>header(&quot;Refresh: 3; url=login.php&quot;);</code> for the error</td><td>A <code>Location</code> redirect is instant, so the message would never be seen. <code>Refresh</code> waits 3 seconds, so the page can print the message and also send the user back.</td></tr><tr><td><code>header(...)</code> before any <code>echo</code></td><td>Headers are the first part of the response. Once PHP prints text, they have already gone out.</td></tr><tr><td>The &quot;Click here&quot; link</td><td>A backup in case the browser does not follow the refresh.</td></tr></tbody></table>
+<p><strong><code>welcome.php</code></strong></p>
+<ul><li><p><strong>Separate page:</strong> the assignment asks for three pages, and it keeps each file to one job.</p></li><li><p><strong>Only a heading:</strong> the assignment says the welcome page only has a welcome message.</p></li><li><p><strong><code>&lt;h1&gt;</code>:</strong> the largest heading, so the message stands out.</p></li></ul>
+<p><strong>Why three files instead of one</strong></p>
+<table><thead><tr><th>File</th><th>Job</th><th>Think of it as</th></tr></thead><tbody><tr><td><code>login.php</code></td><td>Collect the data</td><td>The order slip</td></tr><tr><td><code>process_login.php</code></td><td>Check the data and decide</td><td>The kitchen</td></tr><tr><td><code>welcome.php</code></td><td>Show the result</td><td>The plate that comes out</td></tr></tbody></table>
+<p>Each file stays short and easy to understand, and you can change one without touching the others.</p>
+<h3 id="end-of-week-5-day-1-summary">End of Week 5, Day 1 — Summary</h3>
+<p><strong>Covered today</strong></p>
+<ul><li><p><strong>Form validation (PHP Tutorial Part 8):</strong> client-side (HTML5 <code>number</code>, <code>email</code>, <code>url</code>) vs server-side (PHP). Client-side is a convenience; server-side is the real protection.</p></li><li><p><strong>Validation functions:</strong> <code>empty()</code> (required), <code>is_numeric()</code> (numbers), <code>preg_match()</code> (patterns like names), <code>filter_var()</code> with <code>FILTER_VALIDATE_EMAIL</code> / <code>FILTER_VALIDATE_URL</code>.</p></li><li><p><strong>Cleaning functions:</strong> <code>trim()</code>, <code>stripslashes()</code>, <code>htmlspecialchars()</code> (stops XSS).</p></li><li><p><strong>Own functions and the ternary operator:</strong> <code>validateName()</code>, <code>test_input()</code>, <code>condition ? &quot;A&quot; : &quot;B&quot;</code>, and <code>strlen()</code> for length rules.</p></li><li><p><strong>Keeping values and showing errors:</strong> <code>value=&quot;&lt;?php echo $name; ?&gt;&quot;</code>, <code>checked</code> for radios, one error variable per field in a <code>&lt;span class=&quot;error&quot;&gt;</code>.</p></li><li><p><strong>Assignment 1:</strong> a three-page login (<code>login.php</code>, <code>process_login.php</code>, <code>welcome.php</code>) with parallel arrays, a <code>for</code> loop, <code>===</code>, <code>break</code>, <code>header(&quot;Location: ...&quot;)</code> and <code>header(&quot;Refresh: 3; url=...&quot;)</code>.</p></li></ul>
+<p><strong>Mistakes and traps to remember</strong></p>
+<ul><li><p><code>0</code> counts as empty in <code>empty()</code>.</p></li><li><p><code>is_numeric()</code> accepts <code>3.14</code>, <code>-5</code>, and <code>1e3</code>; use <code>ctype_digit()</code> for digits only.</p></li><li><p>Tall bar characters from the handout file must be typed as <code>|</code> and <code>||</code>.</p></li><li><p>Printing user input without <code>htmlspecialchars()</code> leaves the page open to XSS.</p></li><li><p>A missing array (Step 4) gave an HTTP 500: a variable must exist before it is used, and <code>php -l</code> does not catch it.</p></li><li><p><code>header()</code> must come before any <code>echo</code>, and <code>exit;</code> after a redirect.</p></li></ul>
+<p><strong>To do before next class</strong></p>
+<ul><li><p>Finish Assignment 1: add Screenshots 1, 4, and 6, then upload the Word document with the code and screenshots.</p></li><li><p>Finish and test Lab #3 and send the browser screenshots.</p></li><li><p>Project 1, Deliverable 1: Project Proposal Report, due <strong>Thursday, 10/29/2026</strong>.</p></li></ul>
+<hr>

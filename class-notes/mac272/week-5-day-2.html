@@ -1,0 +1,345 @@
+<h2 id="week-5-day-2-thursday-10222026-sessions-and-cookies">Week 5, Day 2 — Thursday 10/22/2026: Sessions and Cookies</h2>
+<p>Today&#39;s handout is &quot;PHP Part 9: Sessions and Cookies&quot;. Both are ways to <strong>remember a user between pages</strong>, which plain HTTP cannot do on its own. This is also the missing piece from Assignment 1: right now anyone can open <code>welcome.php</code> without logging in, and sessions fix that.</p>
+<h3 id="topic-1-sessions">Topic 1: Sessions</h3>
+<h4 id="what-is-a-session">What is a session?</h4>
+<p>A <strong>session</strong> is a visitor&#39;s time browsing a website, from the first page they open until they stop using the site. In web development it means a way to <strong>keep information about one user across many requests</strong>.</p>
+<ul><li><p>The session data is stored <strong>on the server</strong>, for that one user, during their visit.</p></li><li><p>It is what makes personal, interactive pages possible: who is logged in, what is in the cart, the user&#39;s preferences.</p></li></ul>
+<h4 id="why-do-we-need-sessions">Why do we need sessions?</h4>
+<p>HTTP (and HTTPS) is <strong>stateless</strong>: the server does not remember anything between one request and the next. Every request is independent, even if it comes from the same person on the same device one second later.</p>
+<p>Sessions tie those requests together, so things like multi-page forms and shopping carts work.</p>
+<ul><li><p><strong>Session variables</strong> hold information about <strong>one single user</strong> and are available to <strong>all pages</strong> of the application (for example the username or favorite color).</p></li><li><p>By default they last until the user <strong>closes the browser</strong>.</p></li><li><p>The variables and their values are <strong>stored on the server</strong>.</p></li></ul>
+<blockquote><p>In simple words: HTTP forgets you after every page. A session is the server&#39;s notebook about you, and the session ID is the page number that tells it which notes are yours.</p></blockquote>
+<h4 id="how-does-it-work">How does it work?</h4>
+<ol><li><p>The user connects to the website. The server establishes a session (some sites only create it when the user logs in).</p></li><li><p>The server keeps the session data in a store (files, memory, or a database), generates a <strong>session ID</strong>, and sends it to the browser, usually as a <strong>cookie</strong>.</p></li><li><p>Every following request from the browser includes the session ID, so the server knows which data belongs to this user.</p></li><li><p>The server checks the session ID on each request. If it is valid, it carries out the request.</p></li><li><p>The session is <strong>terminated</strong> and the ID stops being valid: the user logs out, closes the browser, or the session times out after a period of inactivity.</p></li></ol>
+<p>Step 3 can repeat many times (one per request), and step 4 is the response to each one.</p>
+<p><img src="__BASE__class-notes/img/ac2dedbc4abbd98268b970fec213becb.png" loading="lazy" alt="How session IDs are assigned: 1 user connects and the server establishes a session, 2 the server returns a session ID stored as a cookie, 3 later requests include the session ID, 4 the server verifies it and responds, 5 the session is terminated. The server keeps the data in a session store."></p>
+<p><em>Diagram from the class handout (TechTarget).</em></p>
+<h4 id="what-is-a-session-id">What is a session ID?</h4>
+<p>A <strong>session ID</strong> (or session token) is a unique identifier the web server gives to a user for the length of the current session.</p>
+<ul><li><p>The most common way to keep it is a <strong>cookie</strong> in the browser. That cookie is usually deleted when the session ends (or it can be set to expire at a specific date and time).</p></li><li><p>If cookies are disabled, the ID can be added to the <strong>URL</strong> instead. This is riskier: someone who sees the URL can <strong>hijack</strong> the session, and it can mess up how search engines index the pages.</p></li><li><p>Another option is a hidden form field, which also has limits.</p></li></ul>
+<p>In PHP the session cookie is named <code>PHPSESSID</code>. Testing <code>demo_session1.php</code> below, the server&#39;s response included this header:</p>
+<pre><code>Set-Cookie: PHPSESSID=3875f63234dde999e643935de41a5346; path=/</code></pre>
+<p>Only that random ID goes to the browser. The actual values (<code>green</code>, <code>cat</code>) stay on the server.</p>
+<h3 id="topic-2-sessions-in-php">Topic 2: Sessions in PHP</h3>
+<h4 id="the-basic-steps">The basic steps</h4>
+<p><strong>1. Start a session:</strong> <code>session_start()</code> begins a new session (and creates a session ID), or resumes the existing one.</p>
+<pre><code class="language-php">&lt;?php
+session_start();
+?&gt;</code></pre>
+<blockquote><p><strong>Note:</strong> <code>session_start()</code> must be the very first thing in the file, before any HTML tags. It sends the session cookie, which is a header, and headers must go before any output (the same rule as <code>header()</code> in Assignment 1).</p></blockquote>
+<p><strong>2. Store session data:</strong> save key-value pairs in the <code>$_SESSION</code> superglobal array.</p>
+<pre><code class="language-php">&lt;?php
+session_start();
+$_SESSION[&quot;Rollnumber&quot;] = &quot;11&quot;;
+$_SESSION[&quot;Name&quot;] = &quot;Ajay&quot;;
+?&gt;</code></pre>
+<p><strong>3. Read session data:</strong> call <code>session_start()</code> first, then use the key.</p>
+<pre><code class="language-php">&lt;?php
+session_start();
+echo &#39;The Name of the student is :&#39; . $_SESSION[&quot;Name&quot;] . &#39;&lt;br&gt;&#39;;
+echo &#39;The Roll number of the student is :&#39; . $_SESSION[&quot;Rollnumber&quot;] . &#39;&lt;br&gt;&#39;;
+?&gt;</code></pre>
+<p><strong>Output</strong> (after the page above saved the values):</p>
+<pre><code>The Name of the student is :Ajay
+The Roll number of the student is :11</code></pre>
+<p><strong>4. Delete one session variable:</strong> <code>unset()</code> with that key.</p>
+<pre><code class="language-php">&lt;?php
+session_start();
+if (isset($_SESSION[&quot;Name&quot;])) {
+    unset($_SESSION[&quot;Rollnumber&quot;]);
+}
+?&gt;</code></pre>
+<p>This removes only <code>Rollnumber</code>. <code>Name</code> is still saved.</p>
+<p><strong>5. Destroy the whole session:</strong> <code>session_destroy()</code>, which takes no arguments.</p>
+<pre><code class="language-php">&lt;?php
+session_start();
+session_destroy();
+?&gt;</code></pre>
+<table><thead><tr><th>Function / variable</th><th>What it does</th></tr></thead><tbody><tr><td><code>session_start()</code></td><td>Starts a new session or resumes the current one. Needed at the top of <strong>every</strong> page that uses sessions.</td></tr><tr><td><code>$_SESSION[&quot;key&quot;] = value;</code></td><td>Saves a value in the session.</td></tr><tr><td><code>$_SESSION[&quot;key&quot;]</code></td><td>Reads a saved value.</td></tr><tr><td><code>isset($_SESSION[&quot;key&quot;])</code></td><td>Checks that the value exists before using it.</td></tr><tr><td><code>unset($_SESSION[&quot;key&quot;])</code></td><td>Deletes one value.</td></tr><tr><td><code>session_unset()</code></td><td>Deletes all the values, but the session itself stays.</td></tr><tr><td><code>session_destroy()</code></td><td>Destroys the session data on the server.</td></tr></tbody></table>
+<h4 id="example-passing-data-between-two-pages">Example: passing data between two pages</h4>
+<p><strong>Page 1: <code>demo_session1.php</code></strong> starts a session and sets two session variables.</p>
+<pre><code class="language-php">&lt;?php
+// Start the session
+session_start();
+?&gt;
+&lt;html&gt;
+&lt;body&gt;
+&lt;?php
+// Set session variables
+$_SESSION[&quot;favcolor&quot;] = &quot;green&quot;;
+$_SESSION[&quot;favanimal&quot;] = &quot;cat&quot;;
+echo &quot;Session variables are set.&quot;;
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p><strong>Output:</strong></p>
+<pre><code>Session variables are set.</code></pre>
+<p><strong>Page 2: <code>demo_session2.php</code></strong> reads the values set on page 1.</p>
+<pre><code class="language-php">&lt;?php
+session_start();
+?&gt;
+&lt;html&gt;
+&lt;body&gt;
+&lt;?php
+// Echo session variables that were set on previous page
+if (isset($_SESSION[&#39;favcolor&#39;])) {
+    echo &quot;Favorite color is &quot; . $_SESSION[&quot;favcolor&quot;] . &quot;.&lt;br&gt;&quot;;
+    echo &quot;Favorite animal is &quot; . $_SESSION[&quot;favanimal&quot;] . &quot;.&quot;;
+}
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p><strong>Output</strong> (open page 1 first, then page 2 in the same browser):</p>
+<pre><code>Favorite color is green.
+Favorite animal is cat.</code></pre>
+<ul><li><p>The variables are <strong>not passed</strong> to page 2 in a link or a form. Page 2 gets them from the session it opens with <code>session_start()</code>.</p></li><li><p>All session values live in the global <code>$_SESSION</code> array.</p></li><li><p>If page 2 is opened in a different browser (or before page 1), there is no session yet, so <code>isset()</code> is false and the page is <strong>blank</strong>. The <code>isset()</code> check is what prevents an &quot;Undefined array key&quot; warning.</p></li></ul>
+<h4 id="modify-a-session-variable">Modify a session variable</h4>
+<p>To change a session variable, just overwrite it:</p>
+<pre><code class="language-php">&lt;?php
+session_start();
+?&gt;
+&lt;html&gt;
+&lt;body&gt;
+&lt;?php
+// to change a session variable, just overwrite it
+$_SESSION[&quot;favcolor&quot;] = &quot;yellow&quot;;
+echo &quot;New Favorite color is &quot; . $_SESSION[&quot;favcolor&quot;] . &quot;.&lt;br&gt;&quot;;
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p><strong>Output:</strong></p>
+<pre><code>New Favorite color is yellow.</code></pre>
+<p>Opening <code>demo_session2.php</code> afterwards prints <code>Favorite color is yellow.</code></p>
+<h4 id="destroy-a-session">Destroy a session</h4>
+<p>To remove all the session variables and destroy the session, use <code>session_unset()</code> and <code>session_destroy()</code>:</p>
+<pre><code class="language-php">&lt;?php
+session_start();
+?&gt;
+&lt;html&gt;
+&lt;body&gt;
+&lt;?php
+unset($_SESSION[&quot;favcolor&quot;]);
+// remove all session variables
+session_unset();
+// destroy the session
+session_destroy();
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p><strong>Output:</strong> a blank page (nothing is echoed). Opening <code>demo_session2.php</code> afterwards is also blank, because the values are gone.</p>
+<ul><li><p><code>unset($_SESSION[&quot;favcolor&quot;])</code> removes one value. In this example it is not really needed, since <code>session_unset()</code> on the next line removes all of them.</p></li><li><p><code>session_unset()</code> empties the <code>$_SESSION</code> array. <code>session_destroy()</code> deletes the session&#39;s data on the server. A <strong>logout page</strong> uses both.</p></li></ul>
+<h3 id="topic-3-cookies">Topic 3: Cookies</h3>
+<h4 id="what-is-a-cookie">What is a cookie?</h4>
+<p>A <strong>cookie</strong> is a small text file the browser stores on the user&#39;s computer, at the request of a web server. Cookies remember user data (login details, preferences, activity) <strong>across multiple visits</strong>. Every time the browser sends a request to a site, it automatically includes the cookies for that domain.</p>
+<p>&quot;Across multiple visits&quot; means the information is still there the next time the user comes back, <strong>even after closing the browser or shutting down the computer</strong>. Without cookies, everything (login, preferences, cart) would be lost when the browser closes.</p>
+<table><thead><tr><th>Scenario</th><th>What the cookie does</th></tr></thead><tbody><tr><td>Login: you check &quot;Remember Me&quot;</td><td>Saves your username, so next time the site recognizes you and logs you in.</td></tr><tr><td>Language or theme: you pick Dark Mode or Spanish</td><td>Saves the choice, so the site loads it automatically next time.</td></tr><tr><td>Shopping cart: you add items and leave</td><td>The items are still there when you come back.</td></tr></tbody></table>
+<p>Cookies are commonly used to store preferences, keep users logged in, track activity across visits, and customize content for returning users.</p>
+<h4 id="create-a-cookie-setcookie">Create a cookie: <code>setcookie()</code></h4>
+<pre><code class="language-php">setcookie(name, value, expire, path, domain, secure, httponly);</code></pre>
+<p>Only <code>name</code> is required. All the other parameters are optional.</p>
+<table><thead><tr><th>Parameter</th><th>Meaning</th></tr></thead><tbody><tr><td><code>name</code></td><td>The cookie&#39;s name (the key in <code>$_COOKIE</code>).</td></tr><tr><td><code>value</code></td><td>What it stores.</td></tr><tr><td><code>expire</code></td><td>When it expires, as a Unix timestamp: <code>time()</code> (now, in seconds) plus how many seconds it should live. If left out, the cookie is deleted when the browser closes.</td></tr><tr><td><code>path</code></td><td>Which folders of the site can read it. <code>&quot;/&quot;</code> means the whole site.</td></tr><tr><td><code>domain</code></td><td>Which domain can read it.</td></tr><tr><td><code>secure</code></td><td><code>true</code> = only sent over HTTPS.</td></tr><tr><td><code>httponly</code></td><td><code>true</code> = JavaScript cannot read it (helps against XSS).</td></tr></tbody></table>
+<h4 id="create-and-read-a-cookie">Create and read a cookie</h4>
+<p>This creates a cookie named <code>user</code> with the value <code>John Doe</code> that expires in 30 days (<code>86400 * 30</code> seconds; 86400 is one day). Then it reads it from <code>$_COOKIE</code>, using <code>isset()</code> to check that it exists.</p>
+<pre><code class="language-php">&lt;?php
+$cookie_name = &quot;user&quot;;
+$cookie_value = &quot;John Doe&quot;;
+setcookie($cookie_name, $cookie_value, time() + (86400 * 30), &quot;/&quot;); // 86400 = 1 day
+?&gt;
+&lt;html&gt;
+&lt;body&gt;
+&lt;?php
+if (!isset($_COOKIE[$cookie_name])) {
+    echo &quot;Cookie named &#39;&quot; . $cookie_name . &quot;&#39; is not set!&quot;;
+} else {
+    echo &quot;Cookie &#39;&quot; . $cookie_name . &quot;&#39; is set!&lt;br&gt;&quot;;
+    echo &quot;Value is: &quot; . $_COOKIE[$cookie_name];
+}
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p><strong>Output, first time you open the page:</strong></p>
+<pre><code>Cookie named &#39;user&#39; is not set!</code></pre>
+<p><strong>Output, after you refresh:</strong></p>
+<pre><code>Cookie &#39;user&#39; is set!
+Value is: John Doe</code></pre>
+<blockquote><p><strong>Why &quot;not set&quot; the first time?</strong> <code>setcookie()</code> only <em>asks</em> the browser to save the cookie (it goes out in the response). <code>$_COOKIE</code> holds the cookies the browser sent <em>with this request</em>, and on the first visit it had none. On the next request the browser sends it back, so it shows up. I tested this: the first response had <code>Set-Cookie: user=John%20Doe; expires=...; Max-Age=2592000; path=/</code> and printed &quot;not set&quot;, and the second request printed the value.</p></blockquote>
+<ul><li><p><strong>Note:</strong> <code>setcookie()</code> must come <strong>before the <code>&lt;html&gt;</code> tag</strong> (before any output), because a cookie is sent as a header.</p></li><li><p><strong>Note:</strong> the value is automatically URL-encoded when sent (the space became <code>%20</code> above) and decoded when received. <code>setrawcookie()</code> skips the encoding.</p></li></ul>
+<h4 id="modify-a-cookie">Modify a cookie</h4>
+<p>Set it again with <code>setcookie()</code>. Here the value changes to <code>Alex Porter</code>:</p>
+<pre><code class="language-php">&lt;?php
+$cookie_name = &quot;user&quot;;
+$cookie_value = &quot;Alex Porter&quot;;
+setcookie($cookie_name, $cookie_value, time() + (86400 * 30), &quot;/&quot;);
+?&gt;
+&lt;html&gt;
+&lt;body&gt;
+&lt;?php
+if (!isset($_COOKIE[$cookie_name])) {
+    echo &quot;Cookie named &#39;&quot; . $cookie_name . &quot;&#39; is not set!&quot;;
+} else {
+    echo &quot;Cookie &#39;&quot; . $cookie_name . &quot;&#39; is set!&lt;br&gt;&quot;;
+    echo &quot;Value is: &quot; . $_COOKIE[$cookie_name];
+}
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p><strong>Output:</strong> for the same reason as above, the first load still shows the old value (<code>Value is: John Doe</code>). After a refresh:</p>
+<pre><code>Cookie &#39;user&#39; is set!
+Value is: Alex Porter</code></pre>
+<h4 id="delete-a-cookie">Delete a cookie</h4>
+<p>Use <code>setcookie()</code> with an expiration date <strong>in the past</strong>:</p>
+<pre><code class="language-php">&lt;?php
+// set the expiration date to one hour ago
+setcookie(&quot;user&quot;, &quot;&quot;, time() - 3600);
+?&gt;
+&lt;html&gt;
+&lt;body&gt;
+&lt;?php
+echo &quot;Cookie &#39;user&#39; is deleted.&quot;;
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p><strong>Output:</strong></p>
+<pre><code>Cookie &#39;user&#39; is deleted.</code></pre>
+<ul><li><p>An expired cookie is removed by the browser.</p></li><li><p>The cookie was created with path <code>&quot;/&quot;</code>, so to be sure it is deleted, use the same path: <code>setcookie(&quot;user&quot;, &quot;&quot;, time() - 3600, &quot;/&quot;);</code>. The handout leaves the path out, which only works when the page is in the site&#39;s root folder.</p></li></ul>
+<h4 id="check-if-cookies-are-enabled">Check if cookies are enabled</h4>
+<p>Try to create a test cookie, then count the <code>$_COOKIE</code> array:</p>
+<pre><code class="language-php">&lt;?php
+setcookie(&quot;test_cookie&quot;, &quot;test&quot;, time() + 3600, &#39;/&#39;);
+?&gt;
+&lt;html&gt;
+&lt;body&gt;
+&lt;?php
+if (count($_COOKIE) &gt; 0) {
+    echo &quot;Cookies are enabled.&quot;;
+} else {
+    echo &quot;Cookies are disabled.&quot;;
+}
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p><strong>Output</strong> (with cookies on):</p>
+<pre><code>Cookies are enabled.</code></pre>
+<ul><li><p><code>count($_COOKIE)</code> is how many cookies the browser sent. More than 0 means the browser is accepting cookies.</p></li><li><p>The same first-visit rule applies: on the very first load in a brand-new browser with no cookies for the site, it can say &quot;disabled&quot; until you refresh.</p></li></ul>
+<h4 id="using-a-cookie-to-pass-information-between-pages">Using a cookie to pass information between pages</h4>
+<p><strong>Page 1: <code>demo_cookie1.php</code></strong></p>
+<pre><code class="language-php">&lt;?php
+$name=&quot;userid&quot;;
+$value=&quot;11&quot;;
+$exp=time()+(60*60*24*30); // another way to make cookie expire after 30 days
+setcookie($name,$value,$exp);
+if (isset($_COOKIE[&#39;userid&#39;])) {
+    echo $_COOKIE[&#39;userid&#39;] ;
+}
+?&gt;</code></pre>
+<p><strong>Output:</strong> blank on the first load, then <code>11</code> after a refresh.</p>
+<p><code>60*60*24*30</code> is seconds × minutes × hours × days = 2,592,000 seconds, the same as <code>86400 * 30</code>.</p>
+<p><strong>Page 2: <code>demo_cookie2.php</code></strong> reads the cookie set on page 1.</p>
+<pre><code class="language-php">&lt;html&gt;
+&lt;head&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Cookie values&lt;/h1&gt;
+&lt;?php
+if (isset($_COOKIE[&#39;userid&#39;])) {
+    echo $_COOKIE[&#39;userid&#39;] ;
+}
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p><strong>Output</strong> (after visiting page 1):</p>
+<pre><code>Cookie values
+11</code></pre>
+<p>Page 2 does not set anything; it just reads what the browser sends. Since <code>demo_cookie1.php</code> sets no path, the cookie only works for pages in the same folder, which is the case here.</p>
+<h3 id="topic-4-cookies-vs-sessions">Topic 4: Cookies vs. Sessions</h3>
+<p>Both store user information. They differ in <strong>where</strong> and <strong>how</strong> it is stored.</p>
+<table><thead><tr><th>Feature</th><th>Cookies</th><th>Sessions</th></tr></thead><tbody><tr><td>Definition</td><td>Small files stored on the user&#39;s computer by the browser</td><td>Server-side storage that temporarily saves user data for a visit</td></tr><tr><td>Purpose</td><td>Remember user data across visits</td><td>Keep user data while they browse many pages during one visit</td></tr><tr><td>Storage location</td><td>On the <strong>client&#39;s computer</strong>, in a text file</td><td>On the <strong>server</strong>; only the session ID is stored on the client, as a cookie</td></tr><tr><td>Security</td><td>Less secure: users can view or change cookie data</td><td>More secure: the data is on the server, not directly reachable by users</td></tr><tr><td>Best practice</td><td>Do not store sensitive data (like passwords)</td><td>Good for sensitive or temporary data (like login status)</td></tr><tr><td>Duration</td><td>Days, months, or years, depending on the expiration</td><td>While the browser is open, or until the session times out</td></tr><tr><td>Persistence</td><td>Persistent: can survive closing the browser (if an expiration is set)</td><td>Temporary: destroyed on logout or when the browser closes</td></tr><tr><td>PHP</td><td><code>setcookie()</code> and <code>$_COOKIE</code></td><td><code>session_start()</code> and <code>$_SESSION</code></td></tr></tbody></table>
+<table><thead><tr><th>Use case</th><th>Recommended</th></tr></thead><tbody><tr><td>Remember user preferences or site theme</td><td>Cookie</td></tr><tr><td>Keep a user logged in temporarily</td><td>Session</td></tr><tr><td>Store secure or private data</td><td>Session</td></tr><tr><td>Track users between visits</td><td>Cookie</td></tr></tbody></table>
+<p><strong>Conclusion</strong></p>
+<ul><li><p><strong>Cookies</strong> = client-side storage → long-term and less secure.</p></li><li><p><strong>Sessions</strong> = server-side storage → temporary and more secure.</p></li><li><p>In practice both are used <strong>together</strong>: the session ID is stored in a cookie so the server can find the user&#39;s session.</p></li></ul>
+<h3 id="topic-5-ways-to-pass-data-between-pages">Topic 5: Ways to pass data between pages</h3>
+<table><thead><tr><th>Method</th><th>Where the data travels</th><th>Visible to the user?</th><th>Covered in</th></tr></thead><tbody><tr><td>Session</td><td>Stored on the server, found by the session ID cookie</td><td>No</td><td>Topic 2 above</td></tr><tr><td>Cookie</td><td>Stored in the browser, sent with every request</td><td>Yes (in the browser&#39;s tools)</td><td>Topic 3 above</td></tr><tr><td>POST / GET form</td><td>Sent when a form is submitted</td><td>POST: no. GET: yes, in the URL</td><td>Week 4, Day 2 (PHP Tutorial Part 7)</td></tr><tr><td>URL (query string)</td><td>Written into a link&#39;s address</td><td>Yes, in the address bar and history</td><td>Below</td></tr></tbody></table>
+<h4 id="passing-values-in-the-url">Passing values in the URL</h4>
+<p>Values can go in the URL itself. They are <strong>visible</strong> to the user and others (address bar and browser history), so this is <strong>not</strong> a safe way to send sensitive data like passwords.</p>
+<p><strong><code>main.php</code></strong></p>
+<pre><code class="language-php">&lt;html&gt;
+&lt;head&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Welcome to main page&lt;/h1&gt;
+&lt;?php
+$urltext=&quot;Contact Us&quot;;
+?&gt;
+&lt;a href=&quot;welcome.php?id=110&amp;name=John&amp;age=27&quot;&gt; &lt;?php echo $urltext;?&gt; &lt;/a&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p><strong>Output:</strong> the heading Welcome to main page and a link that says Contact Us.</p>
+<p>Clicking the link opens <code>welcome.php</code> and sends the data in the URL.</p>
+<p><strong><code>welcome.php</code></strong></p>
+<pre><code class="language-php">&lt;html&gt;
+&lt;head&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Welcome to contact page&lt;/h1&gt;
+&lt;?php
+//echo print_r($_GET);
+?&gt;
+&lt;/br&gt;
+ID:&lt;?php echo $_GET[&#39;id&#39;]; ?&gt;
+&lt;/br&gt;
+name:&lt;?php echo $_GET[&#39;name&#39;]; ?&gt;
+&lt;/br&gt;
+age:&lt;?php echo $_GET[&#39;age&#39;]; ?&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p><strong>Output</strong> (after clicking Contact Us; the address bar shows <code>welcome.php?id=110&amp;name=John&amp;age=27</code>):</p>
+<pre><code>Welcome to contact page
+
+ID:110
+name:John
+age:27</code></pre>
+<table><thead><tr><th>Piece</th><th>Meaning</th></tr></thead><tbody><tr><td><code>?</code></td><td>Starts the query string.</td></tr><tr><td><code>id=110</code></td><td>One <code>key=value</code> pair.</td></tr><tr><td><code>&amp;</code></td><td>Separates the pairs.</td></tr><tr><td><code>$_GET[&#39;id&#39;]</code></td><td>Reads the value of <code>id</code> from the URL.</td></tr><tr><td><code>//echo print_r($_GET);</code></td><td>Commented out. Removing the <code>//</code> prints the whole <code>$_GET</code> array, useful for debugging.</td></tr></tbody></table>
+<ul><li><p><code>&lt;?php echo $urltext;?&gt;</code> puts the PHP variable&#39;s text inside the link.</p></li><li><p>If <code>welcome.php</code> is opened without the <code>?id=...</code> part, <code>$_GET[&#39;id&#39;]</code> does not exist and PHP shows &quot;Undefined array key&quot; warnings. Use <code>$_GET[&#39;id&#39;] ?? &#39;&#39;</code> or <code>isset()</code> to avoid them.</p></li><li><p>Anyone can edit the URL by hand (<code>?name=&lt;script&gt;...</code>), so printing <code>$_GET</code> values should use <code>htmlspecialchars()</code>.</p></li></ul>
+<h3 id="topic-6-connecting-this-to-assignment-1">Topic 6: Connecting this to Assignment 1</h3>
+<p>Assignment 1&#39;s <code>welcome.php</code> can be opened by anyone who types its address. With a session, <code>process_login.php</code> can remember who logged in, and <code>welcome.php</code> can turn away anyone who did not. <em>(This is extra practice with today&#39;s topic, not a change to the assignment as written.)</em></p>
+<pre><code class="language-php">// process_login.php: at the very top
+session_start();
+
+// ...inside if ($found), before the redirect
+$_SESSION[&quot;username&quot;] = $username;
+header(&quot;Location: welcome.php&quot;);
+exit;</code></pre>
+<pre><code class="language-php">&lt;?php
+// welcome.php: at the very top
+session_start();
+if (!isset($_SESSION[&quot;username&quot;])) {
+    header(&quot;Location: login.php&quot;);
+    exit;
+}
+?&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;body&gt;
+&lt;h1&gt;Welcome, &lt;?php echo htmlspecialchars($_SESSION[&quot;username&quot;]); ?&gt;!&lt;/h1&gt;
+&lt;a href=&quot;logout.php&quot;&gt;Log out&lt;/a&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<pre><code class="language-php">&lt;?php
+// logout.php
+session_start();
+session_unset();
+session_destroy();
+header(&quot;Location: login.php&quot;);
+exit;
+?&gt;</code></pre>
+<table><thead><tr><th>You do</th><th>Result</th></tr></thead><tbody><tr><td>Log in as <code>carlos</code> / <code>carlos1</code></td><td><code>Welcome, carlos!</code> and a Log out link.</td></tr><tr><td>Type <code>localhost/HW1/welcome.php</code> in a new browser without logging in</td><td>Sent back to <code>login.php</code>.</td></tr><tr><td>Click Log out, then open <code>welcome.php</code> again</td><td>Sent back to <code>login.php</code>, because the session was destroyed.</td></tr></tbody></table>
+<h4 id="handout-notes">Handout notes</h4>
+<ul><li><p>The &quot;Destroying Complete Session&quot; line is formatted as a big heading in the handout; it is just a normal step.</p></li><li><p>&quot;HTTP address doesn&#39;t maintain state&quot; means the HTTP <strong>protocol</strong> does not maintain state.</p></li><li><p>The delete-cookie example leaves out the path <code>&quot;/&quot;</code> that was used to create the cookie. Add it so the cookie is really deleted.</p></li><li><p><code>welcome.php</code> uses <code>&lt;/br&gt;</code>. The correct tag is <code>&lt;br&gt;</code> (browsers accept both).</p></li></ul>
+<h3 id="end-of-week-5-day-2-summary">End of Week 5, Day 2 — Summary</h3>
+<p><strong>Covered today</strong></p>
+<ul><li><p><strong>Why:</strong> HTTP is stateless, so sessions and cookies are how a site remembers a user between pages.</p></li><li><p><strong>Sessions:</strong> data on the server, found through a session ID (<code>PHPSESSID</code> cookie). <code>session_start()</code> at the top of every page, <code>$_SESSION</code> to save and read, <code>unset()</code>, <code>session_unset()</code>, <code>session_destroy()</code>.</p></li><li><p><strong>Cookies:</strong> data in the browser. <code>setcookie(name, value, expire, path, ...)</code> to create, modify, or delete (past expiration), <code>$_COOKIE</code> to read, <code>count($_COOKIE)</code> to check they are enabled.</p></li><li><p><strong>Cookies vs sessions:</strong> cookies are long-term and less secure; sessions are temporary and more secure; they work together.</p></li><li><p><strong>Passing data between pages:</strong> sessions, cookies, POST/GET forms, and the URL query string (<code>?id=110&amp;name=John</code>) read with <code>$_GET</code>.</p></li></ul>
+<p><strong>Mistakes and traps to remember</strong></p>
+<ul><li><p><code>session_start()</code> and <code>setcookie()</code> must come before any HTML or <code>echo</code>, because they send headers.</p></li><li><p>A new cookie is not in <code>$_COOKIE</code> until the <strong>next</strong> request, so the first load says &quot;not set&quot;.</p></li><li><p>Forgetting <code>session_start()</code> on a page means <code>$_SESSION</code> is empty there.</p></li><li><p>Never store passwords or private data in a cookie. Never send them in the URL.</p></li><li><p>Delete a cookie with the same path it was created with.</p></li><li><p>Check <code>isset()</code> before reading <code>$_SESSION</code>, <code>$_COOKIE</code>, or <code>$_GET</code> values.</p></li></ul>
+<p><strong>To do before next class</strong></p>
+<ul><li><p>Try <code>demo_session1.php</code> / <code>demo_session2.php</code> and <code>demo_cookie1.php</code> / <code>demo_cookie2.php</code> in XAMPP.</p></li><li><p>Finish Assignment 1 (Screenshots 1, 4, 6 and the Word document).</p></li><li><p>Lab #3 screenshots.</p></li><li><p>Project 1, Deliverable 1: Project Proposal Report, due <strong>Thursday, 10/29/2026</strong>.</p></li></ul>
+<hr>
