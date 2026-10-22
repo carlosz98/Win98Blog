@@ -79,11 +79,11 @@ function ErrorBtn({themeDragBar, stateVal, text, setStateVal, runOpenFuction}) {
                 return removeLocalStorage();
 
             case "github": 
-                return window.open('https://github.com/Yuteoctober/wins95Portfolio/', '_blank');
+                return window.open('https://github.com/carlosz98/Win98Blog', '_blank');
 
             case "webresume": 
                 
-            return window.open('https://yuteoctober.github.io/resume_web/', '_blank');
+            return window.open('https://carlosz98.github.io/MyPortFolio/', '_blank');
             
             case "cat": 
                 setRunCatVideo(true)

@@ -1,9 +1,10 @@
 import UseContext from '../Context'
-import { useContext, useState } from "react";
+import { Fragment, useContext } from "react";
 import Draggable from 'react-draggable'
 import { motion } from 'framer-motion';
 import resumefile from '../assets/resume.png'
 import '../css/ResumeFile.css'
+import { RESUME } from './function/resumeData'
 
 
 
@@ -19,10 +20,10 @@ function ResumeFile() {
     inlineStyleExpand,
     inlineStyle,
     deleteTap,
+    handleShow,
 
    } = useContext(UseContext);
 
-   const [ downloadBox, setDownloadBox ] = useState(false)
 
       function handleDragStop(event, data) {
         const positionX = data.x 
@@ -69,7 +70,7 @@ function ResumeFile() {
         onStop={(event, data) => handleDragStop(event, data)}
         onStart={() => handleSetFocusItemTrue('ResumeFile')}
       >
-        <div className='folder_folder-resumefile' 
+        <div className='folder_folder-resumefile resume_window' 
             onClick={(e) => {
               e.stopPropagation();
               handleSetFocusItemTrue('ResumeFile');
@@ -115,15 +116,8 @@ function ResumeFile() {
               </div>
               <div>
                 <p className='x-resumefile'
-                 onClick={!isTouchDevice ? () => {
-                  deleteTap('ResumeFile')
-                  setDownloadBox(false)
-                 }: undefined
-                }
-                onTouchEnd={() => {
-                  deleteTap('ResumeFile')
-                  setDownloadBox(false)
-              }}
+                 onClick={!isTouchDevice ? () => deleteTap('ResumeFile') : undefined}
+                onTouchEnd={() => deleteTap('ResumeFile')}
                 >×</p>
               </div>
             </div>
@@ -138,12 +132,59 @@ function ResumeFile() {
 
           >
             {ResumeFileExpand.show ? (
-              <iframe 
-              onClick={() => setDownloadBox(false)}
-              src="https://drive.google.com/file/d/1H29ar7J_UcrUBq6aMdE6mbu-Uu_2__nc/preview" 
-              frameBorder='0'
-            >
-            </iframe>
+              <div className="resume_doc">
+                <header className="resume_head">
+                  <h1>{RESUME.name}</h1>
+                  <p className="resume_title">{RESUME.title}</p>
+                  <p className="resume_contact">
+                    <span>{RESUME.location}</span>
+                    {RESUME.contact.map(c => (
+                      <button key={c.label} type="button" className="resume_link"
+                        onClick={() => c.open ? handleShow(c.open) : window.open(c.url, '_blank', 'noopener')}
+                      >{c.label}</button>
+                    ))}
+                  </p>
+                </header>
+
+                <h2>Summary</h2>
+                <p>{RESUME.summary}</p>
+
+                <h2>Education</h2>
+                <p className="resume_row">
+                  <b>{RESUME.education.school}</b>
+                  <span>{RESUME.education.place}</span>
+                </p>
+                <p className="resume_sub">Relevant coursework:</p>
+                <ul className="resume_courses">
+                  {RESUME.education.coursework.map(c => <li key={c}>{c}</li>)}
+                </ul>
+
+                <h2>Skills</h2>
+                <dl className="resume_skills">
+                  {RESUME.skills.map(s => (
+                    <Fragment key={s.group}>
+                      <dt>{s.group}</dt>
+                      <dd>{s.items}</dd>
+                    </Fragment>
+                  ))}
+                </dl>
+
+                <h2>Projects</h2>
+                {RESUME.projects.map(p => (
+                  <div key={p.project} className="resume_project">
+                    <p className="resume_row">
+                      <button type="button" className="resume_link" onClick={() => handleShow(p.project)}
+                        data-tip="Open project"
+                      ><b>{p.name}</b></button>
+                      <span>{p.stack}</span>
+                    </p>
+                    <p>{p.text}</p>
+                  </div>
+                ))}
+                <p className="resume_more">
+                  More in the <button type="button" className="resume_link" onClick={() => handleShow('Project')}>Project</button> folder.
+                </p>
+              </div>
             ):(null)}
             
           </div>

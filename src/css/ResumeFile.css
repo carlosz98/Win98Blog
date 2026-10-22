@@ -155,8 +155,7 @@
     margin: 0 auto;
     margin-top: 5px;
     background: rgb(255, 255, 255);
-    overflow-y: scroll;
-    scrollbar-width: none;
+    overflow-y: auto;
 }
 
 .btn_option_btm_container {
@@ -325,3 +324,120 @@ iframe {
 
 
 
+
+/* ------------ Resume document ---------------- */
+
+.folder_folder-resumefile.resume_window {
+    width: 560px;
+    max-height: calc(100svh - 120px);
+}
+
+@media screen and (max-width: 450px) {
+    .folder_folder-resumefile.resume_window { width: 92%; }
+}
+
+.resume_doc {
+    padding: 18px 22px 24px;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 13px;
+    line-height: 1.4;
+    color: #000;
+    cursor: default;
+}
+
+.resume_doc p { margin: 0 0 4px; }
+
+.resume_head {
+    text-align: center;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #000080;
+}
+
+.resume_head h1 {
+    margin: 0;
+    font-size: 24px;
+    letter-spacing: 1px;
+    color: #000080;
+}
+
+.resume_title {
+    font-style: italic;
+    font-size: 14px;
+}
+
+.resume_contact {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2px 12px;
+    font-size: 12px;
+}
+
+.resume_doc h2 {
+    margin: 14px 0 6px;
+    padding: 1px 6px;
+    font-family: 'MS Sans Serif', Arial, sans-serif;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #fff;
+    background: linear-gradient(90deg, #000080, #1084d0);
+}
+
+.resume_link {
+    padding: 0;
+    border: none;
+    background: none;
+    font: inherit;
+    color: #0000ee;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.resume_link:hover { color: #551a8b; }
+
+.resume_row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0 10px;
+}
+
+.resume_row span {
+    font-style: italic;
+    color: #444;
+}
+
+.resume_row .resume_link b { color: #000; }
+
+.resume_sub { margin-top: 4px; }
+
+.resume_courses {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    margin: 0;
+    padding-left: 18px;
+}
+
+.resume_skills {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 2px 10px;
+    margin: 0;
+}
+
+.resume_skills dt { font-weight: bold; }
+.resume_skills dd { margin: 0; }
+
+.resume_project { margin-bottom: 6px; }
+
+.resume_more {
+    margin-top: 8px;
+    font-style: italic;
+}
+
+@media screen and (max-width: 450px) {
+    .resume_doc { padding: 12px 12px 18px; }
+    .resume_skills { grid-template-columns: 1fr; }
+    .resume_skills dd { margin-bottom: 4px; }
+}
