@@ -55,6 +55,29 @@ WHERE student_id = 2;</code></pre>
 <h4 id="crud-on-a-website">CRUD on a website</h4>
 <table><thead><tr><th>Operation</th><th>SQL</th><th>Web page example</th><th>HTTP method</th></tr></thead><tbody><tr><td>Create</td><td><code>INSERT</code></td><td>Sign-up or &quot;Add student&quot; form</td><td>POST</td></tr><tr><td>Read</td><td><code>SELECT</code></td><td>List or profile page</td><td>GET</td></tr><tr><td>Update</td><td><code>UPDATE</code></td><td>&quot;Edit profile&quot; form</td><td>POST</td></tr><tr><td>Delete</td><td><code>DELETE</code></td><td>&quot;Delete&quot; button</td><td>POST</td></tr></tbody></table>
 <p>The login homework becomes CRUD with a <code>users</code> table: sign-up is Create, logging in is Read (<code>SELECT</code> the user by username), changing a password is Update, and closing the account is Delete.</p>
+<h4 id="relationships-between-tables-for-the-erd">Relationships between tables (for the ERD)</h4>
+<table><thead><tr><th>Type</th><th>Meaning</th><th>Example</th><th>How it&#39;s built</th></tr></thead><tbody><tr><td>One-to-one (1:1)</td><td>One row matches exactly one row</td><td>One user has one host profile</td><td>FK with <code>UNIQUE</code> in one table</td></tr><tr><td>One-to-many (1:N)</td><td>One row matches many rows</td><td>One user writes many comments</td><td>FK in the &quot;many&quot; table</td></tr><tr><td>Many-to-many (N:M)</td><td>Many rows match many rows, both ways</td><td>A playlist has many songs, and a song can be in many playlists</td><td>A <strong>junction table</strong> with two FKs</td></tr></tbody></table>
+<p><strong>Why many-to-many needs a third table:</strong> a playlist can&#39;t keep its songs in one column, because one column holds one value. So a junction table stores one row per link:</p>
+<pre><code class="language-sql">CREATE TABLE playlist_songs (
+  playlist_id INT,
+  song_id INT,
+  PRIMARY KEY (playlist_id, song_id),
+  FOREIGN KEY (playlist_id) REFERENCES playlists(playlist_id),
+  FOREIGN KEY (song_id) REFERENCES songs(song_id)
+);
+
+INSERT INTO playlist_songs VALUES (1,1), (1,2), (2,2), (2,3);</code></pre>
+<table><thead><tr><th>playlist_id</th><th>song_id</th></tr></thead><tbody><tr><td>1 (Road Trip)</td><td>1 (Song A)</td></tr><tr><td>1 (Road Trip)</td><td>2 (Song B)</td></tr><tr><td>2 (Sunday Morning)</td><td>2 (Song B)</td></tr><tr><td>2 (Sunday Morning)</td><td>3 (Song C)</td></tr></tbody></table>
+<p>Song B is in <strong>both</strong> playlists, and each playlist has <strong>two</strong> songs: that&#39;s many-to-many.</p>
+<ul><li><p><code>PRIMARY KEY (playlist_id, song_id)</code> is a <strong>composite key</strong>: the pair must be unique, so the same song can&#39;t be added to the same playlist twice.</p></li><li><p>To read it back, <code>JOIN</code> the three tables:</p></li></ul>
+<pre><code class="language-sql">SELECT p.name AS playlist, s.title AS song
+FROM playlists p
+JOIN playlist_songs ps ON p.playlist_id = ps.playlist_id
+JOIN songs s ON s.song_id = ps.song_id
+ORDER BY p.name, s.title;</code></pre>
+<p><strong>Output</strong> (tested):</p>
+<table><thead><tr><th>playlist</th><th>song</th></tr></thead><tbody><tr><td>Road Trip</td><td>Song A</td></tr><tr><td>Road Trip</td><td>Song B</td></tr><tr><td>Sunday Morning</td><td>Song B</td></tr><tr><td>Sunday Morning</td><td>Song C</td></tr></tbody></table>
+<p><code>p</code>, <code>ps</code> and <code>s</code> are short names (aliases) for the tables, and <code>ON</code> says which columns must match.</p>
 <h3 id="topic-2-mysql-with-php-class-handout-php-tutorial-part-10">Topic 2: MySQL with PHP (class handout: PHP Tutorial Part 10)</h3>
 <p><em>The Part 10 handout itself wasn&#39;t sent here, so this follows the class topics in order (connection, create, insert, select, delete, update, last ID, prepared statements, PHP + HTML) using the standard <code>myDB</code> / <code>MyGuests</code> examples the handout is built on. Send the handout PDF and I&#39;ll match any example that differs.</em></p>
 <h4 id="mysql-mysqli-and-pdo">MySQL, MySQLi and PDO</h4>
