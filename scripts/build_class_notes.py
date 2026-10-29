@@ -66,7 +66,8 @@ layout = [
               ('week-4-day-2', 'Day 2 — Forms, GET vs POST, Lab #3', find('week-4-day-2'))]),
   ('Week 5', [('week-5-day-1', 'Day 1 — Form validation, Assignment 1', find('week-5-day-1')),
               ('week-5-day-2', 'Day 2 — Sessions and cookies', find('week-5-day-2'))]),
-  ('Week 6', [('week-6-day-2', 'Day 2 — Midterm review and quizzes', find('week-6-day-2'))]),
+  ('Week 6', [('week-6-day-1', 'Day 1 — CRUD, SQL, MySQL with PHP', find('week-6-day-1')),
+              ('week-6-day-2', 'Day 2 — Midterm review and quizzes', find('week-6-day-2'))]),
   ('Project 1', [('project-1', 'Deliverable 1 — Project proposal', find('project-1'))]),
 ]
 used = set()
