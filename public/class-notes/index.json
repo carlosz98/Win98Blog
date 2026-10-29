@@ -462,6 +462,37 @@
      ]
     },
     {
+     "title": "Week 6",
+     "pages": [
+      {
+       "slug": "week-6-day-2",
+       "title": "Day 2 — Midterm review and quizzes",
+       "topics": [
+        {
+         "id": "topic-1-review-for-the-midterm",
+         "title": "Topic 1: Review for the Midterm"
+        },
+        {
+         "id": "topic-2-quiz-i-review-functions-and-arrays-5-points",
+         "title": "Topic 2: Quiz I review (functions and arrays, 5 points)"
+        },
+        {
+         "id": "topic-3-quiz-2-today-in-class-validation-sessions-and-cookies",
+         "title": "Topic 3: Quiz 2 (today, in class): validation, sessions and cookies"
+        },
+        {
+         "id": "topic-4-midterm-study-guide",
+         "title": "Topic 4: Midterm study guide"
+        },
+        {
+         "id": "end-of-week-6-day-2-summary",
+         "title": "End of Week 6, Day 2 — Summary"
+        }
+       ]
+      }
+     ]
+    },
+    {
      "title": "Project 1",
      "pages": [
       {

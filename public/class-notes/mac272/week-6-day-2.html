@@ -1,0 +1,239 @@
+<h2 id="week-6-day-2-thursday-10292026-midterm-review-quiz-i-and-quiz-2">Week 6, Day 2 — Thursday 10/29/2026: Midterm Review, Quiz I, and Quiz 2</h2>
+<p>A short class: the <strong>Review for the Midterm</strong> sheet, a look back at <strong>Quiz I</strong> (functions and arrays), and an in-class <strong>quiz on validation, sessions and cookies</strong>. Every answer below has the reason, and the code was run in PHP to check the output. Use this section as the study guide for the midterm.</p>
+<h3 id="topic-1-review-for-the-midterm">Topic 1: Review for the Midterm</h3>
+<h4 id="q1-multiple-choice">Q1: Multiple choice</h4>
+<p><strong>1. What does the <code>var_dump()</code> function do in PHP?</strong></p>
+<ul><li><p>a) Outputs text and variables</p></li><li><p>b) Outputs formatted text</p></li><li><p>c) Returns the data type and value of a variable</p></li><li><p>d) Converts variables to lowercase</p></li></ul>
+<p><strong>Answer: c.</strong> <code>var_dump()</code> shows the <strong>type</strong> and the <strong>value</strong> (and the length for strings).</p>
+<table><thead><tr><th>Wrong choice</th><th>Why it is wrong</th></tr></thead><tbody><tr><td>a</td><td>That describes <code>echo</code> / <code>print</code>.</td></tr><tr><td>b</td><td>That describes <code>printf()</code>.</td></tr><tr><td>d</td><td>That is <code>strtolower()</code>.</td></tr></tbody></table>
+<pre><code class="language-php">&lt;?php
+$x = 10.75;
+var_dump($x);
+var_dump((int) $x);
+var_dump(&quot;42&quot;);
+?&gt;</code></pre>
+<p><strong>Output:</strong></p>
+<pre><code>float(10.75)
+int(10)
+string(2) &quot;42&quot;</code></pre>
+<p><code>string(2)</code> means a string with 2 characters. (Strictly, <code>var_dump()</code> <em>prints</em> this information; it does not return it. The choice still describes it best.)</p>
+<p><strong>2. What is the correct way to access the value &#39;Mango&#39; in this multidimensional array?</strong></p>
+<pre><code class="language-php">$fruits = array(
+   array(&#39;Apple&#39;, &#39;Banana&#39;),
+   array(&#39;Orange&#39;, &#39;Mango&#39;) );</code></pre>
+<ul><li><p>a) <code>$fruits[1][1]</code></p></li><li><p>b) <code>$fruits[2][2]</code></p></li><li><p>c) <code>$fruits[&#39;Orange&#39;][&#39;Mango&#39;]</code></p></li><li><p>d) <code>$fruits[&#39;Mango&#39;][1]</code></p></li></ul>
+<p><strong>Answer: a.</strong> The first bracket picks the <strong>row</strong> (the inner array), the second picks the <strong>item</strong> in that row, and both start at 0.</p>
+<table><thead><tr><th></th><th><code>[0]</code></th><th><code>[1]</code></th></tr></thead><tbody><tr><td><strong><code>$fruits[0]</code></strong></td><td>Apple</td><td>Banana</td></tr><tr><td><strong><code>$fruits[1]</code></strong></td><td>Orange</td><td><strong>Mango</strong></td></tr></tbody></table>
+<pre><code class="language-php">echo $fruits[1][1];   // Mango</code></pre>
+<ul><li><p>b) is wrong because index 2 does not exist (each array only has 0 and 1).</p></li><li><p>c) and d) are wrong because this is an <strong>indexed</strong> array: the keys are numbers, not the values.</p></li></ul>
+<p><strong>3. What is the role of the <code>$_POST</code> superglobal in PHP form handling?</strong></p>
+<ul><li><p>a) Retrieve information sent with the GET method</p></li><li><p>b) Collect values from a form sent with method=&quot;post&quot;</p></li><li><p>c) Display form data in the browser&#39;s address bar</p></li><li><p>d) Set form action URL for form submission</p></li></ul>
+<p><strong>Answer: b.</strong> a) is <code>$_GET</code>. c) is what GET does, not POST. d) is the form&#39;s <code>action</code> attribute.</p>
+<p><strong>4. What is the purpose of the <code>isset()</code> function in PHP form handling?</strong></p>
+<ul><li><p>a) To check if a variable is set and not NULL</p></li><li><p>b) To set cookies for form data</p></li><li><p>c) To display form data in a tabular format</p></li><li><p>d) To redirect the user to another page</p></li></ul>
+<p><strong>Answer: a.</strong> b) is <code>setcookie()</code>. d) is <code>header(&quot;Location: ...&quot;)</code>. c) is not something <code>isset()</code> does.</p>
+<p><strong>5. Which PHP function removes unnecessary characters like extra spaces and tabs from user input?</strong></p>
+<ul><li><p>a) <code>strip_tags()</code></p></li><li><p>b) <code>trim()</code></p></li><li><p>c) <code>clean_input()</code></p></li><li><p>d) <code>validate_input()</code></p></li></ul>
+<p><strong>Answer: b.</strong> <code>trim()</code> removes spaces, tabs and new lines from both ends. <code>strip_tags()</code> removes HTML tags. <code>clean_input()</code> and <code>validate_input()</code> are not built-in PHP functions (you would have to write them, like <code>test_input()</code>).</p>
+<p><strong>6. Which PHP function is used to check if a string contains only letters and whitespace?</strong></p>
+<ul><li><p>a) <code>check_string()</code></p></li><li><p>b) <code>validate_string()</code></p></li><li><p>c) <code>test_input()</code></p></li><li><p>d) <code>preg_match()</code></p></li></ul>
+<p><strong>Answer: d.</strong> With a pattern: <code>preg_match(&quot;/^[a-zA-Z ]*$/&quot;, $name)</code>. a) and b) do not exist, and <code>test_input()</code> is the handout&#39;s own cleaning function (trim and stripslashes), not a check.</p>
+<h4 id="q2-true-or-false">Q2: True or False</h4>
+<table><thead><tr><th>#</th><th>Statement</th><th>Answer</th><th>Why</th></tr></thead><tbody><tr><td>1</td><td>In PHP, the <code>$_GET</code> variable is secure to transfer data between pages.</td><td><strong>False</strong></td><td>GET puts the data in the URL, where anyone can see it, and it stays in the browser history.</td></tr><tr><td>2</td><td>Information sent from a form with the POST method is visible to others.</td><td><strong>False</strong></td><td>POST sends the data inside the request body, not in the URL.</td></tr><tr><td>3</td><td>Implicit casting is done manually by the programmer in PHP.</td><td><strong>False</strong></td><td>Implicit casting is done <strong>automatically</strong> by PHP. Explicit casting is the manual one.</td></tr><tr><td>4</td><td>Using the URL to pass sensitive data between pages is a secure method in PHP.</td><td><strong>False</strong></td><td>URL values show in the address bar, history and server logs. Use POST or sessions.</td></tr><tr><td>5</td><td>Explicit casting in PHP requires the use of parentheses with the desired data type name.</td><td><strong>True</strong></td><td>For example <code>(int) $x</code>, <code>(string) $n</code>, <code>(float) $s</code>.</td></tr></tbody></table>
+<p><strong>Implicit vs explicit casting</strong></p>
+<table><thead><tr><th></th><th>Implicit</th><th>Explicit</th></tr></thead><tbody><tr><td>Who does it</td><td>PHP, automatically</td><td>You, by writing the type in parentheses</td></tr><tr><td>Example</td><td><code>&quot;5&quot; + 3</code></td><td><code>(int) 10.75</code></td></tr><tr><td>Result</td><td><code>int(8)</code>: PHP turned <code>&quot;5&quot;</code> into a number</td><td><code>int(10)</code></td></tr></tbody></table>
+<pre><code class="language-php">var_dump(&quot;5&quot; + 3);       // int(8)       implicit
+var_dump((string) 42);    // string(2) &quot;42&quot;  explicit
+var_dump((bool) 0);       // bool(false)  explicit</code></pre>
+<h4 id="q3-code-question">Q3: Code question</h4>
+<p><strong>Write a PHP code snippet to cast a float variable <code>$x = 10.75</code> to an integer and store it in a variable <code>$Y</code>. Print the value of <code>$Y</code>.</strong></p>
+<pre><code class="language-php">&lt;?php
+$x = 10.75;
+$Y = (int) $x;
+echo $Y;
+?&gt;</code></pre>
+<p><strong>Output:</strong></p>
+<pre><code>10</code></pre>
+<ul><li><p><code>(int)</code> cuts off the decimals. It does <strong>not</strong> round, so <code>10.75</code> becomes <code>10</code>, not <code>11</code>. (To round, use <code>round($x)</code>, which gives <code>11</code>.)</p></li><li><p>Variable names are case-sensitive: <code>$Y</code> and <code>$y</code> are different variables. Use exactly <code>$Y</code> as the question says.</p></li><li><p><code>(integer)</code> and <code>intval($x)</code> also work.</p></li></ul>
+<h4 id="q4-create-a-simple-login-system-with-php">Q4: Create a simple login system with PHP</h4>
+<p>The sheet&#39;s login page (with one typo fixed: the submit button had a stray <code>=&gt;</code> after <code>name=&quot;submit&quot;</code>):</p>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+ &lt;title&gt;Login&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+ &lt;h2&gt;Login&lt;/h2&gt;
+ &lt;form action=&quot;process_login.php&quot; method=&quot;post&quot;&gt;
+  &lt;label for=&quot;username&quot;&gt;Username:&lt;/label&gt;
+  &lt;input type=&quot;text&quot; id=&quot;username&quot; name=&quot;username&quot;&gt;&lt;br&gt;&lt;br&gt;
+  &lt;label for=&quot;password&quot;&gt;Password:&lt;/label&gt;
+  &lt;input type=&quot;password&quot; id=&quot;password&quot; name=&quot;password&quot;&gt;&lt;br&gt;&lt;br&gt;
+  &lt;input type=&quot;submit&quot; value=&quot;Login&quot; name=&quot;submit&quot;&gt;
+ &lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p>The sheet asks for <code>process_login.php</code> that:</p>
+<ol><li><p>a) Reads the username and password submitted from the login page. [1 pt]</p></li><li><p>Creates any type of array(s) that store usernames and their passwords for <strong>two users</strong>. [1 pt]</p></li></ol>
+<p>The sheet only prints 2 of the 5 points. The rest is most likely the same as Assignment 1 (loop through the arrays, go to a welcome page when found, show an error when not), so the full script covers those too:</p>
+<pre><code class="language-php">&lt;?php
+// a) Read the username and password submitted from the login page
+$username = $_POST[&quot;username&quot;] ?? &quot;&quot;;
+$password = $_POST[&quot;password&quot;] ?? &quot;&quot;;
+
+// 2) Arrays that store the usernames and passwords of two users
+$usernames = [&quot;carlos&quot;, &quot;maria&quot;];
+$passwords = [&quot;carlos1&quot;, &quot;abc456&quot;];
+
+// Loop through the arrays to look for a match
+$found = false;
+for ($i = 0; $i &lt; count($usernames); $i++) {
+    if ($username === $usernames[$i] &amp;&amp; $password === $passwords[$i]) {
+        $found = true;
+        break;
+    }
+}
+
+if ($found) {
+    header(&quot;Location: welcome.php&quot;);
+    exit;
+} else {
+    echo &quot;username and password incorrect&quot;;
+}
+?&gt;</code></pre>
+<p><strong>Output:</strong></p>
+<table><thead><tr><th>You type</th><th>Result</th></tr></thead><tbody><tr><td><code>carlos</code> / <code>carlos1</code></td><td>Redirect to <code>welcome.php</code></td></tr><tr><td><code>maria</code> / <code>abc456</code></td><td>Redirect to <code>welcome.php</code></td></tr><tr><td><code>carlos</code> / <code>x</code></td><td><code>username and password incorrect</code></td></tr></tbody></table>
+<p><strong>Three ways to build the arrays for two users</strong> (any one gets the point):</p>
+<pre><code class="language-php">// Option 1: two parallel arrays (same position = same user)
+$usernames = [&quot;carlos&quot;, &quot;maria&quot;];
+$passwords = [&quot;carlos1&quot;, &quot;abc456&quot;];
+
+// Option 2: one associative array (username =&gt; password)
+$users = [&quot;carlos&quot; =&gt; &quot;carlos1&quot;, &quot;maria&quot; =&gt; &quot;abc456&quot;];
+
+// Option 3: a multidimensional array (one row per user)
+$users = [
+    [&quot;carlos&quot;, &quot;carlos1&quot;],
+    [&quot;maria&quot;,  &quot;abc456&quot;]
+];</code></pre>
+<p>How to check each one:</p>
+<pre><code class="language-php">// Option 2
+if (isset($users[$username]) &amp;&amp; $users[$username] === $password) { /* found */ }
+
+// Option 3
+foreach ($users as $user) {
+    if ($username === $user[0] &amp;&amp; $password === $user[1]) { /* found */ }
+}</code></pre>
+<p>In Option 3, <code>$user[0]</code> is the username and <code>$user[1]</code> is the password, the same row/item idea as the Mango question.</p>
+<h3 id="topic-2-quiz-i-review-functions-and-arrays-5-points">Topic 2: Quiz I review (functions and arrays, 5 points)</h3>
+<h4 id="q1-3-pts-multiple-choice">Q1 [3 pts]: Multiple choice</h4>
+<table><thead><tr><th>#</th><th>Question</th><th>Answer</th><th>Why</th></tr></thead><tbody><tr><td>1</td><td>What keyword is used to access a global variable inside a function? (this / global / var / scope)</td><td><strong>B. <code>global</code></strong></td><td><code>global $x;</code> inside the function brings in the outside <code>$x</code>.</td></tr><tr><td>2</td><td>Which keyword keeps a local variable&#39;s value between function calls? (static / global / const / let)</td><td><strong>A. <code>static</code></strong></td><td>A <code>static</code> variable is created once and remembers its value. <code>let</code> is JavaScript, not PHP.</td></tr><tr><td>3</td><td><code>$fruits = [&#39;Apple&#39;, &#39;Banana&#39;, &#39;Orange&#39;]; echo $fruits[0];</code></td><td><strong>a) Apple</strong></td><td>Indexes start at 0, so <code>[0]</code> is the first item.</td></tr><tr><td>4</td><td>In an associative array, which symbol associates keys with values? (= / -&gt; / =&gt; / :)</td><td><strong>c) <code>=&gt;</code></strong></td><td><code>&quot;name&quot; =&gt; &quot;Ana&quot;</code>. <code>-&gt;</code> is for objects, <code>:</code> is JavaScript objects.</td></tr><tr><td>5</td><td>How many indices are needed to access an element in a two-dimensional array?</td><td><strong>b) Two</strong></td><td>One for the row, one for the item: <code>$fruits[1][1]</code>.</td></tr><tr><td>6</td><td><code>$colors = [&quot;Red&quot;, &quot;Green&quot;, &quot;Blue&quot;]; echo $colors[1];</code></td><td><strong>c) Green</strong></td><td><code>[0]</code> is Red, <code>[1]</code> is Green.</td></tr></tbody></table>
+<p><code>global</code> and <code>static</code> together:</p>
+<pre><code class="language-php">&lt;?php
+$g = 5;
+function showGlobal() {
+    global $g;          // use the $g from outside
+    echo &quot;g=$g &quot;;
+}
+
+function counter() {
+    static $c = 0;      // set to 0 only the first time
+    $c++;
+    echo $c;
+}
+
+showGlobal();
+counter(); counter(); counter();
+?&gt;</code></pre>
+<p><strong>Output:</strong></p>
+<pre><code>g=5 123</code></pre>
+<p>Without <code>static</code>, <code>$c</code> would start at 0 every call and the output would be <code>111</code>.</p>
+<h4 id="q2-2-pts-the-min-function">Q2 [2 pts]: The MIN function</h4>
+<p><strong>Write a PHP script that defines a function named MIN that takes two numbers as parameters and returns the smaller value. Call the function and print the result.</strong></p>
+<blockquote><p><strong>Watch out:</strong> PHP already has a built-in function <code>min()</code>, and PHP function names are <strong>not case-sensitive</strong>, so <code>MIN</code> and <code>min</code> are the same name. Running <code>function MIN($a, $b)</code> gives:</p><p><code>PHP Fatal error: Cannot redeclare MIN()</code></p><p>I tested this in PHP 8.3. On paper the answer is graded on the logic, but when you run it, use another name such as <code>findMin</code> (or <code>myMin</code>).</p></blockquote>
+<p>The version that runs:</p>
+<pre><code class="language-php">&lt;?php
+function findMin($a, $b) {
+    if ($a &lt; $b) {
+        return $a;
+    } else {
+        return $b;
+    }
+}
+
+$result = findMin(8, 3);
+echo &quot;The smaller value is: &quot; . $result;
+?&gt;</code></pre>
+<p><strong>Output:</strong></p>
+<pre><code>The smaller value is: 3</code></pre>
+<ul><li><p><code>function findMin($a, $b)</code> defines the function with two parameters.</p></li><li><p><code>if ($a &lt; $b) return $a; else return $b;</code> hands back the smaller one. A one-line version uses the ternary operator: <code>return ($a &lt; $b) ? $a : $b;</code></p></li><li><p><code>findMin(8, 3)</code> calls it, and <code>echo</code> prints the result.</p></li><li><p>PHP&#39;s own <code>min(8, 3)</code> also returns <code>3</code>, which is exactly why the name <code>MIN</code> is already taken.</p></li></ul>
+<h3 id="topic-3-quiz-2-today-in-class-validation-sessions-and-cookies">Topic 3: Quiz 2 (today, in class): validation, sessions and cookies</h3>
+<p>Seven questions. The answers to check against:</p>
+<table><thead><tr><th>#</th><th>Topic</th><th>Answer</th><th>Why</th></tr></thead><tbody><tr><td>1</td><td>Purpose of form validation</td><td><strong>B. To check and enforce rules on user input</strong></td><td>Validation checks input before it is processed (Week 5, Day 1).</td></tr><tr><td>2</td><td>Filter that checks an email</td><td><strong>C. <code>FILTER_VALIDATE_EMAIL</code></strong></td><td>Used with <code>filter_var($email, FILTER_VALIDATE_EMAIL)</code>.</td></tr><tr><td>3</td><td>What <code>trim()</code> does</td><td><strong>B. Removes spaces and whitespace from the beginning and end of a string</strong></td><td>Only the ends, not the spaces in the middle.</td></tr><tr><td>4</td><td>What a session is</td><td><strong>B. Storing temporary data on the server for one user</strong></td><td>Sessions are server-side and temporary (Week 5, Day 2).</td></tr><tr><td>5</td><td>What a cookie is</td><td><strong>B. A file stored on the user&#39;s computer</strong></td><td>Cookies are client-side and can last for days or years.</td></tr><tr><td>6</td><td>Function that creates a cookie</td><td><strong>C. <code>setcookie()</code></strong></td><td><code>setcookie(name, value, expire, path)</code>; read it back with <code>$_COOKIE</code>.</td></tr><tr><td>7</td><td>Code question (below)</td><td></td><td></td></tr></tbody></table>
+<blockquote><p><strong>Easy to swap:</strong> Q4 and Q5. Session = <strong>server</strong>, temporary. Cookie = <strong>user&#39;s computer</strong>, can persist.</p></blockquote>
+<h4 id="q7-check-a-forms-name-and-age">Q7: Check a form&#39;s name and age</h4>
+<p>A form with a <code>name</code> box and an <code>age</code> box submits to the same page. Task 1: show a message if the name is empty. Task 2: show a message if the age is not a number.</p>
+<pre><code class="language-php">&lt;?php
+if ($_SERVER[&quot;REQUEST_METHOD&quot;] == &quot;POST&quot;) {
+
+    // Task 1: is the name field empty?
+    if (empty($_POST[&quot;name&quot;])) {
+        echo &quot;Name is required&quot;;
+    }
+
+    // Task 2: is the age a number?
+    if (!is_numeric($_POST[&quot;age&quot;])) {
+        echo &quot;Age must be a number&quot;;
+    }
+}
+?&gt;</code></pre>
+<ul><li><p><code>REQUEST_METHOD == &quot;POST&quot;</code> runs the checks only after the form is submitted.</p></li><li><p><code>empty()</code> catches a blank name.</p></li><li><p><code>is_numeric()</code> checks the age, and the <code>!</code> flips it, so the message shows when the age is <strong>not</strong> a number.</p></li><li><p>The form has no <code>action</code>, so it submits back to the same page, and the PHP can sit in the same file as the form.</p></li><li><p><code>&quot;name&quot;</code> and <code>&quot;age&quot;</code> must match the <code>name</code> attributes of the inputs.</p></li></ul>
+<p><strong>Output</strong> (tested):</p>
+<table><thead><tr><th>You submit</th><th>Result</th></tr></thead><tbody><tr><td>Name blank, age blank</td><td><code>Name is requiredAge must be a number</code> (both, on one line, since there is no <code>&lt;br&gt;</code>)</td></tr><tr><td>Name <code>Ana</code>, age <code>abc</code></td><td><code>Age must be a number</code></td></tr><tr><td>Name <code>Ana</code>, age <code>25</code></td><td>Nothing, both checks pass</td></tr><tr><td>Name blank, age <code>25.5</code></td><td><code>Name is required</code> (<code>is_numeric()</code> accepts decimals)</td></tr></tbody></table>
+<p>Also correct if you wrote it a bit differently: <code>trim()</code> before the check, a <code>$nameErr</code> variable, or <code>ctype_digit()</code> for the age (<code>ctype_digit()</code> only allows whole numbers, so <code>25.5</code> would fail).</p>
+<p><strong>Fuller version, with the messages next to the fields:</strong></p>
+<pre><code class="language-php">&lt;?php
+$nameErr = $ageErr = &quot;&quot;;
+$name = $age = &quot;&quot;;
+
+if ($_SERVER[&quot;REQUEST_METHOD&quot;] == &quot;POST&quot;) {
+    $name = trim($_POST[&quot;name&quot;] ?? &quot;&quot;);
+    $age  = trim($_POST[&quot;age&quot;] ?? &quot;&quot;);
+
+    if (empty($name)) {
+        $nameErr = &quot;Name is required&quot;;
+    }
+
+    if (!is_numeric($age)) {
+        $ageErr = &quot;Age must be a number&quot;;
+    }
+}
+?&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;body&gt;
+&lt;form method=&quot;post&quot;&gt;
+  Name: &lt;input type=&quot;text&quot; name=&quot;name&quot; value=&quot;&lt;?php echo htmlspecialchars($name); ?&gt;&quot;&gt;
+  &lt;span style=&quot;color: red;&quot;&gt;&lt;?php echo $nameErr; ?&gt;&lt;/span&gt;
+  &lt;br&gt;&lt;br&gt;
+  Age: &lt;input type=&quot;text&quot; name=&quot;age&quot; value=&quot;&lt;?php echo htmlspecialchars($age); ?&gt;&quot;&gt;
+  &lt;span style=&quot;color: red;&quot;&gt;&lt;?php echo $ageErr; ?&gt;&lt;/span&gt;
+  &lt;br&gt;&lt;br&gt;
+  &lt;input type=&quot;submit&quot; value=&quot;Submit&quot;&gt;
+&lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<table><thead><tr><th>You submit</th><th>Next to Name</th><th>Next to Age</th></tr></thead><tbody><tr><td>Both blank</td><td>Name is required</td><td>Age must be a number</td></tr><tr><td><code>Ana</code>, <code>abc</code></td><td></td><td>Age must be a number</td></tr><tr><td><code>Ana</code>, <code>25</code></td><td></td><td></td></tr></tbody></table>
+<h3 id="topic-4-midterm-study-guide">Topic 4: Midterm study guide</h3>
+<h4 id="function-summary">Function summary</h4>
+<table><thead><tr><th>Function / keyword</th><th>What it does</th><th>Where in the notes</th></tr></thead><tbody><tr><td><code>var_dump()</code></td><td>Shows the type and value</td><td>Week 6, Day 2 (Review Q1.1)</td></tr><tr><td><code>(int)</code>, <code>(float)</code>, <code>(string)</code>, <code>(bool)</code></td><td>Explicit casting</td><td>Week 3, Day 2; Week 6, Day 2 (Q3)</td></tr><tr><td><code>global</code> / <code>static</code></td><td>Use an outside variable / keep a value between calls</td><td>Week 4, Day 1 (scope)</td></tr><tr><td><code>function name($a, $b) { return ...; }</code></td><td>Your own function</td><td>Week 4, Day 1; Week 5, Day 1</td></tr><tr><td>Indexed, associative, multidimensional arrays</td><td><code>[0]</code>, <code>&quot;key&quot; =&gt; value</code>, <code>[row][item]</code></td><td>Week 3, Day 2 (Arrays)</td></tr><tr><td><code>count()</code></td><td>Number of items in an array</td><td>Week 5, Day 1 (Assignment 1)</td></tr><tr><td><code>$_POST</code> / <code>$_GET</code></td><td>Form data sent by POST / GET (URL)</td><td>Week 4, Day 2</td></tr><tr><td><code>$_SERVER[&quot;REQUEST_METHOD&quot;]</code></td><td>Was the form submitted?</td><td>Week 4, Day 2</td></tr><tr><td><code>isset()</code> / <code>empty()</code></td><td>Exists and not NULL / blank, 0 or missing</td><td>Week 4, Day 2; Week 5, Day 1</td></tr><tr><td><code>trim()</code> / <code>stripslashes()</code> / <code>htmlspecialchars()</code></td><td>Clean input / stop XSS</td><td>Week 5, Day 1</td></tr><tr><td><code>is_numeric()</code> / <code>ctype_digit()</code></td><td>Number check / digits only</td><td>Week 5, Day 1</td></tr><tr><td><code>preg_match()</code></td><td>Pattern check (letters and spaces)</td><td>Week 5, Day 1</td></tr><tr><td><code>filter_var(..., FILTER_VALIDATE_EMAIL)</code></td><td>Email check</td><td>Week 4, Day 2; Week 5, Day 1</td></tr><tr><td><code>header(&quot;Location: ...&quot;)</code> + <code>exit</code></td><td>Redirect</td><td>Week 4, Day 2; Week 5, Day 1</td></tr><tr><td><code>session_start()</code>, <code>$_SESSION</code>, <code>session_destroy()</code></td><td>Sessions</td><td>Week 5, Day 2</td></tr><tr><td><code>setcookie()</code>, <code>$_COOKIE</code></td><td>Cookies</td><td>Week 5, Day 2</td></tr></tbody></table>
+<h4 id="study-checklist-for-the-weekend">Study checklist for the weekend</h4>
+<ul><li data-checked="false"><p><input type="checkbox" disabled> Explain what <code>var_dump()</code> prints and read <code>float(10.75)</code>, <code>int(10)</code>, <code>string(2) &quot;42&quot;</code>.</p></li><li data-checked="false"><p><input type="checkbox" disabled> Access any item in a 2D array (<code>$fruits[1][1]</code> is Mango).</p></li><li data-checked="false"><p><input type="checkbox" disabled> Know implicit (automatic) vs explicit (<code>(int) $x</code>) casting, and that <code>(int)</code> cuts decimals instead of rounding.</p></li><li data-checked="false"><p><input type="checkbox" disabled> Know GET (URL, visible, not secure) vs POST (request body, hidden).</p></li><li data-checked="false"><p><input type="checkbox" disabled> Write <code>process_login.php</code> from memory: read <code>$_POST</code>, two-user arrays, loop, redirect or error.</p></li><li data-checked="false"><p><input type="checkbox" disabled> Write a function with two parameters and <code>return</code>, and don&#39;t name it after a built-in like <code>min</code>.</p></li><li data-checked="false"><p><input type="checkbox" disabled> Use <code>global</code> and <code>static</code> correctly.</p></li><li data-checked="false"><p><input type="checkbox" disabled> Write the name/age check (Quiz 2 Q7) from memory.</p></li><li data-checked="false"><p><input type="checkbox" disabled> Session vs cookie: where each is stored and how long it lasts.</p></li></ul>
+<h3 id="end-of-week-6-day-2-summary">End of Week 6, Day 2 — Summary</h3>
+<p><strong>Covered today</strong></p>
+<ul><li><p><strong>Review for the Midterm:</strong> <code>var_dump()</code>, multidimensional arrays, <code>$_POST</code>, <code>isset()</code>, <code>trim()</code>, <code>preg_match()</code>, GET/POST/URL security, implicit vs explicit casting, casting a float to an int, and a two-user login.</p></li><li><p><strong>Quiz I review:</strong> <code>global</code>, <code>static</code>, indexed and associative arrays, 2D arrays, and a function that returns the smaller of two numbers.</p></li><li><p><strong>Quiz 2:</strong> validation, <code>FILTER_VALIDATE_EMAIL</code>, <code>trim()</code>, sessions vs cookies, <code>setcookie()</code>, and a name/age validation script.</p></li></ul>
+<p><strong>Mistakes and traps to remember</strong></p>
+<ul><li><p><code>function MIN()</code> fails: PHP already has <code>min()</code>, and function names ignore case.</p></li><li><p><code>(int) 10.75</code> is <code>10</code>, not <code>11</code>.</p></li><li><p><code>$Y</code> and <code>$y</code> are different variables (variable names are case-sensitive, function names are not).</p></li><li><p>Indexes start at 0: <code>$colors[1]</code> is the <strong>second</strong> item.</p></li><li><p>Session = server; cookie = user&#39;s computer.</p></li><li><p>The review sheet&#39;s login button has a stray <code>=&gt;</code>; the correct tag is <code>&lt;input type=&quot;submit&quot; value=&quot;Login&quot; name=&quot;submit&quot;&gt;</code>.</p></li></ul>
+<p><strong>To do</strong></p>
+<ul><li><p>Study with the checklist above this weekend.</p></li><li><p>Send the notes from Tuesday 10/27 (Week 6, Day 1).</p></li><li><p>Finish Assignment 1 screenshots and Lab #3 screenshots if still pending.</p></li></ul>
+<hr>
