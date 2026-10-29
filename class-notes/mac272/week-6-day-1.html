@@ -1,0 +1,283 @@
+<h2 id="week-6-day-1-tuesday-10272026-crud-sql-and-mysql-with-php">Week 6, Day 1 — Tuesday 10/27/2026: CRUD, SQL, and MySQL with PHP</h2>
+<p>First class of the new week. Today the class moved from forms to the <strong>database</strong>: the four <strong>CRUD</strong> operations in SQL, then the handout <strong>PHP Tutorial Part 10: MySQL with PHP</strong>, which uses <strong>MySQLi (procedural)</strong>. This is the piece that replaces the hardcoded logins from Week 4 and Assignment 1.</p>
+<p>Every SQL statement and PHP script below was run on a real MySQL-compatible server (MariaDB 10.11, the same database XAMPP ships) with PHP 8.3, in the order shown, so the outputs agree with each other.</p>
+<h3 id="topic-1-crud-operations-and-sql">Topic 1: CRUD operations and SQL</h3>
+<h4 id="database-words-first">Database words first</h4>
+<table><thead><tr><th>Word</th><th>Meaning</th><th>Example</th></tr></thead><tbody><tr><td>Database</td><td>A collection of tables</td><td><code>school</code></td></tr><tr><td>Table</td><td>Data about one kind of thing, in rows and columns</td><td><code>students</code></td></tr><tr><td>Row (record)</td><td>One item in the table</td><td>Ana Lopez&#39;s row</td></tr><tr><td>Column (field)</td><td>One piece of information every row has</td><td><code>gpa</code></td></tr><tr><td>Primary key</td><td>A column whose value is unique for every row</td><td><code>student_id</code></td></tr><tr><td>SQL</td><td>Structured Query Language, the language used to talk to the database</td><td><code>SELECT * FROM students;</code></td></tr></tbody></table>
+<p>SQL rules to remember:</p>
+<ul><li><p>Keywords (<code>SELECT</code>, <code>FROM</code>, <code>WHERE</code>) are written in capitals by habit; SQL does not require it.</p></li><li><p>Text values go in single quotes: <code>&#39;Ana&#39;</code>. Numbers do not: <code>3.60</code>.</p></li><li><p>Each statement ends with <code>;</code>.</p></li><li><p><code>=</code> in SQL compares (there is no <code>==</code>).</p></li></ul>
+<h4 id="crud-the-four-operations">CRUD: the four operations</h4>
+<table><thead><tr><th>Letter</th><th>Operation</th><th>SQL</th><th>What it does</th></tr></thead><tbody><tr><td><strong>C</strong></td><td>Create</td><td><code>INSERT</code></td><td>Adds a new row</td></tr><tr><td><strong>R</strong></td><td>Read</td><td><code>SELECT</code></td><td>Gets rows without changing them</td></tr><tr><td><strong>U</strong></td><td>Update</td><td><code>UPDATE</code></td><td>Changes existing rows</td></tr><tr><td><strong>D</strong></td><td>Delete</td><td><code>DELETE</code></td><td>Removes rows</td></tr></tbody></table>
+<p>Almost every app is CRUD: sign up (Create), view your profile (Read), edit it (Update), delete your account (Delete).</p>
+<blockquote><p><strong>Create in CRUD is not CREATE TABLE.</strong> <code>CREATE TABLE</code> builds the empty table once. The &quot;C&quot; in CRUD means adding <strong>rows</strong> with <code>INSERT</code>.</p></blockquote>
+<h4 id="setting-up-the-students-table">Setting up: the students table</h4>
+<p>Run SQL in <strong>phpMyAdmin</strong> (XAMPP Control Panel → start Apache and MySQL → open <code>http://localhost/phpmyadmin</code> → the <strong>SQL</strong> tab).</p>
+<pre><code class="language-sql">CREATE DATABASE school;
+USE school;
+
+CREATE TABLE students (
+  student_id INT AUTO_INCREMENT PRIMARY KEY,
+  first_name VARCHAR(50) NOT NULL,
+  last_name  VARCHAR(50) NOT NULL,
+  major      VARCHAR(50),
+  gpa        DECIMAL(3,2)
+);</code></pre>
+<table><thead><tr><th>Piece</th><th>Meaning</th></tr></thead><tbody><tr><td><code>INT</code></td><td>Whole number</td></tr><tr><td><code>AUTO_INCREMENT</code></td><td>MySQL fills in 1, 2, 3... by itself</td></tr><tr><td><code>PRIMARY KEY</code></td><td>Unique for every row</td></tr><tr><td><code>VARCHAR(50)</code></td><td>Text up to 50 characters</td></tr><tr><td><code>NOT NULL</code></td><td>The column can&#39;t be left empty</td></tr><tr><td><code>DECIMAL(3,2)</code></td><td>A number with 3 digits total, 2 after the point (like <code>3.60</code>)</td></tr></tbody></table>
+<h4 id="c-create-insert">C: Create (INSERT)</h4>
+<pre><code class="language-sql">INSERT INTO students (first_name, last_name, major, gpa)
+VALUES (&#39;Ana&#39;, &#39;Lopez&#39;, &#39;Computer Science&#39;, 3.60);
+
+-- several rows at once
+INSERT INTO students (first_name, last_name, major, gpa) VALUES
+  (&#39;Ben&#39;, &#39;Kim&#39;, &#39;Math&#39;, 3.10),
+  (&#39;Carla&#39;, &#39;Diaz&#39;, &#39;Computer Science&#39;, 3.85),
+  (&#39;Dev&#39;, &#39;Patel&#39;, &#39;Biology&#39;, 2.90);</code></pre>
+<ul><li><p>The first list names the columns; <code>VALUES</code> gives the data in the same order.</p></li><li><p><code>student_id</code> is left out because <code>AUTO_INCREMENT</code> fills it in.</p></li></ul>
+<h4 id="r-read-select">R: Read (SELECT)</h4>
+<pre><code class="language-sql">SELECT * FROM students;</code></pre>
+<p><strong>Output:</strong></p>
+<table><thead><tr><th>student_id</th><th>first_name</th><th>last_name</th><th>major</th><th>gpa</th></tr></thead><tbody><tr><td>1</td><td>Ana</td><td>Lopez</td><td>Computer Science</td><td>3.60</td></tr><tr><td>2</td><td>Ben</td><td>Kim</td><td>Math</td><td>3.10</td></tr><tr><td>3</td><td>Carla</td><td>Diaz</td><td>Computer Science</td><td>3.85</td></tr><tr><td>4</td><td>Dev</td><td>Patel</td><td>Biology</td><td>2.90</td></tr></tbody></table>
+<p><code>*</code> means &quot;all columns&quot;. The ways to narrow a read:</p>
+<table><thead><tr><th>Query</th><th>Output</th></tr></thead><tbody><tr><td><code>SELECT first_name, gpa FROM students WHERE major = &#39;Computer Science&#39;;</code></td><td>Ana 3.60, Carla 3.85</td></tr><tr><td><code>SELECT first_name, gpa FROM students ORDER BY gpa DESC;</code></td><td>Carla 3.85, Ana 3.60, Ben 3.10, Dev 2.90</td></tr><tr><td><code>SELECT * FROM students WHERE last_name LIKE &#39;L%&#39;;</code></td><td>Only Ana Lopez (<code>%</code> = any characters after L)</td></tr><tr><td><code>SELECT first_name FROM students ORDER BY gpa DESC LIMIT 2;</code></td><td>Carla, Ana (the top 2)</td></tr><tr><td><code>SELECT COUNT(*) AS total FROM students;</code></td><td><code>total</code> = 4</td></tr></tbody></table>
+<ul><li><p><code>WHERE</code> filters rows. <code>ORDER BY ... DESC</code> sorts high to low (<code>ASC</code>, the default, is low to high).</p></li><li><p><code>LIKE</code> matches a pattern. <code>LIMIT</code> caps the number of rows. <code>COUNT(*)</code> counts rows, and <code>AS</code> names the result column.</p></li></ul>
+<h4 id="u-update-update">U: Update (UPDATE)</h4>
+<pre><code class="language-sql">UPDATE students
+SET major = &#39;Data Science&#39;, gpa = 3.40
+WHERE student_id = 2;</code></pre>
+<p><strong>Output:</strong> 1 row affected. Ben&#39;s row is now:</p>
+<table><thead><tr><th>student_id</th><th>first_name</th><th>last_name</th><th>major</th><th>gpa</th></tr></thead><tbody><tr><td>2</td><td>Ben</td><td>Kim</td><td>Data Science</td><td>3.40</td></tr></tbody></table>
+<h4 id="d-delete-delete">D: Delete (DELETE)</h4>
+<pre><code class="language-sql">DELETE FROM students WHERE student_id = 4;</code></pre>
+<p><strong>Output:</strong> 1 row affected. The table now:</p>
+<table><thead><tr><th>student_id</th><th>first_name</th><th>last_name</th><th>major</th><th>gpa</th></tr></thead><tbody><tr><td>1</td><td>Ana</td><td>Lopez</td><td>Computer Science</td><td>3.60</td></tr><tr><td>2</td><td>Ben</td><td>Kim</td><td>Data Science</td><td>3.40</td></tr><tr><td>3</td><td>Carla</td><td>Diaz</td><td>Computer Science</td><td>3.85</td></tr></tbody></table>
+<p>If you insert a new student now (<code>&#39;Eva&#39;, &#39;Ruiz&#39;, &#39;Math&#39;, 3.70</code>), she gets <code>student_id</code> <strong>5</strong>, not 4. AUTO_INCREMENT never reuses a deleted number.</p>
+<blockquote><p><strong>The most important rule:</strong> never run <code>UPDATE</code> or <code>DELETE</code> without <code>WHERE</code>. <code>DELETE FROM students;</code> deletes <strong>every</strong> row, and <code>UPDATE students SET gpa = 4.0;</code> changes <strong>every</strong> student. Run a <code>SELECT</code> with the same <code>WHERE</code> first to see which rows you are about to change.</p></blockquote>
+<h4 id="crud-on-a-website">CRUD on a website</h4>
+<table><thead><tr><th>Operation</th><th>SQL</th><th>Web page example</th><th>HTTP method</th></tr></thead><tbody><tr><td>Create</td><td><code>INSERT</code></td><td>Sign-up or &quot;Add student&quot; form</td><td>POST</td></tr><tr><td>Read</td><td><code>SELECT</code></td><td>List or profile page</td><td>GET</td></tr><tr><td>Update</td><td><code>UPDATE</code></td><td>&quot;Edit profile&quot; form</td><td>POST</td></tr><tr><td>Delete</td><td><code>DELETE</code></td><td>&quot;Delete&quot; button</td><td>POST</td></tr></tbody></table>
+<p>The login homework becomes CRUD with a <code>users</code> table: sign-up is Create, logging in is Read (<code>SELECT</code> the user by username), changing a password is Update, and closing the account is Delete.</p>
+<h3 id="topic-2-mysql-with-php-class-handout-php-tutorial-part-10">Topic 2: MySQL with PHP (class handout: PHP Tutorial Part 10)</h3>
+<p><em>The Part 10 handout itself wasn&#39;t sent here, so this follows the class topics in order (connection, create, insert, select, delete, update, last ID, prepared statements, PHP + HTML) using the standard <code>myDB</code> / <code>MyGuests</code> examples the handout is built on. Send the handout PDF and I&#39;ll match any example that differs.</em></p>
+<h4 id="mysql-mysqli-and-pdo">MySQL, MySQLi and PDO</h4>
+<ul><li><p><strong>MySQL</strong> is the database server (in XAMPP, the &quot;MySQL&quot; button). PHP sends it <strong>queries</strong> (SQL statements) and gets results back.</p></li><li><p>PHP has two ways to talk to it: <strong>MySQLi</strong> (MySQL only) and <strong>PDO</strong> (works with many databases).</p></li><li><p>MySQLi comes in two styles. <strong>This class uses MySQLi procedural</strong> (functions like <code>mysqli_query($conn, $sql)</code>).</p></li></ul>
+<table><thead><tr><th>Job</th><th>Procedural (this class)</th><th>Object-oriented (same thing)</th></tr></thead><tbody><tr><td>Connect</td><td><code>mysqli_connect($s, $u, $p, $db)</code></td><td><code>new mysqli($s, $u, $p, $db)</code></td></tr><tr><td>Connection error</td><td><code>mysqli_connect_error()</code></td><td><code>$conn-&gt;connect_error</code></td></tr><tr><td>Run a query</td><td><code>mysqli_query($conn, $sql)</code></td><td><code>$conn-&gt;query($sql)</code></td></tr><tr><td>Query error</td><td><code>mysqli_error($conn)</code></td><td><code>$conn-&gt;error</code></td></tr><tr><td>Rows in a result</td><td><code>mysqli_num_rows($result)</code></td><td><code>$result-&gt;num_rows</code></td></tr><tr><td>Next row</td><td><code>mysqli_fetch_assoc($result)</code></td><td><code>$result-&gt;fetch_assoc()</code></td></tr><tr><td>Last new ID</td><td><code>mysqli_insert_id($conn)</code></td><td><code>$conn-&gt;insert_id</code></td></tr><tr><td>Close</td><td><code>mysqli_close($conn)</code></td><td><code>$conn-&gt;close()</code></td></tr></tbody></table>
+<h4 id="1-connect-to-mysql">1. Connect to MySQL</h4>
+<pre><code class="language-php">&lt;?php
+$servername = &quot;localhost&quot;;
+$username = &quot;root&quot;;
+$password = &quot;&quot;;
+
+// Create connection
+$conn = mysqli_connect($servername, $username, $password);
+
+// Check connection
+if (!$conn) {
+    die(&quot;Connection failed: &quot; . mysqli_connect_error());
+}
+echo &quot;Connected successfully&quot;;
+?&gt;</code></pre>
+<p><strong>Output:</strong></p>
+<pre><code>Connected successfully</code></pre>
+<ul><li><p>On XAMPP the user is <strong><code>root</code></strong> with an <strong>empty password</strong> <code>&quot;&quot;</code>. Handouts often show <code>&quot;username&quot;</code> / <code>&quot;password&quot;</code> as placeholders; those fail with <em>Access denied</em>.</p></li><li><p><code>die()</code> prints the message and stops the script.</p></li></ul>
+<blockquote><p><strong>PHP 8.1+ behavior:</strong> MySQLi now <em>throws an error</em> instead of returning <code>false</code>. With a wrong password the page shows <code>Fatal error: Uncaught mysqli_sql_exception: Access denied for user &#39;root&#39;@&#39;localhost&#39; (using password: YES)</code>, and the <code>if (!$conn)</code> line is never reached. To get the handout&#39;s friendly &quot;Connection failed: ...&quot; message, put <code>mysqli_report(MYSQLI_REPORT_OFF);</code> at the top. Both were tested.</p></blockquote>
+<h4 id="2-create-a-database">2. Create a database</h4>
+<pre><code class="language-php">&lt;?php
+$servername = &quot;localhost&quot;;
+$username = &quot;root&quot;;
+$password = &quot;&quot;;
+
+// Create connection
+$conn = mysqli_connect($servername, $username, $password);
+// Check connection
+if (!$conn) {
+    die(&quot;Connection failed: &quot; . mysqli_connect_error());
+}
+
+// Create database
+$sql = &quot;CREATE DATABASE myDB&quot;;
+if (mysqli_query($conn, $sql)) {
+    echo &quot;Database created successfully&quot;;
+} else {
+    echo &quot;Error creating database: &quot; . mysqli_error($conn);
+}
+
+mysqli_close($conn);
+?&gt;</code></pre>
+<p><strong>Output (first run):</strong> <code>Database created successfully</code></p>
+<p><strong>Second run:</strong> the database already exists. In PHP 8.1+ this is a fatal error (<code>Can&#39;t create database &#39;myDB&#39;; database exists</code>), not the <code>else</code> message. Run the create scripts <strong>once</strong>.</p>
+<ul><li><p><code>mysqli_query($conn, $sql)</code> sends the SQL. It returns <code>true</code> when it worked.</p></li><li><p><code>mysqli_error($conn)</code> gives the database&#39;s error message.</p></li></ul>
+<h4 id="3-create-a-table">3. Create a table</h4>
+<p>From here on every script connects to the database by adding a 4th argument, <code>$dbname = &quot;myDB&quot;</code>:</p>
+<pre><code class="language-php">&lt;?php
+$servername = &quot;localhost&quot;;
+$username = &quot;root&quot;;
+$password = &quot;&quot;;
+$dbname = &quot;myDB&quot;;
+
+// Create connection
+$conn = mysqli_connect($servername, $username, $password, $dbname);
+// Check connection
+if (!$conn) {
+    die(&quot;Connection failed: &quot; . mysqli_connect_error());
+}
+
+// sql to create table
+$sql = &quot;CREATE TABLE MyGuests (
+id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+firstname VARCHAR(30) NOT NULL,
+lastname VARCHAR(30) NOT NULL,
+email VARCHAR(50),
+reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+)&quot;;
+
+if (mysqli_query($conn, $sql)) {
+    echo &quot;Table MyGuests created successfully&quot;;
+} else {
+    echo &quot;Error creating table: &quot; . mysqli_error($conn);
+}
+
+mysqli_close($conn);
+?&gt;</code></pre>
+<p><strong>Output:</strong> <code>Table MyGuests created successfully</code></p>
+<table><thead><tr><th>Column part</th><th>Meaning</th></tr></thead><tbody><tr><td><code>INT(6) UNSIGNED</code></td><td>Whole number, no negatives</td></tr><tr><td><code>AUTO_INCREMENT PRIMARY KEY</code></td><td>1, 2, 3... filled in by MySQL, unique</td></tr><tr><td><code>VARCHAR(30) NOT NULL</code></td><td>Text up to 30 characters, required</td></tr><tr><td><code>email VARCHAR(50)</code></td><td>No <code>NOT NULL</code>, so it may be empty</td></tr><tr><td><code>TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP</code></td><td>Saves the date and time the row was added, and updates it when the row changes</td></tr></tbody></table>
+<p>The next scripts below show only the part <strong>after</strong> the connection block (the first 12 lines are the same as above).</p>
+<h4 id="4-insert-data-create-and-get-the-last-id">4. Insert data (Create) and get the last ID</h4>
+<pre><code class="language-php">$sql = &quot;INSERT INTO MyGuests (firstname, lastname, email)
+VALUES (&#39;John&#39;, &#39;Doe&#39;, &#39;john@example.com&#39;)&quot;;
+
+if (mysqli_query($conn, $sql)) {
+    $last_id = mysqli_insert_id($conn);
+    echo &quot;New record created successfully. Last inserted ID is: &quot; . $last_id;
+} else {
+    echo &quot;Error: &quot; . $sql . &quot;&lt;br&gt;&quot; . mysqli_error($conn);
+}
+
+mysqli_close($conn);</code></pre>
+<p><strong>Output:</strong></p>
+<pre><code>New record created successfully. Last inserted ID is: 1</code></pre>
+<p><code>mysqli_insert_id($conn)</code> returns the <code>AUTO_INCREMENT</code> id MySQL just gave the new row.</p>
+<p><strong>Insert several records:</strong></p>
+<pre><code class="language-php">$sql = &quot;INSERT INTO MyGuests (firstname, lastname, email)
+VALUES (&#39;Mary&#39;, &#39;Moe&#39;, &#39;mary@example.com&#39;);&quot;;
+$sql .= &quot;INSERT INTO MyGuests (firstname, lastname, email)
+VALUES (&#39;Julie&#39;, &#39;Dooley&#39;, &#39;julie@example.com&#39;);&quot;;
+$sql .= &quot;INSERT INTO MyGuests (firstname, lastname, email)
+VALUES (&#39;Anna&#39;, &#39;Smith&#39;, &#39;anna@example.com&#39;)&quot;;
+
+if (mysqli_multi_query($conn, $sql)) {
+    echo &quot;New records created successfully&quot;;
+} else {
+    echo &quot;Error: &quot; . $sql . &quot;&lt;br&gt;&quot; . mysqli_error($conn);
+}
+
+mysqli_close($conn);</code></pre>
+<p><strong>Output:</strong> <code>New records created successfully</code></p>
+<ul><li><p><code>.=</code> adds text to the end of <code>$sql</code>, building one long string.</p></li><li><p>Each statement inside ends with <code>;</code>. <code>mysqli_multi_query()</code> runs them all; plain <code>mysqli_query()</code> only runs one statement.</p></li></ul>
+<h4 id="5-select-data-read">5. Select data (Read)</h4>
+<pre><code class="language-php">$sql = &quot;SELECT id, firstname, lastname FROM MyGuests&quot;;
+$result = mysqli_query($conn, $sql);
+
+if (mysqli_num_rows($result) &gt; 0) {
+    // output data of each row
+    while ($row = mysqli_fetch_assoc($result)) {
+        echo &quot;id: &quot; . $row[&quot;id&quot;] . &quot; - Name: &quot; . $row[&quot;firstname&quot;] . &quot; &quot; . $row[&quot;lastname&quot;] . &quot;&lt;br&gt;&quot;;
+    }
+} else {
+    echo &quot;0 results&quot;;
+}
+
+mysqli_close($conn);</code></pre>
+<p><strong>Output:</strong></p>
+<pre><code>id: 1 - Name: John Doe
+id: 2 - Name: Mary Moe
+id: 3 - Name: Julie Dooley
+id: 4 - Name: Anna Smith</code></pre>
+<table><thead><tr><th>Piece</th><th>What it does</th></tr></thead><tbody><tr><td><code>$result = mysqli_query(...)</code></td><td>For a SELECT, returns a result set (the rows)</td></tr><tr><td><code>mysqli_num_rows($result)</code></td><td>How many rows came back</td></tr><tr><td><code>mysqli_fetch_assoc($result)</code></td><td>Gives the next row as an associative array (<code>$row[&quot;firstname&quot;]</code>), or <code>null</code> when there are no more</td></tr><tr><td><code>while ($row = ...)</code></td><td>Repeats once per row, and stops at <code>null</code></td></tr></tbody></table>
+<p><strong>With WHERE</strong> (<code>SELECT id, firstname, lastname FROM MyGuests WHERE lastname=&#39;Doe&#39;</code>):</p>
+<pre><code>id: 1 - Name: John Doe</code></pre>
+<p><strong>With ORDER BY</strong> (<code>... FROM MyGuests ORDER BY lastname</code>):</p>
+<pre><code>id: 1 - Name: John Doe
+id: 3 - Name: Julie Dooley
+id: 2 - Name: Mary Moe
+id: 4 - Name: Anna Smith</code></pre>
+<h4 id="6-delete-data-delete">6. Delete data (Delete)</h4>
+<pre><code class="language-php">// sql to delete a record
+$sql = &quot;DELETE FROM MyGuests WHERE id=3&quot;;
+
+if (mysqli_query($conn, $sql)) {
+    echo &quot;Record deleted successfully&quot;;
+} else {
+    echo &quot;Error deleting record: &quot; . mysqli_error($conn);
+}
+
+mysqli_close($conn);</code></pre>
+<p><strong>Output:</strong> <code>Record deleted successfully</code> (Julie Dooley is gone).</p>
+<h4 id="7-update-data-update">7. Update data (Update)</h4>
+<pre><code class="language-php">$sql = &quot;UPDATE MyGuests SET lastname=&#39;Doe&#39; WHERE id=2&quot;;
+
+if (mysqli_query($conn, $sql)) {
+    echo &quot;Record updated successfully&quot;;
+} else {
+    echo &quot;Error updating record: &quot; . mysqli_error($conn);
+}
+
+mysqli_close($conn);</code></pre>
+<p><strong>Output:</strong> <code>Record updated successfully</code>. Selecting again now gives:</p>
+<pre><code>id: 1 - Name: John Doe
+id: 2 - Name: Mary Doe
+id: 4 - Name: Anna Smith</code></pre>
+<blockquote><p>If the update&#39;s <code>WHERE</code> matches a row that already has that value, MySQL changes nothing but the message still says &quot;Record updated successfully&quot;, because the query itself ran without error.</p></blockquote>
+<h4 id="8-prepared-statements">8. Prepared statements</h4>
+<p>Putting user input straight into SQL lets a user type SQL code into your form (<strong>SQL injection</strong>). A prepared statement sends the SQL with <code>?</code> placeholders first, and the values separately, so the values are always treated as data.</p>
+<pre><code class="language-php">// prepare and bind
+$stmt = mysqli_prepare($conn, &quot;INSERT INTO MyGuests (firstname, lastname, email) VALUES (?, ?, ?)&quot;);
+mysqli_stmt_bind_param($stmt, &quot;sss&quot;, $firstname, $lastname, $email);
+
+// set parameters and execute
+$firstname = &quot;John&quot;;
+$lastname = &quot;Smith&quot;;
+$email = &quot;johnsmith@example.com&quot;;
+mysqli_stmt_execute($stmt);
+
+$firstname = &quot;Ali&quot;;
+$lastname = &quot;Khan&quot;;
+$email = &quot;ali@example.com&quot;;
+mysqli_stmt_execute($stmt);
+
+echo &quot;New records created successfully&quot;;
+
+mysqli_stmt_close($stmt);
+mysqli_close($conn);</code></pre>
+<p><strong>Output:</strong> <code>New records created successfully</code> (John Smith gets id 5, Ali Khan id 6; id 3 is never reused).</p>
+<table><thead><tr><th>Type letter</th><th>Means</th></tr></thead><tbody><tr><td><code>i</code></td><td>integer</td></tr><tr><td><code>d</code></td><td>double (decimal number)</td></tr><tr><td><code>s</code></td><td>string</td></tr><tr><td><code>b</code></td><td>blob (binary data)</td></tr></tbody></table>
+<p><code>&quot;sss&quot;</code> means three strings, one letter per <code>?</code>, in order. The statement is prepared once and executed twice with different values.</p>
+<h4 id="9-mixing-php-and-html-show-the-table-on-a-page">9. Mixing PHP and HTML: show the table on a page</h4>
+<pre><code class="language-php">$sql = &quot;SELECT id, firstname, lastname, email FROM MyGuests&quot;;
+$result = mysqli_query($conn, $sql);
+?&gt;
+&lt;table border=&quot;1&quot;&gt;
+  &lt;tr&gt;&lt;th&gt;ID&lt;/th&gt;&lt;th&gt;First name&lt;/th&gt;&lt;th&gt;Last name&lt;/th&gt;&lt;th&gt;Email&lt;/th&gt;&lt;/tr&gt;
+&lt;?php while ($row = mysqli_fetch_assoc($result)) { ?&gt;
+  &lt;tr&gt;
+    &lt;td&gt;&lt;?php echo $row[&quot;id&quot;]; ?&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;?php echo htmlspecialchars($row[&quot;firstname&quot;]); ?&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;?php echo htmlspecialchars($row[&quot;lastname&quot;]); ?&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;?php echo htmlspecialchars($row[&quot;email&quot;]); ?&gt;&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;?php } ?&gt;
+&lt;/table&gt;
+&lt;?php mysqli_close($conn); ?&gt;</code></pre>
+<p><strong>Output</strong> (after one more single insert of John Doe, which gets id 7):</p>
+<table><thead><tr><th>ID</th><th>First name</th><th>Last name</th><th>Email</th></tr></thead><tbody><tr><td>1</td><td>John</td><td>Doe</td><td>john@example.com</td></tr><tr><td>2</td><td>Mary</td><td>Doe</td><td>mary@example.com</td></tr><tr><td>4</td><td>Anna</td><td>Smith</td><td>anna@example.com</td></tr><tr><td>5</td><td>John</td><td>Smith</td><td>johnsmith@example.com</td></tr><tr><td>6</td><td>Ali</td><td>Khan</td><td>ali@example.com</td></tr><tr><td>7</td><td>John</td><td>Doe</td><td>john@example.com</td></tr></tbody></table>
+<p>The two ways to mix PHP and HTML:</p>
+<ol><li><p><strong>PHP opens and closes around HTML</strong> (above): <code>&lt;?php while (...) { ?&gt;</code> HTML <code>&lt;?php } ?&gt;</code>. Easy to read when there&#39;s a lot of HTML.</p></li><li><p><strong>PHP echoes the HTML:</strong> <code>echo &quot;&lt;tr&gt;&lt;td&gt;&quot; . $row[&quot;id&quot;] . &quot;&lt;/td&gt;&lt;/tr&gt;&quot;;</code>. Shorter for one or two tags.</p></li></ol>
+<h4 id="practice-files-run-in-this-order">Practice files (run in this order)</h4>
+<table><thead><tr><th>#</th><th>File</th><th>Run</th></tr></thead><tbody><tr><td>1</td><td><code>connect.php</code></td><td>Any time</td></tr><tr><td>2</td><td><code>create_db.php</code></td><td><strong>Once</strong></td></tr><tr><td>3</td><td><code>create_table.php</code></td><td><strong>Once</strong></td></tr><tr><td>4</td><td><code>insert.php</code>, <code>insert_multi.php</code></td><td>Each run adds rows</td></tr><tr><td>5</td><td><code>select.php</code> (+ WHERE / ORDER BY)</td><td>Any time</td></tr><tr><td>6</td><td><code>delete.php</code>, <code>update.php</code></td><td>Then <code>select.php</code> to see the change</td></tr><tr><td>7</td><td><code>prepared.php</code>, <code>display.php</code></td><td>Any time</td></tr></tbody></table>
+<p>Keep them in their own folder (for example <code>htdocs/part10/</code>), with Apache <strong>and</strong> MySQL started in XAMPP.</p>
+<h4 id="common-errors">Common errors</h4>
+<table><thead><tr><th>Error</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td><code>Access denied for user</code></td><td>Wrong username or password</td><td>XAMPP: <code>root</code> and <code>&quot;&quot;</code></td></tr><tr><td><code>Unknown database &#39;myDB&#39;</code></td><td><code>create_db.php</code> not run, or a different name</td><td>Run it, or check the spelling</td></tr><tr><td><code>database exists</code> / <code>Table &#39;MyGuests&#39; already exists</code></td><td>Create script run twice</td><td>Run create scripts once</td></tr><tr><td><code>Connection refused</code> / <code>No such file or directory</code></td><td>MySQL not started</td><td>Start MySQL in the XAMPP panel</td></tr><tr><td><code>Unknown column</code></td><td>Typo in a column name</td><td>Match the table exactly</td></tr><tr><td>Nothing changes after UPDATE/DELETE</td><td><code>WHERE</code> matches no row</td><td><code>SELECT</code> with the same <code>WHERE</code> first</td></tr></tbody></table>
+<h3 id="end-of-week-6-day-1-summary">End of Week 6, Day 1 — Summary</h3>
+<p><strong>Covered</strong></p>
+<ul><li><p><strong>CRUD:</strong> Create = <code>INSERT</code>, Read = <code>SELECT</code>, Update = <code>UPDATE</code>, Delete = <code>DELETE</code>.</p></li><li><p><strong>SQL reads:</strong> <code>WHERE</code>, <code>ORDER BY</code>, <code>LIKE</code>, <code>LIMIT</code>, <code>COUNT(*)</code>.</p></li><li><p><strong>MySQLi procedural:</strong> <code>mysqli_connect()</code>, <code>mysqli_query()</code>, <code>mysqli_error()</code>, <code>mysqli_multi_query()</code>, <code>mysqli_num_rows()</code>, <code>mysqli_fetch_assoc()</code>, <code>mysqli_insert_id()</code>, <code>mysqli_close()</code>.</p></li><li><p><strong>Prepared statements:</strong> <code>mysqli_prepare()</code>, <code>mysqli_stmt_bind_param()</code> with <code>i d s b</code>, <code>mysqli_stmt_execute()</code>.</p></li><li><p><strong>PHP + HTML:</strong> printing database rows into an HTML table.</p></li></ul>
+<p><strong>Traps</strong></p>
+<ul><li><p><code>UPDATE</code> / <code>DELETE</code> without <code>WHERE</code> changes every row.</p></li><li><p>XAMPP login is <code>root</code> with an empty password.</p></li><li><p>PHP 8.1+ turns database errors into fatal errors, so the <code>else</code> messages may never show.</p></li><li><p>Deleted ids are never reused.</p></li><li><p>Never put form input straight into SQL; use prepared statements.</p></li></ul>
+<hr>

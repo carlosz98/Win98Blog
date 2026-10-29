@@ -169,10 +169,19 @@ echo &quot;The smaller value is: &quot; . $result;
 <ul><li><p><code>function findMin($a, $b)</code> defines the function with two parameters.</p></li><li><p><code>if ($a &lt; $b) return $a; else return $b;</code> hands back the smaller one. A one-line version uses the ternary operator: <code>return ($a &lt; $b) ? $a : $b;</code></p></li><li><p><code>findMin(8, 3)</code> calls it, and <code>echo</code> prints the result.</p></li><li><p>PHP&#39;s own <code>min(8, 3)</code> also returns <code>3</code>, which is exactly why the name <code>MIN</code> is already taken.</p></li></ul>
 <h3 id="topic-3-quiz-2-today-in-class-validation-sessions-and-cookies">Topic 3: Quiz 2 (today, in class): validation, sessions and cookies</h3>
 <p>Seven questions. The answers to check against:</p>
-<table><thead><tr><th>#</th><th>Topic</th><th>Answer</th><th>Why</th></tr></thead><tbody><tr><td>1</td><td>Purpose of form validation</td><td><strong>B. To check and enforce rules on user input</strong></td><td>Validation checks input before it is processed (Week 5, Day 1).</td></tr><tr><td>2</td><td>Filter that checks an email</td><td><strong>C. <code>FILTER_VALIDATE_EMAIL</code></strong></td><td>Used with <code>filter_var($email, FILTER_VALIDATE_EMAIL)</code>.</td></tr><tr><td>3</td><td>What <code>trim()</code> does</td><td><strong>B. Removes spaces and whitespace from the beginning and end of a string</strong></td><td>Only the ends, not the spaces in the middle.</td></tr><tr><td>4</td><td>What a session is</td><td><strong>B. Storing temporary data on the server for one user</strong></td><td>Sessions are server-side and temporary (Week 5, Day 2).</td></tr><tr><td>5</td><td>What a cookie is</td><td><strong>B. A file stored on the user&#39;s computer</strong></td><td>Cookies are client-side and can last for days or years.</td></tr><tr><td>6</td><td>Function that creates a cookie</td><td><strong>C. <code>setcookie()</code></strong></td><td><code>setcookie(name, value, expire, path)</code>; read it back with <code>$_COOKIE</code>.</td></tr><tr><td>7</td><td>Code question (below)</td><td></td><td></td></tr></tbody></table>
+<table><thead><tr><th>#</th><th>Question (points)</th><th>Choices</th><th>Answer</th><th>Why</th></tr></thead><tbody><tr><td>1</td><td>What is the main purpose of form validation? (2)</td><td>A. Make the form look more attractive / B. Check and enforce rules on user input / C. Speed up loading / D. Store user information in cookies</td><td><strong>B</strong></td><td>Validation checks input before it is processed (Week 5, Day 1).</td></tr><tr><td>2</td><td>Which filter should be used with <code>filter_var()</code> to validate an email? (1)</td><td>A. <code>FILTER_VALIDATE_URL</code> / B. <code>FILTER_SANITIZE_STRING</code> / C. <code>FILTER_VALIDATE_EMAIL</code> / D. <code>EMAIL_VALIDATE</code></td><td><strong>C</strong></td><td>A is for URLs, B cleans text instead of checking it, D does not exist.</td></tr><tr><td>3</td><td>What does the <code>trim()</code> function do? (2)</td><td>A. Removes all digits / B. Removes spaces and whitespace from the beginning/end of a string / C. Converts to lowercase / D. Removes HTML tags</td><td><strong>B</strong></td><td>Only the ends. C is <code>strtolower()</code>, D is <code>strip_tags()</code>.</td></tr><tr><td>4</td><td>What is a PHP session used for? (1)</td><td>A. Storing data permanently on the user&#39;s computer / B. Storing temporary data on the server for one user / C. Sending data to the database / D. Encrypting browser cookies</td><td><strong>B</strong></td><td>A describes a cookie.</td></tr><tr><td>5</td><td>What is a cookie? (1)</td><td>A. A server-side variable / B. A file stored on the user&#39;s computer / C. A PHP function / D. A type of session ID</td><td><strong>B</strong></td><td>A describes a session variable.</td></tr><tr><td>6</td><td>Which PHP function creates a cookie? (1)</td><td>A. <code>create_cookie()</code> / B. <code>cookie_start()</code> / C. <code>setcookie()</code> / D. <code>cookie_set()</code></td><td><strong>C</strong></td><td>The others do not exist.</td></tr><tr><td>7</td><td>Code question (2)</td><td></td><td></td><td>See below</td></tr></tbody></table>
 <blockquote><p><strong>Easy to swap:</strong> Q4 and Q5. Session = <strong>server</strong>, temporary. Cookie = <strong>user&#39;s computer</strong>, can persist.</p></blockquote>
 <h4 id="q7-check-a-forms-name-and-age">Q7: Check a form&#39;s name and age</h4>
 <p>A form with a <code>name</code> box and an <code>age</code> box submits to the same page. Task 1: show a message if the name is empty. Task 2: show a message if the age is not a number.</p>
+<p>The form given in the question:</p>
+<pre><code class="language-html">&lt;form method=&quot;POST&quot;&gt;
+    &lt;label&gt;Username:&lt;/label&gt;
+    &lt;input type=&quot;text&quot; name=&quot;name&quot;&gt;
+    &lt;label&gt;Age:&lt;/label&gt;
+    &lt;input type=&quot;text&quot; name=&quot;age&quot;&gt;
+    &lt;button type=&quot;submit&quot;&gt;Submit&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+<p>Tasks: (1) if the <code>name</code> field is empty, display &quot;Name is required&quot;; (2) if <code>age</code> is not a number, display &quot;Age must be a number&quot;.</p>
 <pre><code class="language-php">&lt;?php
 if ($_SERVER[&quot;REQUEST_METHOD&quot;] == &quot;POST&quot;) {
 
@@ -229,6 +238,71 @@ if ($_SERVER[&quot;REQUEST_METHOD&quot;] == &quot;POST&quot;) {
 <table><thead><tr><th>Function / keyword</th><th>What it does</th><th>Where in the notes</th></tr></thead><tbody><tr><td><code>var_dump()</code></td><td>Shows the type and value</td><td>Week 6, Day 2 (Review Q1.1)</td></tr><tr><td><code>(int)</code>, <code>(float)</code>, <code>(string)</code>, <code>(bool)</code></td><td>Explicit casting</td><td>Week 3, Day 2; Week 6, Day 2 (Q3)</td></tr><tr><td><code>global</code> / <code>static</code></td><td>Use an outside variable / keep a value between calls</td><td>Week 4, Day 1 (scope)</td></tr><tr><td><code>function name($a, $b) { return ...; }</code></td><td>Your own function</td><td>Week 4, Day 1; Week 5, Day 1</td></tr><tr><td>Indexed, associative, multidimensional arrays</td><td><code>[0]</code>, <code>&quot;key&quot; =&gt; value</code>, <code>[row][item]</code></td><td>Week 3, Day 2 (Arrays)</td></tr><tr><td><code>count()</code></td><td>Number of items in an array</td><td>Week 5, Day 1 (Assignment 1)</td></tr><tr><td><code>$_POST</code> / <code>$_GET</code></td><td>Form data sent by POST / GET (URL)</td><td>Week 4, Day 2</td></tr><tr><td><code>$_SERVER[&quot;REQUEST_METHOD&quot;]</code></td><td>Was the form submitted?</td><td>Week 4, Day 2</td></tr><tr><td><code>isset()</code> / <code>empty()</code></td><td>Exists and not NULL / blank, 0 or missing</td><td>Week 4, Day 2; Week 5, Day 1</td></tr><tr><td><code>trim()</code> / <code>stripslashes()</code> / <code>htmlspecialchars()</code></td><td>Clean input / stop XSS</td><td>Week 5, Day 1</td></tr><tr><td><code>is_numeric()</code> / <code>ctype_digit()</code></td><td>Number check / digits only</td><td>Week 5, Day 1</td></tr><tr><td><code>preg_match()</code></td><td>Pattern check (letters and spaces)</td><td>Week 5, Day 1</td></tr><tr><td><code>filter_var(..., FILTER_VALIDATE_EMAIL)</code></td><td>Email check</td><td>Week 4, Day 2; Week 5, Day 1</td></tr><tr><td><code>header(&quot;Location: ...&quot;)</code> + <code>exit</code></td><td>Redirect</td><td>Week 4, Day 2; Week 5, Day 1</td></tr><tr><td><code>session_start()</code>, <code>$_SESSION</code>, <code>session_destroy()</code></td><td>Sessions</td><td>Week 5, Day 2</td></tr><tr><td><code>setcookie()</code>, <code>$_COOKIE</code></td><td>Cookies</td><td>Week 5, Day 2</td></tr></tbody></table>
 <h4 id="study-checklist-for-the-weekend">Study checklist for the weekend</h4>
 <ul><li data-checked="false"><p><input type="checkbox" disabled> Explain what <code>var_dump()</code> prints and read <code>float(10.75)</code>, <code>int(10)</code>, <code>string(2) &quot;42&quot;</code>.</p></li><li data-checked="false"><p><input type="checkbox" disabled> Access any item in a 2D array (<code>$fruits[1][1]</code> is Mango).</p></li><li data-checked="false"><p><input type="checkbox" disabled> Know implicit (automatic) vs explicit (<code>(int) $x</code>) casting, and that <code>(int)</code> cuts decimals instead of rounding.</p></li><li data-checked="false"><p><input type="checkbox" disabled> Know GET (URL, visible, not secure) vs POST (request body, hidden).</p></li><li data-checked="false"><p><input type="checkbox" disabled> Write <code>process_login.php</code> from memory: read <code>$_POST</code>, two-user arrays, loop, redirect or error.</p></li><li data-checked="false"><p><input type="checkbox" disabled> Write a function with two parameters and <code>return</code>, and don&#39;t name it after a built-in like <code>min</code>.</p></li><li data-checked="false"><p><input type="checkbox" disabled> Use <code>global</code> and <code>static</code> correctly.</p></li><li data-checked="false"><p><input type="checkbox" disabled> Write the name/age check (Quiz 2 Q7) from memory.</p></li><li data-checked="false"><p><input type="checkbox" disabled> Session vs cookie: where each is stored and how long it lasts.</p></li></ul>
+<h3 id="topic-5-practice-quiz-with-new-situations-answers-at-the-end">Topic 5: Practice quiz with new situations (answers at the end)</h3>
+<p>Same ideas as the midterm review, Quiz I and Quiz 2, in different situations. Try it first, then check the answer key. Every code answer was run in PHP 8.3 or MariaDB.</p>
+<h4 id="part-a-multiple-choice">Part A: Multiple choice</h4>
+<ol><li><p>What does <code>var_dump(&quot;7&quot;);</code> print? a) <code>int(7)</code> b) <code>string(1) &quot;7&quot;</code> c) <code>7</code> d) <code>float(7)</code></p></li><li><p><code>$menu = [&quot;Tacos&quot;, &quot;Pizza&quot;, &quot;Sushi&quot;]; echo $menu[2];</code> prints: a) Pizza b) Tacos c) Sushi d) Error</p></li><li><p>A search form uses <code>method=&quot;get&quot;</code>. Where does PHP read the search word? a) <code>$_POST</code> b) <code>$_GET</code> c) <code>$_COOKIE</code> d) <code>$_SESSION</code></p></li><li><p>Which checks that a key exists and is not NULL before using it? a) <code>empty()</code> b) <code>isset()</code> c) <code>trim()</code> d) <code>is_numeric()</code></p></li><li><p><span style="white-space:pre-wrap">A user types <code>&quot;   Maria   &quot;</code>. Which function returns <code>&quot;Maria&quot;</code>? a) <code>strip_tags()</code> b) <code>strtolower()</code> c) <code>trim()</code> d) <code>stripslashes()</code></span></p></li><li><p>What does <code>var_dump((int) &quot;42abc&quot;);</code> print? a) <code>int(42)</code> b) <code>int(0)</code> c) <code>string(5) &quot;42abc&quot;</code> d) Error</p></li><li><p><code>function counter() { static $n = 10; $n += 5; echo $n . &quot; &quot;; }</code> called twice prints: a) <code>15 15</code> b) <code>10 15</code> c) <code>15 20</code> d) <code>5 10</code></p></li><li><p><code>$prices = [&quot;coffee&quot; =&gt; 2.50, &quot;bagel&quot; =&gt; 1.75];</code> How do you print the bagel&#39;s price? a) <code>$prices[1]</code> b) <code>$prices[&quot;bagel&quot;]</code> c) <code>$prices-&gt;bagel</code> d) <code>$prices(bagel)</code></p></li><li><p><code>filter_var(&quot;ana@mail&quot;, FILTER_VALIDATE_EMAIL)</code> returns: a) <code>&quot;ana@mail&quot;</code> b) <code>true</code> c) <code>false</code> d) <code>1</code></p></li><li><p>Where is session data stored? a) In the URL b) On the user&#39;s computer c) On the server d) In the HTML</p></li></ol>
+<h4 id="part-b-true-or-false">Part B: True or False</h4>
+<ol><li><p>A cookie can still exist after the browser is closed.</p></li><li><p><code>session_start()</code> can go anywhere in the file, even after HTML.</p></li><li><p>GET is a good method for a password-change form.</p></li><li><p>In PHP, <code>$Total</code> and <code>$total</code> are the same variable.</p></li><li><p><code>(int) 7.9</code> gives <code>8</code>.</p></li><li><p><code>empty(&quot;0&quot;)</code> is <code>true</code>.</p></li><li><p>A function can be called many times with different arguments.</p></li></ol>
+<h4 id="part-c-code">Part C: Code</h4>
+<ol><li><p><code>$price = &quot;19.99&quot;;</code> Cast it to a float in <code>$p</code> and show its type and value.</p></li><li><p>Write <code>maxOfTwo($a, $b)</code> that returns the larger number. Print <code>maxOfTwo(4, 9)</code>.</p></li><li><p><code>$grades = [[90, 85], [70, 95]];</code> Print 70.</p></li><li><p>Gym login: two members (<code>alex</code> / <code>fit123</code>, <code>sam</code> / <code>gym456</code>). Read the POST values, check them with arrays and a loop, print <code>Welcome to the gym!</code> or <code>Invalid member</code>.</p></li><li><p>A zip must be exactly 5 digits. Print <code>Zip must be 5 digits</code> otherwise.</p></li><li><p>Save the user&#39;s theme <code>dark</code> in a cookie for 7 days, and the username <code>alex</code> in the session.</p></li><li><p>Write the four CRUD statements for a <code>books</code> table (<code>book_id</code>, <code>title</code>, <code>author</code>, <code>year</code>): add &quot;Dune&quot; by Frank Herbert (1965), list all books, change Dune&#39;s year to 1966, delete Dune.</p></li></ol>
+<h4 id="answer-key">Answer key</h4>
+<p><strong>Part A</strong></p>
+<table><thead><tr><th>#</th><th>Answer</th><th>Why</th></tr></thead><tbody><tr><td>1</td><td><strong>b</strong></td><td>Quotes make it a string with 1 character.</td></tr><tr><td>2</td><td><strong>c</strong></td><td>Index 2 is the third item.</td></tr><tr><td>3</td><td><strong>b</strong></td><td>GET data goes to <code>$_GET</code>.</td></tr><tr><td>4</td><td><strong>b</strong></td><td><code>isset()</code> = exists and not NULL.</td></tr><tr><td>5</td><td><strong>c</strong></td><td><code>trim()</code> removes spaces at both ends.</td></tr><tr><td>6</td><td><strong>a</strong></td><td>Casting reads the leading number.</td></tr><tr><td>7</td><td><strong>c</strong></td><td><code>static</code> keeps the value: 10+5 = 15, then 15+5 = 20.</td></tr><tr><td>8</td><td><strong>b</strong></td><td>Associative arrays use the key.</td></tr><tr><td>9</td><td><strong>c</strong></td><td>Tested: <code>ana@mail</code> fails (no dot and ending), so it returns <code>false</code>.</td></tr><tr><td>10</td><td><strong>c</strong></td><td>Sessions are server-side.</td></tr></tbody></table>
+<p><strong>Part B:</strong> 1 True, 2 False (it must come before any output), 3 False (use POST), 4 False (variables are case-sensitive), 5 False (casting cuts to 7; <code>round(7.9)</code> would give 8), 6 True (<code>&quot;0&quot;</code> counts as empty), 7 True.</p>
+<p><strong>Part C</strong></p>
+<pre><code class="language-php">// 1
+$price = &quot;19.99&quot;;
+$p = (float) $price;
+var_dump($p);              // float(19.99)
+
+// 2
+function maxOfTwo($a, $b) {
+    return ($a &gt; $b) ? $a : $b;
+}
+echo maxOfTwo(4, 9);       // 9
+
+// 3
+$grades = [[90, 85], [70, 95]];
+echo $grades[1][0];        // 70</code></pre>
+<pre><code class="language-php">&lt;?php
+// 4 gym_login.php
+$username = trim($_POST[&quot;username&quot;] ?? &quot;&quot;);
+$password = $_POST[&quot;password&quot;] ?? &quot;&quot;;
+
+$members   = [&quot;alex&quot;, &quot;sam&quot;];
+$passwords = [&quot;fit123&quot;, &quot;gym456&quot;];
+
+$found = false;
+for ($i = 0; $i &lt; count($members); $i++) {
+    if ($username === $members[$i] &amp;&amp; $password === $passwords[$i]) {
+        $found = true;
+        break;
+    }
+}
+
+echo $found ? &quot;Welcome to the gym!&quot; : &quot;Invalid member&quot;;
+?&gt;</code></pre>
+<pre><code class="language-php">// 5
+$zip = trim($_POST[&quot;zip&quot;] ?? &quot;&quot;);
+if (strlen($zip) != 5 || !ctype_digit($zip)) {
+    echo &quot;Zip must be 5 digits&quot;;
+}
+// tested: 10001 valid, 02134 valid, 1000 and 1000a print the message</code></pre>
+<pre><code class="language-php">&lt;?php
+// 6 (before any HTML)
+session_start();
+setcookie(&quot;theme&quot;, &quot;dark&quot;, time() + (86400 * 7), &quot;/&quot;);
+$_SESSION[&quot;username&quot;] = &quot;alex&quot;;
+?&gt;</code></pre>
+<pre><code class="language-sql">-- 7
+INSERT INTO books (title, author, year) VALUES (&#39;Dune&#39;, &#39;Frank Herbert&#39;, 1965);
+SELECT * FROM books;
+UPDATE books SET year = 1966 WHERE title = &#39;Dune&#39;;
+DELETE FROM books WHERE title = &#39;Dune&#39;;</code></pre>
+<h4 id="make-your-own-practice-questions">Make your own practice questions</h4>
+<ol><li><p>Pick one idea (casting, 2D arrays, <code>static</code>, <code>isset()</code>, sessions...).</p></li><li><p>Change the situation: fruits → a playlist, a login → a library card or a gym, students → books.</p></li><li><p>Write the answer first, then wrong choices that look reasonable.</p></li><li><p>Use these traps: counting from 0, <code>$Y</code> vs <code>$y</code>, casting cuts instead of rounding, <code>0</code> and <code>&quot;0&quot;</code> count as empty, <code>UPDATE</code>/<code>DELETE</code> without <code>WHERE</code>, naming a function after a built-in (<code>min</code>, <code>max</code>, <code>count</code>).</p></li></ol>
+<p>Send me any quiz you write and I&#39;ll check it and add the answer key here.</p>
 <h3 id="end-of-week-6-day-2-summary">End of Week 6, Day 2 — Summary</h3>
 <p><strong>Covered today</strong></p>
 <ul><li><p><strong>Review for the Midterm:</strong> <code>var_dump()</code>, multidimensional arrays, <code>$_POST</code>, <code>isset()</code>, <code>trim()</code>, <code>preg_match()</code>, GET/POST/URL security, implicit vs explicit casting, casting a float to an int, and a two-user login.</p></li><li><p><strong>Quiz I review:</strong> <code>global</code>, <code>static</code>, indexed and associative arrays, 2D arrays, and a function that returns the smaller of two numbers.</p></li><li><p><strong>Quiz 2:</strong> validation, <code>FILTER_VALIDATE_EMAIL</code>, <code>trim()</code>, sessions vs cookies, <code>setcookie()</code>, and a name/age validation script.</p></li></ul>
