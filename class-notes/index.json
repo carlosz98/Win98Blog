@@ -555,6 +555,34 @@
         {
          "id": "lesson-2-basic-concepts-php-tutorial-part-2-week-2",
          "title": "Lesson 2 — Basic Concepts (PHP Tutorial Part 2 + Week 2)"
+        },
+        {
+         "id": "lesson-3-data-types-and-type-casting-php-tutorial-part-3",
+         "title": "Lesson 3 — Data Types and Type Casting (PHP Tutorial Part 3)"
+        },
+        {
+         "id": "lesson-4-control-statements-and-loops-php-tutorial-part-4",
+         "title": "Lesson 4 — Control Statements and Loops (PHP Tutorial Part 4)"
+        },
+        {
+         "id": "lesson-5-arrays-php-tutorial-part-5",
+         "title": "Lesson 5 — Arrays (PHP Tutorial Part 5)"
+        },
+        {
+         "id": "lesson-6-functions-php-tutorial-part-6",
+         "title": "Lesson 6 — Functions (PHP Tutorial Part 6)"
+        },
+        {
+         "id": "lesson-7-form-handling-php-tutorial-part-7",
+         "title": "Lesson 7 — Form Handling (PHP Tutorial Part 7)"
+        },
+        {
+         "id": "lesson-8-form-validation-php-tutorial-part-8",
+         "title": "Lesson 8 — Form Validation (PHP Tutorial Part 8)"
+        },
+        {
+         "id": "lesson-9-sessions-and-cookies-php-tutorial-part-9",
+         "title": "Lesson 9 — Sessions and Cookies (PHP Tutorial Part 9)"
         }
        ]
       }
