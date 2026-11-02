@@ -68,3 +68,310 @@ echo &quot;$x + $y&quot;;       // 5 + 4</code></pre>
 <h4 id="self-check-1">Self-check</h4>
 <ol><li><p>Valid name: <code>$_total</code> or <code>$1total</code>? 2. What does <code>echo 10 + &quot;5&quot;;</code> print? 3. Which returns 1: echo or print? 4. <code>$a = &quot;Ana&quot;; echo &#39;Hi $a&#39;;</code> prints? 5. Are function names case-sensitive?</p></li></ol>
 <p><em>Answers: 1) <code>$_total</code>. 2) 15. 3) print. 4) Hi $a. 5) No (variables are).</em></p>
+<h3 id="lesson-3-data-types-and-type-casting-php-tutorial-part-3">Lesson 3 — Data Types and Type Casting (PHP Tutorial Part 3)</h3>
+<p><strong>Big idea:</strong> every value has a <strong>type</strong>. PHP converts types <strong>automatically</strong> (implicit) when it needs to, and you can convert them <strong>yourself</strong> (explicit) with <code>(int)</code>, <code>(float)</code>, <code>(string)</code>, <code>(bool)</code>.</p>
+<h4 id="the-data-types">The data types</h4>
+<p>String · Integer · Float · Boolean · Array · Object · NULL</p>
+<h4 id="integers">Integers</h4>
+<table><thead><tr><th>Rule / tool</th><th>What to remember</th></tr></thead><tbody><tr><td>No decimal point</td><td><code>2</code>, <code>-256</code>, <code>10358</code> are integers; <code>7.56</code>, <code>10.0</code> are floats</td></tr><tr><td>Formats</td><td>Decimal <code>31</code>, hexadecimal <code>0x1F</code> (= 31), octal <code>017</code> (= 15, a leading 0 means base 8), binary <code>0b101</code> (= 5)</td></tr><tr><td>Limits</td><td><code>PHP_INT_MAX</code>, <code>PHP_INT_MIN</code>, <code>PHP_INT_SIZE</code> (bytes, 8 on 64-bit)</td></tr><tr><td>Overflow</td><td><code>PHP_INT_MAX + 1</code> becomes a <strong>float</strong> (no wrap-around)</td></tr><tr><td>Check</td><td><code>is_int()</code> (aliases <code>is_integer()</code>, <code>is_long()</code>)</td></tr><tr><td>Mixed math</td><td><code>4 * 2.5</code> is <code>float(10)</code>: one float makes the result a float</td></tr></tbody></table>
+<h4 id="floats">Floats</h4>
+<table><thead><tr><th>Rule / tool</th><th>What to remember</th></tr></thead><tbody><tr><td>Decimal or exponent</td><td><code>2.0</code>, <code>10.358</code>, <code>7.64E+5</code>, <code>5.56E-5</code></td></tr><tr><td>Limits</td><td><code>PHP_FLOAT_MAX</code>, <code>PHP_FLOAT_MIN</code>, <code>PHP_FLOAT_EPSILON</code>, <code>PHP_FLOAT_DIG</code></td></tr><tr><td>Check</td><td><code>is_float()</code> (alias <code>is_double()</code>); <code>gettype(3.0)</code> says <code>double</code></td></tr><tr><td>Precision trap</td><td><code>0.1 + 0.2 == 0.3</code> is <strong>false</strong> (floats aren&#39;t exact)</td></tr></tbody></table>
+<h4 id="numeric-strings-inf-and-nan">Numeric strings, INF and NaN</h4>
+<pre><code class="language-php">var_dump(is_numeric(5985));      // bool(true)
+var_dump(is_numeric(&quot;5985&quot;));    // bool(true)  numeric string
+var_dump(is_numeric(&quot;Hello&quot;));   // bool(false)
+var_dump(1.9e411);               // float(INF)  bigger than PHP_FLOAT_MAX
+var_dump(sqrt(-1));              // float(NAN)  not a number</code></pre>
+<p>Checks: <code>is_finite()</code>, <code>is_infinite()</code>, <code>is_nan()</code>.</p>
+<h4 id="strings">Strings</h4>
+<ul><li><p>Double quotes put in variables (<code>&quot;Hello $x&quot;</code>); single quotes don&#39;t (<code>&#39;Hello $x&#39;</code>).</p></li><li><p>Joining: <code>$x . $y</code> is <code>HelloWorld</code>; <code>$x . &quot; &quot; . $y</code> or <code>&quot;$x $y&quot;</code> adds the space.</p></li></ul>
+<table><thead><tr><th>Function</th><th>Example</th><th>Result</th></tr></thead><tbody><tr><td><code>strlen()</code></td><td><code>strlen(&quot;Hello world!&quot;)</code></td><td><code>12</code> (counts spaces and symbols)</td></tr><tr><td><code>str_word_count()</code></td><td><code>str_word_count(&quot;Hello world!&quot;)</code></td><td><code>2</code></td></tr><tr><td><code>strrev()</code></td><td><code>strrev(&quot;Hello&quot;)</code></td><td><code>olleH</code></td></tr><tr><td><code>strpos()</code></td><td><code>strpos(&quot;Hello World!&quot;, &quot;World&quot;)</code></td><td><code>6</code> (starts at 0; <code>false</code> if not found)</td></tr></tbody></table>
+<h4 id="boolean-and-null">Boolean and NULL</h4>
+<ul><li><p>Boolean: <code>true</code> / <code>false</code>, used in conditions.</p></li><li><p>NULL: the only value of type NULL. A variable with no value is NULL; <code>$x = null;</code> empties it.</p></li></ul>
+<h4 id="implicit-casting-automatic-done-by-php">Implicit casting (automatic, done by PHP)</h4>
+<pre><code class="language-php">$a = 10; $b = &#39;20&#39;;
+echo $a + $b;    // 30    the string becomes a number
+echo $a . $b;    // 1020  the number becomes a string
+var_dump(2 / 4); // float(0.5)
+var_dump(4 / 2); // int(2)</code></pre>
+<h4 id="explicit-casting-manual-done-by-you">Explicit casting (manual, done by you)</h4>
+<table><thead><tr><th>Cast</th><th>Example</th><th>Result</th></tr></thead><tbody><tr><td><code>(int)</code> / <code>(integer)</code></td><td><code>(int) 5.35</code></td><td><code>int(5)</code>: <strong>cuts</strong> the decimals, never rounds; <code>(int) -5.9</code> is <code>-5</code></td></tr><tr><td><code>(int)</code> on a string</td><td><code>(int) &quot;25&quot;</code></td><td><code>int(25)</code>; <code>(int) &quot;12abc&quot;</code> is <code>12</code></td></tr><tr><td><code>(float)</code> / <code>(double)</code></td><td><code>(float) 7</code>, <code>(float) &quot;9.99&quot;</code></td><td><code>float(7)</code>, <code>float(9.99)</code></td></tr><tr><td><code>(string)</code></td><td><code>(string) 55.55</code></td><td><code>string(5) &quot;55.55&quot;</code></td></tr><tr><td><code>(bool)</code> / <code>(boolean)</code></td><td><code>(bool) 100</code>, <code>(bool) 0</code>, <code>(bool) &quot;Hello&quot;</code></td><td><code>true</code>, <code>false</code>, <code>true</code></td></tr><tr><td><code>(array)</code>, <code>(object)</code></td><td></td><td>Converts to an array / object</td></tr></tbody></table>
+<blockquote><p><strong>Handout correction:</strong> it says &quot;a string is always cast to true&quot;. Two strings cast to <strong>false</strong>: <code>&quot;&quot;</code> and <code>&quot;0&quot;</code>. Every other string, even <code>&quot;false&quot;</code> and <code>&quot; &quot;</code>, is true.</p></blockquote>
+<h4 id="traps-2">Traps</h4>
+<ul><li><p><code>(int)</code> cuts, it doesn&#39;t round: use <code>round()</code> to round.</p></li><li><p>A leading <code>0</code> makes a number octal: <code>017</code> is 15.</p></li><li><p><code>&quot;0&quot;</code> and <code>&quot;&quot;</code> are false; <code>&quot;false&quot;</code> is true.</p></li><li><p><code>strpos()</code> counts from 0.</p></li><li><p>Comparing floats with <code>==</code> can fail.</p></li></ul>
+<h4 id="self-check-2">Self-check</h4>
+<ol><li><p><code>var_dump(4 * 2.5);</code> prints? 2. <code>(int) 9.99</code> is? 3. <code>(bool) &quot;0&quot;</code> is? 4. <code>echo 10 . 20;</code> prints? 5. <code>strpos(&quot;PHP rocks&quot;, &quot;rocks&quot;)</code> returns?</p></li></ol>
+<p><em>Answers: 1) float(10). 2) 9. 3) false. 4) 1020. 5) 4.</em></p>
+<h3 id="lesson-4-control-statements-and-loops-php-tutorial-part-4">Lesson 4 — Control Statements and Loops (PHP Tutorial Part 4)</h3>
+<p><strong>Big idea:</strong> <strong>conditions</strong> choose which code runs (<code>if</code>, <code>switch</code>), <strong>loops</strong> repeat code (<code>while</code>, <code>do...while</code>, <code>for</code>, <code>foreach</code>), and <strong>operators</strong> do the math and comparisons inside them.</p>
+<h4 id="conditional-statements">Conditional statements</h4>
+<table><thead><tr><th>Statement</th><th>Use it when</th></tr></thead><tbody><tr><td><code>if</code></td><td>Run code only if a condition is true</td></tr><tr><td><code>if...else</code></td><td>One block if true, another if false</td></tr><tr><td><code>if...elseif...else</code></td><td>Pick one of several blocks</td></tr><tr><td><code>switch</code></td><td>Pick one of many blocks by comparing one value to several cases</td></tr></tbody></table>
+<pre><code class="language-php">$score = 85;
+if ($score &gt;= 90) {
+    echo &quot;Grade: A&quot;;
+} elseif ($score &gt;= 80) {
+    echo &quot;Grade: B&quot;;      // this one runs
+} elseif ($score &gt;= 70) {
+    echo &quot;Grade: C&quot;;
+} else {
+    echo &quot;Grade: F&quot;;
+}</code></pre>
+<ul><li><p>The first true condition wins; the rest are skipped, which is why the order goes from highest to lowest.</p></li><li><p>More than one line after <code>if</code> or <code>else</code> needs <code>{ }</code>.</p></li></ul>
+<h4 id="switch">switch</h4>
+<pre><code class="language-php">$x = 2;
+switch ($x) {
+    case 1: echo &quot;Number 1&quot;; break;
+    case 2: echo &quot;Number 2&quot;; break;   // Number 2
+    case 3: echo &quot;Number 3&quot;; break;
+    default: echo &quot;No number between 1 and 3&quot;;
+}</code></pre>
+<p>The value is checked once and compared to each <code>case</code>. <code>break</code> stops it; <strong>without <code>break</code> it falls through</strong> into the next case. <code>default</code> runs when nothing matches.</p>
+<h4 id="loops">Loops</h4>
+<table><thead><tr><th>Loop</th><th>Checks the condition</th><th>Runs at least once?</th><th>Best for</th></tr></thead><tbody><tr><td><code>while</code></td><td><strong>Before</strong> each round</td><td>No</td><td>Repeat while something is true</td></tr><tr><td><code>do...while</code></td><td><strong>After</strong> each round</td><td><strong>Yes</strong></td><td>Run once, then repeat while true</td></tr><tr><td><code>for</code></td><td>Before each round</td><td>No</td><td>A known number of times (counter)</td></tr><tr><td><code>foreach</code></td><td>One round per item</td><td>No</td><td>Every item in an array</td></tr></tbody></table>
+<pre><code class="language-php">$i = 1;
+while ($i &lt;= 5) {
+    echo &quot;The number is &quot; . $i . &quot;&lt;br&gt;&quot;;   // 1 to 5
+    $i++;
+}
+
+for ($i = 1; $i &lt;= 5; $i++) {
+    echo &quot;The number is &quot; . $i . &quot;&lt;br&gt;&quot;;   // 1 to 5
+}</code></pre>
+<p><strong>for (init; condition; increment):</strong> init runs once, the condition is checked before every round, the increment runs at the end of every round.</p>
+<blockquote><p><strong>Trap from the handout&#39;s do...while:</strong> it does <code>$i++</code> <strong>before</strong> <code>echo</code>, so starting at 1 it prints <strong>2 3 4 5 6</strong>, not 1 to 5. And <code>do { ... } while ($i &lt; 5);</code> with <code>$i = 10</code> still prints 10 once.</p></blockquote>
+<p><strong>break</strong> stops the loop completely; <strong>continue</strong> skips the rest of this round and goes to the next.</p>
+<h4 id="operators">Operators</h4>
+<table><thead><tr><th>Arithmetic</th><th>Example</th><th>Result</th></tr></thead><tbody><tr><td><code>+ - *</code></td><td><code>2 + 2</code>, <code>5 - 2</code>, <code>4 * 5</code></td><td>4, 3, 20</td></tr><tr><td><code>/</code></td><td><code>15 / 5</code>, <code>5 / 2</code></td><td>3, 2.5</td></tr><tr><td><code>%</code> (remainder)</td><td><code>5 % 2</code>, <code>10 % 8</code>, <code>10 % 2</code></td><td>1, 2, 0</td></tr><tr><td><code>++</code> / <code>--</code></td><td><code>$x = 5; $x++;</code></td><td>6 (or 4 with <code>--</code>)</td></tr></tbody></table>
+<p><code>$x++</code> gives the old value then adds 1; <code>++$x</code> adds 1 first.</p>
+<table><thead><tr><th>Assignment</th><th>Same as</th></tr></thead><tbody><tr><td><code>$x += $y</code></td><td><code>$x = $x + $y</code></td></tr><tr><td><code>$x -= $y</code></td><td><code>$x = $x - $y</code></td></tr><tr><td><code>$x *= $y</code></td><td><code>$x = $x * $y</code></td></tr><tr><td><code>$x /= $y</code></td><td><code>$x = $x / $y</code></td></tr><tr><td><code>$x %= $y</code></td><td><code>$x = $x % $y</code></td></tr><tr><td><code>$x .= $y</code></td><td><code>$x = $x . $y</code> (adds text to the end)</td></tr></tbody></table>
+<p>Example: <code>$x = 10;</code> then <code>+= 5</code> → 15, <code>-= 3</code> → 12, <code>*= 2</code> → 24, <code>/= 4</code> → 6.</p>
+<table><thead><tr><th>Comparison</th><th>Meaning</th><th>Example</th></tr></thead><tbody><tr><td><code>==</code></td><td>equal (value)</td><td><code>5 == 8</code> is false</td></tr><tr><td><code>===</code></td><td>identical (value <strong>and</strong> type)</td><td><code>5 === &quot;5&quot;</code> is false</td></tr><tr><td><code>!=</code> / <code>&lt;&gt;</code></td><td>not equal</td><td><code>5 != 8</code> is true</td></tr><tr><td><code>&gt;</code> <code>&lt;</code> <code>&gt;=</code> <code>&lt;=</code></td><td>greater / less (or equal)</td><td><code>5 &lt; 8</code> is true</td></tr></tbody></table>
+<table><thead><tr><th>Logical</th><th>Meaning</th><th>Example</th><th>Result</th></tr></thead><tbody><tr><td><code>&amp;&amp;</code></td><td>both true</td><td><code>6 &lt; 10 &amp;&amp; 3 &gt; 1</code></td><td>true</td></tr><tr><td><code>||</code></td><td>at least one true</td><td><code>6 == 5 || 3 == 5</code></td><td>false</td></tr><tr><td><code>!</code></td><td>flips it</td><td><code>!(5 &gt; 3)</code></td><td>false</td></tr></tbody></table>
+<p><strong>Conditional assignment:</strong> ternary <code>cond ? a : b</code> and <code>??</code> (<code>$_POST[&quot;name&quot;] ?? &quot;&quot;</code>).</p>
+<h4 id="traps-3">Traps</h4>
+<ul><li><p><code>echo (5 == 8);</code> prints <strong>nothing</strong>: false prints as an empty string, true prints <code>1</code>.</p></li><li><p><code>=</code> assigns, <code>==</code> compares, <code>===</code> also checks the type.</p></li><li><p>Missing <code>break</code> in <code>switch</code> runs the next case too.</p></li><li><p><code>do...while</code> always runs once.</p></li><li><p><code>%</code> is the remainder: <code>$n % 2 == 0</code> means even.</p></li></ul>
+<h4 id="self-check-3">Self-check</h4>
+<ol><li><p><code>$x = 7; echo $x % 3;</code> prints? 2. Which loop always runs at least once? 3. <code>echo (10 &gt; 3);</code> prints? 4. <code>$s = &quot;Hi&quot;; $s .= &quot;!&quot;;</code> makes <code>$s</code>? 5. A <code>switch</code> case with no <code>break</code>?</p></li></ol>
+<p><em>Answers: 1) 1. 2) do...while. 3) 1. 4) &quot;Hi!&quot;. 5) It falls through into the next case.</em></p>
+<h3 id="lesson-5-arrays-php-tutorial-part-5">Lesson 5 — Arrays (PHP Tutorial Part 5)</h3>
+<h4 id="big-idea-in-one-line">Big idea in one line</h4>
+<p>An <strong>array</strong> keeps many related values in <strong>one variable</strong>. PHP has three kinds: <strong>indexed</strong>, <strong>associative</strong> and <strong>multidimensional</strong>.</p>
+<h4 id="the-three-kinds">The three kinds</h4>
+<table><thead><tr><th>Kind</th><th>Keys</th><th>Example</th><th>Access</th></tr></thead><tbody><tr><td>Indexed (numeric)</td><td>0, 1, 2... (automatic)</td><td><code>$fruits = [&quot;Apple&quot;, &quot;Banana&quot;, &quot;Cherry&quot;];</code></td><td><code>$fruits[1]</code> is Banana</td></tr><tr><td>Associative</td><td>Names you choose</td><td><code>$age = [&quot;Joe&quot; =&gt; 22, &quot;Alex&quot; =&gt; 25];</code></td><td><code>$age[&quot;Joe&quot;]</code> is 22</td></tr><tr><td>Multidimensional</td><td>Arrays inside an array</td><td><code>$cars = [[&quot;Volvo&quot;, 22, 18], [&quot;BMW&quot;, 15, 13]];</code></td><td><code>$cars[1][0]</code> is BMW</td></tr></tbody></table>
+<h4 id="creating-arrays">Creating arrays</h4>
+<pre><code class="language-php">$fruits = array(&quot;Apple&quot;, &quot;Banana&quot;, &quot;Cherry&quot;);   // array() function
+$fruits = [&quot;Apple&quot;, &quot;Banana&quot;, &quot;Cherry&quot;];        // short syntax, same thing
+$fruits[3] = &quot;Mango&quot;;                           // set an index by hand
+$fruits[] = &quot;Kiwi&quot;;                             // add to the end
+$age[&#39;Peter&#39;] = 30;                             // add a key to an associative array
+$schedule = [16 =&gt; &#39;My Birthday&#39;, 20 =&gt; &#39;Special Dinner&#39;];   // keys can be integers
+echo $schedule[20];                             // Special Dinner</code></pre>
+<ul><li><p><code>=&gt;</code> links a key to its value.</p></li><li><p>Indexes <strong>start at 0</strong>.</p></li><li><p>PHP arrays can grow and mix types (unlike C arrays).</p></li></ul>
+<h4 id="looping">Looping</h4>
+<pre><code class="language-php">$fruits = [&#39;Apple&#39;, &#39;Banana&#39;, &#39;Orange&#39;, &#39;Mango&#39;];
+for ($x = 0; $x &lt; count($fruits); $x++) {
+    echo $fruits[$x] . &quot;&lt;br&gt;&quot;;
+}
+
+foreach ($fruits as $value) {             // indexed: just the value
+    echo $value . &quot;&lt;br&gt;&quot;;
+}
+
+$people = [&#39;Joe&#39; =&gt; 22, &#39;Adam&#39; =&gt; 25];
+foreach ($people as $name =&gt; $age) {      // associative: key and value
+    echo &quot;My name is $name, and age is $age&lt;br&gt;&quot;;
+}</code></pre>
+<h4 id="two-dimensional-arrays-rows-and-columns">Two-dimensional arrays (rows and columns)</h4>
+<table><thead><tr><th></th><th>[0] Name</th><th>[1] Stock</th><th>[2] Sold</th></tr></thead><tbody><tr><td><strong>[0]</strong></td><td>Volvo</td><td>22</td><td>18</td></tr><tr><td><strong>[1]</strong></td><td>BMW</td><td>15</td><td>13</td></tr><tr><td><strong>[2]</strong></td><td>Saab</td><td>5</td><td>2</td></tr><tr><td><strong>[3]</strong></td><td>Land Rover</td><td>17</td><td>15</td></tr></tbody></table>
+<pre><code class="language-php">echo $cars[1][0] . &quot;: In stock: &quot; . $cars[1][1] . &quot;, sold: &quot; . $cars[1][2] . &quot;.&quot;;
+// BMW: In stock: 15, sold: 13.
+
+for ($row = 0; $row &lt; 4; $row++) {         // outer loop = rows
+    for ($col = 0; $col &lt; 3; $col++) {     // inner loop = columns
+        echo $cars[$row][$col] . &quot; &quot;;
+    }
+}</code></pre>
+<ul><li><p>A 2D array needs <strong>two indices</strong>: first the <strong>row</strong>, then the <strong>column</strong>. A 3D array needs three.</p></li><li><p>Going through every item needs <strong>two nested loops</strong>.</p></li></ul>
+<h4 id="useful-array-functions">Useful array functions</h4>
+<table><thead><tr><th>Function</th><th>Example</th><th>Result</th></tr></thead><tbody><tr><td><code>count()</code></td><td><code>count([&quot;a&quot;, &quot;b&quot;, &quot;c&quot;])</code></td><td>3</td></tr><tr><td><code>sort()</code> / <code>rsort()</code></td><td><code>sort($a)</code> on [3, 1, 2]</td><td>1, 2, 3 / 3, 2, 1</td></tr><tr><td><code>array_push()</code></td><td><code>array_push($q, 3, 4)</code></td><td>adds to the end</td></tr><tr><td><code>in_array()</code></td><td><code>in_array(&quot;Banana&quot;, $fruits)</code></td><td>true</td></tr><tr><td><code>array_keys()</code></td><td><code>array_keys([&quot;b&quot; =&gt; 2, &quot;a&quot; =&gt; 1])</code></td><td>b, a</td></tr><tr><td><code>implode()</code></td><td><code>implode(&quot;, &quot;, $fruits)</code></td><td>&quot;Apple, Banana, Cherry&quot;</td></tr><tr><td><code>print_r()</code></td><td><code>print_r($fruits)</code></td><td>shows the whole array</td></tr></tbody></table>
+<h4 id="traps-to-avoid">Traps to avoid</h4>
+<ul><li><p>Indexes start at 0: the 3rd item is <code>[2]</code>.</p></li><li><p><code>echo $array;</code> doesn&#39;t print the items; use <code>print_r()</code>, <code>var_dump()</code> or a loop.</p></li><li><p>Associative keys are case-sensitive strings: <code>$age[&quot;joe&quot;]</code> is not <code>$age[&quot;Joe&quot;]</code>.</p></li><li><p><code>count()</code> of a 2D array counts rows only.</p></li><li><p>Reading a key that doesn&#39;t exist gives a warning; check with <code>isset()</code> first.</p></li></ul>
+<h4 id="quick-self-check-answers-below">Quick self-check (answers below)</h4>
+<ol><li><p><code>$c = [&quot;Red&quot;, &quot;Green&quot;, &quot;Blue&quot;]; echo $c[2];</code></p></li><li><p>Which symbol links a key to a value?</p></li><li><p><code>$m = [[1, 2], [3, 4]]; echo $m[0][1];</code></p></li><li><p>How many indices does a 2D array need?</p></li><li><p>Which loop gives you both the key and the value?</p></li></ol>
+<p><em>Answers: 1) Blue. 2) =&gt;. 3) 2. 4) Two. 5) foreach ($arr as $key =&gt; $value).</em></p>
+<h3 id="lesson-6-functions-php-tutorial-part-6">Lesson 6 — Functions (PHP Tutorial Part 6)</h3>
+<h4 id="big-idea-in-one-line-1">Big idea in one line</h4>
+<p>A <strong>function</strong> is a named block of code you write once and <strong>call</strong> whenever you need it. It doesn&#39;t run until it&#39;s called.</p>
+<h4 id="built-in-vs-user-defined">Built-in vs user-defined</h4>
+<ul><li><p><strong>Built-in:</strong> PHP has thousands ready to use (<code>echo</code>, <code>define()</code>, <code>var_dump()</code>, <code>strlen()</code>, <code>count()</code>).</p></li><li><p><strong>User-defined:</strong> functions you write yourself.</p></li></ul>
+<h4 id="writing-a-function">Writing a function</h4>
+<pre><code class="language-php">function writeName($fname) {             // $fname is a parameter
+    echo $fname . &quot; Refsnes.&lt;br&gt;&quot;;
+}
+writeName(&quot;Kai Jim&quot;);                     // Kai Jim Refsnes.
+writeName(&quot;Hege&quot;);                        // Hege Refsnes.
+
+function add($x, $y) {
+    $total = $x + $y;
+    return $total;                         // hands the answer back
+}
+echo &quot;1 + 16 = &quot; . add(1, 16);            // 1 + 16 = 17</code></pre>
+<table><thead><tr><th>Part</th><th>Meaning</th></tr></thead><tbody><tr><td><code>function</code></td><td>Starts the definition</td></tr><tr><td>Name</td><td>Starts with a letter or underscore; describes what it does</td></tr><tr><td>Parameters</td><td>Variables in <code>( )</code> that receive the values you pass</td></tr><tr><td><code>return</code></td><td>Sends a value back to where it was called (and ends the function)</td></tr><tr><td>Call</td><td><code>add(1, 16)</code>: the values passed are the <strong>arguments</strong></td></tr></tbody></table>
+<h4 id="default-argument-values">Default argument values</h4>
+<pre><code class="language-php">function setHeight($minheight = 50) {
+    echo &quot;The height is : $minheight &lt;br&gt;&quot;;
+}
+setHeight(350);   // The height is : 350
+setHeight();      // The height is : 50  (default used)</code></pre>
+<h4 id="type-declarations-and-strict-types">Type declarations and strict types</h4>
+<pre><code class="language-php">function addNumbers(int $a, int $b) {
+    return $a + $b;
+}
+echo addNumbers(5, &quot;5&quot;);   // 10  (&quot;5&quot; is converted)</code></pre>
+<ul><li><p>With <code>declare(strict_types=1);</code> on the <strong>very first line</strong>, the types must match exactly: <code>addNumbers(5, &quot;5&quot;)</code> throws a <strong>TypeError</strong>.</p></li><li><p><strong>Handout correction:</strong> it says <code>addNumbers(5, &quot;5 days&quot;)</code> returns 10 without strict mode. In PHP 8 it&#39;s a <strong>TypeError</strong> either way; only a clean numeric string like <code>&quot;5&quot;</code> converts. (Tested in PHP 8.3.)</p></li></ul>
+<h4 id="variable-scope">Variable scope</h4>
+<table><thead><tr><th>Scope</th><th>Where it&#39;s visible</th><th>How to use it inside a function</th></tr></thead><tbody><tr><td>Local</td><td>Only inside the function where it&#39;s created</td><td>Normal</td></tr><tr><td>Global</td><td>Outside functions</td><td><code>global $x;</code> or <code>$GLOBALS[&#39;x&#39;]</code></td></tr><tr><td>Static</td><td>Inside the function, but keeps its value between calls</td><td><code>static $x = 0;</code></td></tr></tbody></table>
+<pre><code class="language-php">$x = 5; $y = 10;
+function myTest() {
+    global $x, $y;
+    $y = $x + $y;
+}
+myTest();
+echo $y;          // 15
+
+function counter() {
+    static $x = 0;
+    echo $x;
+    $x++;
+}
+counter(); counter(); counter();   // 012</code></pre>
+<h4 id="traps-to-avoid-1">Traps to avoid</h4>
+<ul><li><p>Defining a function doesn&#39;t run it; you must call it.</p></li><li><p>A function can&#39;t see outside variables unless you use <code>global</code>, <code>$GLOBALS</code>, or pass them as arguments.</p></li><li><p>Function names are <strong>not</strong> case-sensitive, so you can&#39;t name one <code>MIN</code>, <code>max</code> or <code>count</code> (they already exist): <strong>Fatal error: Cannot redeclare</strong>.</p></li><li><p>Code after <code>return</code> in the same block never runs.</p></li><li><p>Without <code>static</code>, a local variable starts over every call (<code>000</code> instead of <code>012</code>).</p></li></ul>
+<h4 id="quick-self-check-answers-below-1">Quick self-check (answers below)</h4>
+<ol><li><p><code>function f($a = 3) { return $a * 2; } echo f();</code></p></li><li><p>What keyword lets a function use an outside variable?</p></li><li><p>What does <code>static</code> do?</p></li><li><p>Why does <code>function MIN($a, $b)</code> fail?</p></li><li><p>Where must <code>declare(strict_types=1);</code> go?</p></li></ol>
+<p><em>Answers: 1) 6. 2) global (or $GLOBALS). 3) Keeps the variable&#39;s value between calls. 4) PHP already has min(), and function names ignore case. 5) The very first line of the file.</em></p>
+<h3 id="lesson-7-form-handling-php-tutorial-part-7">Lesson 7 — Form Handling (PHP Tutorial Part 7)</h3>
+<h4 id="big-idea-in-one-line-2">Big idea in one line</h4>
+<p>An HTML <strong>form</strong> collects input, the browser <strong>sends</strong> it (GET or POST), and PHP <strong>reads</strong> it from a superglobal like <code>$_POST</code> or <code>$_GET</code>.</p>
+<h4 id="static-page-vs-web-application">Static page vs web application</h4>
+<ul><li><p><strong>Static:</strong> HTML only; the content doesn&#39;t change by itself.</p></li><li><p><strong>Web application:</strong> runs on a server (Apache) with server-side code (PHP, Node.js, Python) for logic, data and databases. The browser is the <strong>HTTP client</strong>.</p></li></ul>
+<h4 id="the-form">The form</h4>
+<pre><code class="language-html">&lt;form action=&quot;process.php&quot; method=&quot;post&quot;&gt;
+  &lt;label for=&quot;name&quot;&gt;Name:&lt;/label&gt;
+  &lt;input type=&quot;text&quot; id=&quot;name&quot; name=&quot;name&quot;&gt;
+  &lt;input type=&quot;submit&quot; value=&quot;Submit&quot;&gt;
+&lt;/form&gt;</code></pre>
+<ul><li><p><code>action</code>: the PHP file that receives the data (<code>action=&quot;&quot;</code> = the same page).</p></li><li><p><code>method</code>: <code>get</code> or <code>post</code>.</p></li><li><p><code>name=&quot;...&quot;</code>: becomes the key in <code>$_POST</code> / <code>$_GET</code>. A box with no <code>name</code> isn&#39;t sent.</p></li></ul>
+<p><strong>Workflow:</strong> HTML form → submit (GET/POST) → PHP reads it with <code>$_POST</code> / <code>$_GET</code> / <code>$_REQUEST</code> → validate, process, maybe save to a database.</p>
+<h4 id="superglobals-always-available-in-any-scope">Superglobals (always available, in any scope)</h4>
+<p><code>$GLOBALS</code> · <code>$_SERVER</code> · <code>$_REQUEST</code> · <code>$_POST</code> · <code>$_GET</code> · <code>$_FILES</code> · <code>$_ENV</code> · <code>$_COOKIE</code> · <code>$_SESSION</code></p>
+<table><thead><tr><th>Superglobal</th><th>Holds</th></tr></thead><tbody><tr><td><code>$GLOBALS</code></td><td>All global variables: <code>$GLOBALS[&#39;z&#39;] = $GLOBALS[&#39;x&#39;] + $GLOBALS[&#39;y&#39;];</code></td></tr><tr><td><code>$_SERVER</code></td><td>Server and request info: <code>PHP_SELF</code> (this file), <code>SERVER_NAME</code>, <code>REQUEST_METHOD</code></td></tr><tr><td><code>$_POST</code></td><td>Data sent with POST</td></tr><tr><td><code>$_GET</code></td><td>Data sent with GET or in the URL query string</td></tr><tr><td><code>$_REQUEST</code></td><td>GET + POST + COOKIE together</td></tr></tbody></table>
+<h4 id="the-same-file-pattern-the-page-runs-twice">The same-file pattern (the page runs twice)</h4>
+<pre><code class="language-php">&lt;form method=&quot;POST&quot; action=&quot;&lt;?php echo htmlspecialchars($_SERVER[&#39;PHP_SELF&#39;]); ?&gt;&quot;&gt;
+  Name: &lt;input type=&quot;text&quot; name=&quot;fname&quot;&gt;
+  &lt;input type=&quot;submit&quot;&gt;
+&lt;/form&gt;
+&lt;?php
+if ($_SERVER[&quot;REQUEST_METHOD&quot;] == &quot;POST&quot;) {
+    $name = $_POST[&#39;fname&#39;];
+    if (empty($name)) {
+        echo &quot;Name is empty&quot;;
+    } else {
+        echo $name;
+    }
+}
+?&gt;</code></pre>
+<ol><li><p><strong>First load (GET):</strong> the <code>if</code> is false, so you just see the form.</p></li><li><p><strong>After Submit (POST):</strong> the same file runs again, the <code>if</code> is true, and PHP checks the name.</p></li></ol>
+<h4 id="query-strings-and-get">Query strings and GET</h4>
+<pre><code class="language-html">&lt;a href=&quot;demo_phpfile.php?subject=PHP&amp;web=W3schools.com&quot;&gt;Test $GET&lt;/a&gt;</code></pre>
+<pre><code class="language-php">echo &quot;Study &quot; . $_GET[&#39;subject&#39;] . &quot; at &quot; . $_GET[&#39;web&#39;];   // Study PHP at W3schools.com</code></pre>
+<p><code>?</code> starts the query string, <code>&amp;</code> separates the <code>key=value</code> pairs. A GET form sends <code>welcome_get.php?name=John&amp;email=john@example.com</code>.</p>
+<h4 id="get-vs-post-1">GET vs POST</h4>
+<table><thead><tr><th></th><th>GET</th><th>POST</th></tr></thead><tbody><tr><td>Where the data goes</td><td>In the URL</td><td>Inside the request body</td></tr><tr><td>Visible?</td><td>Yes (address bar, history)</td><td>No</td></tr><tr><td>Size limit</td><td>About 2000 characters</td><td>No practical limit (8 MB default, <code>post_max_size</code>)</td></tr><tr><td>Bookmark / share</td><td>Yes</td><td>No</td></tr><tr><td>Use for</td><td>Searches, links, filters</td><td>Logins, passwords, forms that save or change data</td></tr></tbody></table>
+<p>Rule: <strong>GET asks to see something; POST sends something to be processed.</strong></p>
+<h4 id="redirects">Redirects</h4>
+<pre><code class="language-php">header(&quot;Location: welcome.php&quot;);
+exit;   // always exit after a redirect</code></pre>
+<p><code>header()</code> must run <strong>before any output</strong> (echo or HTML), or you get &quot;headers already sent&quot;.</p>
+<h4 id="case-study-the-login">Case study: the login</h4>
+<p><code>Login.php</code> (form with <code>action=&quot;login_process.php&quot; method=&quot;POST&quot;</code>) → <code>login_process.php</code> reads <code>$_POST[&#39;username&#39;]</code> and <code>$_POST[&#39;password&#39;]</code>, compares them to <code>John</code> / <code>123</code>, and prints a green or red message.</p>
+<h4 id="traps-to-avoid-2">Traps to avoid</h4>
+<ul><li><p>The <code>name</code> in the form must match the key in PHP exactly (<code>fname</code> vs <code>name</code> = undefined key; the handout&#39;s <code>$_REQUEST</code> example has this typo).</p></li><li><p>Form method GET but PHP reads <code>$_POST</code> = nothing.</p></li><li><p>Never send passwords with GET.</p></li><li><p>Printing <code>PHP_SELF</code> without <code>htmlspecialchars()</code> is an XSS risk.</p></li><li><p><code>header()</code> after output fails; forgetting <code>exit</code> lets the script keep running.</p></li></ul>
+<h4 id="quick-self-check-answers-below-2">Quick self-check (answers below)</h4>
+<ol><li><p>Which attribute says where the form data goes?</p></li><li><p>Name 3 superglobals.</p></li><li><p><code>page.php?city=Queens</code>: how do you read Queens?</p></li><li><p>Which method for a login form?</p></li><li><p>What must come right after <code>header(&quot;Location: ...&quot;)</code>?</p></li></ol>
+<p><em>Answers: 1) action. 2) e.g. $_POST, $_GET, $_SERVER. 3) $_GET[&#39;city&#39;]. 4) POST. 5) exit;</em></p>
+<h3 id="lesson-8-form-validation-php-tutorial-part-8">Lesson 8 — Form Validation (PHP Tutorial Part 8)</h3>
+<h4 id="big-idea-in-one-line-3">Big idea in one line</h4>
+<p><strong>Never trust user input</strong>: check every field in PHP before using it, clean it, and print it safely.</p>
+<h4 id="why-validate">Why validate</h4>
+<table><thead><tr><th>Reason</th><th>Meaning</th></tr></thead><tbody><tr><td>Prevent errors</td><td>Required data is there and in the right format</td></tr><tr><td>Security</td><td>Stop harmful input (SQL injection, injected scripts)</td></tr><tr><td>Data integrity</td><td>Only valid data is stored or processed</td></tr></tbody></table>
+<h4 id="client-side-vs-server-side">Client-side vs server-side</h4>
+<table><thead><tr><th></th><th>Client-side</th><th>Server-side</th></tr></thead><tbody><tr><td>Runs in</td><td>The browser (HTML5, JavaScript)</td><td>PHP on the server</td></tr><tr><td>Speed</td><td>Instant</td><td>After submit</td></tr><tr><td>Can be bypassed?</td><td><strong>Yes</strong></td><td><strong>No</strong></td></tr><tr><td>Role</td><td>Convenience</td><td>The real protection</td></tr></tbody></table>
+<p>HTML5 types like <code>type=&quot;email&quot;</code>, <code>type=&quot;url&quot;</code> and <code>type=&quot;number&quot;</code> check format in the browser. <strong>Always validate in PHP too.</strong></p>
+<h4 id="validation-tools">Validation tools</h4>
+<table><thead><tr><th>Check</th><th>Tool</th><th>Example</th></tr></thead><tbody><tr><td>Required</td><td><code>empty()</code></td><td><code>if (empty($_POST[&quot;name&quot;])) $nameErr = &quot;Name is required&quot;;</code></td></tr><tr><td>Number</td><td><code>is_numeric()</code></td><td><code>is_numeric(&quot;42&quot;)</code> true; also accepts <code>3.14</code>, <code>-5</code>, <code>1e3</code></td></tr><tr><td>Digits only</td><td><code>ctype_digit()</code></td><td><code>ctype_digit(&quot;02134&quot;)</code> true, <code>&quot;12.5&quot;</code> false</td></tr><tr><td>Email</td><td><code>filter_var($email, FILTER_VALIDATE_EMAIL)</code></td><td><code>ana@mail.com</code> passes, <code>ana@</code> fails</td></tr><tr><td>URL</td><td><code>filter_var($url, FILTER_VALIDATE_URL)</code></td><td>needs <code>https://</code></td></tr><tr><td>Pattern</td><td><code>preg_match(&quot;/^[a-zA-Z ]*$/&quot;, $name)</code></td><td>letters and spaces only; returns 1 or 0</td></tr><tr><td>Length</td><td><code>strlen()</code></td><td><code>strlen($name) &lt; 2</code></td></tr></tbody></table>
+<p><strong>Reading the name pattern</strong> <code>/^[a-zA-Z ]*$/</code>: <code>^</code> start, <code>[a-zA-Z ]</code> letters and space, <code>*</code> any number, <code>$</code> end. Without <code>^</code> and <code>$</code>, <code>Ana2</code> would pass.</p>
+<h4 id="cleaning-functions">Cleaning functions</h4>
+<table><thead><tr><th>Function</th><th>Does</th><th>Why</th></tr></thead><tbody><tr><td><code>trim()</code></td><td>Removes spaces, tabs, new lines from both ends</td><td><span style="white-space:pre-wrap"><code>&quot;  Ana &quot;</code> becomes <code>&quot;Ana&quot;</code>; blank-only counts as empty</span></td></tr><tr><td><code>stripslashes()</code></td><td>Removes backslashes <code>\</code></td><td>Cleans escaped input</td></tr><tr><td><code>htmlspecialchars()</code></td><td><code>&lt;</code> <code>&gt;</code> <code>&amp;</code> <code>&quot;</code> become safe codes</td><td>Stops <strong>XSS</strong></td></tr></tbody></table>
+<pre><code class="language-php">function test_input($data) {
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data);
+    return $data;
+}</code></pre>
+<h4 id="your-own-validation-function-and-the-ternary">Your own validation function and the ternary</h4>
+<pre><code class="language-php">function validateName($name) {
+    $name = trim($name);
+    if (strlen($name) &lt; 2 || strlen($name) &gt; 50) {
+        return &quot;Invalid Name: Length not within range&quot;;
+    }
+    return preg_match(&quot;/^[a-zA-Z&#39;-]+( [a-zA-Z&#39;-]+)*$/&quot;, $name) ? &quot;Valid Name&quot; : &quot;Invalid Name&quot;;
+}</code></pre>
+<p><code>condition ? &quot;A&quot; : &quot;B&quot;</code> is a short if/else.</p>
+<h4 id="the-form-pattern">The form pattern</h4>
+<ol><li><p>Start every value and error variable empty: <code>$nameErr = $name = &quot;&quot;;</code></p></li><li><p>Check only after submit: <code>if ($_SERVER[&quot;REQUEST_METHOD&quot;] == &quot;POST&quot;)</code> (or <code>isset($_POST[&#39;submit&#39;])</code>).</p></li><li><p>Required check first, then the format check.</p></li><li><p>Print each error next to its box: <code>&lt;span class=&quot;error&quot;&gt;* &lt;?php echo $nameErr; ?&gt;&lt;/span&gt;</code></p></li><li><p>Keep what the user typed: <code>value=&quot;&lt;?php echo $name; ?&gt;&quot;</code>; radios use <code>checked</code>.</p></li></ol>
+<h4 id="traps-to-avoid-3">Traps to avoid</h4>
+<ul><li><p><code>empty(&quot;0&quot;)</code> is true, <code>empty(&quot; &quot;)</code> is false: <code>trim()</code> first.</p></li><li><p><code>is_numeric()</code> accepts decimals and negatives; use <code>ctype_digit()</code> for zip codes.</p></li><li><p>An empty name passes the pattern (<code>*</code> allows zero characters), so check required first.</p></li><li><p><code>filter_var()</code> returns the value or <strong>false</strong>, so use <code>!</code> to catch a bad one.</p></li><li><p>Printing input without <code>htmlspecialchars()</code> leaves an XSS hole.</p></li></ul>
+<h4 id="quick-self-check-answers-below-3">Quick self-check (answers below)</h4>
+<ol><li><p>Which validation can users skip?</p></li><li><p>Function to check an email?</p></li><li><p>What does <code>htmlspecialchars(&quot;&lt;b&gt;&quot;)</code> stop?</p></li><li><p>Why <code>trim()</code> before <code>empty()</code>?</p></li><li><p><code>preg_match()</code> returns what for a match?</p></li></ol>
+<p><em>Answers: 1) Client-side. 2) filter_var with FILTER_VALIDATE_EMAIL. 3) XSS (injected HTML/JS). 4) So spaces-only input counts as empty. 5) 1 (0 for no match).</em></p>
+<h3 id="lesson-9-sessions-and-cookies-php-tutorial-part-9">Lesson 9 — Sessions and Cookies (PHP Tutorial Part 9)</h3>
+<h4 id="big-idea-in-one-line-4">Big idea in one line</h4>
+<p>HTTP forgets you after every page (<strong>stateless</strong>). A <strong>session</strong> remembers you on the <strong>server</strong>; a <strong>cookie</strong> remembers you on <strong>your computer</strong>.</p>
+<h4 id="sessions">Sessions</h4>
+<ol><li><p>The user connects; the server starts a session.</p></li><li><p>The server stores the data and sends a <strong>session ID</strong> to the browser, usually as a cookie (<code>PHPSESSID</code>).</p></li><li><p>Every later request includes the session ID.</p></li><li><p>The server checks the ID and responds.</p></li><li><p>The session ends: logout, browser closed, or timeout.</p></li></ol>
+<pre><code class="language-php">&lt;?php
+session_start();                        // FIRST, before any HTML, on every page
+$_SESSION[&quot;favcolor&quot;] = &quot;green&quot;;        // save
+echo $_SESSION[&quot;favcolor&quot;];             // read
+$_SESSION[&quot;favcolor&quot;] = &quot;yellow&quot;;       // change
+unset($_SESSION[&quot;favcolor&quot;]);           // remove one value
+session_unset();                        // remove all values
+session_destroy();                      // destroy the session
+?&gt;</code></pre>
+<ul><li><p>Session variables hold info about <strong>one user</strong> and are available on <strong>all pages</strong>; by default they last until the browser closes.</p></li><li><p>If cookies are off, the ID can go in the URL (risk: session hijacking).</p></li></ul>
+<h4 id="cookies">Cookies</h4>
+<p>A small text file the browser stores, sent back to the site with every request, to remember data <strong>across visits</strong>.</p>
+<pre><code class="language-php">&lt;?php
+setcookie(&quot;user&quot;, &quot;John Doe&quot;, time() + (86400 * 30), &quot;/&quot;);   // 30 days, whole site
+?&gt;
+&lt;html&gt;&lt;body&gt;
+&lt;?php
+if (!isset($_COOKIE[&quot;user&quot;])) {
+    echo &quot;Cookie named &#39;user&#39; is not set!&quot;;
+} else {
+    echo &quot;Value is: &quot; . $_COOKIE[&quot;user&quot;];
+}
+?&gt;
+&lt;/body&gt;&lt;/html&gt;</code></pre>
+<table><thead><tr><th>Task</th><th>Code</th></tr></thead><tbody><tr><td>Create / modify</td><td><code>setcookie(name, value, expire, path)</code> again</td></tr><tr><td>Read</td><td><code>$_COOKIE[&quot;user&quot;]</code></td></tr><tr><td>Delete</td><td><code>setcookie(&quot;user&quot;, &quot;&quot;, time() - 3600, &quot;/&quot;);</code> (expired)</td></tr><tr><td>Check enabled</td><td><code>count($_COOKIE) &gt; 0</code></td></tr></tbody></table>
+<ul><li><p><code>setcookie()</code> must come <strong>before <code>&lt;html&gt;</code></strong> (it&#39;s a header).</p></li><li><p><code>86400</code> = seconds in a day; <code>time() + 86400 * 30</code> = 30 days from now.</p></li><li><p><strong>First load says &quot;not set&quot;</strong>: the new cookie only shows in <code>$_COOKIE</code> on the next request.</p></li></ul>
+<h4 id="cookies-vs-sessions">Cookies vs sessions</h4>
+<table><thead><tr><th></th><th>Cookie</th><th>Session</th></tr></thead><tbody><tr><td>Stored on</td><td>User&#39;s computer</td><td>Server (only the ID is a cookie)</td></tr><tr><td>Security</td><td>Less secure (user can see/edit)</td><td>More secure</td></tr><tr><td>Lasts</td><td>Days to years (expiration)</td><td>Until browser closes or timeout</td></tr><tr><td>Use for</td><td>Preferences, theme, &quot;remember me&quot;</td><td>Login status, cart, private data</td></tr><tr><td>PHP</td><td><code>setcookie()</code>, <code>$_COOKIE</code></td><td><code>session_start()</code>, <code>$_SESSION</code></td></tr></tbody></table>
+<h4 id="4-ways-to-pass-data-between-pages">4 ways to pass data between pages</h4>
+<p>Session · Cookie · POST/GET form · URL query string (<code>welcome.php?id=110&amp;name=John</code> read with <code>$_GET[&#39;id&#39;]</code>; visible, so never for passwords).</p>
+<h4 id="traps-to-avoid-4">Traps to avoid</h4>
+<ul><li><p><code>session_start()</code> and <code>setcookie()</code> before any output.</p></li><li><p>Forgot <code>session_start()</code> on a page = empty <code>$_SESSION</code>.</p></li><li><p>A new cookie isn&#39;t in <code>$_COOKIE</code> until the next load.</p></li><li><p>Delete a cookie with the same path you created it with.</p></li><li><p>Never store passwords in cookies or URLs.</p></li></ul>
+<h4 id="quick-self-check-answers-below-4">Quick self-check (answers below)</h4>
+<ol><li><p>Where is session data stored?</p></li><li><p>Function that creates a cookie?</p></li><li><p>What must be first on every page that uses <code>$_SESSION</code>?</p></li><li><p>How do you delete a cookie?</p></li><li><p>Which is better for login status: cookie or session?</p></li></ol>
+<p><em>Answers: 1) On the server. 2) setcookie(). 3) session_start(). 4) setcookie with an expiration in the past. 5) Session.</em></p>
