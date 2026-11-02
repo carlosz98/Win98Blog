@@ -540,6 +540,25 @@
        ]
       }
      ]
+    },
+    {
+     "title": "Midterm Reviews",
+     "pages": [
+      {
+       "slug": "midterm-reviews",
+       "title": "Review sheets by lesson",
+       "topics": [
+        {
+         "id": "lesson-1-introduction-php-tutorial-part-1",
+         "title": "Lesson 1 — Introduction (PHP Tutorial Part 1)"
+        },
+        {
+         "id": "lesson-2-basic-concepts-php-tutorial-part-2-week-2",
+         "title": "Lesson 2 — Basic Concepts (PHP Tutorial Part 2 + Week 2)"
+        }
+       ]
+      }
+     ]
     }
    ]
   },

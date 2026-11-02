@@ -69,6 +69,7 @@ layout = [
   ('Week 6', [('week-6-day-1', 'Day 1 — CRUD, SQL, MySQL with PHP', find('week-6-day-1')),
               ('week-6-day-2', 'Day 2 — Midterm review and quizzes', find('week-6-day-2'))]),
   ('Project 1', [('project-1', 'Deliverable 1 — Project proposal', find('project-1'))]),
+  ('Midterm Reviews', [('midterm-reviews', 'Review sheets by lesson', find('midterm-reviews'))]),
 ]
 used = set()
 other = {k: v for k, v in secs.items() if re.match(r'mac-\d+-', k)}

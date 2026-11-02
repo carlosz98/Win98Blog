@@ -1,0 +1,70 @@
+<h2 id="midterm-reviews-review-sheets-by-lesson">Midterm Reviews — Review Sheets by Lesson</h2>
+<p>One review sheet per lesson, built from the class handouts (PHP Tutorial Parts 1–9) and the weekly notes above. Each sheet has the key ideas, the code to know, the traps, and a quick self-check with answers. A review test goes with each sheet.</p>
+<h3 id="lesson-1-introduction-php-tutorial-part-1">Lesson 1 — Introduction (PHP Tutorial Part 1)</h3>
+<p><strong>Big idea:</strong> PHP runs <strong>on the server</strong>, talks to <strong>MySQL</strong> for data, and sends <strong>only HTML</strong> to the browser.</p>
+<h4 id="key-terms">Key terms</h4>
+<table><thead><tr><th>Term</th><th>What to remember</th></tr></thead><tbody><tr><td>PHP</td><td><strong>Hypertext Preprocessor</strong>. Server-side scripting language for dynamic web pages.</td></tr><tr><td>MySQL</td><td>Open-source <strong>relational</strong> database (RDBMS): tables of rows and columns, queried with <strong>SQL</strong>.</td></tr><tr><td>MariaDB</td><td>An open-source <strong>fork of MySQL</strong>; replaces it in many XAMPP versions.</td></tr><tr><td>Apache</td><td>The <strong>web server</strong>. Receives requests and passes <code>.php</code> files to PHP.</td></tr><tr><td>PHP parser (module)</td><td>Reads and runs the PHP code on the server; built into Apache.</td></tr><tr><td>XAMPP</td><td>Free bundle: <strong>X</strong> (cross-platform) + <strong>A</strong>pache + <strong>M</strong>ySQL/MariaDB + <strong>P</strong>HP + <strong>P</strong>erl. Others: WAMP, LAMP.</td></tr><tr><td>phpMyAdmin</td><td><strong>Web-based</strong> tool (in the browser) to manage MySQL. Comes with XAMPP.</td></tr><tr><td>MySQL Workbench</td><td><strong>Desktop</strong> app by Oracle: queries, <strong>ER diagrams</strong>, import/export, backups.</td></tr><tr><td>VS Code</td><td>The class code editor.</td></tr></tbody></table>
+<h4 id="php-8-key-features">PHP: 8 key features</h4>
+<p>Server-side execution · ease of use · open source · cross-platform · database integration (MySQL, SQLite) · built-in functions · interoperability (HTML, JavaScript) · security features.</p>
+<h4 id="mysql-8-key-features">MySQL: 8 key features</h4>
+<p>Relational structure · SQL language · open source · cross-platform · high performance · scalability · security · integration (PHP, Python, Java).</p>
+<h4 id="why-php-mysql-work-well-together">Why PHP + MySQL work well together</h4>
+<table><thead><tr><th>Reason</th><th>Meaning</th></tr></thead><tbody><tr><td>Dynamic content</td><td>PHP handles the logic, MySQL stores the data.</td></tr><tr><td>Easy integration</td><td><strong>mysqli</strong> (MySQL only) and <strong>PDO</strong> (many databases).</td></tr><tr><td>Cost-effective</td><td>Both free and open source.</td></tr><tr><td>Scalability</td><td>From small sites to large apps.</td></tr><tr><td>Security</td><td><strong>Prepared statements</strong> (stop SQL injection), authentication, role-based access.</td></tr></tbody></table>
+<h4 id="php-files-and-the-3-things-you-need">PHP files and the 3 things you need</h4>
+<ul><li><p>PHP files contain <strong>text, HTML and scripts</strong>, are returned as <strong>plain HTML</strong>, and use the <strong>.php</strong> extension.</p></li><li><p>You need a <strong>web server</strong> (Apache), a <strong>database server</strong> (MySQL) and a <strong>PHP parser</strong>.</p></li></ul>
+<h4 id="how-the-stack-works-memorize-the-order">How the stack works (memorize the order)</h4>
+<ol><li><p><strong>Client request:</strong> browser asks for <code>http://localhost/app.php</code>.</p></li><li><p><strong>Web server:</strong> Apache sees <code>.php</code> and sends it to the PHP parser.</p></li><li><p><strong>PHP executes:</strong> runs the logic, may query MySQL.</p></li><li><p><strong>Response:</strong> the HTML goes back to the browser.</p></li></ol>
+<p>With a database: <strong>Browser → Apache → PHP → MySQL → PHP → Apache → Browser</strong></p>
+<h4 id="xampp-and-workbench">XAMPP and Workbench</h4>
+<ul><li><p>Start <strong>Apache</strong> and <strong>MySQL</strong> in the Control Panel; files go in <strong>htdocs</strong>; open <code>http://localhost/folder/file.php</code> (htdocs is not in the URL).</p></li><li><p>Add <code>C:\xampp\php\</code> to <strong>Path</strong> so the terminal and VS Code find PHP.</p></li><li><p>Workbench connection: <strong>localhost</strong>, port <strong>3306</strong>, user <strong>root</strong> (empty password on XAMPP).</p></li></ul>
+<h4 id="traps">Traps</h4>
+<ul><li><p>Double-clicking a .php file opens <code>file://</code>, so PHP doesn&#39;t run.</p></li><li><p>View Page Source shows only HTML, never PHP.</p></li><li><p>phpMyAdmin = browser; Workbench = desktop.</p></li><li><p>mysqli = MySQL only; PDO = many databases.</p></li><li><p>3306 = MySQL; 80 = Apache (HTTP); 443 = HTTPS.</p></li></ul>
+<h4 id="self-check">Self-check</h4>
+<ol><li><p>What does PHP stand for? 2. The 3 things needed? 3. Where do files go, and what URL? 4. Which tool designs ER diagrams? 5. What stops SQL injection?</p></li></ol>
+<p><em>Answers: 1) Hypertext Preprocessor. 2) Web server, database server, PHP parser. 3) htdocs; http://localhost/... 4) MySQL Workbench. 5) Prepared statements.</em></p>
+<h3 id="lesson-2-basic-concepts-php-tutorial-part-2-week-2">Lesson 2 — Basic Concepts (PHP Tutorial Part 2 + Week 2)</h3>
+<p><strong>Big idea:</strong> PHP code lives inside <code>&lt;?php ... ?&gt;</code> tags in a <code>.php</code> file, stores data in <code>$variables</code>, and prints with <code>echo</code>.</p>
+<h4 id="syntax-1">Syntax</h4>
+<ul><li><p>Standard tag: <code>&lt;?php ... ?&gt;</code> (preferred). Short tag <code>&lt;? ... ?&gt;</code> only works if the server enables it.</p></li><li><p>Every statement ends with <code>;</code>.</p></li><li><p>A PHP block can go anywhere in the HTML.</p></li><li><p><code>index.php</code> is the default file a server opens for a folder (like <code>main</code> in Java/C++).</p></li></ul>
+<h4 id="comments-1">Comments</h4>
+<table><thead><tr><th>Style</th><th>Use</th></tr></thead><tbody><tr><td><code>// text</code></td><td>One line</td></tr><tr><td><code># text</code></td><td>One line</td></tr><tr><td><code>/* text */</code></td><td>Several lines</td></tr></tbody></table>
+<h4 id="variables-the-naming-rules">Variables: the naming rules</h4>
+<ul><li><p>Start with <code>$</code>, then a <strong>letter or underscore</strong> (never a number).</p></li><li><p>Only letters, numbers and <code>_</code> (no spaces, no dashes): <code>$my_string</code> or <code>$myString</code>.</p></li><li><p><strong>Case-sensitive:</strong> <code>$age</code> and <code>$AGE</code> are different variables.</p></li><li><p>PHP is <strong>loosely typed</strong>: the type comes from the value, and a variable can change type (<code>$value = 10;</code> then <code>$value = &quot;Hello&quot;;</code>).</p></li></ul>
+<h4 id="data-types">Data types</h4>
+<p>String · Integer · Float · Boolean · Array · Object · NULL (a variable with no value is NULL).</p>
+<h4 id="automatic-type-conversion-type-juggling-1">Automatic type conversion (type juggling)</h4>
+<pre><code class="language-php">$x = 10;
+$y = &quot;20&quot;;
+echo &quot;x + y is: &quot;, $x + $y;   // x + y is: 30</code></pre>
+<p><code>+</code> is always math, so <code>&quot;20&quot;</code> becomes 20. <code>.</code> is always joining text: <code>&quot;5&quot; . &quot;3&quot;</code> is <code>&quot;53&quot;</code>, <code>&quot;5&quot; + &quot;3&quot;</code> is <code>8</code>.</p>
+<h4 id="constants">Constants</h4>
+<pre><code class="language-php">define(&quot;PI&quot;, 3.14);
+echo PI;        // 3.14
+const x = 10;
+echo x;         // 10</code></pre>
+<p>No <code>$</code>, the value can&#39;t change, and constants are global (available everywhere).</p>
+<h4 id="variable-functions">Variable functions</h4>
+<table><thead><tr><th>Function</th><th>Returns / does</th></tr></thead><tbody><tr><td><code>isset($v)</code></td><td>true if it exists and is not NULL; false if never set, set to NULL, or unset</td></tr><tr><td><code>unset($v)</code></td><td>Destroys the variable</td></tr><tr><td><code>empty($v)</code></td><td>true for <code>&quot;&quot;</code>, <code>0</code>, <code>0.0</code>, <code>&quot;0&quot;</code>, NULL, false, <code>array()</code>, undefined</td></tr><tr><td><code>gettype($v)</code></td><td>The type as text: <code>gettype(&quot;4 months&quot;)</code> is <code>string</code>; floats show as <code>double</code></td></tr><tr><td><code>var_dump($v)</code></td><td>Type and value: <code>var_dump(5985)</code> is <code>int(5985)</code></td></tr></tbody></table>
+<h4 id="concatenation">Concatenation</h4>
+<pre><code class="language-php">$txt1 = &quot;Hello World!&quot;;
+$txt2 = &quot;What a nice day!&quot;;
+echo $txt1 . &quot; &quot; . $txt2;   // Hello World! What a nice day!</code></pre>
+<h4 id="case-sensitivity">Case sensitivity</h4>
+<ul><li><p><strong>NOT case-sensitive:</strong> keywords (<code>echo</code>, <code>if</code>, <code>while</code>), function names, classes. <code>ECHO</code>, <code>echo</code> and <code>EcHo</code> all work. This is why a function named <code>MIN</code> clashes with <code>min()</code>.</p></li><li><p><strong>Case-sensitive:</strong> variable names. <code>$color</code> vs <code>$COLOR</code> gives &quot;Undefined variable $COLOR&quot;.</p></li></ul>
+<h4 id="echo-vs-print-1">echo vs print</h4>
+<table><thead><tr><th></th><th>echo</th><th>print</th></tr></thead><tbody><tr><td>Arguments</td><td>One or more (<code>echo &quot;a&quot;, &quot;b&quot;;</code>)</td><td>Only one</td></tr><tr><td>Return value</td><td>None</td><td>Returns 1 (<code>$r = print &quot;Hi&quot;;</code> makes <code>$r</code> 1)</td></tr><tr><td>Speed</td><td>Slightly faster</td><td>Slightly slower</td></tr></tbody></table>
+<h4 id="double-vs-single-quotes">Double vs single quotes</h4>
+<pre><code class="language-php">$name = &quot;Josh&quot;;
+echo &quot;Hello $name&quot;;   // Hello Josh
+echo &#39;Hello $name&#39;;   // Hello $name
+$x = 5; $y = 4;
+echo $x + $y;         // 9
+echo &quot;$x + $y&quot;;       // 5 + 4</code></pre>
+<p>Double quotes put in the variable&#39;s value; single quotes print the text exactly as written.</p>
+<h4 id="from-week-2-order-form">From Week 2 (order form)</h4>
+<table><thead><tr><th>Piece</th><th>What to remember</th></tr></thead><tbody><tr><td><code>$_POST[&quot;tireqty&quot;]</code></td><td>Reads a form field sent with POST; the key must match the input&#39;s <code>name</code> exactly</td></tr><tr><td><code>date(&#39;H:i, jS F Y&#39;)</code></td><td>Current date/time; each letter is a format code (H hour, i minutes, j day, S suffix, F month, Y year)</td></tr><tr><td><code>number_format(1234.5, 2)</code></td><td><code>&quot;1,234.50&quot;</code>: thousands separator and 2 decimals</td></tr><tr><td><code>htmlspecialchars()</code></td><td>Makes user input safe to print</td></tr><tr><td><code>=</code> vs <code>==</code></td><td><code>=</code> assigns, <code>==</code> compares. <code>if ($a = 5)</code> is always true (a bug)</td></tr></tbody></table>
+<h4 id="traps-1">Traps</h4>
+<ul><li><p>A file saved as <code>.html</code> doesn&#39;t run PHP.</p></li><li><p><code>$2nd</code>, <code>$my name</code> and <code>$price-tag</code> are invalid names.</p></li><li><p><code>empty(&quot; &quot;)</code> is <strong>false</strong> (a space is a character); trim first.</p></li><li><p><code>&quot;$x + $y&quot;</code> prints the text, not the sum.</p></li><li><p>Missing <code>;</code> causes a parse error.</p></li></ul>
+<h4 id="self-check-1">Self-check</h4>
+<ol><li><p>Valid name: <code>$_total</code> or <code>$1total</code>? 2. What does <code>echo 10 + &quot;5&quot;;</code> print? 3. Which returns 1: echo or print? 4. <code>$a = &quot;Ana&quot;; echo &#39;Hi $a&#39;;</code> prints? 5. Are function names case-sensitive?</p></li></ol>
+<p><em>Answers: 1) <code>$_total</code>. 2) 15. 3) print. 4) Hi $a. 5) No (variables are).</em></p>
