@@ -1,0 +1,95 @@
+<h2 id="week-7-day-1-tuesday-11032026-no-class-assignment-2-sessions">Week 7, Day 1 — Tuesday 11/03/2026: No class, Assignment 2 (Sessions)</h2>
+<p>There was <strong>no class</strong> today. The work for this day is <strong>Assignment 2 (100 points)</strong>: four PHP pages that share data with <strong>sessions</strong> (Lesson 9).</p>
+<h3 id="what-the-assignment-asks">What the assignment asks</h3>
+<ol><li><p><strong>Home page:</strong> links to all the other pages. It works as the index.</p></li><li><p><strong>Login page:</strong> two text boxes (username and password) and one Submit button.</p><ul><li><p>If the user enters username = <strong>Mike</strong> and password = <strong>12345</strong>, save both into <strong>sessions</strong> and send the user to the welcome page.</p></li><li><p>Anything else prints: <strong>&quot;username and password incorrect&quot;</strong>.</p></li></ul></li><li><p><strong>Welcome page:</strong> test if the sessions are set. If they are, print their values (username and password). If not, print <strong>&quot;sessions are not set&quot;</strong>. It needs a link back to the home page.</p></li><li><p><strong>Log out page:</strong> called from the Log out link on the home page. It removes all sessions (the remove code goes in this page) and sends the user back to the home page. After that, the welcome page must print &quot;sessions are not set&quot;.</p></li></ol>
+<p><strong>To upload:</strong> a Word document with the code and screenshots of running the files and the results.</p>
+<h3 id="indexphp-home-page">index.php (Home page)</h3>
+<pre><code class="language-php">&lt;?php
+session_start();
+?&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Home Page&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Home Page&lt;/h1&gt;
+&lt;a href=&quot;login.php&quot;&gt;Login&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;welcome.php&quot;&gt;Welcome&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;logout.php&quot;&gt;Log out&lt;/a&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<h3 id="loginphp-login-page">login.php (Login page)</h3>
+<pre><code class="language-php">&lt;?php
+session_start();
+
+$message = &quot;&quot;;
+
+if ($_SERVER[&quot;REQUEST_METHOD&quot;] == &quot;POST&quot;) {
+    $username = $_POST[&quot;username&quot;];
+    $password = $_POST[&quot;password&quot;];
+
+    if ($username == &quot;Mike&quot; &amp;&amp; $password == &quot;12345&quot;) {
+        $_SESSION[&quot;username&quot;] = $username;
+        $_SESSION[&quot;password&quot;] = $password;
+        header(&quot;Location: welcome.php&quot;);
+        exit;
+    } else {
+        $message = &quot;username and password incorrect&quot;;
+    }
+}
+?&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Login Page&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Login&lt;/h1&gt;
+&lt;form method=&quot;POST&quot; action=&quot;&lt;?php echo htmlspecialchars($_SERVER[&#39;PHP_SELF&#39;]); ?&gt;&quot;&gt;
+    Username: &lt;input type=&quot;text&quot; name=&quot;username&quot;&gt;&lt;br&gt;&lt;br&gt;
+    Password: &lt;input type=&quot;password&quot; name=&quot;password&quot;&gt;&lt;br&gt;&lt;br&gt;
+    &lt;input type=&quot;submit&quot; value=&quot;Submit&quot;&gt;
+&lt;/form&gt;
+&lt;?php echo $message; ?&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<h3 id="welcomephp-welcome-page">welcome.php (Welcome page)</h3>
+<pre><code class="language-php">&lt;?php
+session_start();
+?&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Welcome Page&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Welcome Page&lt;/h1&gt;
+&lt;?php
+if (isset($_SESSION[&quot;username&quot;]) &amp;&amp; isset($_SESSION[&quot;password&quot;])) {
+    echo &quot;Username: &quot; . $_SESSION[&quot;username&quot;] . &quot;&lt;br&gt;&quot;;
+    echo &quot;Password: &quot; . $_SESSION[&quot;password&quot;] . &quot;&lt;br&gt;&quot;;
+} else {
+    echo &quot;sessions are not set&lt;br&gt;&quot;;
+}
+?&gt;
+&lt;br&gt;
+&lt;a href=&quot;index.php&quot;&gt;Home&lt;/a&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<h3 id="logoutphp-log-out-page">logout.php (Log out page)</h3>
+<pre><code class="language-php">&lt;?php
+session_start();
+session_unset();
+session_destroy();
+header(&quot;Location: index.php&quot;);
+exit;
+?&gt;</code></pre>
+<h3 id="how-it-works">How it works</h3>
+<ul><li><p><code>session_start()</code> is the <strong>first line on every page</strong>, before any HTML, so each page can read or change <code>$_SESSION</code>.</p></li><li><p><strong>login.php</strong> uses the same-file pattern: the first load just shows the form; after Submit, <code>$_SERVER[&quot;REQUEST_METHOD&quot;] == &quot;POST&quot;</code> is true and PHP checks the values.</p></li><li><p>With <strong>Mike / 12345</strong>, it saves both values into <code>$_SESSION</code> <strong>first</strong>, then redirects with <code>header(&quot;Location: welcome.php&quot;); exit;</code>.</p></li><li><p><strong>welcome.php</strong> uses <code>isset()</code> on both session values to decide which message to print.</p></li><li><p><strong>logout.php</strong> has no HTML: <code>session_unset()</code> removes the values, <code>session_destroy()</code> ends the session, then it redirects home.</p></li></ul>
+<h3 id="output-what-each-step-shows">Output (what each step shows)</h3>
+<table><thead><tr><th>Step</th><th>Page</th><th>Output</th></tr></thead><tbody><tr><td>1. Open Welcome before logging in</td><td>welcome.php</td><td><code>sessions are not set</code></td></tr><tr><td>2. Wrong login (e.g. John / abc)</td><td>login.php</td><td><code>username and password incorrect</code></td></tr><tr><td>3. Login Mike / 12345</td><td>goes to welcome.php</td><td><code>Username: Mike</code> and <code>Password: 12345</code></td></tr><tr><td>4. Click Home</td><td>index.php</td><td>The three links</td></tr><tr><td>5. Click Log out</td><td>goes to index.php</td><td>The three links (sessions removed)</td></tr><tr><td>6. Open Welcome again</td><td>welcome.php</td><td><code>sessions are not set</code></td></tr></tbody></table>
+<h3 id="how-to-run-it-in-xampp">How to run it in XAMPP</h3>
+<ol><li><p>Put the four files in a folder inside <code>htdocs</code> (for example <code>htdocs/assignment2/</code>).</p></li><li><p>Start <strong>Apache</strong> in the XAMPP Control Panel.</p></li><li><p>Open <code>localhost/assignment2/index.php</code> and follow the six steps above, taking a screenshot of each.</p></li></ol>
+<h3 id="things-to-remember">Things to remember</h3>
+<ul><li><p><code>header()</code> must run <strong>before any output</strong>, or you get &quot;headers already sent&quot;. Always put <code>exit;</code> after it.</p></li><li><p><code>&quot;mike&quot;</code> is not <code>&quot;Mike&quot;</code>: the <code>==</code> comparison of strings is case-sensitive.</p></li><li><p>Forgetting <code>session_start()</code> on the welcome page makes it always say &quot;sessions are not set&quot;, even after a correct login.</p></li><li><p>Saving a password in a session is only for this assignment; real sites never store or print the password.</p></li></ul>
