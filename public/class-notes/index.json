@@ -596,6 +596,10 @@
        "title": "Review sheets by lesson",
        "topics": [
         {
+         "id": "midterm-exam-coverage-from-the-professor",
+         "title": "Midterm Exam Coverage (from the professor)"
+        },
+        {
          "id": "lesson-1-introduction-php-tutorial-part-1",
          "title": "Lesson 1 — Introduction (PHP Tutorial Part 1)"
         },
