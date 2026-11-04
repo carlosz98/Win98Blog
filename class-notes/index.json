@@ -515,6 +515,53 @@
      ]
     },
     {
+     "title": "Week 7",
+     "pages": [
+      {
+       "slug": "week-7-day-1",
+       "title": "Day 1 — No class, Assignment 2 (sessions)",
+       "topics": [
+        {
+         "id": "what-the-assignment-asks",
+         "title": "What the assignment asks"
+        },
+        {
+         "id": "indexphp-home-page",
+         "title": "index.php (Home page)"
+        },
+        {
+         "id": "loginphp-login-page",
+         "title": "login.php (Login page)"
+        },
+        {
+         "id": "welcomephp-welcome-page",
+         "title": "welcome.php (Welcome page)"
+        },
+        {
+         "id": "logoutphp-log-out-page",
+         "title": "logout.php (Log out page)"
+        },
+        {
+         "id": "how-it-works",
+         "title": "How it works"
+        },
+        {
+         "id": "output-what-each-step-shows",
+         "title": "Output (what each step shows)"
+        },
+        {
+         "id": "how-to-run-it-in-xampp",
+         "title": "How to run it in XAMPP"
+        },
+        {
+         "id": "things-to-remember",
+         "title": "Things to remember"
+        }
+       ]
+      }
+     ]
+    },
+    {
      "title": "Project 1",
      "pages": [
       {
