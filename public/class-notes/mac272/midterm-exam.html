@@ -1,0 +1,99 @@
+<h2 id="midterm-exam-coding-questions-lessons-19">Midterm Exam — Coding Questions (Lessons 1–9)</h2>
+<p>The coding part of the midterm: a 2D array with loops, a function, and the login (form + PHP + welcome page). Every answer below was run in PHP 8.3.</p>
+<h3 id="1-two-dimensional-array-students-and-grades">1. Two-dimensional array: students and grades</h3>
+<pre><code class="language-php">&lt;?php
+$students = [
+    [&quot;Ali&quot;, &quot;Sara&quot;, &quot;Omar&quot;],
+    [85, 90, 78]
+];
+
+for ($i = 0; $i &lt; count($students); $i++) {
+    for ($j = 0; $j &lt; count($students[$i]); $j++) {
+    }
+    echo &quot;&lt;br&gt;&quot;;
+}
+
+echo &quot;&lt;br&gt;&quot;;
+
+for ($j = 0; $j &lt; count($students[0]); $j++) {
+    echo &quot;Student: &quot; . $students[0][$j] . &quot;, Grade: &quot; . $students[1][$j] . &quot;&lt;br&gt;&quot;;
+}
+?&gt;</code></pre>
+<p><strong>Output:</strong> three empty lines, then:</p>
+<pre><code>Student: Ali, Grade: 85
+Student: Sara, Grade: 90
+Student: Omar, Grade: 78</code></pre>
+<ul><li><p>Row 0 has the names and row 1 the grades. The same column is the same student: <code>$students[0][1]</code> is Sara and <code>$students[1][1]</code> is 90.</p></li><li><p><code>count($students)</code> is 2 (rows); <code>count($students[0])</code> is 3 (items in row 0).</p></li><li><p>The nested loops have an empty inner body, so they only print one <code>&lt;br&gt;</code> per row (2), plus the <code>echo &quot;&lt;br&gt;&quot;;</code> after them = 3 empty lines.</p></li><li><p>The last loop uses one <code>$j</code> to read the name and the grade from the same column.</p></li></ul>
+<p>To print every value with the nested loops, put the echo inside the inner braces:</p>
+<pre><code class="language-php">for ($i = 0; $i &lt; count($students); $i++) {
+    for ($j = 0; $j &lt; count($students[$i]); $j++) {
+        echo $students[$i][$j] . &quot; &quot;;
+    }
+    echo &quot;&lt;br&gt;&quot;;
+}
+// Ali Sara Omar
+// 85 90 78</code></pre>
+<h3 id="2-function-celsius-to-fahrenheit">2. Function: Celsius to Fahrenheit</h3>
+<pre><code class="language-php">&lt;?php
+function convertTemp($c) {
+    $f = ($c * 9 / 5) + 32;
+    return $f;
+}
+echo &quot;The conversion from C to F of 20C: &quot; . convertTemp(20) . &quot;F&quot;;
+?&gt;</code></pre>
+<p><strong>Output:</strong> <code>The conversion from C to F of 20C: 68F</code></p>
+<ul><li><p>Formula: F = C × 9 / 5 + 32. For 20: 20 × 9 = 180, / 5 = 36, + 32 = 68.</p></li><li><p><code>$c</code> is the parameter, 20 is the argument. <code>$f</code> is local, so it only gets out with <code>return</code>.</p></li><li><p>Other values: <code>convertTemp(0)</code> = 32, <code>convertTemp(100)</code> = 212, <code>convertTemp(37)</code> = 98.6.</p></li></ul>
+<h3 id="3-login-page-loginhtml">3. Login page: login.html</h3>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;title&gt;Login&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h2&gt;Login&lt;/h2&gt;
+    &lt;form action=&quot;process_login.php&quot; method=&quot;post&quot;&gt;
+        &lt;label for=&quot;username&quot;&gt;Username:&lt;/label&gt;
+        &lt;input type=&quot;text&quot; id=&quot;username&quot; name=&quot;username&quot;&gt;&lt;br&gt;&lt;br&gt;
+        &lt;label for=&quot;password&quot;&gt;Password&lt;/label&gt;
+        &lt;input type=&quot;password&quot; id=&quot;password&quot; name=&quot;password&quot;&gt;&lt;br&gt;&lt;br&gt;
+        &lt;input type=&quot;submit&quot; value=&quot;Login&quot; name=&quot;submit&quot;&gt;
+    &lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<ul><li><p><code>action</code> sends the data to process_login.php; <code>method=&quot;post&quot;</code> keeps it out of the URL.</p></li><li><p>PHP reads each box by its <strong>name</strong>: <code>$_POST[&quot;username&quot;]</code>, <code>$_POST[&quot;password&quot;]</code>. The <code>id</code> only links the label.</p></li></ul>
+<h3 id="4-processloginphp-and-welcomephp">4. process_login.php and welcome.php</h3>
+<pre><code class="language-php">&lt;?php
+$username = trim($_POST[&quot;username&quot;]);
+$password = trim($_POST[&quot;password&quot;]);
+
+$usernames = [&quot;carlos&quot;, &quot;carolina&quot;];
+$passwords = [&quot;123&quot;, &quot;456&quot;];
+
+$found = false;
+for ($i = 0; $i &lt; count($usernames); $i++) {
+    if ($username == $usernames[$i] &amp;&amp; $password == $passwords[$i]) {
+        $found = true;
+        break;
+    }
+}
+
+if ($found) {
+    header(&quot;Location: welcome.php&quot;);
+    exit;
+} else {
+    echo &quot;Username and password incorrect&quot;;
+}
+?&gt;</code></pre>
+<pre><code class="language-html">&lt;!-- welcome.php --&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;UTF-8&quot;&gt;
+&lt;title&gt;Welcome&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Welcome!&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<table><thead><tr><th>Login</th><th>Result</th></tr></thead><tbody><tr><td>carolina / 456</td><td>Redirects to welcome.php: <strong>Welcome!</strong></td></tr><tr><td>carlos / 456</td><td><code>Username and password incorrect</code> (456 is carolina&#39;s)</td></tr></tbody></table>
+<ul><li><p>Read, arrays, loop, decide: the same pattern as the Midterm Review Q4.</p></li><li><p>Both values must match at the <strong>same index</strong>, and <code>trim()</code> removes extra spaces before checking.</p></li><li><p>Put the three files in one folder in htdocs and open <code>http://localhost/&lt;folder&gt;/login.html</code>.</p></li></ul>

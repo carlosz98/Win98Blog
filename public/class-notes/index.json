@@ -562,6 +562,33 @@
      ]
     },
     {
+     "title": "Midterm Exam",
+     "pages": [
+      {
+       "slug": "midterm-exam",
+       "title": "Coding questions",
+       "topics": [
+        {
+         "id": "1-two-dimensional-array-students-and-grades",
+         "title": "1. Two-dimensional array: students and grades"
+        },
+        {
+         "id": "2-function-celsius-to-fahrenheit",
+         "title": "2. Function: Celsius to Fahrenheit"
+        },
+        {
+         "id": "3-login-page-loginhtml",
+         "title": "3. Login page: login.html"
+        },
+        {
+         "id": "4-processloginphp-and-welcomephp",
+         "title": "4. process_login.php and welcome.php"
+        }
+       ]
+      }
+     ]
+    },
+    {
      "title": "Project 1",
      "pages": [
       {
