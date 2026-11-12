@@ -68,8 +68,9 @@ layout = [
               ('week-5-day-2', 'Day 2 — Sessions and cookies', find('week-5-day-2'))]),
   ('Week 6', [('week-6-day-1', 'Day 1 — CRUD, SQL, MySQL with PHP', find('week-6-day-1')),
               ('week-6-day-2', 'Day 2 — Midterm review and quizzes', find('week-6-day-2'))]),
-  ('Week 7', [('week-7-day-1', 'Day 1 — No class, Assignment 2 (sessions)', find('week-7-day-1'))]),
-  ('Midterm Exam', [('midterm-exam', 'Coding questions', find('midterm-exam'))]),
+  ('Week 7', [('week-7-day-1', 'Day 1 — No class, Assignment 2 (sessions)', find('week-7-day-1')),
+              ('week-7-day-2', 'Day 2 — Midterm exam (coding questions)', find('week-7-day-2'))]),
+  ('Week 8', [('week-8-day-2', 'Day 2 — MySQL with PHP', find('week-8-day-2'))]),
   ('Project 1', [('project-1', 'Deliverable 1 — Project proposal', find('project-1'))]),
   ('Midterm Reviews', [('midterm-reviews', 'Review sheets by lesson', find('midterm-reviews'))]),
 ]

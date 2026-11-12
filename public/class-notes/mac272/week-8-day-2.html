@@ -1,0 +1,111 @@
+<h2 id="week-8-day-2-thursday-11122026-mysql-with-php-php-tutorial-part-10">Week 8, Day 2 — Thursday 11/12/2026: MySQL with PHP (PHP Tutorial Part 10)</h2>
+<p>No class on Tuesday 11/10. Today: connecting PHP to MySQL and running SQL from PHP. In this class we use <strong>MySQLi (procedural)</strong>.</p>
+<h3 id="mysqli-vs-pdo">MySQLi vs PDO</h3>
+<table><thead><tr><th></th><th>MySQLi</th><th>PDO</th></tr></thead><tbody><tr><td>Databases</td><td>MySQL only</td><td>12 different systems</td></tr><tr><td>Style</td><td>Procedural <strong>and</strong> object-oriented</td><td>Object-oriented only</td></tr><tr><td>Prepared statements</td><td>Yes</td><td>Yes</td></tr></tbody></table>
+<p>The old <code>mysql_</code> extension was deprecated in 2012.</p>
+<h3 id="the-pattern-every-example-uses">The pattern every example uses</h3>
+<pre><code class="language-php">&lt;?php
+$servername = &quot;localhost&quot;;
+$username = &quot;root&quot;;
+$password = &quot;&quot;;
+$dbname = &quot;myDB&quot;;
+
+// 1. connect
+$conn = mysqli_connect($servername, $username, $password, $dbname);
+if (!$conn) {
+    die(&quot;Connection failed: &quot; . mysqli_connect_error());
+}
+
+// 2. run the SQL
+$sql = &quot;...&quot;;
+if (mysqli_query($conn, $sql)) {
+    echo &quot;Success&quot;;
+} else {
+    echo &quot;Error: &quot; . mysqli_error($conn);
+}
+
+// 3. close
+mysqli_close($conn);
+?&gt;</code></pre>
+<ul><li><p><code>mysqli_connect(host, user, password, database)</code>: on XAMPP the user is usually <code>root</code> with an empty password.</p></li><li><p><code>die()</code> prints the message and stops the script.</p></li><li><p>To <strong>create a database</strong>, connect with only the first three arguments (no database yet).</p></li></ul>
+<h3 id="create-database-and-table">Create database and table</h3>
+<pre><code class="language-php">$sql = &quot;CREATE DATABASE myDB&quot;;
+
+$sql = &quot;CREATE TABLE MyGuests (
+    id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    firstname VARCHAR(30) NOT NULL,
+    lastname VARCHAR(30) NOT NULL,
+    email VARCHAR(50),
+    reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+)&quot;;</code></pre>
+<table><thead><tr><th>Attribute</th><th>Meaning</th></tr></thead><tbody><tr><td>NOT NULL</td><td>Every row must have a value</td></tr><tr><td>DEFAULT</td><td>Value used when none is given</td></tr><tr><td>UNSIGNED</td><td>Only 0 and positive numbers</td></tr><tr><td>AUTO_INCREMENT</td><td>MySQL adds 1 for each new row</td></tr><tr><td>PRIMARY KEY</td><td>Unique id for each row (often with AUTO_INCREMENT)</td></tr></tbody></table>
+<h3 id="insert">Insert</h3>
+<p>Rules: the SQL is in quotes in PHP, <strong>string values</strong> inside it use single quotes, <strong>numbers and NULL</strong> have no quotes. You don&#39;t give <code>id</code> or <code>reg_date</code>; MySQL fills them.</p>
+<pre><code class="language-php">$sql = &quot;INSERT INTO MyGuests (firstname, lastname, email)
+VALUES (&#39;John&#39;, &#39;Doe&#39;, &#39;john@example.com&#39;)&quot;;
+if (mysqli_query($conn, $sql)) {
+    $last_id = mysqli_insert_id($conn);
+    echo &quot;New record created successfully. Last inserted ID is: &quot; . $last_id;
+}</code></pre>
+<p>Output: <code>New record created successfully. Last inserted ID is: 1</code></p>
+<p>Several inserts at once: join them with <code>;</code> and use <strong><code>mysqli_multi_query()</code></strong>:</p>
+<pre><code class="language-php">$sql = &quot;INSERT INTO MyGuests (firstname, lastname, email) VALUES (&#39;Mary&#39;, &#39;Moe&#39;, &#39;mary@example.com&#39;);&quot;;
+$sql .= &quot;INSERT INTO MyGuests (firstname, lastname, email) VALUES (&#39;Julie&#39;, &#39;Dooley&#39;, &#39;julie@example.com&#39;)&quot;;
+mysqli_multi_query($conn, $sql);</code></pre>
+<h3 id="select-with-where-and-order-by">Select (with WHERE and ORDER BY)</h3>
+<pre><code class="language-php">$sql = &quot;SELECT id, firstname, lastname FROM MyGuests&quot;;
+$result = mysqli_query($conn, $sql);
+
+if (mysqli_num_rows($result) &gt; 0) {
+    while ($row = mysqli_fetch_assoc($result)) {
+        echo &quot;id: &quot; . $row[&quot;id&quot;] . &quot; - Name: &quot; . $row[&quot;firstname&quot;] . &quot; &quot; . $row[&quot;lastname&quot;] . &quot;&lt;br&gt;&quot;;
+    }
+} else {
+    echo &quot;0 results&quot;;
+}</code></pre>
+<table><thead><tr><th>SQL</th><th>Output</th></tr></thead><tbody><tr><td><code>SELECT id, firstname, lastname FROM MyGuests</code></td><td>id: 1 - Name: John Doe / id: 2 - Name: Mary Moe / id: 3 - Name: Julie Dooley</td></tr><tr><td><code>... WHERE lastname=&#39;Doe&#39;</code></td><td>id: 1 - Name: John Doe</td></tr><tr><td><code>... ORDER BY lastname</code></td><td>John Doe, Julie Dooley, Mary Moe (A–Z; add DESC for Z–A)</td></tr><tr><td><code>... WHERE lastname=&#39;Smith&#39;</code></td><td>0 results</td></tr></tbody></table>
+<ul><li><p><code>mysqli_fetch_assoc()</code> gives one row as an associative array (<code>$row[&quot;firstname&quot;]</code>), and NULL when there are no more rows, which ends the while loop.</p></li><li><p><code>SELECT *</code> selects all columns.</p></li></ul>
+<h3 id="update-and-delete">Update and delete</h3>
+<pre><code class="language-php">$sql = &quot;UPDATE MyGuests SET lastname=&#39;Doe&#39; WHERE id=2&quot;;   // Record updated successfully
+$sql = &quot;DELETE FROM MyGuests WHERE id=3&quot;;                // Record deleted successfully</code></pre>
+<p><strong>Always use WHERE.</strong> Without it, UPDATE changes every row and DELETE removes every row.</p>
+<h3 id="functions">Functions</h3>
+<table><thead><tr><th>Function</th><th>Does</th></tr></thead><tbody><tr><td><code>mysqli_connect()</code></td><td>Opens the connection</td></tr><tr><td><code>mysqli_connect_error()</code> / <code>mysqli_connect_errno()</code></td><td>Connection error message / code (0 = no error)</td></tr><tr><td><code>mysqli_query($conn, $sql)</code></td><td>Runs SQL: a result for SELECT, true for the others, false on failure</td></tr><tr><td><code>mysqli_multi_query()</code></td><td>Runs several statements separated by <code>;</code></td></tr><tr><td><code>mysqli_error($conn)</code></td><td>Last error message (&quot;&quot; if none)</td></tr><tr><td><code>mysqli_num_rows($result)</code></td><td>Number of rows returned</td></tr><tr><td><code>mysqli_fetch_assoc($result)</code></td><td>Next row as an associative array</td></tr><tr><td><code>mysqli_insert_id($conn)</code></td><td>id of the last inserted row</td></tr><tr><td><code>mysqli_close($conn)</code></td><td>Closes the connection</td></tr></tbody></table>
+<h3 id="prepared-statements">Prepared statements</h3>
+<p>The SQL is sent once with <code>?</code> in place of the values; the values are sent separately. Faster when repeated, and it <strong>protects against SQL injection</strong>. The handout writes this one in object-oriented style:</p>
+<pre><code class="language-php">$conn = new mysqli($servername, $username, $password, $dbname);
+$stmt = $conn-&gt;prepare(&quot;INSERT INTO MyGuests (firstname, lastname, email) VALUES (?, ?, ?)&quot;);
+$stmt-&gt;bind_param(&quot;sss&quot;, $firstname, $lastname, $email);
+
+$firstname = &quot;John&quot;; $lastname = &quot;Doe&quot;; $email = &quot;john@example.com&quot;;
+$stmt-&gt;execute();
+
+$firstname = &quot;Mary&quot;; $lastname = &quot;Moe&quot;; $email = &quot;mary@example.com&quot;;
+$stmt-&gt;execute();
+
+$stmt-&gt;close();
+$conn-&gt;close();</code></pre>
+<p><code>&quot;sss&quot;</code> = one letter per <code>?</code>: <strong>i</strong> integer, <strong>d</strong> double, <strong>s</strong> string, <strong>b</strong> BLOB.</p>
+<h3 id="mixing-php-and-html">Mixing PHP and HTML</h3>
+<ul><li><p><strong>Method 1:</strong> a normal HTML page with <code>&lt;?php ... ?&gt;</code> blocks where needed.</p></li><li><p><strong>Method 2:</strong> print the HTML from PHP with <code>echo</code> or <code>print</code>: <code>echo &quot;&lt;b&gt;My Example&lt;/b&gt;&quot;;</code></p></li></ul>
+<p>Showing database rows in an HTML table:</p>
+<pre><code class="language-php">&lt;table border=&quot;1&quot;&gt;
+&lt;tr&gt;&lt;th&gt;id&lt;/th&gt;&lt;th&gt;firstname&lt;/th&gt;&lt;/tr&gt;
+&lt;?php
+$result = mysqli_query($conn, &quot;SELECT id, firstname FROM MyGuests&quot;);
+if (mysqli_num_rows($result) &gt; 0) {
+    while ($row = mysqli_fetch_assoc($result)) {
+?&gt;
+&lt;tr&gt;
+    &lt;td&gt;&lt;?= $row[&#39;id&#39;] ?&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;?= $row[&#39;firstname&#39;] ?&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;?php
+    }
+} else {
+    echo &quot;no data&quot;;
+}
+?&gt;
+&lt;/table&gt;</code></pre>
+<ul><li><p><code>&lt;?= ... ?&gt;</code> is short for <code>&lt;?php echo ... ?&gt;</code>.</p></li><li><p>The PHP block closes <code>?&gt;</code> inside the loop so each row can be plain HTML, then <code>&lt;?php }</code> reopens it to close the loop.</p></li><li><p>The handout&#39;s version has <code>echo &quot;test1&quot;;</code> and <code>echo &quot;test&quot;;</code> lines: those are just debug checks and can be removed.</p></li></ul>
+<p><strong>PHP 8 note:</strong> a failed query or connection now stops the page with a fatal error (for example &quot;Can&#39;t create database &#39;myDB&#39;; database exists&quot;) instead of reaching the <code>else</code>. Add <code>mysqli_report(MYSQLI_REPORT_OFF);</code> at the top to get the handout&#39;s behavior.</p>
