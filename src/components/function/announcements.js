@@ -177,6 +177,38 @@ const ANNOUNCEMENTS = [
     collection: 'scrapbook',
     data: { kind: 'video', src: `${SITE}progress/retrohub/retrohub-albums.mp4`, tag: 'retrohub', caption: 'RetroHub Albums page redesign: same green scrapbook style as the rest of the app, music first.' },
   },
+  // Warm Rain of Summer update, Nov 12 2026: the Unreal Engine 5.8 C++ port and the new market town.
+  {
+    key: 'warm-rain-ue58-devfeed',
+    collection: 'devfeed_posts',
+    data: {
+      title: 'Warm Rain of Summer is now in Unreal Engine 5.8',
+      body: 'Big move for my game: I moved Warm Rain of Summer from Unity 6 to Unreal Engine 5.8, and it is all C++ now, about 19,500 lines across 48 systems (bike, van, the cat and the dog, the Polaroid album, camping, the journal, day/night and the summer rain). The first town is an Altiplano market street. It used to be grey boxes (first frame) and is now built from Quixel Megascans and Fab assets: plaster and brick facades, awnings, market stalls, power lines, parked cars and buses. Street lamps switch on at dusk, rain brings fog and wet roads, and raising the Polaroid now puts you in first person, like Seasons: A Letter to the Future. The characters stay pixel art. Still to fix: windows, building detail and a few NPCs who think the rooftops are a sidewalk.',
+      tags: ['#UnrealEngine5', '#Cpp', '#GameDev', '#Megascans', '#PixelArt'],
+      media: `${SITE}progress/warm-rain-ue58.gif`,
+      mediaFit: 'full',
+      project: 'WarmRain',
+      likes: 0,
+      likedBy: [],
+      comments: [],
+    },
+  },
+  // Scrapbook shows newest first, so these are created last-to-first.
+  {
+    key: 'warm-rain-ue58-scrap-3',
+    collection: 'scrapbook',
+    data: { kind: 'image', src: `${SITE}progress/warm-rain-market.jpg`, tag: 'warmrain', caption: 'Market stalls, awnings, a bus and parked cars. The pixel-art me rides through on the bike.' },
+  },
+  {
+    key: 'warm-rain-ue58-scrap-2',
+    collection: 'scrapbook',
+    data: { kind: 'image', src: `${SITE}progress/warm-rain-street.jpg`, tag: 'warmrain', caption: 'After: the same street rebuilt with Megascans facades, a real road and street life. Midday in the Altiplano.' },
+  },
+  {
+    key: 'warm-rain-ue58-scrap-1',
+    collection: 'scrapbook',
+    data: { kind: 'image', src: `${SITE}progress/warm-rain-greybox.jpg`, tag: 'warmrain', caption: 'Before: Warm Rain of Summer\'s first town in Unreal 5.8, all grey boxes.' },
+  },
 ];
 
 let running = false;
