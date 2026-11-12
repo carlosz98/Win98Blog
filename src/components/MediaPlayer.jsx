@@ -11,7 +11,7 @@ import '../css/MediaPlayer.css';
 // Add console clips or anything else here and they show up in the playlist.
 export const VIDEOS = [
   { title: 'Office supervisor (cat cam)', src: catVideo },
-  { title: 'Cloud vs Sephiroth (FFVII edit by @izofool)', src: ffviiEdit },
+  { title: 'Final Fantasy my love', src: ffviiEdit },
   { title: 'Carlos’s favorite song (trust me)', youtube: 'dQw4w9WgXcQ' },
 ];
 
