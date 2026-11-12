@@ -1,111 +1,56 @@
 <h2 id="week-8-day-2-thursday-11122026-mysql-with-php-php-tutorial-part-10">Week 8, Day 2 — Thursday 11/12/2026: MySQL with PHP (PHP Tutorial Part 10)</h2>
-<p>No class on Tuesday 11/10. Today: connecting PHP to MySQL and running SQL from PHP. In this class we use <strong>MySQLi (procedural)</strong>.</p>
-<h3 id="mysqli-vs-pdo">MySQLi vs PDO</h3>
-<table><thead><tr><th></th><th>MySQLi</th><th>PDO</th></tr></thead><tbody><tr><td>Databases</td><td>MySQL only</td><td>12 different systems</td></tr><tr><td>Style</td><td>Procedural <strong>and</strong> object-oriented</td><td>Object-oriented only</td></tr><tr><td>Prepared statements</td><td>Yes</td><td>Yes</td></tr></tbody></table>
-<p>The old <code>mysql_</code> extension was deprecated in 2012.</p>
-<h3 id="the-pattern-every-example-uses">The pattern every example uses</h3>
+<p>No class Tuesday 11/10. Today: PHP talks to MySQL with <strong>MySQLi (procedural)</strong>. (PDO works with 12 databases; MySQLi only with MySQL.)</p>
+<h3 id="every-file-connect-query-close">Every file: connect, query, close</h3>
 <pre><code class="language-php">&lt;?php
-$servername = &quot;localhost&quot;;
-$username = &quot;root&quot;;
-$password = &quot;&quot;;
-$dbname = &quot;myDB&quot;;
-
-// 1. connect
-$conn = mysqli_connect($servername, $username, $password, $dbname);
+$conn = mysqli_connect(&quot;localhost&quot;, &quot;root&quot;, &quot;&quot;, &quot;CollegeDB&quot;);
 if (!$conn) {
     die(&quot;Connection failed: &quot; . mysqli_connect_error());
 }
 
-// 2. run the SQL
 $sql = &quot;...&quot;;
 if (mysqli_query($conn, $sql)) {
-    echo &quot;Success&quot;;
+    echo &quot;Done&quot;;
 } else {
     echo &quot;Error: &quot; . mysqli_error($conn);
 }
 
-// 3. close
 mysqli_close($conn);
 ?&gt;</code></pre>
-<ul><li><p><code>mysqli_connect(host, user, password, database)</code>: on XAMPP the user is usually <code>root</code> with an empty password.</p></li><li><p><code>die()</code> prints the message and stops the script.</p></li><li><p>To <strong>create a database</strong>, connect with only the first three arguments (no database yet).</p></li></ul>
-<h3 id="create-database-and-table">Create database and table</h3>
-<pre><code class="language-php">$sql = &quot;CREATE DATABASE myDB&quot;;
-
-$sql = &quot;CREATE TABLE MyGuests (
-    id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    firstname VARCHAR(30) NOT NULL,
-    lastname VARCHAR(30) NOT NULL,
-    email VARCHAR(50),
-    reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-)&quot;;</code></pre>
-<table><thead><tr><th>Attribute</th><th>Meaning</th></tr></thead><tbody><tr><td>NOT NULL</td><td>Every row must have a value</td></tr><tr><td>DEFAULT</td><td>Value used when none is given</td></tr><tr><td>UNSIGNED</td><td>Only 0 and positive numbers</td></tr><tr><td>AUTO_INCREMENT</td><td>MySQL adds 1 for each new row</td></tr><tr><td>PRIMARY KEY</td><td>Unique id for each row (often with AUTO_INCREMENT)</td></tr></tbody></table>
-<h3 id="insert">Insert</h3>
-<p>Rules: the SQL is in quotes in PHP, <strong>string values</strong> inside it use single quotes, <strong>numbers and NULL</strong> have no quotes. You don&#39;t give <code>id</code> or <code>reg_date</code>; MySQL fills them.</p>
-<pre><code class="language-php">$sql = &quot;INSERT INTO MyGuests (firstname, lastname, email)
-VALUES (&#39;John&#39;, &#39;Doe&#39;, &#39;john@example.com&#39;)&quot;;
-if (mysqli_query($conn, $sql)) {
-    $last_id = mysqli_insert_id($conn);
-    echo &quot;New record created successfully. Last inserted ID is: &quot; . $last_id;
-}</code></pre>
-<p>Output: <code>New record created successfully. Last inserted ID is: 1</code></p>
-<p>Several inserts at once: join them with <code>;</code> and use <strong><code>mysqli_multi_query()</code></strong>:</p>
-<pre><code class="language-php">$sql = &quot;INSERT INTO MyGuests (firstname, lastname, email) VALUES (&#39;Mary&#39;, &#39;Moe&#39;, &#39;mary@example.com&#39;);&quot;;
-$sql .= &quot;INSERT INTO MyGuests (firstname, lastname, email) VALUES (&#39;Julie&#39;, &#39;Dooley&#39;, &#39;julie@example.com&#39;)&quot;;
-mysqli_multi_query($conn, $sql);</code></pre>
-<h3 id="select-with-where-and-order-by">Select (with WHERE and ORDER BY)</h3>
-<pre><code class="language-php">$sql = &quot;SELECT id, firstname, lastname FROM MyGuests&quot;;
-$result = mysqli_query($conn, $sql);
-
+<ul><li><p>XAMPP&#39;s MySQL user is <code>root</code> with an empty password.</p></li><li><p><code>die()</code> stops the page if the connection fails, so nothing else runs without a database.</p></li><li><p>To create the database itself, leave out the 4th argument, because it doesn&#39;t exist yet.</p></li></ul>
+<h3 id="reading-rows">Reading rows</h3>
+<pre><code class="language-php">$result = mysqli_query($conn, &quot;SELECT * FROM Students&quot;);
 if (mysqli_num_rows($result) &gt; 0) {
     while ($row = mysqli_fetch_assoc($result)) {
-        echo &quot;id: &quot; . $row[&quot;id&quot;] . &quot; - Name: &quot; . $row[&quot;firstname&quot;] . &quot; &quot; . $row[&quot;lastname&quot;] . &quot;&lt;br&gt;&quot;;
+        echo $row[&quot;firstname&quot;] . &quot; &quot; . $row[&quot;lastname&quot;] . &quot;&lt;br&gt;&quot;;
     }
 } else {
     echo &quot;0 results&quot;;
 }</code></pre>
-<table><thead><tr><th>SQL</th><th>Output</th></tr></thead><tbody><tr><td><code>SELECT id, firstname, lastname FROM MyGuests</code></td><td>id: 1 - Name: John Doe / id: 2 - Name: Mary Moe / id: 3 - Name: Julie Dooley</td></tr><tr><td><code>... WHERE lastname=&#39;Doe&#39;</code></td><td>id: 1 - Name: John Doe</td></tr><tr><td><code>... ORDER BY lastname</code></td><td>John Doe, Julie Dooley, Mary Moe (A–Z; add DESC for Z–A)</td></tr><tr><td><code>... WHERE lastname=&#39;Smith&#39;</code></td><td>0 results</td></tr></tbody></table>
-<ul><li><p><code>mysqli_fetch_assoc()</code> gives one row as an associative array (<code>$row[&quot;firstname&quot;]</code>), and NULL when there are no more rows, which ends the while loop.</p></li><li><p><code>SELECT *</code> selects all columns.</p></li></ul>
-<h3 id="update-and-delete">Update and delete</h3>
-<pre><code class="language-php">$sql = &quot;UPDATE MyGuests SET lastname=&#39;Doe&#39; WHERE id=2&quot;;   // Record updated successfully
-$sql = &quot;DELETE FROM MyGuests WHERE id=3&quot;;                // Record deleted successfully</code></pre>
-<p><strong>Always use WHERE.</strong> Without it, UPDATE changes every row and DELETE removes every row.</p>
+<p>Why a while loop: <code>mysqli_fetch_assoc()</code> gives the next row each time and NULL after the last one, which ends the loop.</p>
 <h3 id="functions">Functions</h3>
-<table><thead><tr><th>Function</th><th>Does</th></tr></thead><tbody><tr><td><code>mysqli_connect()</code></td><td>Opens the connection</td></tr><tr><td><code>mysqli_connect_error()</code> / <code>mysqli_connect_errno()</code></td><td>Connection error message / code (0 = no error)</td></tr><tr><td><code>mysqli_query($conn, $sql)</code></td><td>Runs SQL: a result for SELECT, true for the others, false on failure</td></tr><tr><td><code>mysqli_multi_query()</code></td><td>Runs several statements separated by <code>;</code></td></tr><tr><td><code>mysqli_error($conn)</code></td><td>Last error message (&quot;&quot; if none)</td></tr><tr><td><code>mysqli_num_rows($result)</code></td><td>Number of rows returned</td></tr><tr><td><code>mysqli_fetch_assoc($result)</code></td><td>Next row as an associative array</td></tr><tr><td><code>mysqli_insert_id($conn)</code></td><td>id of the last inserted row</td></tr><tr><td><code>mysqli_close($conn)</code></td><td>Closes the connection</td></tr></tbody></table>
-<h3 id="prepared-statements">Prepared statements</h3>
-<p>The SQL is sent once with <code>?</code> in place of the values; the values are sent separately. Faster when repeated, and it <strong>protects against SQL injection</strong>. The handout writes this one in object-oriented style:</p>
-<pre><code class="language-php">$conn = new mysqli($servername, $username, $password, $dbname);
-$stmt = $conn-&gt;prepare(&quot;INSERT INTO MyGuests (firstname, lastname, email) VALUES (?, ?, ?)&quot;);
-$stmt-&gt;bind_param(&quot;sss&quot;, $firstname, $lastname, $email);
-
-$firstname = &quot;John&quot;; $lastname = &quot;Doe&quot;; $email = &quot;john@example.com&quot;;
-$stmt-&gt;execute();
-
-$firstname = &quot;Mary&quot;; $lastname = &quot;Moe&quot;; $email = &quot;mary@example.com&quot;;
-$stmt-&gt;execute();
-
-$stmt-&gt;close();
-$conn-&gt;close();</code></pre>
-<p><code>&quot;sss&quot;</code> = one letter per <code>?</code>: <strong>i</strong> integer, <strong>d</strong> double, <strong>s</strong> string, <strong>b</strong> BLOB.</p>
-<h3 id="mixing-php-and-html">Mixing PHP and HTML</h3>
-<ul><li><p><strong>Method 1:</strong> a normal HTML page with <code>&lt;?php ... ?&gt;</code> blocks where needed.</p></li><li><p><strong>Method 2:</strong> print the HTML from PHP with <code>echo</code> or <code>print</code>: <code>echo &quot;&lt;b&gt;My Example&lt;/b&gt;&quot;;</code></p></li></ul>
-<p>Showing database rows in an HTML table:</p>
-<pre><code class="language-php">&lt;table border=&quot;1&quot;&gt;
-&lt;tr&gt;&lt;th&gt;id&lt;/th&gt;&lt;th&gt;firstname&lt;/th&gt;&lt;/tr&gt;
-&lt;?php
-$result = mysqli_query($conn, &quot;SELECT id, firstname FROM MyGuests&quot;);
-if (mysqli_num_rows($result) &gt; 0) {
-    while ($row = mysqli_fetch_assoc($result)) {
-?&gt;
-&lt;tr&gt;
-    &lt;td&gt;&lt;?= $row[&#39;id&#39;] ?&gt;&lt;/td&gt;
-    &lt;td&gt;&lt;?= $row[&#39;firstname&#39;] ?&gt;&lt;/td&gt;
-&lt;/tr&gt;
-&lt;?php
-    }
-} else {
-    echo &quot;no data&quot;;
+<table><thead><tr><th>Function</th><th>Does</th></tr></thead><tbody><tr><td><code>mysqli_connect()</code></td><td>Opens the connection</td></tr><tr><td><code>mysqli_query()</code></td><td>Runs SQL: a result for SELECT, true for others</td></tr><tr><td><code>mysqli_multi_query()</code></td><td>Runs several statements joined with <code>;</code></td></tr><tr><td><code>mysqli_num_rows()</code></td><td>How many rows came back</td></tr><tr><td><code>mysqli_fetch_assoc()</code></td><td>Next row as an associative array</td></tr><tr><td><code>mysqli_insert_id()</code></td><td>id of the last inserted row</td></tr><tr><td><code>mysqli_error()</code></td><td>Last error message</td></tr><tr><td><code>mysqli_close()</code></td><td>Closes the connection</td></tr></tbody></table>
+<h3 id="notes">Notes</h3>
+<ul><li><p>In SQL, text uses single quotes (<code>&#39;John&#39;</code>); numbers and NULL don&#39;t.</p></li><li><p>Column options: NOT NULL (required), DEFAULT, UNSIGNED (no negatives), AUTO_INCREMENT (+1 each row), PRIMARY KEY (unique id).</p></li><li><p><strong>Always use WHERE</strong> with UPDATE and DELETE, or every row changes.</p></li><li><p>Prepared statements (<code>?</code> and <code>bind_param(&quot;sss&quot;, ...)</code>; types i/d/s/b) protect against SQL injection.</p></li></ul>
+<h3 id="lab-collegedb">Lab: CollegeDB</h3>
+<p>Each part is its own file using the pattern above. Run them in order.</p>
+<table><thead><tr><th>Part</th><th>File</th><th>SQL</th><th>Result</th></tr></thead><tbody><tr><td>1</td><td>create_database.php</td><td><code>CREATE DATABASE IF NOT EXISTS CollegeDB</code></td><td>Database created successfully</td></tr><tr><td>2</td><td>create_table.php</td><td><code>CREATE TABLE IF NOT EXISTS Students (id INT AUTO_INCREMENT PRIMARY KEY, firstname VARCHAR(30) NOT NULL, lastname VARCHAR(30) NOT NULL, email VARCHAR(50), major VARCHAR(50))</code></td><td>Table Students created successfully</td></tr><tr><td>3</td><td>insert_students.php</td><td><code>INSERT INTO Students (firstname, lastname, email, major) VALUES (&#39;John&#39;, &#39;Smith&#39;, ...), (&#39;Mary&#39;, &#39;Johnson&#39;, ...), ...</code> (5 rows, one INSERT)</td><td>New records inserted successfully</td></tr><tr><td>4</td><td>display_students.php</td><td><code>SELECT id, firstname, lastname, email, major FROM Students</code></td><td>HTML table of the 5 students</td></tr><tr><td>5</td><td>search_students.php</td><td><code>... WHERE major = &#39;Computer Science&#39;</code> and <code>... ORDER BY lastname ASC</code></td><td>A: John Smith, David Brown. B: Brown, Davis, Johnson, Smith, Wilson</td></tr><tr><td>6</td><td>update_student.php</td><td><code>UPDATE Students SET major = &#39;Computer Science&#39; WHERE firstname = &#39;Mary&#39; AND lastname = &#39;Johnson&#39;</code></td><td>Mary Johnson is now Computer Science</td></tr><tr><td>7</td><td>delete_student.php</td><td><code>DELETE FROM Students WHERE email = &#39;james@example.com&#39;</code></td><td>4 students left (James Davis removed)</td></tr></tbody></table>
+<p>Why <code>IF NOT EXISTS</code>: you can run Parts 1 and 2 again without an error.</p>
+<p>The HTML table (Parts 4–7):</p>
+<pre><code class="language-php">echo &quot;&lt;table border=&#39;1&#39;&gt;&quot;;
+echo &quot;&lt;tr&gt;&lt;th&gt;ID&lt;/th&gt;&lt;th&gt;First Name&lt;/th&gt;&lt;th&gt;Last Name&lt;/th&gt;&lt;th&gt;Email&lt;/th&gt;&lt;th&gt;Major&lt;/th&gt;&lt;/tr&gt;&quot;;
+while ($row = mysqli_fetch_assoc($result)) {
+    echo &quot;&lt;tr&gt;&lt;td&gt;{$row[&#39;id&#39;]}&lt;/td&gt;&lt;td&gt;{$row[&#39;firstname&#39;]}&lt;/td&gt;&lt;td&gt;{$row[&#39;lastname&#39;]}&lt;/td&gt;&lt;td&gt;{$row[&#39;email&#39;]}&lt;/td&gt;&lt;td&gt;{$row[&#39;major&#39;]}&lt;/td&gt;&lt;/tr&gt;&quot;;
 }
-?&gt;
-&lt;/table&gt;</code></pre>
-<ul><li><p><code>&lt;?= ... ?&gt;</code> is short for <code>&lt;?php echo ... ?&gt;</code>.</p></li><li><p>The PHP block closes <code>?&gt;</code> inside the loop so each row can be plain HTML, then <code>&lt;?php }</code> reopens it to close the loop.</p></li><li><p>The handout&#39;s version has <code>echo &quot;test1&quot;;</code> and <code>echo &quot;test&quot;;</code> lines: those are just debug checks and can be removed.</p></li></ul>
-<p><strong>PHP 8 note:</strong> a failed query or connection now stops the page with a fatal error (for example &quot;Can&#39;t create database &#39;myDB&#39;; database exists&quot;) instead of reaching the <code>else</code>. Add <code>mysqli_report(MYSQLI_REPORT_OFF);</code> at the top to get the handout&#39;s behavior.</p>
+echo &quot;&lt;/table&gt;&quot;;</code></pre>
+<p><code>{$row[&#39;id&#39;]}</code> puts an array value straight inside a double-quoted string.</p>
+<h3 id="seeing-the-data-phpmyadmin">Seeing the data: phpMyAdmin</h3>
+<p>The PHP pages show the data in your own HTML table. To see what is really stored, open phpMyAdmin (the browser tool that comes with XAMPP):</p>
+<ol><li><p>Start <strong>Apache</strong> and <strong>MySQL</strong> in the XAMPP Control Panel.</p></li><li><p>Go to <code>http://localhost/phpmyadmin</code>.</p></li><li><p>Click <strong>CollegeDB</strong>, then <strong>Students</strong>. <strong>Browse</strong> shows the rows (<code>SELECT * FROM Students</code>).</p></li></ol>
+<p>Useful tabs: <strong>Structure</strong> (the columns and their types), <strong>SQL</strong> (type and run a query), <strong>Insert</strong>, and Edit/Delete on each row. Refresh after each PHP file to see the change.</p>
+<p><strong>Output in phpMyAdmin after Part 3:</strong> CollegeDB → Students → Browse shows the 5 rows that insert_students.php added (&quot;Showing rows 0 - 4 (5 total)&quot;, with ids 1–5 from AUTO_INCREMENT).</p>
+<p><img src="__BASE__class-notes/img/f5dfbb3c9bd267e65746fd875bd651cd.png" loading="lazy" alt="phpMyAdmin showing the Students table in CollegeDB with 5 rows"></p>
+<h3 id="errors-you-can-hit">Errors you can hit</h3>
+<table><thead><tr><th>Error</th><th>Why</th><th>Fix</th></tr></thead><tbody><tr><td>Connection refused</td><td>MySQL isn&#39;t running</td><td>Start MySQL in XAMPP</td></tr><tr><td>Unknown database &#39;CollegeDB&#39;</td><td>Part 1 wasn&#39;t run</td><td>Run create_database.php first</td></tr><tr><td>Table &#39;CollegeDB.Students&#39; doesn&#39;t exist</td><td>Part 2 wasn&#39;t run</td><td>Run create_table.php</td></tr><tr><td>Can&#39;t create database &#39;CollegeDB&#39;; database exists</td><td>Ran Part 1 again without <code>IF NOT EXISTS</code></td><td>Add <code>IF NOT EXISTS</code></td></tr><tr><td>Unknown column &#39;majr&#39; in &#39;WHERE&#39;</td><td>Column name typo</td><td>Match the column names exactly</td></tr><tr><td>10 students instead of 5</td><td>Ran insert_students.php twice</td><td>Delete the extra rows in phpMyAdmin, or empty the table and run it once</td></tr></tbody></table>
+<p>In PHP 8 these show as <strong>Fatal error: Uncaught mysqli_sql_exception: ...</strong> and the page stops, instead of reaching your <code>else</code>.</p>
+<h3 id="part-8-short-answers">Part 8: Short answers</h3>
+<table><thead><tr><th>Question</th><th>Answer</th></tr></thead><tbody><tr><td>Purpose of <code>mysqli_connect()</code>?</td><td>Connects the PHP script to the MySQL server</td></tr><tr><td><code>mysqli_query()</code> vs <code>mysqli_fetch_assoc()</code>?</td><td>query runs the SQL and returns a result; fetch_assoc pulls one row from it as an associative array</td></tr><tr><td>Why AUTO_INCREMENT for id?</td><td>Gives each new row a unique number automatically</td></tr><tr><td>DELETE without WHERE?</td><td>Every row in the table is deleted</td></tr><tr><td>Purpose of <code>mysqli_close()</code>?</td><td>Closes the connection and frees resources</td></tr></tbody></table>

@@ -591,40 +591,36 @@
        "title": "Day 2 — MySQL with PHP",
        "topics": [
         {
-         "id": "mysqli-vs-pdo",
-         "title": "MySQLi vs PDO"
+         "id": "every-file-connect-query-close",
+         "title": "Every file: connect, query, close"
         },
         {
-         "id": "the-pattern-every-example-uses",
-         "title": "The pattern every example uses"
-        },
-        {
-         "id": "create-database-and-table",
-         "title": "Create database and table"
-        },
-        {
-         "id": "insert",
-         "title": "Insert"
-        },
-        {
-         "id": "select-with-where-and-order-by",
-         "title": "Select (with WHERE and ORDER BY)"
-        },
-        {
-         "id": "update-and-delete",
-         "title": "Update and delete"
+         "id": "reading-rows",
+         "title": "Reading rows"
         },
         {
          "id": "functions",
          "title": "Functions"
         },
         {
-         "id": "prepared-statements",
-         "title": "Prepared statements"
+         "id": "notes",
+         "title": "Notes"
         },
         {
-         "id": "mixing-php-and-html",
-         "title": "Mixing PHP and HTML"
+         "id": "lab-collegedb",
+         "title": "Lab: CollegeDB"
+        },
+        {
+         "id": "seeing-the-data-phpmyadmin",
+         "title": "Seeing the data: phpMyAdmin"
+        },
+        {
+         "id": "errors-you-can-hit",
+         "title": "Errors you can hit"
+        },
+        {
+         "id": "part-8-short-answers",
+         "title": "Part 8: Short answers"
         }
        ]
       }
