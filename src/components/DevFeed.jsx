@@ -28,6 +28,7 @@ const PROJECTS = [
   { name: 'ECommerce',   color: '#8a3a6a', emoji: '🛍️' },
   { name: 'PetHomeVet',  color: '#c0392b', emoji: '🩺' },
   { name: 'MP3Wizard',   color: '#4a2a8a', emoji: '🧙' },
+  { name: 'VoiceOfDesert', color: '#b8742a', emoji: '🌵' },
 ];
 
 const SHARE_URL = 'https://github.com/carlosz98';

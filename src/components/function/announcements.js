@@ -209,6 +209,58 @@ const ANNOUNCEMENTS = [
     collection: 'scrapbook',
     data: { kind: 'image', src: `${SITE}progress/warm-rain-greybox.jpg`, tag: 'warmrain', caption: 'Before: Warm Rain of Summer\'s first town in Unreal 5.8, all grey boxes.' },
   },
+  // Voice of the Desert, Nov 12 2026: the bilingual media site Carlos is building for Felipe Lerma.
+  {
+    key: 'vod-devfeed',
+    collection: 'devfeed_posts',
+    data: {
+      title: 'Voice of the Desert: a website for Felipe Lerma',
+      body: 'New client project! La Voz del Desierto / Voice of the Desert is a bilingual media site I\'m building for Felipe Lerma from Chihuahua, Mexico: his videos, the music he grew up with (rancheras, boleros, norteñas), news with his commentary and his own podcast. It opens in Spanish with an EN/ES switch. Since the first demo I added a page for every section and every news story, a daily Bible verse over a desert sunrise that you can save as an image, a Bible reader with real page flips, a next-episode countdown, Chihuahua time and weather in the top bar, WhatsApp sharing, a bigger-text button, a hidden panel where Felipe signs in to post, and a new sunset footer with the title tucked behind the mesas. Built with React, Vite, Tailwind and Framer Motion. It\'s still a demo with sample content until Felipe sends his real stories and songs. See it live at carlosz98.github.io/voice-of-the-desert',
+      tags: ['#React', '#Tailwind', '#FramerMotion', '#WebDev', '#Bilingual'],
+      media: `${SITE}progress/vod/voice-of-the-desert.gif`,
+      mediaFit: 'full',
+      project: 'VoiceOfDesert',
+      likes: 0,
+      likedBy: [],
+      comments: [],
+    },
+  },
+  // Scrapbook shows newest first, so these are created last-to-first.
+  {
+    key: 'vod-scrap-6',
+    collection: 'scrapbook',
+    data: { kind: 'image', src: `${SITE}progress/vod/vod-footer.jpg`, tag: 'voiceofdesert', caption: 'New footer: a desert sunset with the title hiding behind the mesas.' },
+  },
+  {
+    key: 'vod-scrap-5',
+    collection: 'scrapbook',
+    data: { kind: 'image', src: `${SITE}progress/vod/vod-verse.jpg`, tag: 'voiceofdesert', caption: 'A Bible verse every day over a desert sunrise. Save it as an image or share it on WhatsApp.' },
+  },
+  {
+    key: 'vod-scrap-4',
+    collection: 'scrapbook',
+    data: { kind: 'image', src: `${SITE}progress/vod/vod-podcast.jpg`, tag: 'voiceofdesert', caption: "Voces del mundo, Felipe's podcast, with a countdown to the next episode." },
+  },
+  {
+    key: 'vod-scrap-3',
+    collection: 'scrapbook',
+    data: { kind: 'image', src: `${SITE}progress/vod/vod-music.jpg`, tag: 'voiceofdesert', caption: 'The music page: rancheras, boleros and norteñas with a little player.' },
+  },
+  {
+    key: 'vod-scrap-2',
+    collection: 'scrapbook',
+    data: { kind: 'image', src: `${SITE}progress/vod/vod-news.jpg`, tag: 'voiceofdesert', caption: "Ecos del camino: news from Chihuahua and the world, with Felipe's take on each story." },
+  },
+  {
+    key: 'vod-scrap-1',
+    collection: 'scrapbook',
+    data: { kind: 'image', src: `${SITE}progress/vod/vod-home.jpg`, tag: 'voiceofdesert', caption: 'La Voz del Desierto, the home page. Videos, music, news and a podcast, all in one place.' },
+  },
+  {
+    key: 'vod-scrap-gif',
+    collection: 'scrapbook',
+    data: { kind: 'image', src: `${SITE}progress/vod/voice-of-the-desert.gif`, tag: 'voiceofdesert', caption: 'New project: a bilingual website for Felipe Lerma from Chihuahua, Mexico. A quick tour.' },
+  },
 ];
 
 let running = false;
