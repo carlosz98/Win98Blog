@@ -101,22 +101,14 @@ function NewsApp() {
         getUserLocation();
     }, [tileScreen]);
 
-    // Without location access, show New York City (Carlos's home) instead of nothing.
+    // Weather shows New York City (Carlos's home).
     function showDefaultCity() {
         fetchWeatherAndCity(40.7128, -74.006, 'New York');
     }
 
+    // Always New York: asking visitors for their location felt weird (Carlos, Nov 2026).
     function getUserLocation() {
-        if (!navigator.geolocation) { showDefaultCity(); return; }
-        navigator.geolocation.getCurrentPosition(
-            (pos) => {
-                const lat = pos.coords.latitude;
-                const lon = pos.coords.longitude;
-                fetchWeatherAndCity(lat, lon);
-            },
-            showDefaultCity,
-            { timeout: 8000 }
-        );
+        showDefaultCity();
     }
 
     function fetchWeatherAndCity(lat, lon, knownCity) {

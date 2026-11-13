@@ -16,6 +16,7 @@ import Shutdown from './components/Shutdown';
 import MineSweeper from './components/MineSweeper'
 import MsnFolder from './components/MsnFolder';
 import iconInfo from './icon.json'
+import { FOLDER_OF, DESKTOP_FOLDERS } from './components/function/desktopLayout';
 import Login from './components/Login';
 import OpenProject from './components/OpenProject';
 import WindowsShutdown from './components/WindowsShutdown';
@@ -56,11 +57,9 @@ import { showBusyCursor } from './components/function/retroEffects';
 import MatrixRain from './components/MatrixRain';
 import Screensaver from './components/Screensaver';
 import BlueScreen from './components/BlueScreen';
-import VisitorCounter from './components/VisitorCounter';
 import Guestbook from './components/Guestbook';
 import GuestbookPrompt from './components/GuestbookPrompt';
 import PaintGallery from './components/PaintGallery';
-import VisitorMap from './components/VisitorMap';
 import JokeFile from './components/JokeFile';
 import { JOKE_FILES } from './components/function/jokeFiles';
 import { startupOnFirstGesture, playOpen, playError, playShutdown } from './components/function/sounds';
@@ -221,7 +220,6 @@ function App() {
   const [mediaPlayerShow, setMediaPlayerShow] = useState(false);
   const [specsShow, setSpecsShow] = useState(false);
   const [autorunShow, setAutorunShow] = useState(false);
-  const [mapShow, setMapShow] = useState(false);
   const [jokeFile, setJokeFile] = useState(null);
 
   // System sounds: startup chime once the desktop shows, plus error and shutdown.
@@ -279,7 +277,7 @@ function App() {
 
   const [desktopIcon, setDesktopIcon] = useState(() => {
   const localItems = localStorage.getItem('icons');
-  const deleteIcon = ['Cat', 'AiAgent','Paint','3dObject','IE'];
+  const deleteIcon = ['Cat', 'AiAgent','Paint','3dObject','IE','Visitor Map'];
   const filteredItems = iconInfo.filter(item => !deleteIcon.includes(item.name));
   const rememberKnown = () => {
     try { localStorage.setItem('iconsKnown', JSON.stringify(iconInfo.map(i => i.name))); } catch { /* ignore */ }
@@ -321,8 +319,13 @@ function App() {
     if (winamp && !updated.some(i => i.name === 'Winamp') && !missing.includes(winamp)) missing.push(winamp);
     try { localStorage.setItem('winampBack', '1'); } catch { /* ignore */ }
   }
-  const merged = [...updated, ...missing];
-  if (missing.length || !movedMineSweeper || updated.length !== saved.length) {
+  // Nov 2026: the desktop keeps only the main icons; everything else goes back in its folder.
+  let refiled = false;
+  const merged = [...updated, ...missing].map(icon => {
+    if (FOLDER_OF[icon.name] && icon.folderId === 'Desktop') { refiled = true; return { ...icon, folderId: FOLDER_OF[icon.name] }; }
+    return icon;
+  });
+  if (refiled || missing.length || !movedMineSweeper || updated.length !== saved.length) {
     try { localStorage.setItem('icons', JSON.stringify(merged)); } catch { /* ignore */ }
   }
   rememberKnown();
@@ -350,6 +353,16 @@ function App() {
   const [UtilityExpand, setUtilityExpand] = useState(
     {expand: false, show: false, hide: false, focusItem: true, x: 0, y: 0, zIndex: 1,});
   
+  const [GamesExpand, setGamesExpand] = useState(
+    {expand: false, show: false, hide: false, focusItem: true, x: 0, y: 0, zIndex: 1,});
+  const [OnlineExpand, setOnlineExpand] = useState(
+    {expand: false, show: false, hide: false, focusItem: true, x: 0, y: 0, zIndex: 1,});
+  const [ProgramsExpand, setProgramsExpand] = useState(
+    {expand: false, show: false, hide: false, focusItem: true, x: 0, y: 0, zIndex: 1,});
+  const GamesRef = useRef(null)
+  const OnlineRef = useRef(null)
+  const ProgramsRef = useRef(null)
+
   const [PatchExpand, setPatchExpand] = useState(
     {expand: false, show: false, hide: false, focusItem: true, x: 0, y: 0, zIndex: 1,});
   
@@ -408,10 +421,6 @@ function App() {
   const allClears = [ClearTOclippyThanksYouFunction, ClearTOclippySendemailfunction, ClearTOSongfunction, ClearTOclippyUsernameFunction];
 
   useEffect(() => {
-    setTimeout(() => {
-      handleShow('Patch');
-    }, 2500);
-    
     if(!desktopIcon.find(icon => icon.name === 'MyComputer')) {
       localStorage.clear();
       location.reload();
@@ -669,6 +678,15 @@ const handleOnDrag = (name, ref, type) => () => {
         }
       }
     }
+    const builtInFolders = [['Games', GamesRef], ['Online', OnlineRef], ['Programs', ProgramsRef]];
+    for (const [folder, folderRef] of builtInFolders) {
+      const r = folderRef.current?.getBoundingClientRect();
+      if (r && iconRect.left < r.right - offset && iconRect.right > r.left + offset && iconRect.top < r.bottom - offset && iconRect.bottom > r.top + offset) {
+        if (name === folder) continue;
+        setDropTargetFolder(folder);
+        return;
+      }
+    }
     if (iconRect.left < UtilityRect.right - offset && iconRect.right > UtilityRect.left + offset && iconRect.top < UtilityRect.bottom - offset && iconRect.bottom > UtilityRect.top + offset) {
       if(name === 'Utility') return;
       setDropTargetFolder('Utility');
@@ -691,7 +709,7 @@ const handleOnDrag = (name, ref, type) => () => {
     }
     else if (iconRect.left < diskRect.right - offset && iconRect.right > diskRect.left + offset && iconRect.top < diskRect.bottom - offset && iconRect.bottom > diskRect.top + offset) { 
       if (name === 'MyComputer') return;
-      const validFolders = ['DiskC', 'DiskD', 'Resume', 'Project', 'Picture', 'RecycleBin', 'Utility', ...UserCreatedFolder.map(item => item.name)];
+      const validFolders = ['DiskC', 'DiskD', 'Resume', 'Project', 'Picture', 'RecycleBin', 'Utility', ...Object.keys(DESKTOP_FOLDERS), ...UserCreatedFolder.map(item => item.name)];
       if (validFolders.includes(currentFolder)) { setDropTargetFolder(currentFolder); }
     }
     else if (iconRect.left < desktopRect.right && iconRect.right > desktopRect.left && iconRect.top < desktopRect.bottom && iconRect.bottom > desktopRect.top) {
@@ -926,7 +944,6 @@ function handleShowInfolderMobile(name, type) {
       <Screensaver/>
       <BlueScreen/>
       <Tooltip/>
-      <VisitorCounter/>
       {regErrorPopUp && (
         <ErrorBtn
             themeDragBar={themeDragBar}
@@ -961,6 +978,9 @@ function handleShowInfolderMobile(name, type) {
         <EmptyFolder state={pictureExpand} setState={setPictureExpand} refState={PictureRef} folderName='Picture' />
         <EmptyFolder state={BinExpand} setState={setBinExpand} refState={BinRef} folderName='RecycleBin' />
         <EmptyFolder state={UtilityExpand} setState={setUtilityExpand} refState={UtilityRef} folderName='Utility' />
+        <EmptyFolder state={GamesExpand} setState={setGamesExpand} refState={GamesRef} folderName='Games' />
+        <EmptyFolder state={OnlineExpand} setState={setOnlineExpand} refState={OnlineRef} folderName='Online' />
+        <EmptyFolder state={ProgramsExpand} setState={setProgramsExpand} refState={ProgramsRef} folderName='Programs' />
         <EmptyFolder state={photoOpenExpand} setState={setPhotoOpenExpand} folderName='Photo' photoMode={true} />
 
         <AppIcons/>
@@ -997,7 +1017,6 @@ function handleShowInfolderMobile(name, type) {
         <MediaPlayer show={mediaPlayerShow} setShow={setMediaPlayerShow}/>
         <SystemSpecs show={specsShow} setShow={setSpecsShow}/>
         <Autorun show={autorunShow} setShow={setAutorunShow}/>
-        <VisitorMap show={mapShow} setShow={setMapShow} />
         <JokeFile name={jokeFile} setName={setJokeFile} />
         <Dragdrop/>
         <Footer/>
@@ -1174,6 +1193,9 @@ function handleShowInfolderMobile(name, type) {
       { name: 'RecycleBin',  setter: setBinExpand,        usestate: BinExpand,        color: 'rgba(64, 135, 66, 0.85)', size: 'small' },
       { name: 'Paint',       setter: setPaintExpand,      usestate: PaintExpand,      color: 'rgba(193, 178, 46, 0.85)', size: 'small' },
       { name: 'Utility',     setter: setUtilityExpand,    usestate: UtilityExpand,    color: 'rgba(116, 85, 54, 0.85)', size: 'small' },
+      { name: 'Games',       setter: setGamesExpand,      usestate: GamesExpand,      color: 'rgba(46, 125, 50, 0.85)', size: 'small' },
+      { name: 'Online',      setter: setOnlineExpand,     usestate: OnlineExpand,     color: 'rgba(21, 101, 192, 0.85)', size: 'small' },
+      { name: 'Programs',    setter: setProgramsExpand,   usestate: ProgramsExpand,   color: 'rgba(106, 27, 154, 0.85)', size: 'small' },
       { name: 'TaskManager', setter: setTaskManagerExpand,usestate: TaskManagerExpand,color: 'rgba(218, 160, 109, 0.85)', size: 'small' },
       { name: 'Store',       setter: setStoreExpand,      usestate: StoreExpand,      color: 'rgba(132, 140, 207, 0.85)', size: 'small' },
       { name: 'Bitcoin',     setter: setBtcShow,          usestate: btcShow,          color: 'rgba(132, 140, 207, 0.85)', size: 'small' },
@@ -1464,7 +1486,7 @@ if(webGameName(lowerCaseName)) {
   }
 
   // Hourglass for a moment, and Clippy comments the first time each app opens.
-  // Paint Gallery, Visitor Map and the Recycle Bin joke files. Returns true if it opened one.
+  // Paint Gallery and the Recycle Bin joke files. Returns true if it opened one.
   // Opens any link in the Internet Explorer window (Cool Sites, IE Favorites).
   function openInIE(url) {
     setProjectUrl(url);
@@ -1477,7 +1499,6 @@ if(webGameName(lowerCaseName)) {
     const joke = Object.keys(JOKE_FILES).find(k => k.toLowerCase() === lowerCaseName);
     if (joke) setJokeFile(joke);
     else if (lowerCaseName === 'paintgallery') setGalleryShow(true);
-    else if (lowerCaseName === 'visitormap') setMapShow(true);
     else if (lowerCaseName === 'scrapbook') setScrapbookShow(true);
     else if (lowerCaseName === 'coolsites') setCoolSitesShow(true);
     else if (lowerCaseName === 'classnotes') setClassNotesShow(true);
