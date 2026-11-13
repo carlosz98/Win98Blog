@@ -159,7 +159,7 @@ const TOPICS = [
     id: 'community',
     words: ['guestbook', 'sign', 'gallery', 'paint', 'draw'],
     reply: () => ({
-      text: "You can sign the Guestbook, and draw something for the Paint Gallery. The Guestbook is in the Internet folder and the Paint Gallery is in Programs, both on the desktop!",
+      text: "You can sign the Guestbook, and draw something for the Paint Gallery. Both are on the desktop!",
       actions: [{ label: 'Guestbook', open: 'Guestbook' }, { label: 'Paint Gallery', open: 'Paint Gallery' }],
     }),
   },
