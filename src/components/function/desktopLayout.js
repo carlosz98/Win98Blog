@@ -2,19 +2,23 @@
 // visit and window size (visitors can still drag icons around; a refresh puts them back).
 // Each inner array is one column, top to bottom, ordered by what matters most to a visitor.
 export const DESKTOP_COLUMNS = [
-  // 1. The main stuff (Nov 2026: Carlos simplified the desktop)
-  ['Project', 'Blog', 'DevFeed', 'Scrapbook', 'About', 'Resume'],
-  // 2. Everything else lives in these folders
-  ['MyComputer', 'Games', 'Online', 'Programs'],
+  // 1. The main stuff
+  ['Project', 'Blog', 'DevFeed', 'Scrapbook', 'About', 'Resume', 'MyComputer'],
+  // 2. Sign it, read it, explore it
+  ['Games', 'Guestbook', 'Class Notes', 'Magazine', 'Cool Sites', 'Paint Gallery', 'Mail'],
+  // 3. Music and extras
+  ['Media Player', 'Winamp', 'MSN', 'TheOldNet', 'Ko-fi', 'My Specs', 'Portfolio'],
+  // 4. Links and the shop
+  ['Clasicos', 'Store'],
 ];
 
 // Desktop folders and the programs inside them. Every load puts these programs back in their
 // folder (like the fixed desktop layout above), so all visitors see the same tidy desktop.
+// Nov 2026: Carlos kept only the Games folder; the Online and Programs folders were dropped.
 export const DESKTOP_FOLDERS = {
   Games: ['Solitaire', 'MineSweeper', 'Doom', 'Space Invaders', 'Pinball'],
-  Online: ['TheOldNet', 'Clasicos', 'Ko-fi', 'Cool Sites', 'Portfolio', 'Guestbook', 'Mail', 'MSN'],
-  Programs: ['Winamp', 'Media Player', 'Magazine', 'Paint Gallery', 'Class Notes', 'My Specs', 'Store'],
 };
+export const REMOVED_FOLDERS = ['Online', 'Programs'];
 
 export const FOLDER_OF = Object.fromEntries(
   Object.entries(DESKTOP_FOLDERS).flatMap(([folder, names]) => names.map(name => [name, folder]))

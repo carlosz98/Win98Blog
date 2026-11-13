@@ -16,7 +16,7 @@ import Shutdown from './components/Shutdown';
 import MineSweeper from './components/MineSweeper'
 import MsnFolder from './components/MsnFolder';
 import iconInfo from './icon.json'
-import { FOLDER_OF, DESKTOP_FOLDERS } from './components/function/desktopLayout';
+import { FOLDER_OF, DESKTOP_FOLDERS, REMOVED_FOLDERS } from './components/function/desktopLayout';
 import Login from './components/Login';
 import OpenProject from './components/OpenProject';
 import WindowsShutdown from './components/WindowsShutdown';
@@ -277,7 +277,7 @@ function App() {
 
   const [desktopIcon, setDesktopIcon] = useState(() => {
   const localItems = localStorage.getItem('icons');
-  const deleteIcon = ['Cat', 'AiAgent','Paint','3dObject','IE','Visitor Map'];
+  const deleteIcon = ['Cat', 'AiAgent','Paint','3dObject','IE','Visitor Map', ...REMOVED_FOLDERS];
   const filteredItems = iconInfo.filter(item => !deleteIcon.includes(item.name));
   const rememberKnown = () => {
     try { localStorage.setItem('iconsKnown', JSON.stringify(iconInfo.map(i => i.name))); } catch { /* ignore */ }
@@ -323,6 +323,7 @@ function App() {
   let refiled = false;
   const merged = [...updated, ...missing].map(icon => {
     if (FOLDER_OF[icon.name] && icon.folderId === 'Desktop') { refiled = true; return { ...icon, folderId: FOLDER_OF[icon.name] }; }
+    if (REMOVED_FOLDERS.includes(icon.folderId)) { refiled = true; return { ...icon, folderId: 'Desktop' }; }
     return icon;
   });
   if (refiled || missing.length || !movedMineSweeper || updated.length !== saved.length) {
@@ -355,13 +356,7 @@ function App() {
   
   const [GamesExpand, setGamesExpand] = useState(
     {expand: false, show: false, hide: false, focusItem: true, x: 0, y: 0, zIndex: 1,});
-  const [OnlineExpand, setOnlineExpand] = useState(
-    {expand: false, show: false, hide: false, focusItem: true, x: 0, y: 0, zIndex: 1,});
-  const [ProgramsExpand, setProgramsExpand] = useState(
-    {expand: false, show: false, hide: false, focusItem: true, x: 0, y: 0, zIndex: 1,});
   const GamesRef = useRef(null)
-  const OnlineRef = useRef(null)
-  const ProgramsRef = useRef(null)
 
   const [PatchExpand, setPatchExpand] = useState(
     {expand: false, show: false, hide: false, focusItem: true, x: 0, y: 0, zIndex: 1,});
@@ -678,7 +673,7 @@ const handleOnDrag = (name, ref, type) => () => {
         }
       }
     }
-    const builtInFolders = [['Games', GamesRef], ['Online', OnlineRef], ['Programs', ProgramsRef]];
+    const builtInFolders = [['Games', GamesRef]];
     for (const [folder, folderRef] of builtInFolders) {
       const r = folderRef.current?.getBoundingClientRect();
       if (r && iconRect.left < r.right - offset && iconRect.right > r.left + offset && iconRect.top < r.bottom - offset && iconRect.bottom > r.top + offset) {
@@ -979,8 +974,6 @@ function handleShowInfolderMobile(name, type) {
         <EmptyFolder state={BinExpand} setState={setBinExpand} refState={BinRef} folderName='RecycleBin' />
         <EmptyFolder state={UtilityExpand} setState={setUtilityExpand} refState={UtilityRef} folderName='Utility' />
         <EmptyFolder state={GamesExpand} setState={setGamesExpand} refState={GamesRef} folderName='Games' />
-        <EmptyFolder state={OnlineExpand} setState={setOnlineExpand} refState={OnlineRef} folderName='Online' />
-        <EmptyFolder state={ProgramsExpand} setState={setProgramsExpand} refState={ProgramsRef} folderName='Programs' />
         <EmptyFolder state={photoOpenExpand} setState={setPhotoOpenExpand} folderName='Photo' photoMode={true} />
 
         <AppIcons/>
@@ -1194,8 +1187,6 @@ function handleShowInfolderMobile(name, type) {
       { name: 'Paint',       setter: setPaintExpand,      usestate: PaintExpand,      color: 'rgba(193, 178, 46, 0.85)', size: 'small' },
       { name: 'Utility',     setter: setUtilityExpand,    usestate: UtilityExpand,    color: 'rgba(116, 85, 54, 0.85)', size: 'small' },
       { name: 'Games',       setter: setGamesExpand,      usestate: GamesExpand,      color: 'rgba(46, 125, 50, 0.85)', size: 'small' },
-      { name: 'Online',      setter: setOnlineExpand,     usestate: OnlineExpand,     color: 'rgba(21, 101, 192, 0.85)', size: 'small' },
-      { name: 'Programs',    setter: setProgramsExpand,   usestate: ProgramsExpand,   color: 'rgba(106, 27, 154, 0.85)', size: 'small' },
       { name: 'TaskManager', setter: setTaskManagerExpand,usestate: TaskManagerExpand,color: 'rgba(218, 160, 109, 0.85)', size: 'small' },
       { name: 'Store',       setter: setStoreExpand,      usestate: StoreExpand,      color: 'rgba(132, 140, 207, 0.85)', size: 'small' },
       { name: 'Bitcoin',     setter: setBtcShow,          usestate: btcShow,          color: 'rgba(132, 140, 207, 0.85)', size: 'small' },
