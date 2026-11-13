@@ -2,7 +2,7 @@
     {
         "name": "MSN",
         "pic": "MSN",
-        "folderId": "Desktop",
+        "folderId": "Online",
         "size": 1500,
         "type": ".exe",
         "x": 6,
@@ -47,9 +47,36 @@
         "y": 3
     },
     {
+        "name": "Games",
+        "pic": "Games",
+        "folderId": "Desktop",
+        "size": 500,
+        "type": "folder",
+        "x": 3,
+        "y": 3
+    },
+    {
+        "name": "Online",
+        "pic": "Online",
+        "folderId": "Desktop",
+        "size": 800,
+        "type": "folder",
+        "x": 3,
+        "y": 3
+    },
+    {
+        "name": "Programs",
+        "pic": "Programs",
+        "folderId": "Desktop",
+        "size": 700,
+        "type": "folder",
+        "x": 3,
+        "y": 3
+    },
+    {
         "name": "Mail",
         "pic": "Mail",
-        "folderId": "Desktop",
+        "folderId": "Online",
         "size": 12,
         "type": ".exe",
         "x": 4,
@@ -57,11 +84,10 @@
         "category": "Productivity",
         "description": "Email client for sending and receiving emails."
     },
-    
     {
         "name": "Solitaire",
         "pic": "Solitaire",
-        "folderId": "Desktop",
+        "folderId": "Games",
         "size": 150,
         "type": ".exe",
         "x": 58,
@@ -94,7 +120,7 @@
     {
         "name": "Portfolio",
         "pic": "Portfolio",
-        "folderId": "Desktop",
+        "folderId": "Online",
         "size": 120,
         "type": ".exe",
         "x": 56,
@@ -106,7 +132,7 @@
     {
         "name": "Winamp",
         "pic": "Winamp",
-        "folderId": "Desktop",
+        "folderId": "Programs",
         "size": 4300,
         "type": ".exe",
         "x": 7,
@@ -371,7 +397,7 @@
     {
         "name": "Store",
         "pic": "Store",
-        "folderId": "Desktop",
+        "folderId": "Programs",
         "size": 5500,
         "type": ".exe",
         "x": 39,
@@ -389,7 +415,7 @@
     {
         "name": "MineSweeper",
         "pic": "MineSweeper",
-        "folderId": "Desktop",
+        "folderId": "Games",
         "size": 250,
         "type": ".exe",
         "x": 5,
@@ -656,212 +682,202 @@
         "category": "Python",
         "description": "Windows app that turns Spotify playlists into tagged MP3s with album art for the Zune, built with Python and PyQt6.",
         "url": "https://github.com/carlosz98/the-mp3-wizard"
+    },
+    {
+        "name": "TheOldNet",
+        "pic": "TheOldNet",
+        "folderId": "Online",
+        "size": 100,
+        "type": ".exe",
+        "x": 57,
+        "y": 57,
+        "category": "Web",
+        "description": "Browse the old internet — websites as they looked in the 90s",
+        "url": "https://webring.theoldnet.com/"
+    },
+    {
+        "name": "Clasicos",
+        "pic": "Clasicos",
+        "folderId": "Online",
+        "size": 100,
+        "type": ".exe",
+        "x": 58,
+        "y": 58,
+        "category": "Web",
+        "description": "Clasicos Basicos",
+        "url": "https://www.clasicosbasicos.org/"
+    },
+    {
+        "name": "Ko-fi",
+        "pic": "Kofi",
+        "folderId": "Online",
+        "size": 100,
+        "type": ".exe",
+        "x": 59,
+        "y": 59,
+        "category": "Web",
+        "description": "Buy Carlos a coffee on Ko-fi",
+        "url": "https://ko-fi.com/carloszabala"
+    },
+    {
+        "name": "Guestbook",
+        "pic": "Guestbook",
+        "folderId": "Online",
+        "size": 20,
+        "type": ".txt",
+        "x": 60,
+        "y": 60,
+        "description": "Sign Carlos's guestbook"
+    },
+    {
+        "name": "Paint Gallery",
+        "pic": "Gallery",
+        "folderId": "Programs",
+        "size": 20,
+        "type": ".exe",
+        "x": 61,
+        "y": 61,
+        "description": "Draw something and post it to the gallery"
+    },
+    {
+        "name": "old_code",
+        "pic": "NotePad",
+        "folderId": "RecycleBin",
+        "size": 1,
+        "type": ".js",
+        "x": 63,
+        "y": 63
+    },
+    {
+        "name": "bugs",
+        "pic": "NotePad",
+        "folderId": "RecycleBin",
+        "size": 1,
+        "type": ".txt",
+        "x": 64,
+        "y": 64
+    },
+    {
+        "name": "my_site",
+        "pic": "NotePad",
+        "folderId": "RecycleBin",
+        "size": 1,
+        "type": ".html",
+        "x": 65,
+        "y": 65
+    },
+    {
+        "name": "excuses",
+        "pic": "NotePad",
+        "folderId": "RecycleBin",
+        "size": 1,
+        "type": ".txt",
+        "x": 66,
+        "y": 66
+    },
+    {
+        "name": "passwords",
+        "pic": "NotePad",
+        "folderId": "RecycleBin",
+        "size": 1,
+        "type": ".txt",
+        "x": 67,
+        "y": 67
+    },
+    {
+        "name": "Doom",
+        "pic": "Doom",
+        "folderId": "Games",
+        "size": 2400,
+        "type": ".exe",
+        "x": 61,
+        "y": 61,
+        "category": "Games",
+        "description": "DOOM (shareware episode), running on the Internet Archive",
+        "url": "https://archive.org/details/DoomsharewareEpisode"
+    },
+    {
+        "name": "Space Invaders",
+        "pic": "SpaceInvaders",
+        "folderId": "Games",
+        "size": 120,
+        "type": ".exe",
+        "x": 62,
+        "y": 62,
+        "category": "Games",
+        "description": "The 1978 arcade classic, running on the Internet Archive",
+        "url": "https://archive.org/details/arcade_invaders"
+    },
+    {
+        "name": "Pinball",
+        "pic": "Pinball",
+        "folderId": "Games",
+        "size": 1800,
+        "type": ".exe",
+        "x": 63,
+        "y": 63,
+        "category": "Games",
+        "description": "3D Pinball Space Cadet, in the browser",
+        "url": "https://pinball.alula.me/"
+    },
+    {
+        "name": "Scrapbook",
+        "pic": "Scrapbook",
+        "folderId": "Desktop",
+        "size": 300,
+        "type": ".exe",
+        "x": 64,
+        "y": 64,
+        "description": "Photos, GIFs and videos from Carlos"
+    },
+    {
+        "name": "Magazine",
+        "pic": "Magazine",
+        "folderId": "Programs",
+        "size": 300,
+        "type": ".exe",
+        "x": 64,
+        "y": 64,
+        "description": "Carlos Monthly: a 3D magazine of retro game posters"
+    },
+    {
+        "name": "Class Notes",
+        "pic": "ClassNotes",
+        "folderId": "Programs",
+        "size": 300,
+        "type": ".exe",
+        "x": 64,
+        "y": 64,
+        "description": "Carlos's class notes, organized by class"
+    },
+    {
+        "name": "Cool Sites",
+        "pic": "CoolSites",
+        "folderId": "Online",
+        "size": 300,
+        "type": ".exe",
+        "x": 64,
+        "y": 64,
+        "description": "Carlos's favorite sites, shrines and web buttons"
+    },
+    {
+        "name": "Media Player",
+        "pic": "MediaPlayer",
+        "folderId": "Programs",
+        "size": 300,
+        "type": ".exe",
+        "x": 64,
+        "y": 64,
+        "description": "Watch Carlos's videos in Windows Media Player"
+    },
+    {
+        "name": "My Specs",
+        "pic": "MySpecs",
+        "folderId": "Programs",
+        "size": 300,
+        "type": ".exe",
+        "x": 64,
+        "y": 64,
+        "description": "The specs of Carlos's real PC"
     }
-    ,{
-    "name": "TheOldNet",
-    "pic": "TheOldNet",
-    "folderId": "Desktop",
-    "size": 100,
-    "type": ".exe",
-    "x": 57,
-    "y": 57,
-    "category": "Web",
-    "description": "Browse the old internet — websites as they looked in the 90s",
-    "url": "https://webring.theoldnet.com/"
-},
-{
-    "name": "Clasicos",
-    "pic": "Clasicos",
-    "folderId": "Desktop",
-    "size": 100,
-    "type": ".exe",
-    "x": 58,
-    "y": 58,
-    "category": "Web",
-    "description": "Clasicos Basicos",
-    "url": "https://www.clasicosbasicos.org/"
-},
-{
-    "name": "Ko-fi",
-    "pic": "Kofi",
-    "folderId": "Desktop",
-    "size": 100,
-    "type": ".exe",
-    "x": 59,
-    "y": 59,
-    "category": "Web",
-    "description": "Buy Carlos a coffee on Ko-fi",
-    "url": "https://ko-fi.com/carloszabala"
-},
-{
-    "name": "Guestbook",
-    "pic": "Guestbook",
-    "folderId": "Desktop",
-    "size": 20,
-    "type": ".txt",
-    "x": 60,
-    "y": 60,
-    "description": "Sign Carlos's guestbook"
-},
-{
-    "name": "Paint Gallery",
-    "pic": "Gallery",
-    "folderId": "Desktop",
-    "size": 20,
-    "type": ".exe",
-    "x": 61,
-    "y": 61,
-    "description": "Draw something and post it to the gallery"
-},
-{
-    "name": "Visitor Map",
-    "pic": "WorldMap",
-    "folderId": "Desktop",
-    "size": 20,
-    "type": ".exe",
-    "x": 62,
-    "y": 62,
-    "description": "Where visitors come from"
-},
-{
-    "name": "old_code",
-    "pic": "NotePad",
-    "folderId": "RecycleBin",
-    "size": 1,
-    "type": ".js",
-    "x": 63,
-    "y": 63
-},
-{
-    "name": "bugs",
-    "pic": "NotePad",
-    "folderId": "RecycleBin",
-    "size": 1,
-    "type": ".txt",
-    "x": 64,
-    "y": 64
-},
-{
-    "name": "my_site",
-    "pic": "NotePad",
-    "folderId": "RecycleBin",
-    "size": 1,
-    "type": ".html",
-    "x": 65,
-    "y": 65
-},
-{
-    "name": "excuses",
-    "pic": "NotePad",
-    "folderId": "RecycleBin",
-    "size": 1,
-    "type": ".txt",
-    "x": 66,
-    "y": 66
-},
-{
-    "name": "passwords",
-    "pic": "NotePad",
-    "folderId": "RecycleBin",
-    "size": 1,
-    "type": ".txt",
-    "x": 67,
-    "y": 67
-},
-{
-    "name": "Doom",
-    "pic": "Doom",
-    "folderId": "Desktop",
-    "size": 2400,
-    "type": ".exe",
-    "x": 61,
-    "y": 61,
-    "category": "Games",
-    "description": "DOOM (shareware episode), running on the Internet Archive",
-    "url": "https://archive.org/details/DoomsharewareEpisode"
-},
-{
-    "name": "Space Invaders",
-    "pic": "SpaceInvaders",
-    "folderId": "Desktop",
-    "size": 120,
-    "type": ".exe",
-    "x": 62,
-    "y": 62,
-    "category": "Games",
-    "description": "The 1978 arcade classic, running on the Internet Archive",
-    "url": "https://archive.org/details/arcade_invaders"
-},
-{
-    "name": "Pinball",
-    "pic": "Pinball",
-    "folderId": "Desktop",
-    "size": 1800,
-    "type": ".exe",
-    "x": 63,
-    "y": 63,
-    "category": "Games",
-    "description": "3D Pinball Space Cadet, in the browser",
-    "url": "https://pinball.alula.me/"
-},
-{
-    "name": "Scrapbook",
-    "pic": "Scrapbook",
-    "folderId": "Desktop",
-    "size": 300,
-    "type": ".exe",
-    "x": 64,
-    "y": 64,
-    "description": "Photos, GIFs and videos from Carlos"
-},
-{
-    "name": "Magazine",
-    "pic": "Magazine",
-    "folderId": "Desktop",
-    "size": 300,
-    "type": ".exe",
-    "x": 64,
-    "y": 64,
-    "description": "Carlos Monthly: a 3D magazine of retro game posters"
-},
-{
-    "name": "Class Notes",
-    "pic": "ClassNotes",
-    "folderId": "Desktop",
-    "size": 300,
-    "type": ".exe",
-    "x": 64,
-    "y": 64,
-    "description": "Carlos's class notes, organized by class"
-},
-{
-    "name": "Cool Sites",
-    "pic": "CoolSites",
-    "folderId": "Desktop",
-    "size": 300,
-    "type": ".exe",
-    "x": 64,
-    "y": 64,
-    "description": "Carlos's favorite sites, shrines and web buttons"
-},
-{
-    "name": "Media Player",
-    "pic": "MediaPlayer",
-    "folderId": "Desktop",
-    "size": 300,
-    "type": ".exe",
-    "x": 64,
-    "y": 64,
-    "description": "Watch Carlos's videos in Windows Media Player"
-},
-{
-    "name": "My Specs",
-    "pic": "MySpecs",
-    "folderId": "Desktop",
-    "size": 300,
-    "type": ".exe",
-    "x": 64,
-    "y": 64,
-    "description": "The specs of Carlos's real PC"
-}
 ]

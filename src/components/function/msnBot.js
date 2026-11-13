@@ -137,7 +137,7 @@ const TOPICS = [
     id: 'site',
     words: ['site', 'website', 'this page', 'how was', 'how did', 'made this', 'windows 98', 'win98', 'vite', 'source'],
     reply: () => ({
-      text: "This site is a Windows 98 desktop running in your browser, built with React and Vite. The guestbook, gallery and visitor map use Firebase, and the music player is Webamp.",
+      text: "This site is a Windows 98 desktop running in your browser, built with React and Vite. The guestbook, gallery, DevFeed and Scrapbook use Firebase, and the music player is Webamp.",
       actions: [{ label: 'Source on GitHub', url: 'https://github.com/carlosz98/Win98Blog' }],
       more: "Secrets: try typing \"matrix\", \"bsod\" or \"screensaver\" in Start > Run. You didn't hear it from me.",
     }),
@@ -157,9 +157,9 @@ const TOPICS = [
   },
   {
     id: 'community',
-    words: ['guestbook', 'sign', 'gallery', 'paint', 'draw', 'map', 'visitor'],
+    words: ['guestbook', 'sign', 'gallery', 'paint', 'draw'],
     reply: () => ({
-      text: "You can sign the Guestbook, draw something for the Paint Gallery, and see where visitors come from on the Visitor Map. All on the desktop!",
+      text: "You can sign the Guestbook, and draw something for the Paint Gallery. The Guestbook is in the Internet folder and the Paint Gallery is in Programs, both on the desktop!",
       actions: [{ label: 'Guestbook', open: 'Guestbook' }, { label: 'Paint Gallery', open: 'Paint Gallery' }],
     }),
   },
