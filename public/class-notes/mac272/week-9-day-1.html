@@ -73,6 +73,8 @@ if (mysqli_query($conn, $sql)) {
 mysqli_close($conn);
 ?&gt;</code></pre>
 <p>Output: <code>Database created successfully</code>, <code>Table users created successfully</code>, <code>Table feedback created successfully</code>, <code>Sample users inserted successfully</code>. Run it <strong>once</strong>: running it again adds the 6 users a second time (same as the CollegeDB lab).</p>
+<p><strong>Output (localhost/hw3/setup.php):</strong></p>
+<p><img src="__BASE__class-notes/img/a2cc11cf5aa4844783016954ae964cb8.png" loading="lazy" alt="setup.php output: database, both tables and sample users created"></p>
 <h3 id="part-1-searchphp">Part 1: search.php</h3>
 <pre><code class="language-php">&lt;!DOCTYPE html&gt;
 &lt;html&gt;
@@ -127,6 +129,10 @@ if (isset($_GET[&quot;search&quot;])) {
 ?&gt;
 &lt;/body&gt;
 &lt;/html&gt;</code></pre>
+<p><strong>Output (search for maria):</strong></p>
+<p><img src="__BASE__class-notes/img/8898d810cc45050034c98fd5e982c060.png" loading="lazy" alt="search.php results for maria: two Maria Garcia rows, ids 6 and 12"></p>
+<p>Why Maria shows up twice (ids 6 and 12): setup.php was run twice, so the 6 users were inserted again as ids 7–12. The search itself is correct. To clean it up, run this in phpMyAdmin (<strong>Assignment3DB → SQL</strong>), then search again and only id 6 shows:</p>
+<pre><code class="language-sql">DELETE FROM users WHERE id &gt; 6;</code></pre>
 <h3 id="part-2-feedbackphp">Part 2: feedback.php</h3>
 <pre><code class="language-php">&lt;?php
 $message = &quot;&quot;;
@@ -186,6 +192,9 @@ if ($_SERVER[&quot;REQUEST_METHOD&quot;] == &quot;POST&quot;) {
 &lt;p&gt;&lt;?php echo $message; ?&gt;&lt;/p&gt;
 &lt;/body&gt;
 &lt;/html&gt;</code></pre>
+<p><strong>Output (after Send Feedback):</strong></p>
+<p><img src="__BASE__class-notes/img/0b0d1f3fd8719b9aec6d708d002542c7.png" loading="lazy" alt="feedback.php after sending: Thank you! Your feedback was saved."></p>
+<p>The message shows under the form, and the new row is in <strong>Assignment3DB → feedback → Browse</strong> in phpMyAdmin.</p>
 <h3 id="why-its-written-this-way">Why it&#39;s written this way</h3>
 <ul><li><p><strong><code>LIKE &#39;%$search%&#39;</code>:</strong> <code>%</code> means &quot;anything here&quot;, so on both sides it finds the text anywhere in the name (partial match). Inside double quotes, <code>$search</code> is replaced by what the user typed.</p></li><li><p><strong>Search uses GET</strong> (can be bookmarked, changes nothing). <strong>Feedback uses POST</strong> (saves data).</p></li><li><p><strong>Feedback uses the Part 10 prepared statement</strong> (<code>prepare</code>, <code>bind_param(&quot;sss&quot;, ...)</code>, <code>execute</code>). Why: feedback is free text, and an apostrophe like <code>It&#39;s great</code> would break a normal <code>&#39;$feedback&#39;</code> INSERT. With <code>?</code> the text is sent separately, so any characters work and SQL injection is blocked.</p></li><li><p><strong>Validation from Lesson 8:</strong> <code>trim()</code>, <code>empty()</code> and <code>filter_var(..., FILTER_VALIDATE_EMAIL)</code> before saving.</p></li><li><p><strong><code>htmlspecialchars()</code></strong> when printing the search term back on the page.</p></li></ul>
 <h3 id="output-tested">Output (tested)</h3>
