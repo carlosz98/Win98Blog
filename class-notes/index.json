@@ -656,6 +656,10 @@
         {
          "id": "run-it",
          "title": "Run it"
+        },
+        {
+         "id": "lab-php-mysql-login-system-collegelogindb-100-points",
+         "title": "Lab: PHP MySQL Login System (CollegeLoginDB, 100 points)"
         }
        ]
       }
