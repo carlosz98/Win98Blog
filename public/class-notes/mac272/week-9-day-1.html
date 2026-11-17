@@ -1,0 +1,195 @@
+<h2 id="week-9-day-1-tuesday-11172026-assignment-3-search-and-feedback-with-mysql">Week 9, Day 1 — Tuesday 11/17/2026: Assignment 3 (Search and Feedback with MySQL)</h2>
+<p><strong>Assignment 3 (100 points):</strong></p>
+<ol><li><p><strong>Search page:</strong> create a <code>users</code> table, insert some rows, and make a PHP page that searches it with a <strong>LIKE</strong> query (partial matching of names).</p></li><li><p><strong>Feedback page:</strong> a form (name, email, feedback, Send Feedback) that saves everything into a <code>feedback</code> table.</p></li></ol>
+<p>Three files: <code>setup.php</code> (run once), <code>search.php</code>, <code>feedback.php</code>. Only things from class: mysqli procedural, forms, validation, and the Part 10 prepared statement.</p>
+<p><strong>The order (always the same with a database):</strong></p>
+<ol><li><p><strong>Start Apache and MySQL</strong> in XAMPP. Nothing connects without MySQL running.</p></li><li><p><strong>Create the database</strong> (<code>CREATE DATABASE</code>): connect with 3 arguments, because the database doesn&#39;t exist yet.</p></li><li><p><strong>Create the tables</strong> (<code>CREATE TABLE</code>): connect with 4 arguments, now that the database exists. Tables go inside a database.</p></li><li><p><strong>Insert the data</strong> (<code>INSERT INTO</code>): rows go inside a table, so the table must exist first.</p></li><li><p><strong>Use the pages</strong>: search (<code>SELECT ... LIKE</code>) and feedback (<code>INSERT</code> from the form).</p></li><li><p><strong>Check the data</strong> in phpMyAdmin.</p></li></ol>
+<p>Steps 2–4 are all in <code>setup.php</code>, in that order. Doing them out of order gives <em>Unknown database</em> or <em>Table doesn&#39;t exist</em>.</p>
+<h3 id="setupphp">setup.php</h3>
+<pre><code class="language-php">&lt;?php
+$servername = &quot;localhost&quot;;
+$username = &quot;root&quot;;
+$password = &quot;&quot;;
+
+// 1. Create the database
+$conn = mysqli_connect($servername, $username, $password);
+if (!$conn) {
+    die(&quot;Connection failed: &quot; . mysqli_connect_error());
+}
+$sql = &quot;CREATE DATABASE IF NOT EXISTS Assignment3DB&quot;;
+if (mysqli_query($conn, $sql)) {
+    echo &quot;Database created successfully&lt;br&gt;&quot;;
+} else {
+    echo &quot;Error creating database: &quot; . mysqli_error($conn) . &quot;&lt;br&gt;&quot;;
+}
+mysqli_close($conn);
+
+// 2. Connect to the new database
+$conn = mysqli_connect($servername, $username, $password, &quot;Assignment3DB&quot;);
+if (!$conn) {
+    die(&quot;Connection failed: &quot; . mysqli_connect_error());
+}
+
+// 3. users table (Part 1)
+$sql = &quot;CREATE TABLE IF NOT EXISTS users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    firstname VARCHAR(30) NOT NULL,
+    lastname VARCHAR(30) NOT NULL,
+    email VARCHAR(50)
+)&quot;;
+if (mysqli_query($conn, $sql)) {
+    echo &quot;Table users created successfully&lt;br&gt;&quot;;
+} else {
+    echo &quot;Error creating table: &quot; . mysqli_error($conn) . &quot;&lt;br&gt;&quot;;
+}
+
+// 4. feedback table (Part 2)
+$sql = &quot;CREATE TABLE IF NOT EXISTS feedback (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    email VARCHAR(50) NOT NULL,
+    message TEXT NOT NULL
+)&quot;;
+if (mysqli_query($conn, $sql)) {
+    echo &quot;Table feedback created successfully&lt;br&gt;&quot;;
+} else {
+    echo &quot;Error creating table: &quot; . mysqli_error($conn) . &quot;&lt;br&gt;&quot;;
+}
+
+// 5. Insert sample users
+$sql = &quot;INSERT INTO users (firstname, lastname, email) VALUES
+(&#39;John&#39;, &#39;Smith&#39;, &#39;john@example.com&#39;),
+(&#39;Mary&#39;, &#39;Johnson&#39;, &#39;mary@example.com&#39;),
+(&#39;David&#39;, &#39;Brown&#39;, &#39;david@example.com&#39;),
+(&#39;Sara&#39;, &#39;Wilson&#39;, &#39;sara@example.com&#39;),
+(&#39;James&#39;, &#39;Davis&#39;, &#39;james@example.com&#39;),
+(&#39;Maria&#39;, &#39;Garcia&#39;, &#39;maria@example.com&#39;)&quot;;
+if (mysqli_query($conn, $sql)) {
+    echo &quot;Sample users inserted successfully&lt;br&gt;&quot;;
+} else {
+    echo &quot;Error inserting users: &quot; . mysqli_error($conn) . &quot;&lt;br&gt;&quot;;
+}
+
+mysqli_close($conn);
+?&gt;</code></pre>
+<p>Output: <code>Database created successfully</code>, <code>Table users created successfully</code>, <code>Table feedback created successfully</code>, <code>Sample users inserted successfully</code>. Run it <strong>once</strong>: running it again adds the 6 users a second time (same as the CollegeDB lab).</p>
+<h3 id="part-1-searchphp">Part 1: search.php</h3>
+<pre><code class="language-php">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Search Research&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Search Research&lt;/h1&gt;
+&lt;form method=&quot;GET&quot; action=&quot;search.php&quot;&gt;
+    Search Term: &lt;input type=&quot;text&quot; name=&quot;search&quot;&gt;
+    &lt;input type=&quot;submit&quot; value=&quot;Search&quot;&gt;
+&lt;/form&gt;
+
+&lt;?php
+if (isset($_GET[&quot;search&quot;])) {
+    $search = trim($_GET[&quot;search&quot;]);
+
+    if (empty($search)) {
+        echo &quot;&lt;p&gt;Please enter a search term.&lt;/p&gt;&quot;;
+    } else {
+        $conn = mysqli_connect(&quot;localhost&quot;, &quot;root&quot;, &quot;&quot;, &quot;Assignment3DB&quot;);
+        if (!$conn) {
+            die(&quot;Connection failed: &quot; . mysqli_connect_error());
+        }
+
+        // LIKE with % on both sides = partial match anywhere in the name
+        $sql = &quot;SELECT id, firstname, lastname, email FROM users
+                WHERE firstname LIKE &#39;%$search%&#39; OR lastname LIKE &#39;%$search%&#39;&quot;;
+        $result = mysqli_query($conn, $sql);
+
+        echo &quot;&lt;h3&gt;Results for \&quot;&quot; . htmlspecialchars($search) . &quot;\&quot;&lt;/h3&gt;&quot;;
+
+        if (mysqli_num_rows($result) &gt; 0) {
+            echo &quot;&lt;table border=&#39;1&#39; cellpadding=&#39;5&#39;&gt;&quot;;
+            echo &quot;&lt;tr&gt;&lt;th&gt;ID&lt;/th&gt;&lt;th&gt;First Name&lt;/th&gt;&lt;th&gt;Last Name&lt;/th&gt;&lt;th&gt;Email&lt;/th&gt;&lt;/tr&gt;&quot;;
+            while ($row = mysqli_fetch_assoc($result)) {
+                echo &quot;&lt;tr&gt;&quot;;
+                echo &quot;&lt;td&gt;&quot; . $row[&quot;id&quot;] . &quot;&lt;/td&gt;&quot;;
+                echo &quot;&lt;td&gt;&quot; . $row[&quot;firstname&quot;] . &quot;&lt;/td&gt;&quot;;
+                echo &quot;&lt;td&gt;&quot; . $row[&quot;lastname&quot;] . &quot;&lt;/td&gt;&quot;;
+                echo &quot;&lt;td&gt;&quot; . $row[&quot;email&quot;] . &quot;&lt;/td&gt;&quot;;
+                echo &quot;&lt;/tr&gt;&quot;;
+            }
+            echo &quot;&lt;/table&gt;&quot;;
+        } else {
+            echo &quot;&lt;p&gt;No results found.&lt;/p&gt;&quot;;
+        }
+
+        mysqli_close($conn);
+    }
+}
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<h3 id="part-2-feedbackphp">Part 2: feedback.php</h3>
+<pre><code class="language-php">&lt;?php
+$message = &quot;&quot;;
+
+if ($_SERVER[&quot;REQUEST_METHOD&quot;] == &quot;POST&quot;) {
+    $name = trim($_POST[&quot;name&quot;]);
+    $email = trim($_POST[&quot;email&quot;]);
+    $feedback = trim($_POST[&quot;feedback&quot;]);
+
+    if (empty($name) || empty($email) || empty($feedback)) {
+        $message = &quot;Please fill in all the fields.&quot;;
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $message = &quot;Please enter a valid email address.&quot;;
+    } else {
+        // prepared statement, same as the Part 10 handout
+        $conn = new mysqli(&quot;localhost&quot;, &quot;root&quot;, &quot;&quot;, &quot;Assignment3DB&quot;);
+        if ($conn-&gt;connect_error) {
+            die(&quot;Connection failed: &quot; . $conn-&gt;connect_error);
+        }
+
+        $stmt = $conn-&gt;prepare(&quot;INSERT INTO feedback (name, email, message) VALUES (?, ?, ?)&quot;);
+        $stmt-&gt;bind_param(&quot;sss&quot;, $name, $email, $feedback);
+
+        if ($stmt-&gt;execute()) {
+            $message = &quot;Thank you! Your feedback was saved.&quot;;
+        } else {
+            $message = &quot;Error: &quot; . $stmt-&gt;error;
+        }
+
+        $stmt-&gt;close();
+        $conn-&gt;close();
+    }
+}
+?&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Customer Feedback&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Customer Feedback&lt;/h1&gt;
+&lt;p&gt;Please tell us what you think.&lt;/p&gt;
+
+&lt;form method=&quot;POST&quot; action=&quot;feedback.php&quot;&gt;
+    &lt;b&gt;Your name:&lt;/b&gt;&lt;br&gt;
+    &lt;input type=&quot;text&quot; name=&quot;name&quot; size=&quot;40&quot;&gt;&lt;br&gt;&lt;br&gt;
+
+    &lt;b&gt;Your email address:&lt;/b&gt;&lt;br&gt;
+    &lt;input type=&quot;text&quot; name=&quot;email&quot; size=&quot;40&quot;&gt;&lt;br&gt;&lt;br&gt;
+
+    &lt;b&gt;Your feedback:&lt;/b&gt;&lt;br&gt;
+    &lt;textarea name=&quot;feedback&quot; rows=&quot;10&quot; cols=&quot;45&quot;&gt;&lt;/textarea&gt;&lt;br&gt;&lt;br&gt;
+
+    &lt;input type=&quot;submit&quot; value=&quot;Send Feedback&quot;&gt;
+&lt;/form&gt;
+
+&lt;p&gt;&lt;?php echo $message; ?&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<h3 id="why-its-written-this-way">Why it&#39;s written this way</h3>
+<ul><li><p><strong><code>LIKE &#39;%$search%&#39;</code>:</strong> <code>%</code> means &quot;anything here&quot;, so on both sides it finds the text anywhere in the name (partial match). Inside double quotes, <code>$search</code> is replaced by what the user typed.</p></li><li><p><strong>Search uses GET</strong> (can be bookmarked, changes nothing). <strong>Feedback uses POST</strong> (saves data).</p></li><li><p><strong>Feedback uses the Part 10 prepared statement</strong> (<code>prepare</code>, <code>bind_param(&quot;sss&quot;, ...)</code>, <code>execute</code>). Why: feedback is free text, and an apostrophe like <code>It&#39;s great</code> would break a normal <code>&#39;$feedback&#39;</code> INSERT. With <code>?</code> the text is sent separately, so any characters work and SQL injection is blocked.</p></li><li><p><strong>Validation from Lesson 8:</strong> <code>trim()</code>, <code>empty()</code> and <code>filter_var(..., FILTER_VALIDATE_EMAIL)</code> before saving.</p></li><li><p><strong><code>htmlspecialchars()</code></strong> when printing the search term back on the page.</p></li></ul>
+<h3 id="output-tested">Output (tested)</h3>
+<table><thead><tr><th>Test</th><th>Result</th></tr></thead><tbody><tr><td>Search <code>mar</code></td><td>Mary Johnson, Maria Garcia</td></tr><tr><td>Search <code>zzz</code></td><td>No results found.</td></tr><tr><td>Search blank</td><td>Please enter a search term.</td></tr><tr><td>Feedback: Carlos, carlos@example.com, Great class!</td><td>Thank you! Your feedback was saved. (new row in <code>feedback</code>)</td></tr><tr><td>Feedback: Ana, ana@example.com, It&#39;s great</td><td>Thank you! Your feedback was saved. (the apostrophe works)</td></tr><tr><td>Feedback with blank fields</td><td>Please fill in all the fields.</td></tr><tr><td>Feedback with email <code>ana@</code></td><td>Please enter a valid email address.</td></tr></tbody></table>
+<p>Limit to know: the search uses a normal query, so typing an apostrophe in the search box (like <code>O&#39;Neil</code>) breaks the SQL and shows a fatal error. The prepared-statement version would fix that, but it uses functions we haven&#39;t covered yet.</p>
+<h3 id="run-it">Run it</h3>
+<ol><li><p>Start Apache and MySQL in XAMPP.</p></li><li><p>Put the 3 files in <code>htdocs/assignment3/</code>.</p></li><li><p>Open <code>localhost/assignment3/setup.php</code> once.</p></li><li><p>Use <code>localhost/assignment3/search.php</code> and <code>localhost/assignment3/feedback.php</code>.</p></li><li><p>Check saved feedback in phpMyAdmin: <strong>Assignment3DB → feedback → Browse</strong>.</p></li></ol>
