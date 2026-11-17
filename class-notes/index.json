@@ -627,6 +627,41 @@
      ]
     },
     {
+     "title": "Week 9",
+     "pages": [
+      {
+       "slug": "week-9-day-1",
+       "title": "Day 1 — Assignment 3 (search and feedback)",
+       "topics": [
+        {
+         "id": "setupphp",
+         "title": "setup.php"
+        },
+        {
+         "id": "part-1-searchphp",
+         "title": "Part 1: search.php"
+        },
+        {
+         "id": "part-2-feedbackphp",
+         "title": "Part 2: feedback.php"
+        },
+        {
+         "id": "why-its-written-this-way",
+         "title": "Why it's written this way"
+        },
+        {
+         "id": "output-tested",
+         "title": "Output (tested)"
+        },
+        {
+         "id": "run-it",
+         "title": "Run it"
+        }
+       ]
+      }
+     ]
+    },
+    {
      "title": "Project 1",
      "pages": [
       {
