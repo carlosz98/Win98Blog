@@ -205,3 +205,228 @@ if ($_SERVER[&quot;REQUEST_METHOD&quot;] == &quot;POST&quot;) {
 <p>Limit to know: the search uses a normal query, so typing an apostrophe in the search box (like <code>O&#39;Neil</code>) breaks the SQL and shows a fatal error. The prepared-statement version would fix that, but it uses functions we haven&#39;t covered yet.</p>
 <h3 id="run-it">Run it</h3>
 <ol><li><p>Start Apache and MySQL in XAMPP.</p></li><li><p>Put the 3 files in <code>htdocs/assignment3/</code>.</p></li><li><p>Open <code>localhost/assignment3/setup.php</code> once.</p></li><li><p>Use <code>localhost/assignment3/search.php</code> and <code>localhost/assignment3/feedback.php</code>.</p></li><li><p>Check saved feedback in phpMyAdmin: <strong>Assignment3DB → feedback → Browse</strong>.</p></li></ol>
+<h3 id="lab-php-mysql-login-system-collegelogindb-100-points">Lab: PHP MySQL Login System (CollegeLoginDB, 100 points)</h3>
+<p>Register, log in, see a protected welcome page, remember the username with a cookie, and log out. Uses everything so far: forms (POST), MySQL, prepared statements, sessions and cookies. New today: <strong><code>password_hash()</code> / <code>password_verify()</code></strong> and <strong><code>session_regenerate_id()</code></strong>.</p>
+<p><strong>The order:</strong></p>
+<ol><li><p>Start Apache and MySQL.</p></li><li><p><code>create_database.php</code> → database.</p></li><li><p><code>create_table.php</code> → Users table.</p></li><li><p><code>register.html</code> → <code>insert_user.php</code> → a user row (password saved as a hash).</p></li><li><p><code>login.html</code> → <code>login.php</code> → session + cookie → <code>welcome.php</code>.</p></li><li><p><code>check_cookie.php</code>, then <code>logout.php</code>.</p></li></ol>
+<p>Folder: <code>htdocs/CollegeLogin/</code> with the 9 files below.</p>
+<p><strong>create_database.php</strong></p>
+<pre><code class="language-php">&lt;?php
+$servername = &quot;localhost&quot;;
+$username = &quot;root&quot;;
+$password = &quot;&quot;;
+
+$conn = mysqli_connect($servername, $username, $password);
+if (!$conn) {
+    die(&quot;Connection failed: &quot; . mysqli_connect_error());
+}
+
+$sql = &quot;CREATE DATABASE IF NOT EXISTS CollegeLoginDB&quot;;
+if (mysqli_query($conn, $sql)) {
+    echo &quot;Database CollegeLoginDB created successfully!&quot;;
+} else {
+    echo &quot;Error creating database: &quot; . mysqli_error($conn);
+}
+
+mysqli_close($conn);
+?&gt;</code></pre>
+<p><strong>create_table.php</strong></p>
+<pre><code class="language-php">&lt;?php
+$conn = mysqli_connect(&quot;localhost&quot;, &quot;root&quot;, &quot;&quot;, &quot;CollegeLoginDB&quot;);
+if (!$conn) {
+    die(&quot;Connection failed: &quot; . mysqli_connect_error());
+}
+
+$sql = &quot;CREATE TABLE IF NOT EXISTS Users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    password VARCHAR(255) NOT NULL
+)&quot;;
+
+if (mysqli_query($conn, $sql)) {
+    echo &quot;Table Users created successfully!&quot;;
+} else {
+    echo &quot;Error creating table: &quot; . mysqli_error($conn);
+}
+
+mysqli_close($conn);
+?&gt;</code></pre>
+<p><code>UNIQUE</code> stops two users with the same username. <code>VARCHAR(255)</code> because a password hash is 60+ characters.</p>
+<p><strong>register.html</strong></p>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Register&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h2&gt;Register&lt;/h2&gt;
+&lt;form action=&quot;insert_user.php&quot; method=&quot;POST&quot;&gt;
+    Username: &lt;input type=&quot;text&quot; name=&quot;username&quot;&gt;&lt;br&gt;&lt;br&gt;
+    Email: &lt;input type=&quot;text&quot; name=&quot;email&quot;&gt;&lt;br&gt;&lt;br&gt;
+    Password: &lt;input type=&quot;password&quot; name=&quot;password&quot;&gt;&lt;br&gt;&lt;br&gt;
+    &lt;input type=&quot;submit&quot; value=&quot;Register&quot;&gt;
+&lt;/form&gt;
+&lt;p&gt;&lt;a href=&quot;login.html&quot;&gt;Already registered? Log in&lt;/a&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p><strong>insert_user.php</strong></p>
+<pre><code class="language-php">&lt;?php
+// 1. Connect to CollegeLoginDB
+$conn = new mysqli(&quot;localhost&quot;, &quot;root&quot;, &quot;&quot;, &quot;CollegeLoginDB&quot;);
+if ($conn-&gt;connect_error) {
+    die(&quot;Connection failed: &quot; . $conn-&gt;connect_error);
+}
+
+// 2. Read the form values
+$username = trim($_POST[&quot;username&quot;]);
+$email = trim($_POST[&quot;email&quot;]);
+$password = $_POST[&quot;password&quot;];
+
+// 3. No blank fields
+if (empty($username) || empty($email) || empty($password)) {
+    echo &quot;All fields are required.&quot;;
+} else {
+    // Is the username already taken?
+    $stmt = $conn-&gt;prepare(&quot;SELECT id FROM Users WHERE username = ?&quot;);
+    $stmt-&gt;bind_param(&quot;s&quot;, $username);
+    $stmt-&gt;execute();
+    $result = $stmt-&gt;get_result();
+
+    if ($result-&gt;num_rows &gt; 0) {
+        echo &quot;Username already exists.&quot;;
+    } else {
+        // 4. Hash the password
+        $hashed = password_hash($password, PASSWORD_DEFAULT);
+
+        // 5. Insert with a prepared statement
+        $stmt = $conn-&gt;prepare(&quot;INSERT INTO Users (username, email, password) VALUES (?, ?, ?)&quot;);
+        $stmt-&gt;bind_param(&quot;sss&quot;, $username, $email, $hashed);
+
+        // 6. Message
+        if ($stmt-&gt;execute()) {
+            echo &quot;Registration successful!&quot;;
+        } else {
+            echo &quot;Error: &quot; . $stmt-&gt;error;
+        }
+    }
+    $stmt-&gt;close();
+}
+
+$conn-&gt;close();
+?&gt;
+&lt;p&gt;&lt;a href=&quot;login.html&quot;&gt;Go to login&lt;/a&gt;&lt;/p&gt;</code></pre>
+<ul><li><p><strong>Why check the username first:</strong> in PHP 8 a duplicate INSERT on a UNIQUE column stops the page with a fatal error. Checking with SELECT first lets us print <code>Username already exists.</code></p></li><li><p><strong><code>get_result()</code></strong> turns the prepared SELECT into a normal result, so <code>num_rows</code> and <code>fetch_assoc()</code> work like in class.</p></li><li><p><strong><code>password_hash()</code></strong> saves something like <code>$2y$10$...</code> (60 characters), never the real password.</p></li></ul>
+<p><strong>login.html</strong></p>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Login&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h2&gt;Login&lt;/h2&gt;
+&lt;form action=&quot;login.php&quot; method=&quot;POST&quot;&gt;
+    Username: &lt;input type=&quot;text&quot; name=&quot;username&quot;&gt;&lt;br&gt;&lt;br&gt;
+    Password: &lt;input type=&quot;password&quot; name=&quot;password&quot;&gt;&lt;br&gt;&lt;br&gt;
+    &lt;input type=&quot;submit&quot; value=&quot;Login&quot;&gt;
+&lt;/form&gt;
+&lt;p&gt;&lt;a href=&quot;register.html&quot;&gt;Create an account&lt;/a&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p><strong>login.php</strong> (Tasks 6, 7 and 9)</p>
+<pre><code class="language-php">&lt;?php
+session_start();
+
+// 1. Connect
+$conn = new mysqli(&quot;localhost&quot;, &quot;root&quot;, &quot;&quot;, &quot;CollegeLoginDB&quot;);
+if ($conn-&gt;connect_error) {
+    die(&quot;Connection failed: &quot; . $conn-&gt;connect_error);
+}
+
+// 2. Read the form values
+$username = trim($_POST[&quot;username&quot;]);
+$password = $_POST[&quot;password&quot;];
+
+// 3. Find the user by username (prepared statement)
+$stmt = $conn-&gt;prepare(&quot;SELECT username, password FROM Users WHERE username = ?&quot;);
+$stmt-&gt;bind_param(&quot;s&quot;, $username);
+$stmt-&gt;execute();
+$result = $stmt-&gt;get_result();
+$user = $result-&gt;fetch_assoc();
+
+$stmt-&gt;close();
+$conn-&gt;close();
+
+// 4. Check the password against the hash
+if ($user &amp;&amp; password_verify($password, $user[&quot;password&quot;])) {
+    // Session (Task 7)
+    session_regenerate_id(true);
+    $_SESSION[&quot;username&quot;] = $user[&quot;username&quot;];
+
+    // Cookie for 7 days (Task 9)
+    setcookie(&quot;remember_user&quot;, $user[&quot;username&quot;], [
+        &quot;expires&quot; =&gt; time() + (7 * 24 * 60 * 60),
+        &quot;path&quot; =&gt; &quot;/&quot;,
+        &quot;httponly&quot; =&gt; true,
+        &quot;samesite&quot; =&gt; &quot;Lax&quot;
+    ]);
+
+    header(&quot;Location: welcome.php&quot;);
+    exit;
+} else {
+    echo &quot;Invalid username or password.&quot;;
+    echo &#39;&lt;p&gt;&lt;a href=&quot;login.html&quot;&gt;Try again&lt;/a&gt;&lt;/p&gt;&#39;;
+}
+?&gt;</code></pre>
+<ul><li><p><strong><code>password_verify(typed, hash)</code></strong> checks the typed password against the saved hash. You can&#39;t compare with <code>==</code> because the hash is not the password.</p></li><li><p><strong><code>$user &amp;&amp;</code></strong>: if the username doesn&#39;t exist, <code>fetch_assoc()</code> gives NULL, so it goes to the error. The same message for a wrong username or wrong password doesn&#39;t tell attackers which one was right.</p></li><li><p><strong><code>session_regenerate_id(true)</code></strong> gives a new session ID at login (stops session fixation).</p></li><li><p><strong>Cookie options:</strong> <code>httponly</code> (JavaScript can&#39;t read it), <code>samesite</code> (not sent from other sites). <code>7 * 24 * 60 * 60</code> = 7 days in seconds. Only the username, never the password.</p></li><li><p><code>setcookie()</code> and <code>header()</code> run before any HTML, as always.</p></li></ul>
+<p><strong>welcome.php</strong></p>
+<pre><code class="language-php">&lt;?php
+session_start();
+
+// Not logged in: back to the login page
+if (!isset($_SESSION[&quot;username&quot;])) {
+    header(&quot;Location: login.html&quot;);
+    exit;
+}
+?&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Welcome&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h2&gt;Welcome, &lt;?php echo htmlspecialchars($_SESSION[&quot;username&quot;]); ?&gt;!&lt;/h2&gt;
+&lt;p&gt;You have successfully logged in.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;check_cookie.php&quot;&gt;Check cookie&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;logout.php&quot;&gt;Logout&lt;/a&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p><strong>check_cookie.php</strong></p>
+<pre><code class="language-php">&lt;?php
+if (isset($_COOKIE[&quot;remember_user&quot;])) {
+    echo &quot;Welcome back, &quot; . htmlspecialchars($_COOKIE[&quot;remember_user&quot;]) . &quot;!&quot;;
+} else {
+    echo &quot;No username cookie found.&quot;;
+}
+?&gt;</code></pre>
+<p><strong>logout.php</strong></p>
+<pre><code class="language-php">&lt;?php
+session_start();
+
+// 1. Clear all session variables
+session_unset();
+
+// 2. Delete the session cookie (PHPSESSID)
+setcookie(session_name(), &quot;&quot;, time() - 3600, &quot;/&quot;);
+
+// 3. Destroy the session
+session_destroy();
+
+// remember_user is kept on purpose (only the username, not a login)
+header(&quot;Location: login.html&quot;);
+exit;
+?&gt;</code></pre>
+<p><code>session_name()</code> is <code>PHPSESSID</code>; setting it in the past deletes the session cookie from the browser.</p>
+<p><strong>Testing checklist (all tested):</strong></p>
+<table><thead><tr><th>Test</th><th>Result</th></tr></thead><tbody><tr><td>create_database.php</td><td>Database CollegeLoginDB created successfully!</td></tr><tr><td>create_table.php</td><td>Table Users created successfully!</td></tr><tr><td>Register Sara / sara@example.com / pass123</td><td>Registration successful! (password stored as <code>$2y$10$...</code>, 60 characters)</td></tr><tr><td>Register Sara again</td><td>Username already exists.</td></tr><tr><td>Register with blank fields</td><td>All fields are required.</td></tr><tr><td>Login with a wrong password</td><td>Invalid username or password.</td></tr><tr><td>Open welcome.php while logged out</td><td>Redirects to login.html</td></tr><tr><td>Login Sara / pass123</td><td>Redirects to welcome.php: Welcome, Sara! You have successfully logged in.</td></tr><tr><td>check_cookie.php after login</td><td>Welcome back, Sara!</td></tr><tr><td>Logout</td><td>Session cookie deleted, redirects to login.html</td></tr><tr><td>welcome.php after logout</td><td>Redirects to login.html</td></tr><tr><td>check_cookie.php after logout</td><td>Welcome back, Sara! (the cookie stays, as the lab asks)</td></tr></tbody></table>
+<p><strong>Screenshots to submit:</strong> registration success, the welcome page after login, check_cookie.php, and the login page after logout. Submit a ZIP named <code>PHP_MySQL_Login_Lab_YourName.zip</code>.</p>
