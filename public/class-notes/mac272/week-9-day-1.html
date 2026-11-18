@@ -207,6 +207,7 @@ if ($_SERVER[&quot;REQUEST_METHOD&quot;] == &quot;POST&quot;) {
 <ol><li><p>Start Apache and MySQL in XAMPP.</p></li><li><p>Put the 3 files in <code>htdocs/assignment3/</code>.</p></li><li><p>Open <code>localhost/assignment3/setup.php</code> once.</p></li><li><p>Use <code>localhost/assignment3/search.php</code> and <code>localhost/assignment3/feedback.php</code>.</p></li><li><p>Check saved feedback in phpMyAdmin: <strong>Assignment3DB → feedback → Browse</strong>.</p></li></ol>
 <h3 id="lab-php-mysql-login-system-collegelogindb-100-points">Lab: PHP MySQL Login System (CollegeLoginDB, 100 points)</h3>
 <p>Register, log in, see a protected welcome page, remember the username with a cookie, and log out. Uses everything so far: forms (POST), MySQL, prepared statements, sessions and cookies. New today: <strong><code>password_hash()</code> / <code>password_verify()</code></strong> and <strong><code>session_regenerate_id()</code></strong>.</p>
+<blockquote><p><strong>🆕 NEW in this lab (not covered in class before), required by the lab:</strong></p><ul><li><p><code>password_hash($password, PASSWORD_DEFAULT)</code>: turns a password into a hash to store.</p></li><li><p><code>password_verify($typed, $hash)</code>: checks a typed password against that hash.</p></li><li><p><code>session_regenerate_id(true)</code>: a new session ID at login.</p></li><li><p><code>setcookie(name, value, [ &quot;expires&quot; =&gt; ..., &quot;path&quot; =&gt; ..., &quot;httponly&quot; =&gt; true, &quot;samesite&quot; =&gt; &quot;Lax&quot; ])</code>: setcookie with an options array.</p></li><li><p><code>$stmt-&gt;get_result()</code>, <code>$result-&gt;num_rows</code>, <code>$result-&gt;fetch_assoc()</code>: reading rows from a prepared SELECT (Part 10 only showed INSERT).</p></li><li><p><code>session_name()</code>: the session cookie&#39;s name (<code>PHPSESSID</code>), used to delete it at logout.</p></li><li><p>Bonus only: <code>&lt;input type=&quot;checkbox&quot;&gt;</code>, which is sent <strong>only when checked</strong>, so PHP checks it with <code>isset($_POST[&quot;remember&quot;])</code>.</p></li></ul><p>Everything else is from class: mysqli, forms with POST, <code>trim()</code>/<code>empty()</code>, sessions, cookies, <code>header()</code> + <code>exit</code>, <code>htmlspecialchars()</code>.</p></blockquote>
 <p><strong>The order:</strong></p>
 <ol><li><p>Start Apache and MySQL.</p></li><li><p><code>create_database.php</code> → database.</p></li><li><p><code>create_table.php</code> → Users table.</p></li><li><p><code>register.html</code> → <code>insert_user.php</code> → a user row (password saved as a hash).</p></li><li><p><code>login.html</code> → <code>login.php</code> → session + cookie → <code>welcome.php</code>.</p></li><li><p><code>check_cookie.php</code>, then <code>logout.php</code>.</p></li></ol>
 <p>Folder: <code>htdocs/CollegeLogin/</code> with the 9 files below.</p>
@@ -430,3 +431,47 @@ exit;
 <p><strong>Testing checklist (all tested):</strong></p>
 <table><thead><tr><th>Test</th><th>Result</th></tr></thead><tbody><tr><td>create_database.php</td><td>Database CollegeLoginDB created successfully!</td></tr><tr><td>create_table.php</td><td>Table Users created successfully!</td></tr><tr><td>Register Sara / sara@example.com / pass123</td><td>Registration successful! (password stored as <code>$2y$10$...</code>, 60 characters)</td></tr><tr><td>Register Sara again</td><td>Username already exists.</td></tr><tr><td>Register with blank fields</td><td>All fields are required.</td></tr><tr><td>Login with a wrong password</td><td>Invalid username or password.</td></tr><tr><td>Open welcome.php while logged out</td><td>Redirects to login.html</td></tr><tr><td>Login Sara / pass123</td><td>Redirects to welcome.php: Welcome, Sara! You have successfully logged in.</td></tr><tr><td>check_cookie.php after login</td><td>Welcome back, Sara!</td></tr><tr><td>Logout</td><td>Session cookie deleted, redirects to login.html</td></tr><tr><td>welcome.php after logout</td><td>Redirects to login.html</td></tr><tr><td>check_cookie.php after logout</td><td>Welcome back, Sara! (the cookie stays, as the lab asks)</td></tr></tbody></table>
 <p><strong>Screenshots to submit:</strong> registration success, the welcome page after login, check_cookie.php, and the login page after logout. Submit a ZIP named <code>PHP_MySQL_Login_Lab_YourName.zip</code>.</p>
+<h4 id="bonus-challenge-10-remember-username-checkbox">Bonus Challenge (+10): Remember Username checkbox</h4>
+<p>The cookie is created <strong>only when the box is checked</strong>, and the login form fills in the saved username. To read the cookie, the form must be PHP, so:</p>
+<table><thead><tr><th>Before</th><th>With the bonus</th></tr></thead><tbody><tr><td><code>login.html</code> (form)</td><td><strong><code>login.php</code></strong> (form that reads the cookie)</td></tr><tr><td><code>login.php</code> (checks the password)</td><td><strong><code>authenticate.php</code></strong> (same code, renamed)</td></tr><tr><td>Links and redirects to <code>login.html</code></td><td>Changed to <code>login.php</code> in welcome.php, logout.php, register.html, insert_user.php</td></tr></tbody></table>
+<p><strong>login.php</strong> (new form)</p>
+<pre><code class="language-php">&lt;?php
+// Read the remembered username (if there is one) to fill in the form
+$remembered = &quot;&quot;;
+if (isset($_COOKIE[&quot;remember_user&quot;])) {
+    $remembered = $_COOKIE[&quot;remember_user&quot;];
+}
+?&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Login&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h2&gt;Login&lt;/h2&gt;
+&lt;form action=&quot;authenticate.php&quot; method=&quot;POST&quot;&gt;
+    Username: &lt;input type=&quot;text&quot; name=&quot;username&quot; value=&quot;&lt;?php echo htmlspecialchars($remembered); ?&gt;&quot;&gt;&lt;br&gt;&lt;br&gt;
+    Password: &lt;input type=&quot;password&quot; name=&quot;password&quot;&gt;&lt;br&gt;&lt;br&gt;
+    &lt;input type=&quot;checkbox&quot; name=&quot;remember&quot; &lt;?php if ($remembered != &quot;&quot;) echo &quot;checked&quot;; ?&gt;&gt; Remember Username&lt;br&gt;&lt;br&gt;
+    &lt;input type=&quot;submit&quot; value=&quot;Login&quot;&gt;
+&lt;/form&gt;
+&lt;p&gt;&lt;a href=&quot;register.html&quot;&gt;Create an account&lt;/a&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<ul><li><p><code>value=&quot;&lt;?php echo ... ?&gt;&quot;</code> fills the box, the same trick as keeping form values in Lesson 8.</p></li><li><p><code>checked</code> ticks the box when a username is remembered, like radio buttons in Lesson 8.</p></li></ul>
+<p><strong>authenticate.php</strong>: the old login.php with the cookie part changed:</p>
+<pre><code class="language-php">    // Cookie only if &quot;Remember Username&quot; was checked (Bonus)
+    if (isset($_POST[&quot;remember&quot;])) {
+        setcookie(&quot;remember_user&quot;, $user[&quot;username&quot;], [
+            &quot;expires&quot; =&gt; time() + (7 * 24 * 60 * 60),
+            &quot;path&quot; =&gt; &quot;/&quot;,
+            &quot;httponly&quot; =&gt; true,
+            &quot;samesite&quot; =&gt; &quot;Lax&quot;
+        ]);
+    } else {
+        // not checked: forget any saved username
+        setcookie(&quot;remember_user&quot;, &quot;&quot;, time() - 3600, &quot;/&quot;);
+    }</code></pre>
+<p>and its error link points to <code>login.php</code>. Why <code>isset()</code>: an unchecked checkbox isn&#39;t sent at all, so <code>$_POST[&quot;remember&quot;]</code> only exists when it&#39;s checked. Unchecked deletes the cookie (time in the past, Lesson 9), so the user can choose to be forgotten.</p>
+<p><strong>Bonus tested:</strong></p>
+<table><thead><tr><th>Test</th><th>Result</th></tr></thead><tbody><tr><td>First visit to login.php</td><td>Username box empty, checkbox unchecked</td></tr><tr><td>Login with the box unchecked</td><td>Welcome page; check_cookie.php: No username cookie found.</td></tr><tr><td>Login with the box checked</td><td>Welcome page; check_cookie.php: Welcome back, Sara!</td></tr><tr><td>Logout, then login.php</td><td>Username box shows <strong>Sara</strong>, checkbox checked</td></tr><tr><td>Login again unchecked</td><td>Cookie deleted; login.php is empty again</td></tr><tr><td>welcome.php while logged out</td><td>Redirects to login.php</td></tr></tbody></table>
